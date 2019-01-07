@@ -13,9 +13,11 @@ const defaultValue =
 
 This is text.
 
-This is __italic__ text.
+This is _italic_ text.
 
 This is **bold** text.
+
+This is a [link](https://clause.io)
 
 ## Heading 2
 
@@ -40,13 +42,14 @@ This is text.
 
 That was a page break.`;
 
+
 /**
- * The auto-markdown example.
+ * Parses, edits and saves markdown text.
  *
  * @type {Component}
  */
 
-class RichTextEditor extends React.Component {
+class MarkdownEditor extends React.Component {
   constructor(props) {
     super(props);
     this.handleTextChange = null;
@@ -276,7 +279,7 @@ class RichTextEditor extends React.Component {
   handleOnChange = ({ value }) => {
     this.setState({ value });
     const md = this.slateToMarkdownConverter.convert(value);
-    console.log(md);
+    // console.log(JSON.stringify(value, null, 4));
     if (this.handleTextChange) {
       this.handleTextChange(md);
     }
@@ -297,6 +300,8 @@ class RichTextEditor extends React.Component {
     switch (node.type) {
       case 'block-quote':
         return <blockquote {...attributes}>{children}</blockquote>;
+      case 'ol-list':
+        return <ol {...attributes}>{children}</ol>;
       case 'ul-list':
         return <ul {...attributes}>{children}</ul>;
       case 'heading-one':
@@ -313,6 +318,15 @@ class RichTextEditor extends React.Component {
         return <h6 {...attributes}>{children}</h6>;
       case 'list-item':
         return <li {...attributes}>{children}</li>;
+      case 'link': {
+        const { data } = node;
+        const href = data.get('href');
+        return (
+          <a {...attributes} href={href}>
+            {children}
+          </a>
+        );
+      }
       default:
         return next();
     }
@@ -392,7 +406,7 @@ class RichTextEditor extends React.Component {
   }
 }
 
-RichTextEditor.propTypes = {
+MarkdownEditor.propTypes = {
   handleTextChange: PropTypes.func,
   text: PropTypes.string,
 };
@@ -401,4 +415,4 @@ RichTextEditor.propTypes = {
  * Export.
  */
 
-export default RichTextEditor;
+export default MarkdownEditor;

@@ -35,7 +35,7 @@ class HoverMenu extends React.Component {
 
 HoverMenu.propTypes = {
   className: PropTypes.string,
-  editor: PropTypes.element.isRequired,
+  editor: PropTypes.object.isRequired,
   innerRef: PropTypes.func.isRequired,
   rect: PropTypes.object,
 };

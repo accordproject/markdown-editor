@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import './App.css';
-import RichTextEditor from './editor/RichTextEditor';
+import MarkdownEditor from './editor/MarkdownEditor';
 
 class App extends Component {
   render() {
     return (
-      <RichTextEditor />
+      <MarkdownEditor />
     );
   }
 }

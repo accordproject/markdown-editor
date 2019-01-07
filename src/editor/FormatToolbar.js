@@ -15,6 +15,25 @@ const styles = {
   },
 };
 
+function wrapLink(editor, href) {
+  editor.wrapInline({
+    type: 'link',
+    data: { href },
+  });
+
+  editor.moveToEnd();
+}
+
+/**
+ * A change helper to standardize unwrapping links.
+ *
+ * @param {Editor} editor
+ */
+
+function unwrapLink(editor) {
+  editor.unwrapInline('link');
+}
+
 class FormatToolbar extends React.Component {
   /**
    * When a mark button is clicked, toggle the current mark.
@@ -40,11 +59,65 @@ class FormatToolbar extends React.Component {
     const { editor } = this.props;
     event.preventDefault();
 
-    // Determine whether any of the currently selected blocks are code blocks.
+    // Determine whether any of the currently selected blocks already have the type
     const isType = editor.value.blocks.some(block => block.type === type);
 
     // Toggle the block type depending on `isType`.
     editor.setBlocks(isType ? 'paragraph' : type);
+  }
+
+  /**
+   * When clicking a link, if the selection has a link in it, remove the link.
+   * Otherwise, add a new link with an href and text.
+   *
+   * @param {Event} event
+   */
+
+  onClickLink(event, editor) {
+    event.preventDefault();
+
+    const { value } = editor;
+    const hasLinks = this.hasLinks(editor);
+
+    if (hasLinks) {
+      editor.command(unwrapLink);
+    } else if (value.selection.isExpanded) {
+      const href = window.prompt('Enter the URL of the link:');
+
+      if (href === null) {
+        return;
+      }
+
+      editor.command(wrapLink, href);
+    } else {
+      const href = window.prompt('Enter the URL of the link:');
+
+      if (href === null) {
+        return;
+      }
+
+      const text = window.prompt('Enter the text for the link:');
+
+      if (text === null) {
+        return;
+      }
+
+      editor
+        .insertText(text)
+        .moveFocusBackward(text.length)
+        .command(wrapLink, href);
+    }
+  }
+
+  /**
+   * Check whether the current selection has a link in it.
+   *
+   * @return {Boolean} hasLinks
+   */
+
+  hasLinks(editor) {
+    const { value } = editor.state;
+    return value.inlines.some(inline => inline.type === 'link');
   }
 
   /**
@@ -155,6 +228,28 @@ class FormatToolbar extends React.Component {
     );
   }
 
+  /**
+   * Render a mark-toggling toolbar button.
+   *
+   * @param {String} type
+   * @param {String} icon
+   * @return {Element}
+   */
+
+  renderLinkButton() {
+    const { classes } = this.props;
+
+    return (
+      <IconButton
+        className={classes.button}
+        aria-label="link"
+        onMouseDown={event => this.onClickLink(event, this.props.editor)}
+      >
+        <InsertLink />
+      </IconButton>
+    );
+  }
+
   render() {
     const { rect } = this.props;
 
@@ -168,6 +263,7 @@ class FormatToolbar extends React.Component {
           { this.renderMarkButton('underlined', 'format_underlined')}
           { this.renderMarkButton('code', 'code')}
           { this.renderBlockButton('block-quote', 'format_quote')}
+          { this.renderLinkButton()}
         </div>
       );
     }
@@ -178,8 +274,8 @@ class FormatToolbar extends React.Component {
 
 FormatToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
-  editor: PropTypes.element.isRequired,
-  rect: PropTypes.object.isRequired,
+  editor: PropTypes.object.isRequired,
+  rect: PropTypes.object,
 };
 
 export default withStyles(styles)(FormatToolbar);

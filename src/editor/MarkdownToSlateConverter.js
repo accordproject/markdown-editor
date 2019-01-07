@@ -77,61 +77,102 @@ export default class MarkdownToSlateConverter {
 
   text(node, entering) {
     if (entering) {
-      this.addPlainText(node.literal);
+      if (node.parent) {
+        switch (node.parent.type) {
+          case 'strong':
+            this.addText(node.literal, 'bold');
+            break;
+          case 'emph':
+            this.addText(node.literal, 'italic');
+            break;
+          case 'link':
+            this.addLink(node.parent);
+            break;
+          default:
+            this.addText(node.literal);
+        }
+      }
     }
   }
 
-  addPlainText(value) {
-    this.currentNodes.push(
-      {
-        object: 'text',
-        leaves: [
-          {
-            object: 'leaf',
-            text: value,
-            marks: [],
-          },
-        ],
-      });
+  addText(value, markType) {
+    const text = {
+      object: 'text',
+      leaves: [
+        {
+          object: 'leaf',
+          text: value,
+          marks: [],
+        },
+      ],
+    };
+
+    if (markType) {
+      const mark =
+        {
+          object: 'mark',
+          type: markType,
+          data: {},
+        };
+
+      text.leaves[0].marks.push(mark);
+    }
+
+    this.currentNodes.push(text);
   }
 
   softbreak() {
-    this.addPlainText('\n');
+    this.addText('\n');
   }
 
   linebreak() {
-    this.addPlainText('\r\n');
+    this.addText('\r\n');
   }
 
   link(node, entering) {
-    if (entering) {
-      this.addPlainText(node.destination);
-      this.addPlainText(node.title);
-    }
+    // handled by text()
+  }
+
+  addLink(node) {
+    const inline = {
+      object: 'inline',
+      nodes: [
+        {
+          object: 'text',
+          leaves: [
+            {
+              text: node.firstChild.literal,
+            },
+          ],
+        },
+      ],
+      type: 'link',
+      data: {
+        href: node.destination,
+      },
+    };
+    console.log('link');
+    console.log(node);
+    console.log(inline);
+    this.currentNodes.push(inline);
   }
 
   image(node, entering) {
     if (entering) {
-      this.addPlainText(node.destination);
-      this.addPlainText(node.title);
+      this.addText(node.destination);
+      this.addText(node.title);
     }
   }
 
   emph(node, entering) {
+    // handled by text()
   }
 
   strong(node, entering) {
+    // handled by text()
   }
 
   paragraph(node, entering) {
-    // const grandparent = node.parent.parent;
-    // // const attrs = this.attrs(node);
-    // if (grandparent !== null &&
-    // grandparent.type === 'list') {
-    //   if (grandparent.listTight) {
-    //     return;
-    //   }
-    // }
     if (entering) {
       this.parent = this.currentNodes;
 
@@ -185,15 +226,25 @@ export default class MarkdownToSlateConverter {
   }
 
   code(node) {
-    this.addPlainText(node.literal);
+    this.addText(node.literal, 'code');
   }
 
   code_block(node) {
-    this.addPlainText(node.literal);
+    const block = {
+      object: 'block',
+      type: 'paragraph',
+      nodes: [],
+    };
+
+    this.currentNodes.push(block);
+    this.parent = this.currentNodes;
+    this.currentNodes = block.nodes;
+    this.addText(node.literal, 'code');
+    this.currentNodes = this.parent;
   }
 
   thematic_break(node) {
-    this.addPlainText('-----');
+    this.addText('-----');
   }
 
   block_quote(node, entering) {
