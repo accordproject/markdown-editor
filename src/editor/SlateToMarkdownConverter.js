@@ -32,7 +32,7 @@ export default class SlateToMarkdownConverter {
     let result = '';
 
     nodes.forEach((block) => {
-      // console.log(block);
+      console.log(block);
 
       try {
         let type = block.type;
@@ -42,7 +42,7 @@ export default class SlateToMarkdownConverter {
         const method = type.replace('-', '');
         result += `${this[method](block)}${sep}`;
       } catch (err) {
-        console.log(`Failed to run method: for block ${JSON.stringify(block, null, 4)}`);
+        console.log(`Failed to run method: for block ${JSON.stringify(block, null, 4)} : ${err}`);
       }
     });
 
@@ -78,7 +78,29 @@ export default class SlateToMarkdownConverter {
   }
 
   text(block) {
-    return block.leaves[0].text;
+    console.log(block);
+    let result = '';
+    block.leaves.forEach((leaf) => {
+      const isBold = leaf.marks.some(mark => mark.type === 'bold');
+      const isItalic = leaf.marks.some(mark => mark.type === 'italic');
+      const isCode = leaf.marks.some(mark => mark.type === 'code');
+
+      let mark = '';
+      if (isBold) {
+        mark = '**';
+      }
+
+      if (isItalic) {
+        mark += '_';
+      }
+
+      if (isCode) {
+        mark += '`';
+      }
+
+      result += (mark + leaf.text + mark);
+    });
+    return result;
   }
 
   ullist(block) {
@@ -95,5 +117,9 @@ export default class SlateToMarkdownConverter {
 
   horizontalrule(block) {
     return '--- \n';
+  }
+
+  link(block) {
+    return `[${block.nodes[0].leaves[0].text}](${block.data.href})`;
   }
 }
