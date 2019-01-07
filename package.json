@@ -1,7 +1,24 @@
 {
-  "name": "cicero-editor",
+  "name": "@accordproject/markdown-editor",
   "version": "0.1.0",
+  "description": "A rich text editor that can read and write markdown text. Based on Slate.js.",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/accordproject/markdown-editor.git"
+  },
+  "keywords": [
+    "accord",
+    "markdown",
+    "slate.js",
+    "rich text"
+  ],
+  "author": "accordproject.org",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/accordproject/markdown-editor/issues"
+  },
+  "homepage": "https://github.com/accordproject/markdown#readme",
   "dependencies": {
     "@material-ui/core": "^3.8.1",
     "@material-ui/icons": "^3.0.1",
