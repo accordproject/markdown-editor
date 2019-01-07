@@ -1,4 +1,8 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a React component for a rich text editor that can read and write [CommonMark](https://commonmark.org) Markdown text. The editor uses [Slate.js](https://slatejs.org).
+
+The editor includes keyboard shortcuts for Markdown formatting and a pop-up toolbar.
+
+This component is Apache-2 licensed Open Source. Contributors welcome!
 
 ## Available Scripts
 
