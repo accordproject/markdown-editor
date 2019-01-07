@@ -34,6 +34,8 @@ function unwrapLink(editor) {
   editor.unwrapInline('link');
 }
 
+const DEFAULT_NODE = 'paragraph';
+
 class FormatToolbar extends React.Component {
   /**
    * When a mark button is clicked, toggle the current mark.
@@ -49,21 +51,51 @@ class FormatToolbar extends React.Component {
   }
 
   /**
-   * When a mark button is clicked, toggle the current mark.
+   * When a block button is clicked, toggle the block type.
    *
    * @param {Event} event
    * @param {String} type
    */
-
   onClickBlock(event, type) {
-    const { editor } = this.props;
     event.preventDefault();
 
-    // Determine whether any of the currently selected blocks already have the type
-    const isType = editor.value.blocks.some(block => block.type === type);
+    const { editor } = this.props;
+    const { value } = editor;
+    const { document } = value;
 
-    // Toggle the block type depending on `isType`.
-    editor.setBlocks(isType ? 'paragraph' : type);
+    // Handle everything but list buttons.
+    if (type !== 'ul-list' && type !== 'ol-list') {
+      const isActive = this.hasBlock(editor, type);
+      const isList = this.hasBlock(editor, 'list-item');
+
+      if (isList) {
+        editor
+          .setBlocks(isActive ? DEFAULT_NODE : type)
+          .unwrapBlock('ul-list')
+          .unwrapBlock('ol-list');
+      } else {
+        editor.setBlocks(isActive ? DEFAULT_NODE : type);
+      }
+    } else {
+      // Handle the extra wrapping required for list buttons.
+      const isList = this.hasBlock(editor, 'list-item');
+      const isType = value.blocks.some(block => !!document.getClosest(block.key, parent => parent.type === type));
+
+      if (isList && isType) {
+        editor
+          .setBlocks(DEFAULT_NODE)
+          .unwrapBlock('ul-list')
+          .unwrapBlock('ol-list');
+      } else if (isList) {
+        editor
+          .unwrapBlock(
+            type === 'ul-list' ? 'ol-list' : 'ul-list',
+          )
+          .wrapBlock(type);
+      } else {
+        editor.setBlocks('list-item').wrapBlock(type);
+      }
+    }
   }
 
   /**
@@ -118,6 +150,30 @@ class FormatToolbar extends React.Component {
   hasLinks(editor) {
     const { value } = editor.state;
     return value.inlines.some(inline => inline.type === 'link');
+  }
+
+  /**
+   * Check if the current selection has a mark with `type` in it.
+   *
+   * @param {String} type
+   * @return {Boolean}
+   */
+
+  hasMark(editor, type) {
+    const { value } = editor.state;
+    return value.activeMarks.some(mark => mark.type === type);
+  }
+
+  /**
+   * Check if the any of the currently selected blocks are of `type`.
+   *
+   * @param {String} type
+   * @return {Boolean}
+   */
+
+  hasBlock(editor, type) {
+    const { value } = editor.state;
+    return value.blocks.some(node => node.type === type);
   }
 
   /**
@@ -263,6 +319,8 @@ class FormatToolbar extends React.Component {
           { this.renderMarkButton('underlined', 'format_underlined')}
           { this.renderMarkButton('code', 'code')}
           { this.renderBlockButton('block-quote', 'format_quote')}
+          { this.renderBlockButton('ol-list', 'ol')}
+          { this.renderBlockButton('ul-list', 'ul')}
           { this.renderLinkButton()}
         </div>
       );
