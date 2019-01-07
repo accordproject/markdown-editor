@@ -13,14 +13,87 @@
  */
 
 /* Libraries */
-import Plain from 'slate-plain-serializer';
 
+/**
+ * This class converts a Slate.js JSON value object to Markdown text.
+ *
+ * Please refer to schema.js for details of the Slate.js nodes.
+ */
 export default class SlateToMarkdownConverter {
   constructor(options = {}) {
     this.options = options;
   }
 
   convert(value) {
-    return Plain.serialize(value);
+    return this.recurse(value.document.nodes);
+  }
+
+  recurse(nodes, sep = '') {
+    let result = '';
+
+    nodes.forEach((block) => {
+      // console.log(block);
+
+      try {
+        let type = block.type;
+        if (!type) {
+          type = block.object;
+        }
+        const method = type.replace('-', '');
+        result += `${this[method](block)}${sep}`;
+      } catch (err) {
+        console.log(`Failed to run method: for block ${JSON.stringify(block, null, 4)}`);
+      }
+    });
+
+    return result;
+  }
+
+  headingone(block) {
+    return `# ${block.nodes[0].leaves[0].text}\r\n`;
+  }
+
+  headingtwo(block) {
+    return `## ${block.nodes[0].leaves[0].text}\r\n`;
+  }
+
+  headingthree(block) {
+    return `### ${block.nodes[0].leaves[0].text}\r\n`;
+  }
+
+  headingfour(block) {
+    return `#### ${block.nodes[0].leaves[0].text}\r\n`;
+  }
+
+  headingfive(block) {
+    return `##### ${block.nodes[0].leaves[0].text}\r\n`;
+  }
+
+  headingsix(block) {
+    return `###### ${block.nodes[0].leaves[0].text}\r\n`;
+  }
+
+  paragraph(block) {
+    return `${this.recurse(block.nodes)}\r\n`;
+  }
+
+  text(block) {
+    return block.leaves[0].text;
+  }
+
+  ullist(block) {
+    return `${this.recurse(block.nodes)}\r\n`;
+  }
+
+  ollist(block) {
+    return `${this.recurse(block.nodes)}\r\n`;
+  }
+
+  listitem(block) {
+    return this.recurse(block.nodes, '   * ');
+  }
+
+  horizontalrule(block) {
+    return '--- \n';
   }
 }

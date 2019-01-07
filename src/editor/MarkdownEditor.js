@@ -38,9 +38,12 @@ This is text.
 1. This is a numbered list item
 1. Another numbered item
 
+
+More text
+
 ---
 
-That was a page break.`;
+That was a thematic break.`;
 
 
 /**
@@ -110,11 +113,19 @@ class MarkdownEditor extends React.Component {
     const type = this.getType(chars);
     if (!type) return next();
     if (type === 'list-item' && startBlock.type === 'list-item') return next();
-    event.preventDefault();
+    if (type === 'horizontal-rule') {
+      const hr = {
+        type: 'horizontal-rule',
+      };
+      editor.insertBlock(hr);
+      // this CRASHES? editor.moveFocusToEndOfNode(hr);
+    }
 
+    event.preventDefault();
     editor.setBlocks(type);
 
     if (type === 'list-item') {
+      // TODO (DCS) what about ol?
       editor.wrapBlock('ul-list');
     }
 
@@ -216,7 +227,7 @@ class MarkdownEditor extends React.Component {
    * @return {String} block
    */
 
-  getType = (chars) => {
+  getType(chars) {
     switch (chars) {
       case '*':
       case '-':
@@ -236,6 +247,8 @@ class MarkdownEditor extends React.Component {
         return 'heading-five';
       case '######':
         return 'heading-six';
+      case '---':
+        return 'horizontal-rule';
       default:
         return null;
     }
@@ -278,8 +291,9 @@ class MarkdownEditor extends React.Component {
 
   handleOnChange = ({ value }) => {
     this.setState({ value });
-    const md = this.slateToMarkdownConverter.convert(value);
+    const md = this.slateToMarkdownConverter.convert(value.toJSON());
     // console.log(JSON.stringify(value, null, 4));
+    console.log(md);
     if (this.handleTextChange) {
       this.handleTextChange(md);
     }
@@ -318,6 +332,8 @@ class MarkdownEditor extends React.Component {
         return <h6 {...attributes}>{children}</h6>;
       case 'list-item':
         return <li {...attributes}>{children}</li>;
+      case 'horizontal-rule':
+        return <hr {...attributes} />;
       case 'link': {
         const { data } = node;
         const href = data.get('href');

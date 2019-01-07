@@ -17,6 +17,12 @@ import { Value } from 'slate';
 /* Libraries */
 import commonmark from 'commonmark';
 
+/**
+ * This class parses Markdown text using the commonmark parser
+ * and then converts the AST to a Slate.js JSON value.
+ *
+ * Please refer to schema.js for details of the Slate.js nodes.
+ */
 export default class MarkdownToSlateConverter {
   constructor(options = {}) {
     this.options = options;
@@ -151,9 +157,6 @@ export default class MarkdownToSlateConverter {
         href: node.destination,
       },
     };
-    console.log('link');
-    console.log(node);
-    console.log(inline);
     this.currentNodes.push(inline);
   }
 
@@ -244,7 +247,12 @@ export default class MarkdownToSlateConverter {
   }
 
   thematic_break(node) {
-    this.addText('-----');
+    const block = {
+      object: 'block',
+      isVoid: true,
+      type: 'horizontal-rule',
+    };
+    this.currentNodes.push(block);
   }
 
   block_quote(node, entering) {
@@ -301,20 +309,11 @@ export default class MarkdownToSlateConverter {
   }
 
   html_inline(node) {
-    if (this.options.safe) {
-      // this.lit('<!-- raw HTML omitted -->');
-    } else {
-      // this.lit(node.literal);
-    }
+    this.addText(node.literal);
   }
 
   html_block(node) {
-    if (this.options.safe) {
-      // this.lit('<!-- raw HTML omitted -->');
-    } else {
-      // this.lit(node.literal);
-    }
-    // this.cr();
+    this.addText(node.literal);
   }
 
   custom_inline(node, entering) {

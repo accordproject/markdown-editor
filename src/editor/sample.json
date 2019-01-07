@@ -1,0 +1,336 @@
+{
+    "object": "value",
+    "document": {
+        "object": "document",
+        "data": {},
+        "nodes": [{
+                "object": "block",
+                "type": "heading-one",
+                "data": {},
+                "nodes": [{
+                    "object": "text",
+                    "leaves": [{
+                        "object": "leaf",
+                        "text": "Heading",
+                        "marks": []
+                    }]
+                }]
+            },
+            {
+                "object": "block",
+                "type": "paragraph",
+                "data": {},
+                "nodes": [{
+                    "object": "text",
+                    "leaves": [{
+                        "object": "leaf",
+                        "text": "This is text.",
+                        "marks": []
+                    }]
+                }]
+            },
+            {
+                "object": "block",
+                "type": "paragraph",
+                "data": {},
+                "nodes": [{
+                    "object": "text",
+                    "leaves": [{
+                            "object": "leaf",
+                            "text": "This is ",
+                            "marks": []
+                        },
+                        {
+                            "object": "leaf",
+                            "text": "italic",
+                            "marks": [{
+                                "object": "mark",
+                                "type": "italic",
+                                "data": {}
+                            }]
+                        },
+                        {
+                            "object": "leaf",
+                            "text": " text.",
+                            "marks": []
+                        }
+                    ]
+                }]
+            },
+            {
+                "object": "block",
+                "type": "paragraph",
+                "data": {},
+                "nodes": [{
+                    "object": "text",
+                    "leaves": [{
+                            "object": "leaf",
+                            "text": "This is ",
+                            "marks": []
+                        },
+                        {
+                            "object": "leaf",
+                            "text": "bold",
+                            "marks": [{
+                                "object": "mark",
+                                "type": "bold",
+                                "data": {}
+                            }]
+                        },
+                        {
+                            "object": "leaf",
+                            "text": " text.",
+                            "marks": []
+                        }
+                    ]
+                }]
+            },
+            {
+                "object": "block",
+                "type": "paragraph",
+                "data": {},
+                "nodes": [{
+                        "object": "text",
+                        "leaves": [{
+                            "object": "leaf",
+                            "text": "This is a ",
+                            "marks": []
+                        }]
+                    },
+                    {
+                        "object": "inline",
+                        "type": "link",
+                        "data": {
+                            "href": "https://clause.io"
+                        },
+                        "nodes": [{
+                            "object": "text",
+                            "leaves": [{
+                                "object": "leaf",
+                                "text": "link",
+                                "marks": []
+                            }]
+                        }]
+                    },
+                    {
+                        "object": "text",
+                        "leaves": [{
+                            "object": "leaf",
+                            "text": "",
+                            "marks": []
+                        }]
+                    }
+                ]
+            },
+            {
+                "object": "block",
+                "type": "heading-one",
+                "data": {},
+                "nodes": [{
+                    "object": "text",
+                    "leaves": [{
+                        "object": "leaf",
+                        "text": "Heading 2",
+                        "marks": []
+                    }]
+                }]
+            },
+            {
+                "object": "block",
+                "type": "paragraph",
+                "data": {},
+                "nodes": [{
+                    "object": "text",
+                    "leaves": [{
+                        "object": "leaf",
+                        "text": "This is more text.",
+                        "marks": []
+                    }]
+                }]
+            },
+            {
+                "object": "block",
+                "type": "paragraph",
+                "data": {},
+                "nodes": [{
+                    "object": "text",
+                    "leaves": [{
+                            "object": "leaf",
+                            "text": "This is ",
+                            "marks": []
+                        },
+                        {
+                            "object": "leaf",
+                            "text": "inline code",
+                            "marks": [{
+                                "object": "mark",
+                                "type": "code",
+                                "data": {}
+                            }]
+                        },
+                        {
+                            "object": "leaf",
+                            "text": ".",
+                            "marks": []
+                        }
+                    ]
+                }]
+            },
+            {
+                "object": "block",
+                "type": "paragraph",
+                "data": {},
+                "nodes": [{
+                    "object": "text",
+                    "leaves": [{
+                        "object": "leaf",
+                        "text": "This is a code block\nOn multiple lines.\n",
+                        "marks": [{
+                            "object": "mark",
+                            "type": "code",
+                            "data": {}
+                        }]
+                    }]
+                }]
+            },
+            {
+                "object": "block",
+                "type": "ul-list",
+                "data": {},
+                "nodes": [{
+                    "object": "block",
+                    "type": "list-item",
+                    "data": {},
+                    "nodes": [{
+                            "object": "block",
+                            "type": "paragraph",
+                            "data": {},
+                            "nodes": [{
+                                "object": "text",
+                                "leaves": [{
+                                    "object": "leaf",
+                                    "text": "this is a list item",
+                                    "marks": []
+                                }]
+                            }]
+                        },
+                        {
+                            "object": "block",
+                            "type": "list-item",
+                            "data": {},
+                            "nodes": [{
+                                    "object": "block",
+                                    "type": "paragraph",
+                                    "data": {},
+                                    "nodes": [{
+                                        "object": "text",
+                                        "leaves": [{
+                                            "object": "leaf",
+                                            "text": "this a second item",
+                                            "marks": []
+                                        }]
+                                    }]
+                                },
+                                {
+                                    "object": "block",
+                                    "type": "paragraph",
+                                    "data": {},
+                                    "nodes": [{
+                                        "object": "text",
+                                        "leaves": [{
+                                            "object": "leaf",
+                                            "text": "This is text.",
+                                            "marks": []
+                                        }]
+                                    }]
+                                },
+                                {
+                                    "object": "block",
+                                    "type": "ol-list",
+                                    "data": {},
+                                    "nodes": [{
+                                        "object": "block",
+                                        "type": "list-item",
+                                        "data": {},
+                                        "nodes": [{
+                                                "object": "block",
+                                                "type": "paragraph",
+                                                "data": {},
+                                                "nodes": [{
+                                                    "object": "text",
+                                                    "leaves": [{
+                                                        "object": "leaf",
+                                                        "text": "This is a numbered list item",
+                                                        "marks": []
+                                                    }]
+                                                }]
+                                            },
+                                            {
+                                                "object": "block",
+                                                "type": "list-item",
+                                                "data": {},
+                                                "nodes": [{
+                                                        "object": "block",
+                                                        "type": "paragraph",
+                                                        "data": {},
+                                                        "nodes": [{
+                                                            "object": "text",
+                                                            "leaves": [{
+                                                                "object": "leaf",
+                                                                "text": "Another numbered item",
+                                                                "marks": []
+                                                            }]
+                                                        }]
+                                                    },
+                                                    {
+                                                        "object": "block",
+                                                        "type": "paragraph",
+                                                        "data": {},
+                                                        "nodes": [{
+                                                            "object": "text",
+                                                            "leaves": [{
+                                                                "object": "leaf",
+                                                                "text": "More text",
+                                                                "marks": []
+                                                            }]
+                                                        }]
+                                                    },
+                                                    {
+                                                        "object": "block",
+                                                        "type": "horizontal-rule",
+                                                        "data": {},
+                                                        "nodes": [{
+                                                            "object": "text",
+                                                            "leaves": [{
+                                                                "object": "leaf",
+                                                                "text": "",
+                                                                "marks": []
+                                                            }]
+                                                        }]
+                                                    },
+                                                    {
+                                                        "object": "block",
+                                                        "type": "paragraph",
+                                                        "data": {},
+                                                        "nodes": [{
+                                                            "object": "text",
+                                                            "leaves": [{
+                                                                "object": "leaf",
+                                                                "text": "That was a thematic break.",
+                                                                "marks": []
+                                                            }]
+                                                        }]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }]
+                                }
+                            ]
+                        }
+                    ]
+                }]
+            }
+        ]
+    }
+}
