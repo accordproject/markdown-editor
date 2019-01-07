@@ -1,0 +1,41 @@
+{
+  "extends": "airbnb",
+  "parser": "babel-eslint",
+  "root": true,
+  "rules": {
+    "react/jsx-filename-extension": 0,
+    "no-underscore-dangle": 0,
+    "no-restricted-syntax": 1,
+    "no-prototype-builtins": 1,
+    "no-nested-ternary": 1,
+    "no-eval": 1,
+    "no-useless-escape": 1,
+    "no-await-in-loop": 1,
+    "jsx-a11y/no-static-element-interactions": 0,
+    "import/first": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/no-unresolved": 0,
+    "import/extensions": 0,
+    "react/require-default-props": 0,
+    "import/prefer-default-export": 0,
+    "react/prefer-stateless-function": 0,
+    "react/no-unescaped-entities": 0,
+    "react/no-array-index-key": 0,
+    "react/forbid-prop-types": 0,
+    "jsx-a11y/no-noninteractive-element-to-interactive-role": 0,
+    "jsx-a11y/no-noninteractive-element-interactions": 0,
+    "jsx-a11y/label-has-for": 0,
+    "jsx-a11y/href-no-hash": "off",
+    "class-methods-use-this": 0,
+    "func-names": 0
+  },
+  "env": {
+    "jest": true,
+    "es6": true,
+    "node": true,
+    "browser": true
+  },
+  "globals": {
+    "ROOT_URI": true
+  }
+}
