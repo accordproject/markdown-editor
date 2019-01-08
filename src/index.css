@@ -85,8 +85,7 @@ blockquote span {
 .format-toolbar {
 	opacity: 1.0;
 	z-index: 10;
-	background-color: linen;
+	background-color: #3D4F5D;
 	position: fixed;
-	border: 1px solid black;
 	border-radius: 8px;
 }

@@ -1,12 +1,19 @@
 import { Editor } from 'slate-react';
 import PropTypes from 'prop-types';
 import React from 'react';
+import styled from 'styled-components';
 
 import schema from './schema';
 
 import MarkdownToSlateConverter from './MarkdownToSlateConverter';
 import SlateToMarkdownConverter from './SlateToMarkdownConverter';
 import HoverMenu from './HoverMenu';
+
+const EditorWrapper = styled.div`
+  background: #fff;
+  margin: 50px;
+  padding: 25px;
+`;
 
 const defaultValue =
 `# Heading
@@ -406,7 +413,7 @@ class MarkdownEditor extends React.Component {
 
   render() {
     return (
-      <div>
+      <EditorWrapper>
         <Editor
           placeholder="Write some markdown..."
           defaultValue={this.initialValue}
@@ -417,7 +424,7 @@ class MarkdownEditor extends React.Component {
           renderEditor={this.renderEditor}
           renderMark={this.renderMark}
         />
-      </div>
+      </EditorWrapper>
     );
   }
 }
