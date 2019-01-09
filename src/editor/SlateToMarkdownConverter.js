@@ -160,6 +160,9 @@ export default class SlateToMarkdownConverter {
   }
 
   codeblock(block) {
-    return `\`\`\`\r\n${this.recurse(block.nodes)}\r\n\`\`\``;
+    const pre = '```\r\n';
+    const post = '```\r\n';
+    const md = this.recurse(block.nodes);
+    return pre + md + post;
   }
 }
