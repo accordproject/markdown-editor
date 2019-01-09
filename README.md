@@ -4,6 +4,8 @@ The editor includes keyboard shortcuts for Markdown formatting and a pop-up form
 
 This component is Apache-2 licensed Open Source. Contributors welcome!
 
+### Demo
+
 A `TextArea` containing CommonMark synchronized with a `MarkdownEditor` component, rendered using Slate.js.
 
 ![overview image](overview.png)
