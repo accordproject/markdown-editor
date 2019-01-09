@@ -32,7 +32,7 @@ const schema = {
           'ol-list',
           'link',
         ],
-        min: 1,
+        min: 0,
       },
     ],
   },

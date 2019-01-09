@@ -1,6 +1,7 @@
 import { Editor } from 'slate-react';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Form, TextArea, Divider, Grid, Segment } from 'semantic-ui-react';
 
 import schema from './schema';
 
@@ -18,6 +19,8 @@ This is _italic_ text.
 This is **bold** text.
 
 This is a [link](https://clause.io)
+
+> This is a quote.
 
 ## Heading 2
 
@@ -67,6 +70,7 @@ class MarkdownEditor extends React.Component {
     this.state = {};
     this.state.value = null;
     this.state.rect = null;
+    this.state.markdown = defaultValue;
 
     try {
       if (this.props.text) {
@@ -289,13 +293,33 @@ class MarkdownEditor extends React.Component {
     this.updateRect(oldRect, rect);
   }
 
-  handleOnChange = ({ value }) => {
+  handleOnChange({ value }) {
     this.setState({ value });
-    const md = this.slateToMarkdownConverter.convert(value.toJSON());
-    // console.log(JSON.stringify(value, null, 4));
-    console.log(md);
+    const markdown = this.slateToMarkdownConverter.convert(value.toJSON());
+
     if (this.handleTextChange) {
-      this.handleTextChange(md);
+      this.handleTextChange(markdown);
+    }
+
+    if (this.isMarkdownEditorFocused()) {
+      this.setState({ markdown });
+    }
+  }
+
+  isMarkdownEditorFocused() {
+    return document.activeElement.getAttribute('data-slate-editor');
+  }
+
+  handleTextAreaOnChange(event) {
+    this.setState({
+      markdown: event.target.value,
+    });
+
+    if (!this.isMarkdownEditorFocused()) {
+      const value = this.markdownToSlateConverter.convert(event.target.value);
+      // console.log(JSON.stringify(value, null, 4));
+      // console.log('****');
+      this.editor.setState({ value });
     }
   }
 
@@ -390,8 +414,6 @@ class MarkdownEditor extends React.Component {
         return <code {...attributes}>{children}</code>;
       case 'italic':
         return <em {...attributes}>{children}</em>;
-      case 'underlined':
-        return <u {...attributes}>{children}</u>;
       default:
         return next();
     }
@@ -407,16 +429,34 @@ class MarkdownEditor extends React.Component {
   render() {
     return (
       <div>
-        <Editor
-          placeholder="Write some markdown..."
-          defaultValue={this.initialValue}
-          onKeyDown={this.onKeyDown}
-          renderNode={this.renderNode}
-          onChange={this.handleOnChange}
-          schema={schema}
-          renderEditor={this.renderEditor}
-          renderMark={this.renderMark}
-        />
+        <Segment>
+          <Grid columns={2} relaxed="very">
+            <Grid.Column>
+              <Editor
+                ref={(thisEditor) => { this.editor = thisEditor; }}
+                placeholder="Write some markdown..."
+                defaultValue={this.initialValue}
+                onKeyDown={this.onKeyDown}
+                renderNode={this.renderNode}
+                onChange={this.handleOnChange.bind(this)}
+                schema={schema}
+                renderEditor={this.renderEditor}
+                renderMark={this.renderMark}
+              />
+            </Grid.Column>
+            <Grid.Column>
+              <Form>
+                <TextArea
+                  autoHeight
+                  placeholder="Write some markdown..."
+                  value={this.state.markdown}
+                  onChange={this.handleTextAreaOnChange.bind(this)}
+                />
+              </Form>
+            </Grid.Column>
+          </Grid>
+          <Divider vertical>⇆</Divider>
+        </Segment>
       </div>
     );
   }

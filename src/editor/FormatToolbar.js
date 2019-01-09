@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import FormatBold from '@material-ui/icons/FormatBold';
 import FormatItalic from '@material-ui/icons/FormatItalic';
-import FormatUnderlined from '@material-ui/icons/FormatUnderlined';
 import Code from '@material-ui/icons/Code';
 import FormatQuote from '@material-ui/icons/FormatQuote';
 import InsertLink from '@material-ui/icons/InsertLink';
@@ -197,9 +196,6 @@ class FormatToolbar extends React.Component {
       case 'italic':
         TheIcon = FormatItalic;
         break;
-      case 'underlined':
-        TheIcon = FormatUnderlined;
-        break;
       case 'block-quote':
         TheIcon = FormatQuote;
         break;
@@ -316,7 +312,6 @@ class FormatToolbar extends React.Component {
           { this.renderBlockButton('heading-two', 'h2')}
           { this.renderMarkButton('bold', 'format_bold')}
           { this.renderMarkButton('italic', 'format_italic')}
-          { this.renderMarkButton('underlined', 'format_underlined')}
           { this.renderMarkButton('code', 'code')}
           { this.renderBlockButton('block-quote', 'format_quote')}
           { this.renderBlockButton('ol-list', 'ol')}

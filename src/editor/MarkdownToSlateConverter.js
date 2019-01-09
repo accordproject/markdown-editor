@@ -34,8 +34,7 @@ export default class MarkdownToSlateConverter {
 
   convert(markdownText) {
     this.root = null;
-    this.currentNodes = null;
-    this.parent = null;
+    this.nodeStack = [];
 
     const reader = new commonmark.Parser();
     const parsed = reader.parse(markdownText);
@@ -61,7 +60,11 @@ export default class MarkdownToSlateConverter {
     }
 
     if (this.root.document.nodes.length < 1) {
-      throw new Error('Invalid data');
+      this.root = {
+        document: {
+          nodes: [],
+        },
+      };
     }
 
     return Value.fromJSON(this.root);
@@ -71,14 +74,14 @@ export default class MarkdownToSlateConverter {
 
   document(node, entering) {
     if (entering) {
-      this.currentNodes = [];
-      this.parent = this.root;
       this.root = {
         document: {
-          nodes: this.currentNodes,
+          nodes: [],
         },
       };
     }
+
+    this.push(this.root.document, false);
   }
 
   text(node, entering) {
@@ -123,12 +126,42 @@ export default class MarkdownToSlateConverter {
 
       text.leaves[0].marks.push(mark);
     }
+    this.append(text);
+  }
 
-    this.currentNodes.push(text);
+  peek() {
+    return this.nodeStack[this.nodeStack.length - 1];
+  }
+
+  push(obj, append = true) {
+    // console.log('push');
+    if (append) {
+      this.append(obj);
+    }
+    this.nodeStack.push(obj);
+    // console.log(this.nodeStack);
+  }
+
+  append(obj) {
+    // console.log('append');
+
+    const top = this.peek();
+    if (top && top.nodes) {
+      top.nodes.push(obj);
+    } else {
+      throw new Error(`Cannot append. Invalid stack: ${JSON.stringify(this.nodeStack, null, 4)}`);
+    }
+    // console.log(this.nodeStack);
+  }
+
+  pop() {
+    // console.log('pop');
+    return this.nodeStack.pop();
+    // console.log(this.nodeStack);
   }
 
   softbreak() {
-    this.addText('\n');
+    this.addText(' \r');
   }
 
   linebreak() {
@@ -157,7 +190,7 @@ export default class MarkdownToSlateConverter {
         href: node.destination,
       },
     };
-    this.currentNodes.push(inline);
+    this.append(inline);
   }
 
   image(node, entering) {
@@ -177,35 +210,32 @@ export default class MarkdownToSlateConverter {
 
   paragraph(node, entering) {
     if (entering) {
-      this.parent = this.currentNodes;
-
       const block = {
         object: 'block',
         type: 'paragraph',
         nodes: [],
       };
 
-      this.currentNodes.push(block);
-      this.currentNodes = block.nodes;
+      this.push(block);
     } else {
-      this.currentNodes = this.parent;
+      this.pop();
     }
   }
 
 
   headingLevelConverter(level) {
     switch (level) {
-      case '1':
+      case 1:
         return 'one';
-      case '2':
+      case 2:
         return 'two';
-      case '3':
+      case 3:
         return 'three';
-      case '4':
+      case 4:
         return 'four';
-      case '5':
+      case 5:
         return 'five';
-      case '6':
+      case 6:
         return 'six';
       default:
         return 'one';
@@ -214,17 +244,15 @@ export default class MarkdownToSlateConverter {
 
   heading(node, entering) {
     if (entering) {
-      this.parent = this.currentNodes;
       const block = {
         object: 'block',
         type: `heading-${this.headingLevelConverter(node.level)}`,
         data: {},
         nodes: [],
       };
-      this.currentNodes.push(block);
-      this.currentNodes = block.nodes;
+      this.push(block);
     } else {
-      this.currentNodes = this.parent;
+      this.pop();
     }
   }
 
@@ -239,11 +267,9 @@ export default class MarkdownToSlateConverter {
       nodes: [],
     };
 
-    this.currentNodes.push(block);
-    this.parent = this.currentNodes;
-    this.currentNodes = block.nodes;
+    this.push(block);
     this.addText(node.literal, 'code');
-    this.currentNodes = this.parent;
+    this.pop();
   }
 
   thematic_break(node) {
@@ -252,23 +278,20 @@ export default class MarkdownToSlateConverter {
       isVoid: true,
       type: 'horizontal-rule',
     };
-    this.currentNodes.push(block);
+    this.append(block);
   }
 
   block_quote(node, entering) {
     if (entering) {
-      this.parent = this.currentNodes;
       const block = {
         object: 'block',
         type: 'block-quote',
         data: {},
         nodes: [],
       };
-
-      this.currentNodes.push(block);
-      this.currentNodes = block.nodes;
+      this.push(block);
     } else {
-      this.currentNodes = this.parent;
+      this.pop();
     }
   }
 
@@ -276,7 +299,6 @@ export default class MarkdownToSlateConverter {
     const tagname = node.listType === 'bullet' ? 'ul-list' : 'ol-list';
 
     if (entering) {
-      this.parent = this.currentNodes;
       const block = {
         object: 'block',
         type: tagname,
@@ -284,16 +306,14 @@ export default class MarkdownToSlateConverter {
         nodes: [],
       };
 
-      this.currentNodes.push(block);
-      this.currentNodes = block.nodes;
+      this.push(block);
     } else {
-      this.currentNodes = this.parent;
+      this.pop();
     }
   }
 
   item(node, entering) {
     if (entering) {
-      this.parent = this.currentNodes;
       const block = {
         object: 'block',
         type: 'list-item',
@@ -301,10 +321,9 @@ export default class MarkdownToSlateConverter {
         nodes: [],
       };
 
-      this.currentNodes.push(block);
-      this.currentNodes = block.nodes;
+      this.push(block);
     } else {
-      this.currentNodes = this.parent;
+      this.pop();
     }
   }
 
