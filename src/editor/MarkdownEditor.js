@@ -183,25 +183,26 @@ class MarkdownEditor extends React.Component {
     const { value } = editor;
     const { selection } = value;
     const { start, end, isExpanded } = selection;
+
     if (isExpanded) return next();
 
     const { startBlock } = value;
     if (start.offset === 0 && startBlock.text.length === 0) {
       return this.onBackspace(event, editor, next);
     }
+
     if (end.offset !== startBlock.text.length) return next();
 
-    if (
-      startBlock.type !== 'heading-one' &&
+    if (startBlock.type !== 'heading-one' &&
       startBlock.type !== 'heading-two' &&
       startBlock.type !== 'heading-three' &&
       startBlock.type !== 'heading-four' &&
       startBlock.type !== 'heading-five' &&
       startBlock.type !== 'heading-six' &&
-      startBlock.type !== 'block-quote'
-    ) {
+      startBlock.type !== 'block-quote') {
       return next();
     }
+
 
     event.preventDefault();
     editor.splitBlock().setBlocks('paragraph');

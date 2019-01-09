@@ -267,8 +267,16 @@ export default class MarkdownToSlateConverter {
       nodes: [],
     };
 
+    const para = {
+      object: 'block',
+      type: 'paragraph',
+      nodes: [],
+    };
+
     this.push(block);
+    this.push(para);
     this.addText(node.literal, 'code');
+    this.pop();
     this.pop();
   }
 
