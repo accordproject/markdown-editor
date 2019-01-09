@@ -6,7 +6,7 @@ This component is Apache-2 licensed Open Source. Contributors welcome!
 
 A `TextArea` containing CommonMark synchronized with a `MarkdownEditor` component, rendered using Slate.js.
 
-[overview image](overview.png)
+![overview image](overview.png)
 
 ## Available Scripts
 
