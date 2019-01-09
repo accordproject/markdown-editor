@@ -1,6 +1,7 @@
 import { Editor } from 'slate-react';
 import PropTypes from 'prop-types';
 import React from 'react';
+import styled from 'styled-components';
 import { Form, TextArea, Divider, Grid, Segment } from 'semantic-ui-react';
 
 import schema from './schema';
@@ -8,6 +9,12 @@ import schema from './schema';
 import MarkdownToSlateConverter from './MarkdownToSlateConverter';
 import SlateToMarkdownConverter from './SlateToMarkdownConverter';
 import HoverMenu from './HoverMenu';
+
+const EditorWrapper = styled.div`
+  background: #fff;
+  margin: 50px;
+  padding: 25px;
+`;
 
 const defaultValue =
 `# Heading One
@@ -430,17 +437,19 @@ class MarkdownEditor extends React.Component {
         <Segment>
           <Grid columns={2} relaxed="very">
             <Grid.Column>
-              <Editor
-                ref={(thisEditor) => { this.editor = thisEditor; }}
-                placeholder="Write some markdown..."
-                defaultValue={this.initialValue}
-                onKeyDown={this.onKeyDown}
-                renderNode={this.renderNode}
-                onChange={this.handleOnChange.bind(this)}
-                schema={schema}
-                renderEditor={this.renderEditor}
-                renderMark={this.renderMark}
-              />
+              <EditorWrapper>
+                <Editor
+                  ref={(thisEditor) => { this.editor = thisEditor; }}
+                  placeholder="Write some markdown..."
+                  defaultValue={this.initialValue}
+                  onKeyDown={this.onKeyDown}
+                  renderNode={this.renderNode}
+                  onChange={this.handleOnChange.bind(this)}
+                  schema={schema}
+                  renderEditor={this.renderEditor}
+                  renderMark={this.renderMark}
+                />
+              </EditorWrapper>
             </Grid.Column>
             <Grid.Column>
               <Form>
