@@ -1,8 +1,12 @@
 This is a React component for a rich text editor that can read and write [CommonMark](https://commonmark.org) Markdown text. The editor uses [Slate.js](https://slatejs.org).
 
-The editor includes keyboard shortcuts for Markdown formatting and a pop-up toolbar.
+The editor includes keyboard shortcuts for Markdown formatting and a pop-up formatting toolbar.
 
 This component is Apache-2 licensed Open Source. Contributors welcome!
+
+A `TextArea` containing CommonMark synchronized with a `MarkdownEditor` component, rendered using Slate.js.
+
+[overview image](overview.png)
 
 ## Available Scripts
 
