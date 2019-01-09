@@ -10,43 +10,41 @@ import SlateToMarkdownConverter from './SlateToMarkdownConverter';
 import HoverMenu from './HoverMenu';
 
 const defaultValue =
-`# Heading
+`# Heading One
 
-This is text.
-
-This is _italic_ text.
-
-This is **bold** text.
-
-This is a [link](https://clause.io)
+This is text. This is *italic* text. This is **bold** text. This is a [link](https://clause.io). This is \`inline code\`.
 
 > This is a quote.
 
-## Heading 2
+## Heading Two
 
 This is more text.
 
-This is \`inline code\`.
+This is more text.
+
+### Heading Three
 
 \`\`\`
-This is a code block
-On multiple lines.
+namespace org.accordproject.time
+
+enum TemporalUnit {
+  o seconds
+  o weeks
+}
 \`\`\`
+#### Lists
 
-- this is a list item
-- this a second item
+Bullet list:
+   * this is a list item
+   * this a second item
 
-This is text.
+Numbered list:
 
-1. This is a numbered list item
-1. Another numbered item
-
-
-More text
-
----
-
-That was a thematic break.`;
+   1. This is a numbered list item
+   1. Another numbered item
+--- 
+That was a thematic break.
+`;
 
 
 /**
