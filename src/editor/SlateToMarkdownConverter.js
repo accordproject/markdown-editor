@@ -22,27 +22,28 @@
 export default class SlateToMarkdownConverter {
   constructor(options = {}) {
     this.options = options;
+    this.stack = [];
   }
 
   convert(value) {
     return this.recurse(value.document.nodes);
   }
 
-  recurse(nodes, sep = '') {
+  recurse(nodes) {
     let result = '';
 
     nodes.forEach((block) => {
-      // console.log(block);
-
       try {
         let type = block.type;
         if (!type) {
           type = block.object;
         }
+        this.stack.push(block);
         const method = type.replace('-', '');
-        result += `${this[method](block)}${sep}`;
+        result += `${this[method](block)}`;
+        this.stack.pop();
       } catch (err) {
-        console.log(`Failed to run method: for block ${JSON.stringify(block, null, 4)}`);
+        console.log(`Failed to convert block ${JSON.stringify(block, null, 4)} : ${err}`);
       }
     });
 
@@ -50,35 +51,69 @@ export default class SlateToMarkdownConverter {
   }
 
   headingone(block) {
-    return `# ${block.nodes[0].leaves[0].text}\r\n`;
+    return `# ${block.nodes[0].leaves[0].text}\r\n\r\n`;
   }
 
   headingtwo(block) {
-    return `## ${block.nodes[0].leaves[0].text}\r\n`;
+    return `## ${block.nodes[0].leaves[0].text}\r\n\r\n`;
   }
 
   headingthree(block) {
-    return `### ${block.nodes[0].leaves[0].text}\r\n`;
+    return `### ${block.nodes[0].leaves[0].text}\r\n\r\n`;
   }
 
   headingfour(block) {
-    return `#### ${block.nodes[0].leaves[0].text}\r\n`;
+    return `#### ${block.nodes[0].leaves[0].text}\r\n\r\n`;
   }
 
   headingfive(block) {
-    return `##### ${block.nodes[0].leaves[0].text}\r\n`;
+    return `##### ${block.nodes[0].leaves[0].text}\r\n\r\n`;
   }
 
   headingsix(block) {
-    return `###### ${block.nodes[0].leaves[0].text}\r\n`;
+    return `###### ${block.nodes[0].leaves[0].text}\r\n\r\n`;
   }
 
   paragraph(block) {
-    return `${this.recurse(block.nodes)}\r\n`;
+    return `${this.recurse(block.nodes)}\r\n\r\n`;
   }
 
   text(block) {
-    return block.leaves[0].text;
+    let result = '';
+
+    const list = this.findParentList();
+
+    let sep = '';
+
+    if (list) {
+      if (list.type === 'ol-list') {
+        sep = '   1. ';
+      } else {
+        sep = '   * ';
+      }
+    }
+
+    block.leaves.forEach((leaf) => {
+      const isBold = leaf.marks.some(mark => mark.type === 'bold');
+      const isItalic = leaf.marks.some(mark => mark.type === 'italic');
+      const isCode = leaf.marks.some(mark => mark.type === 'code');
+
+      let mark = '';
+      if (isBold) {
+        mark = '**';
+      }
+
+      if (isItalic) {
+        mark += '*';
+      }
+
+      if (isCode) {
+        mark += '`';
+      }
+
+      result += (sep + mark + leaf.text + mark);
+    });
+    return result;
   }
 
   ullist(block) {
@@ -89,11 +124,30 @@ export default class SlateToMarkdownConverter {
     return `${this.recurse(block.nodes)}\r\n`;
   }
 
+  findParentList() {
+    for (let n = this.stack.length - 1; n >= 0; n -= 1) {
+      const node = this.stack[n];
+      if (node.type === 'ol-list' || node.type === 'ul-list') {
+        return node;
+      }
+    }
+
+    return null;
+  }
+
   listitem(block) {
-    return this.recurse(block.nodes, '   * ');
+    return this.recurse(block.nodes);
   }
 
   horizontalrule(block) {
     return '--- \n';
+  }
+
+  link(block) {
+    return `[${block.nodes[0].leaves[0].text}](${block.data.href})`;
+  }
+
+  blockquote(block) {
+    return `> ${this.recurse(block.nodes)}`;
   }
 }
