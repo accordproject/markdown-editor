@@ -29,6 +29,25 @@ export default class SlateToMarkdownConverter {
     return this.recurse(value.document.nodes);
   }
 
+  findParentList() {
+    for (let n = this.stack.length - 1; n >= 0; n -= 1) {
+      const node = this.stack[n];
+      if (node.type === 'ol-list' || node.type === 'ul-list') {
+        return node;
+      }
+    }
+
+    return null;
+  }
+
+  getParent() {
+    if (!this.stack || this.stack.length < 1) {
+      return null;
+    }
+
+    return this.stack[this.stack.length - 1];
+  }
+
   recurse(nodes) {
     let result = '';
 
@@ -40,7 +59,7 @@ export default class SlateToMarkdownConverter {
         }
         this.stack.push(block);
         const method = type.replace('-', '');
-        result += `${this[method](block)}`;
+        result += this[method](block);
         this.stack.pop();
       } catch (err) {
         console.log(`Failed to convert block ${JSON.stringify(block, null, 4)} : ${err}`);
@@ -124,17 +143,6 @@ export default class SlateToMarkdownConverter {
     return `${this.recurse(block.nodes)}\r\n`;
   }
 
-  findParentList() {
-    for (let n = this.stack.length - 1; n >= 0; n -= 1) {
-      const node = this.stack[n];
-      if (node.type === 'ol-list' || node.type === 'ul-list') {
-        return node;
-      }
-    }
-
-    return null;
-  }
-
   listitem(block) {
     return this.recurse(block.nodes);
   }
@@ -149,5 +157,9 @@ export default class SlateToMarkdownConverter {
 
   blockquote(block) {
     return `> ${this.recurse(block.nodes)}`;
+  }
+
+  codeblock(block) {
+    return `\`\`\`\r\n${this.recurse(block.nodes)}\r\n\`\`\``;
   }
 }

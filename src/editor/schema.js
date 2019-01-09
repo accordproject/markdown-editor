@@ -9,6 +9,7 @@ const schema = {
     'heading-five': { nodes: [{ objects: ['text'] }], marks: [''] },
     'heading-six': { nodes: [{ objects: ['text'] }], marks: [''] },
     'block-quote': { marks: [''] },
+    'code-block': { marks: [''] },
     'horizontal-rule': {
       isVoid: true,
     },
@@ -26,6 +27,7 @@ const schema = {
           'heading-five',
           'heading-six',
           'block-quote',
+          'code-block',
           'code',
           'horizontal-rule',
           'ul-list',

@@ -343,6 +343,8 @@ class MarkdownEditor extends React.Component {
     switch (node.type) {
       case 'block-quote':
         return <blockquote {...attributes}>{children}</blockquote>;
+      case 'code-block':
+        return <pre {...attributes}>{children}</pre>;
       case 'ol-list':
         return <ol {...attributes}>{children}</ol>;
       case 'ul-list':

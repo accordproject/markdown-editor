@@ -263,7 +263,7 @@ export default class MarkdownToSlateConverter {
   code_block(node) {
     const block = {
       object: 'block',
-      type: 'paragraph',
+      type: 'code-block',
       nodes: [],
     };
 
