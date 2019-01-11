@@ -193,20 +193,16 @@ class MarkdownEditor extends React.Component {
 
     if (end.offset !== startBlock.text.length) return next();
 
-    if (startBlock.type !== 'heading-one' &&
-      startBlock.type !== 'heading-two' &&
-      startBlock.type !== 'heading-three' &&
-      startBlock.type !== 'heading-four' &&
-      startBlock.type !== 'heading-five' &&
-      startBlock.type !== 'heading-six' &&
-      startBlock.type !== 'block-quote') {
+    // if you hit enter inside anything that is not a heading
+    // we use the default behavior
+    if (!startBlock.type.startsWith('heading')) {
       return next();
     }
 
-
+    // when you hit enter after a heading we insert a paragraph
     event.preventDefault();
     editor.splitBlock().setBlocks('paragraph');
-    return undefined;
+    return next();
   }
 
   /**

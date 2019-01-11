@@ -14,6 +14,8 @@
 
 /* Libraries */
 
+const NL = '\n';
+
 /**
  * This class converts a Slate.js JSON value object to Markdown text.
  *
@@ -45,7 +47,7 @@ export default class SlateToMarkdownConverter {
       return null;
     }
 
-    return this.stack[this.stack.length - 1];
+    return this.stack[this.stack.length - 2];
   }
 
   recurse(nodes) {
@@ -70,31 +72,38 @@ export default class SlateToMarkdownConverter {
   }
 
   headingone(block) {
-    return `# ${block.nodes[0].leaves[0].text}\r\n\r\n`;
+    return `# ${block.nodes[0].leaves[0].text}${NL}`;
   }
 
   headingtwo(block) {
-    return `## ${block.nodes[0].leaves[0].text}\r\n\r\n`;
+    return `## ${block.nodes[0].leaves[0].text}${NL}`;
   }
 
   headingthree(block) {
-    return `### ${block.nodes[0].leaves[0].text}\r\n\r\n`;
+    return `### ${block.nodes[0].leaves[0].text}${NL}`;
   }
 
   headingfour(block) {
-    return `#### ${block.nodes[0].leaves[0].text}\r\n\r\n`;
+    return `#### ${block.nodes[0].leaves[0].text}${NL}`;
   }
 
   headingfive(block) {
-    return `##### ${block.nodes[0].leaves[0].text}\r\n\r\n`;
+    return `##### ${block.nodes[0].leaves[0].text}${NL}`;
   }
 
   headingsix(block) {
-    return `###### ${block.nodes[0].leaves[0].text}\r\n\r\n`;
+    return `###### ${block.nodes[0].leaves[0].text}${NL}`;
   }
 
   paragraph(block) {
-    return `${this.recurse(block.nodes)}\r\n\r\n`;
+    let postfix = `${NL}${NL}`;
+    const parent = this.getParent();
+    if (parent) {
+      if (parent.type === 'code-block' || parent.type === ('list-item')) {
+        postfix = NL;
+      }
+    }
+    return `${this.recurse(block.nodes)}${postfix}`;
   }
 
   text(block) {
@@ -130,17 +139,17 @@ export default class SlateToMarkdownConverter {
         mark += '`';
       }
 
-      result += (sep + mark + leaf.text + mark);
+      result += (sep + mark + leaf.text + mark + NL);
     });
     return result;
   }
 
   ullist(block) {
-    return `${this.recurse(block.nodes)}\r\n`;
+    return `${this.recurse(block.nodes)}${NL}`;
   }
 
   ollist(block) {
-    return `${this.recurse(block.nodes)}\r\n`;
+    return `${this.recurse(block.nodes)}${NL}`;
   }
 
   listitem(block) {
@@ -148,7 +157,7 @@ export default class SlateToMarkdownConverter {
   }
 
   horizontalrule(block) {
-    return '--- \n';
+    return `--- ${NL}`;
   }
 
   link(block) {
@@ -160,8 +169,8 @@ export default class SlateToMarkdownConverter {
   }
 
   codeblock(block) {
-    const pre = '```\r\n';
-    const post = '```\r\n';
+    const pre = `${NL}\`\`\`${NL}`;
+    const post = `\`\`\`${NL}`;
     const md = this.recurse(block.nodes);
     return pre + md + post;
   }

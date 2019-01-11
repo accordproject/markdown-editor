@@ -1,5 +1,3 @@
-// @flow
-
 const schema = {
   blocks: {
     'heading-one': { nodes: [{ objects: ['text'] }], marks: [''] },
@@ -9,6 +7,8 @@ const schema = {
     'heading-five': { nodes: [{ objects: ['text'] }], marks: [''] },
     'heading-six': { nodes: [{ objects: ['text'] }], marks: [''] },
     'block-quote': { marks: [''] },
+    'ol-list': { marks: [''] },
+    'ul-list': { marks: [''] },
     'code-block': { marks: [''] },
     'horizontal-rule': {
       isVoid: true,
