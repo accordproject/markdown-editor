@@ -11,7 +11,7 @@ npm install @accordproject/markdown-editor
 ```
 
 ```
-import MarkdownEditor from '../../src';
+import { MarkdownEditor } from '@accordproject/markdown-editor';
 
 ReactDOM.render(<MarkdownEditor />, document.getElementById('root'));
 ```

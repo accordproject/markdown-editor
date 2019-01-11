@@ -60,7 +60,7 @@ That was a thematic break.
  * @type {Component}
  */
 
-export default class MarkdownEditor extends React.Component {
+class MarkdownEditor extends React.Component {
   constructor(props) {
     super(props);
     this.handleTextChange = null;
@@ -472,3 +472,5 @@ MarkdownEditor.propTypes = {
   handleTextChange: PropTypes.func,
   text: PropTypes.string,
 };
+
+export { MarkdownEditor, MarkdownToSlateConverter, SlateToMarkdownConverter };
