@@ -1,13 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { withStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import FormatBold from '@material-ui/icons/FormatBold';
-import FormatItalic from '@material-ui/icons/FormatItalic';
-import Code from '@material-ui/icons/Code';
-import FormatQuote from '@material-ui/icons/FormatQuote';
-import InsertLink from '@material-ui/icons/InsertLink';
+import { Icon } from 'semantic-ui-react';
 
 const StyledToolbar = styled.div`
   padding: 5px;
@@ -15,16 +9,16 @@ const StyledToolbar = styled.div`
   left: ${props => `${Math.max(10, props.rect.left - 80)}px`};
 `;
 
-const StyledIcon = styled(IconButton)`
-  height: 15px;
-  color: #F0F0F0 !important;
-`;
+// const StyledIcon = styled(Icon)`
+//   height: 15px;
+//   color: #F0F0F0 !important;
+// `;
 
-const styles = {
-  root: {
-    flexGrow: 1,
-  },
-};
+// const styles = {
+//   root: {
+//     flexGrow: 1,
+//   },
+// };
 
 function wrapLink(editor, href) {
   editor.wrapInline({
@@ -47,7 +41,7 @@ function unwrapLink(editor) {
 
 const DEFAULT_NODE = 'paragraph';
 
-class FormatToolbar extends React.Component {
+export default class FormatToolbar extends React.Component {
   /**
    * When a mark button is clicked, toggle the current mark.
    *
@@ -196,53 +190,15 @@ class FormatToolbar extends React.Component {
    */
 
   renderMarkButton(type, icon) {
-    const { editor, classes } = this.props;
+    const { editor } = this.props;
     const { value } = editor;
     const isActive = value && value.activeMarks.some(mark => mark.type === type);
-    let TheIcon = null;
 
-    switch (type) {
-      case 'bold':
-        TheIcon = FormatBold;
-        break;
-      case 'italic':
-        TheIcon = FormatItalic;
-        break;
-      case 'block-quote':
-        TheIcon = FormatQuote;
-        break;
-      case 'link':
-        TheIcon = InsertLink;
-        break;
-      case 'code':
-        TheIcon = Code;
-        break;
-
-      default:
-        TheIcon = null;
-    }
-
-    if (TheIcon) {
-      return (
-        <StyledIcon
-          className={classes.button}
-          aria-label={type}
-          onMouseDown={event => this.onClickMark(event, type)}
-        >
-          <TheIcon style={{ height: '15px', position: 'absolute' }} />
-        </StyledIcon>
-      );
-    }
-
-    return (
-      <StyledIcon
-        className={classes.button}
-        aria-label={type}
-        onMouseDown={event => this.onClickMark(event, type)}
-      >
-        {type}
-      </StyledIcon>
-    );
+    return (<Icon
+      name={icon}
+      aria-label={type}
+      onMouseDown={event => this.onClickMark(event, type)}
+    />);
   }
 
   /**
@@ -254,42 +210,11 @@ class FormatToolbar extends React.Component {
    */
 
   renderBlockButton(type, icon) {
-    const { classes } = this.props;
-    let TheIcon = null;
-
-    switch (type) {
-      case 'block-quote':
-        TheIcon = FormatQuote;
-        break;
-      case 'link':
-        TheIcon = InsertLink;
-        break;
-
-      default:
-        TheIcon = null;
-    }
-
-    if (TheIcon) {
-      return (
-        <StyledIcon
-          className={classes.button}
-          aria-label={type}
-          onMouseDown={event => this.onClickBlock(event, type)}
-        >
-          <TheIcon style={{ height: '15px', position: 'absolute' }} />
-        </StyledIcon>
-      );
-    }
-
-    return (
-      <StyledIcon
-        className={classes.button}
-        aria-label={type}
-        onMouseDown={event => this.onClickBlock(event, type)}
-      >
-        <span style={{ fontSize: '12px', position: 'absolute' }}>{icon}</span>
-      </StyledIcon>
-    );
+    return (<Icon
+      name={icon}
+      aria-label={type}
+      onMouseDown={event => this.onClickBlock(event, type)}
+    />);
   }
 
   /**
@@ -301,16 +226,12 @@ class FormatToolbar extends React.Component {
    */
 
   renderLinkButton() {
-    const { classes } = this.props;
-
     return (
-      <StyledIcon
-        className={classes.button}
+      <Icon
+        name="linkify"
         aria-label="link"
         onMouseDown={event => this.onClickLink(event, this.props.editor)}
-      >
-        <InsertLink style={{ height: '15px', position: 'absolute' }} />
-      </StyledIcon>
+      />
     );
   }
 
@@ -320,14 +241,14 @@ class FormatToolbar extends React.Component {
     if (rect) {
       return (
         <StyledToolbar className="format-toolbar" rect={rect}>
-          { this.renderBlockButton('heading-one', 'h1')}
-          { this.renderBlockButton('heading-two', 'h2')}
-          { this.renderMarkButton('bold', 'format_bold')}
-          { this.renderMarkButton('italic', 'format_italic')}
+          { this.renderBlockButton('heading-one', 'heading')}
+          { this.renderBlockButton('heading-two', 'h')}
+          { this.renderMarkButton('bold', 'bold')}
+          { this.renderMarkButton('italic', 'italic')}
           { this.renderMarkButton('code', 'code')}
-          { this.renderBlockButton('block-quote', 'format_quote')}
-          { this.renderBlockButton('ol-list', 'ol')}
-          { this.renderBlockButton('ul-list', 'ul')}
+          { this.renderBlockButton('block-quote', 'quote left')}
+          { this.renderBlockButton('ol-list', 'list ol')}
+          { this.renderBlockButton('ul-list', 'list ul')}
           { this.renderLinkButton()}
         </StyledToolbar>
       );
@@ -338,9 +259,6 @@ class FormatToolbar extends React.Component {
 }
 
 FormatToolbar.propTypes = {
-  classes: PropTypes.object.isRequired,
   editor: PropTypes.object.isRequired,
   rect: PropTypes.object,
 };
-
-export default withStyles(styles)(FormatToolbar);

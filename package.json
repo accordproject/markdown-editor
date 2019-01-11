@@ -1,11 +1,18 @@
 {
   "name": "@accordproject/markdown-editor",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "A rich text editor that can read and write markdown text. Based on Slate.js.",
-  "private": true,
+  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/accordproject/markdown-editor.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --mode development",
+    "transpile": "babel src -d dist --copy-files",
+    "prepublishOnly": "npm run transpile",
+    "build": "webpack --mode production"
   },
   "keywords": [
     "accord",
@@ -19,10 +26,23 @@
     "url": "https://github.com/accordproject/markdown-editor/issues"
   },
   "homepage": "https://github.com/accordproject/markdown#readme",
-  "dependencies": {
-    "@material-ui/core": "^3.8.1",
-    "@material-ui/icons": "^3.0.1",
+  "peerDependencies": {
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
     "commonmark": "^0.28.1",
+    "css-loader": "^2.1.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.3.0",
+    "html-webpack-plugin": "^3.2.0",
     "immutable": "^3.8.1",
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
@@ -34,20 +54,11 @@
     "slate": "^0.44.9",
     "slate-plain-serializer": "^0.6.33",
     "slate-react": "^0.21.15",
-    "styled-components": "^4.1.3"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.0.0",
-    "eslint-config-airbnb": "^15.1.0",
-    "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-jsx-a11y": "^5.1.1",
-    "eslint-plugin-react": "^7.3.0"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "style-loader": "^0.23.1",
+    "styled-components": "^4.1.3",
+    "webpack": "^4.28.4",
+    "webpack-cli": "^3.2.1",
+    "webpack-dev-server": "^3.1.14"
   },
   "eslintConfig": {
     "extends": "react-app"

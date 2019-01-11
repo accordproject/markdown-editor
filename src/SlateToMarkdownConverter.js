@@ -139,7 +139,7 @@ export default class SlateToMarkdownConverter {
         mark += '`';
       }
 
-      result += (sep + mark + leaf.text + mark + NL);
+      result += (sep + mark + leaf.text + mark);
     });
     return result;
   }

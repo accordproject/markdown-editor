@@ -10,7 +10,7 @@ import FormatToolbar from './FormatToolbar';
  * @type {Component}
  */
 
-class HoverMenu extends React.Component {
+export default class HoverMenu extends React.Component {
   /**
    * Render.
    *
@@ -18,13 +18,12 @@ class HoverMenu extends React.Component {
    */
 
   render() {
-    const { className, rect, innerRef, editor } = this.props;
+    const { rect, innerRef, editor } = this.props;
     const root = window.document.getElementById('root');
 
     return ReactDOM.createPortal(
       <FormatToolbar
         editor={editor}
-        className={className}
         innerRef={innerRef}
         rect={rect}
       />,
@@ -34,13 +33,7 @@ class HoverMenu extends React.Component {
 }
 
 HoverMenu.propTypes = {
-  className: PropTypes.string,
   editor: PropTypes.object.isRequired,
   innerRef: PropTypes.func.isRequired,
   rect: PropTypes.object,
 };
-/**
- * Export.
- */
-
-export default HoverMenu;
