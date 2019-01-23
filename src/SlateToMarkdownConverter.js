@@ -99,7 +99,7 @@ export default class SlateToMarkdownConverter {
     let postfix = `${NL}${NL}`;
     const parent = this.getParent();
     if (parent) {
-      if (parent.type === 'code-block' || parent.type === 'html-block' || parent.type === ('list-item')) {
+      if (parent.type === 'code-block' || parent.type === ('list-item')) {
         postfix = NL;
       }
     }
