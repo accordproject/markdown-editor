@@ -180,7 +180,7 @@ export default class MarkdownToSlateConverter {
           object: 'text',
           leaves: [
             {
-              text: node.firstChild.literal,
+              text: node.title ? node.title : node.firstChild.literal,
             },
           ],
         },
@@ -336,28 +336,36 @@ export default class MarkdownToSlateConverter {
   }
 
   html_inline(node) {
-    this.addText(node.literal);
+    // console.log(node);
+    this.addText(node.literal, 'html');
   }
 
   html_block(node) {
-    this.addText(node.literal);
+    // console.log(node);
+    const block = {
+      object: 'block',
+      type: 'html-block',
+      nodes: [],
+    };
+
+    const para = {
+      object: 'block',
+      type: 'paragraph',
+      nodes: [],
+    };
+
+    this.push(block);
+    this.push(para);
+    this.addText(node.literal, 'html');
+    this.pop();
+    this.pop();
   }
 
   custom_inline(node, entering) {
-    if (entering && node.onEnter) {
-      // this.lit(node.onEnter);
-    } else if (!entering && node.onExit) {
-      // this.lit(node.onExit);
-    }
+    this.html_inline(node);
   }
 
   custom_block(node, entering) {
-    // this.cr();
-    if (entering && node.onEnter) {
-      // this.lit(node.onEnter);
-    } else if (!entering && node.onExit) {
-      // this.lit(node.onExit);
-    }
-    // this.cr();
+    this.html_block(node);
   }
 }

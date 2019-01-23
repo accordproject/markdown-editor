@@ -99,7 +99,7 @@ export default class SlateToMarkdownConverter {
     let postfix = `${NL}${NL}`;
     const parent = this.getParent();
     if (parent) {
-      if (parent.type === 'code-block' || parent.type === ('list-item')) {
+      if (parent.type === 'code-block' || parent.type === 'html-block' || parent.type === ('list-item')) {
         postfix = NL;
       }
     }
@@ -173,5 +173,9 @@ export default class SlateToMarkdownConverter {
     const post = `\`\`\`${NL}`;
     const md = this.recurse(block.nodes);
     return pre + md + post;
+  }
+
+  htmlblock(block) {
+    return this.recurse(block.nodes);
   }
 }

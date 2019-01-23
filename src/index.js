@@ -51,6 +51,33 @@ Numbered list:
    1. Another numbered item
 --- 
 That was a thematic break.
+
+---
+
+This is inline HTML <responsive-image src="foo.jpg" />. 
+
+While this is a block of HTML:
+
+<script type="text/ergo">
+This is some Ergo code.
+</script>
+
+This is an HTML block with a custom tag:
+
+<Clause template="foo">
+{
+  "one" : 1,
+  "two" : "three",
+  "four" : true
+}
+</Clause>
+
+This is a link reference definition followed by a ...
+
+[mylink]: /url "this is a custom title"
+
+Reference:
+[mylink] with a custom title.
 `;
 
 
@@ -342,6 +369,8 @@ class MarkdownEditor extends React.Component {
         return <blockquote {...attributes}>{children}</blockquote>;
       case 'code-block':
         return <pre {...attributes}>{children}</pre>;
+      case 'html-block':
+        return <pre {...attributes}>{children}</pre>;
       case 'ol-list':
         return <ol {...attributes}>{children}</ol>;
       case 'ul-list':
@@ -415,6 +444,8 @@ class MarkdownEditor extends React.Component {
       case 'bold':
         return <strong {...attributes}>{children}</strong>;
       case 'code':
+        return <code {...attributes}>{children}</code>;
+      case 'html':
         return <code {...attributes}>{children}</code>;
       case 'italic':
         return <em {...attributes}>{children}</em>;

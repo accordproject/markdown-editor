@@ -10,6 +10,7 @@ const schema = {
     'ol-list': { marks: [''] },
     'ul-list': { marks: [''] },
     'code-block': { marks: [''] },
+    'html-block': { marks: [''] },
     'horizontal-rule': {
       isVoid: true,
     },
@@ -28,7 +29,9 @@ const schema = {
           'heading-six',
           'block-quote',
           'code-block',
+          'html-block',
           'code',
+          'html',
           'horizontal-rule',
           'ul-list',
           'ol-list',
