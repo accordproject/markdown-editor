@@ -153,7 +153,7 @@ export default class SlateToMarkdownConverter {
   }
 
   listitem(block) {
-    return this.recurse(block.nodes);
+    return `${this.recurse(block.nodes)}${NL}`;
   }
 
   horizontalrule(block) {
@@ -165,7 +165,7 @@ export default class SlateToMarkdownConverter {
   }
 
   blockquote(block) {
-    return `> ${this.recurse(block.nodes)}`;
+    return `> ${this.recurse(block.nodes)}${NL}`;
   }
 
   codeblock(block) {

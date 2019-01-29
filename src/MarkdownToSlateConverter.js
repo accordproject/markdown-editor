@@ -209,16 +209,18 @@ export default class MarkdownToSlateConverter {
   }
 
   paragraph(node, entering) {
-    if (entering) {
-      const block = {
-        object: 'block',
-        type: 'paragraph',
-        nodes: [],
-      };
+    if(!["item", "block_quote"].includes(node.parent.type)) {
+      if (entering) {
+        const block = {
+          object: 'block',
+          type: 'paragraph',
+          nodes: [],
+        };
 
-      this.push(block);
-    } else {
-      this.pop();
+        this.push(block);
+      } else {
+        this.pop();
+      }
     }
   }
 
