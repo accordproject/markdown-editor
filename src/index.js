@@ -2,8 +2,7 @@ import { Editor } from 'slate-react';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
-import { Form, TextArea, Divider, Grid, Segment } from 'semantic-ui-react';
-
+import { Tab, Form, TextArea, Divider, Grid, Segment } from 'semantic-ui-react';
 import schema from './schema';
 
 import MarkdownToSlateConverter from './MarkdownToSlateConverter';
@@ -100,7 +99,7 @@ class MarkdownEditor extends React.Component {
     this.slateToMarkdownConverter = new SlateToMarkdownConverter();
     this.menu = null;
     this.state = {};
-    this.state.value = null;
+    this.state.slateValue = null;
     this.state.rect = null;
     this.state.markdown = defaultValue;
 
@@ -301,7 +300,7 @@ class MarkdownEditor extends React.Component {
    */
 
   updateMenu() {
-    const value = this.state.value;
+    const value = this.state.slateValue;
     const oldRect = this.state.rect;
 
     if (!value) {
@@ -322,17 +321,10 @@ class MarkdownEditor extends React.Component {
     this.updateRect(oldRect, rect);
   }
 
-  handleOnChange({ value }) {
-    this.setState({ value });
+  handleSlateOnChange({ value }) {
+    this.setState({ slateValue: value });
     const markdown = this.slateToMarkdownConverter.convert(value.toJSON());
-
-    if (this.handleTextChange) {
-      this.handleTextChange(markdown);
-    }
-
-    if (this.isMarkdownEditorFocused()) {
-      this.setState({ markdown });
-    }
+    this.setState({ markdown });
   }
 
   isMarkdownEditorFocused() {
@@ -346,9 +338,7 @@ class MarkdownEditor extends React.Component {
 
     if (!this.isMarkdownEditorFocused()) {
       const value = this.markdownToSlateConverter.convert(event.target.value);
-      // console.log(JSON.stringify(value, null, 4));
-      // console.log('****');
-      this.editor.setState({ value });
+      this.setState({ slateValue: value });
     }
   }
 
@@ -462,38 +452,41 @@ class MarkdownEditor extends React.Component {
    */
 
   render() {
+    const that = this;
+    const panes = [
+      { menuItem: 'Rich Text',
+        render: () =>
+          (<EditorWrapper>
+            <Editor
+              ref={(thisEditor) => { that.editor = thisEditor; }}
+              placeholder="Write some markdown..."
+              defaultValue={that.initialValue}
+              value={that.state.slateValue}
+              onKeyDown={that.onKeyDown.bind(that)}
+              renderNode={that.renderNode.bind(that)}
+              onChange={that.handleSlateOnChange.bind(that)}
+              schema={schema}
+              renderEditor={that.renderEditor.bind(that)}
+              renderMark={that.renderMark.bind(that)}
+            />
+          </EditorWrapper>),
+      },
+      { menuItem: 'Markdown',
+        render: () =>
+          (<Form>
+            <TextArea
+              autoHeight
+              placeholder="Write some markdown..."
+              value={that.state.markdown}
+              onChange={that.handleTextAreaOnChange.bind(that)}
+            />
+          </Form>),
+      },
+    ];
+
     return (
       <div>
-        <Segment>
-          <Grid columns={2} relaxed="very">
-            <Grid.Column>
-              <EditorWrapper>
-                <Editor
-                  ref={(thisEditor) => { this.editor = thisEditor; }}
-                  placeholder="Write some markdown..."
-                  defaultValue={this.initialValue}
-                  onKeyDown={this.onKeyDown.bind(this)}
-                  renderNode={this.renderNode.bind(this)}
-                  onChange={this.handleOnChange.bind(this)}
-                  schema={schema}
-                  renderEditor={this.renderEditor.bind(this)}
-                  renderMark={this.renderMark.bind(this)}
-                />
-              </EditorWrapper>
-            </Grid.Column>
-            <Grid.Column>
-              <Form>
-                <TextArea
-                  autoHeight
-                  placeholder="Write some markdown..."
-                  value={this.state.markdown}
-                  onChange={this.handleTextAreaOnChange.bind(this)}
-                />
-              </Form>
-            </Grid.Column>
-          </Grid>
-          <Divider vertical>⇆</Divider>
-        </Segment>
+        <Tab menu={{ pointing: true }} panes={panes} />
       </div>
     );
   }
