@@ -1,47 +1,40 @@
 const schema = {
-  blocks: {
-    'heading-one': { nodes: [{ objects: ['text'] }], marks: [''] },
-    'heading-two': { nodes: [{ objects: ['text'] }], marks: [''] },
-    'heading-three': { nodes: [{ objects: ['text'] }], marks: [''] },
-    'heading-four': { nodes: [{ objects: ['text'] }], marks: [''] },
-    'heading-five': { nodes: [{ objects: ['text'] }], marks: [''] },
-    'heading-six': { nodes: [{ objects: ['text'] }], marks: [''] },
-    'block-quote': { marks: [''] },
-    'ol-list': { marks: [''] },
-    'ul-list': { marks: [''] },
-    'code-block': { marks: [''] },
-    'html-block': { marks: [''] },
-    'horizontal-rule': {
-      isVoid: true,
-    },
-    link: { nodes: [{ objects: ['text'] }] },
-  },
   document: {
-    nodes: [
-      {
-        types: [
-          'paragraph',
-          'heading-one',
-          'heading-two',
-          'heading-three',
-          'heading-four',
-          'heading-five',
-          'heading-six',
-          'block-quote',
-          'code-block',
-          'html-block',
-          'code',
-          'html',
-          'horizontal-rule',
-          'ul-list',
-          'ol-list',
-          'link',
-        ],
-        min: 0,
-      },
-    ],
+      nodes: [
+          {
+              match: [
+                  { type: 'paragraph' },
+                  { type: 'quote' },
+                  { type: 'list' },
+                  { type: 'link' },
+                  { type: 'horizontal_rule' },
+                  { type: 'heading-one' },
+                  { type: 'heading-two' },
+                  { type: 'heading-three' },
+                  { type: 'heading-four' },
+                  { type: 'heading-five' },
+                  { type: 'heading-six' },
+                  { type: 'block_quote' },
+                  
+              ],
+          },
+      ],
   },
-};
+  blocks: {
+      paragraph: {
+          nodes: [
+              { match: [{ object: 'text' }, { type: 'link' }] },
+          ],
+      },
+      quote: {
+          nodes: [
+              { match: { object: 'text' } },
+          ],
+      },
+      'horizontal-rule': {
+          isVoid: true,
+      },
+  }
+}
 
 export default schema;
-

@@ -1,68 +1,47 @@
-import { Editor } from 'slate-react';
-import PropTypes from 'prop-types';
-import React from 'react';
-import styled from 'styled-components';
-import { Tab, Form, TextArea, Divider, Grid, Segment } from 'semantic-ui-react';
-import schema from './schema';
+// Import React!
+import React from "react";
+import { Editor } from "slate-react";
+import { Value } from "slate";
+import schema from "./schema";
 
-import MarkdownToSlateConverter from './MarkdownToSlateConverter';
-import SlateToMarkdownConverter from './SlateToMarkdownConverter';
-import HoverMenu from './HoverMenu';
+import List from "./plugins/list";
+import { Markdown } from "./markdown";
 
-const EditorWrapper = styled.div`
-  background: #fff;
-  margin: 50px;
-  padding: 25px;
-`;
-
-const defaultValue =
-`# Heading One
-
+const markdown = `
+# Heading One
 This is text. This is *italic* text. This is **bold** text. This is a [link](https://clause.io). This is \`inline code\`.
 
+This is ***bold and italic*** text
 > This is a quote.
-
 ## Heading Two
-
 This is more text.
-
 This is more text.
-
 ### Heading Three
-
 \`\`\`
 namespace org.accordproject.time
-
 enum TemporalUnit {
   o seconds
   o weeks
 }
 \`\`\`
 #### Lists
-
 Bullet list:
    * this is a list item
    * this a second item
 
 Numbered list:
-
    1. This is a numbered list item
    1. Another numbered item
 --- 
 That was a thematic break.
 
 ---
-
 This is inline HTML <responsive-image src="foo.jpg" />. 
-
 While this is a block of HTML:
-
 <script type="text/ergo">
 This is some Ergo code.
 </script>
-
 This is an HTML block with a custom tag:
-
 <Clause template="foo">
 {
   "one" : 1,
@@ -70,62 +49,78 @@ This is an HTML block with a custom tag:
   "four" : true
 }
 </Clause>
-
 This is a link reference definition followed by a ...
-
 [mylink]: /url "this is a custom title"
-
 Reference:
 [mylink] with a custom title.
 `;
+const plugins = [List()];
 
-
-/**
- * Parses, edits and saves markdown text.
- *
- * @type {Component}
- */
-
+// Define our app...
 class MarkdownEditor extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleTextChange = null;
-
-    if (props.handleTextChange) {
-      this.handleTextChange = props.handleTextChange.bind(this);
-    }
+  constructor() {
+    super();
+    this.state = { value: Value.fromJSON({document: {nodes: []}}), markdown: markdown };
+    this.initialized = false;
     this.editor = null;
-    this.markdownToSlateConverter = new MarkdownToSlateConverter();
-    this.slateToMarkdownConverter = new SlateToMarkdownConverter();
-    this.menu = null;
-    this.state = {};
-    this.state.slateValue = null;
-    this.state.rect = null;
-    this.state.markdown = defaultValue;
-
-    try {
-      if (this.props.text) {
-        this.initialValue = this.markdownToSlateConverter.convert(this.props.text);
-      }
-    } catch (err) {
-      // ignore
-    }
-
-    if (!this.initialValue) {
-      this.initialValue = this.markdownToSlateConverter.convert(defaultValue);
-    }
+    this.markdown = new Markdown();
   }
 
-  /**
-   * On update, update the menu.
-   */
+  onInit(editor, props, next) {
+    this.editor = editor;
+    this.editor.getPlugin = this.getPlugin;
+    this.editor.helpers = {
+      markdown: {
+        toMarkdown: this.markdown.toMarkdown.recursive.bind(this.markdown.toMarkdown)
+      },
+    };
+
+    return next();
+  }
 
   componentDidMount() {
-    this.updateMenu();
+    this.setState({value: this.markdown.fromMarkdown.convert(this.editor, markdown)});
   }
 
-  componentDidUpdate() {
-    this.updateMenu();
+  // On change, update the app's React state with the new editor value.
+  onChange({ value }) {
+    this.setState({ value });
+
+    if (this.initialized === false) {
+      this.setState({ value: this.markdown.fromMarkdown.convert(this.editor, markdown) });
+      this.initialized = true;
+    }
+
+    if (this.isMarkdownEditorFocused()) {
+      const markdown = this.markdown.toMarkdown.convert(this.editor, value);
+      this.setState({ markdown });
+      console.log('%cTo Markdown:', 'font-weight:bold;', "\n", markdown, "\n", value.toJSON());
+    }
+  };
+
+  isMarkdownEditorFocused() {
+    return document.activeElement.getAttribute('data-slate-editor');
+  }
+
+  onMarkdownChange(event) {
+    this.setState({ markdown: event.target.value });
+    const value = this.markdown.fromMarkdown.convert(this.editor, event.target.value);
+    this.setState({ value });
+    console.log('%cFrom Markdown:', 'font-weight:bold;', "\n", event.target.value, "\n", value.toJSON());
+  };
+
+  getPlugin(plugin, by_key = 'plugin', in_array = false) {
+    for (const p of plugins) {
+      if (in_array) {
+        if (p[by_key].includes(plugin)) {
+          return p;
+        }
+      } else {
+        if (p[by_key] === plugin) {
+          return p;
+        }
+      }
+    }
   }
 
   /**
@@ -206,6 +201,9 @@ class MarkdownEditor extends React.Component {
    */
 
   onEnter(event, editor, next) {
+    // console.log(editor);
+    // console.log('onEnter of index.js');
+    // const { value } = editor;
     const { value } = editor;
     const { selection } = value;
     const { start, end, isExpanded } = selection;
@@ -231,22 +229,14 @@ class MarkdownEditor extends React.Component {
     return next();
   }
 
-  /**
-   * On key down, check for our specific key shortcuts.
-   *
-   * @param {Event} event
-   * @param {Editor} editor
-   * @param {Function} next
-   */
-
   onKeyDown(event, editor, next) {
     switch (event.key) {
-      case ' ':
+      /* case ' ':
         return this.onSpace(event, editor, next);
       case 'Backspace':
         return this.onBackspace(event, editor, next);
-      case 'Enter':
-        return this.onEnter(event, editor, next);
+      case "Enter":
+        return this.onEnter(event, editor, next); */
       default:
         return next();
     }
@@ -286,85 +276,12 @@ class MarkdownEditor extends React.Component {
     }
   }
 
-  updateRect(oldRect, newRect) {
-    const oldString = JSON.stringify(oldRect);
-    const newString = JSON.stringify(newRect);
-
-    if (oldString !== newString) {
-      this.setState({ rect: newRect });
-    }
-  }
-
-  /**
-   * Update the menu's absolute position.
-   */
-
-  updateMenu() {
-    const value = this.state.slateValue;
-    const oldRect = this.state.rect;
-
-    if (!value) {
-      this.updateRect(oldRect, null);
-      return;
-    }
-
-    const { fragment, selection } = value;
-
-    if (selection.isBlurred || selection.isCollapsed || fragment.text === '') {
-      this.updateRect(oldRect, null);
-      return;
-    }
-
-    const native = window.getSelection();
-    const range = native.getRangeAt(0);
-    const rect = range.getBoundingClientRect();
-    this.updateRect(oldRect, rect);
-  }
-
-  handleSlateOnChange({ value }) {
-    this.setState({ slateValue: value });
-    const markdown = this.slateToMarkdownConverter.convert(value.toJSON());
-    this.setState({ markdown });
-  }
-
-  isMarkdownEditorFocused() {
-    return document.activeElement.getAttribute('data-slate-editor');
-  }
-
-  handleTextAreaOnChange(event) {
-    this.setState({
-      markdown: event.target.value,
-    });
-
-    if (!this.isMarkdownEditorFocused()) {
-      const value = this.markdownToSlateConverter.convert(event.target.value);
-      this.setState({ slateValue: value });
-    }
-  }
-
-  /**
-   * Render a Slate node.
-   *
-   * @param {Object} props
-   * @param {Editor} editor
-   * @param {Function} next
-   * @return {Element}
-   */
-
   renderNode(props, editor, next) {
-    const { attributes, children, node } = props;
+    const { node, attributes, children } = props;
 
     switch (node.type) {
-      case 'block-quote':
-        return <blockquote {...attributes}>{children}</blockquote>;
-      case 'code-block':
-        return <pre {...attributes}>{children}</pre>;
-      case 'html-block':
-        return <pre {...attributes}>{children}</pre>;
-      case 'ol-list':
-        return <ol {...attributes}>{children}</ol>;
-      case 'ul-list':
-        return <ul {...attributes}>{children}</ul>;
+      case "paragraph":
+        return <p {...attributes}>{children}</p>;
       case 'heading-one':
         return <h1 {...attributes}>{children}</h1>;
       case 'heading-two':
@@ -377,13 +294,17 @@ class MarkdownEditor extends React.Component {
         return <h5 {...attributes}>{children}</h5>;
       case 'heading-six':
         return <h6 {...attributes}>{children}</h6>;
-      case 'list-item':
-        return <li {...attributes}>{children}</li>;
-      case 'horizontal-rule':
+      case 'horizontal_rule':
         return <hr {...attributes} />;
-      case 'link': {
+      case 'block_quote':
+        return <blockquote {...attributes}>{children}</blockquote>;
+      case 'code_block':
+        return <pre {...attributes}>{children}</pre>;
+      case 'html_block':
+        return <pre {...attributes}>{children}</pre>;
+      case "link": {
         const { data } = node;
-        const href = data.get('href');
+        const href = data.get("href");
         return (
           <a {...attributes} href={href}>
             {children}
@@ -393,29 +314,6 @@ class MarkdownEditor extends React.Component {
       default:
         return next();
     }
-  }
-
-  /**
-   * Render the editor.
-   *
-   * @param {Object} props
-   * @param {Function} next
-   * @return {Element}
-   */
-
-  renderEditor(props, ed, next) {
-    const { editor } = props;
-    const children = next();
-    return (
-      <React.Fragment>
-        {children}
-        <HoverMenu
-          innerRef={menu => (this.menu = menu)}
-          editor={editor}
-          rect={this.state.rect}
-        />
-      </React.Fragment>
-    );
   }
 
   /**
@@ -431,70 +329,48 @@ class MarkdownEditor extends React.Component {
     const { children, mark, attributes } = props;
 
     switch (mark.type) {
-      case 'bold':
+      case "bold":
         return <strong {...attributes}>{children}</strong>;
+      case "italic":
+        return <em {...attributes}>{children}</em>;
+      case 'html':
       case 'code':
         return <code {...attributes}>{children}</code>;
-      case 'html':
-        return <code {...attributes}>{children}</code>;
-      case 'italic':
-        return <em {...attributes}>{children}</em>;
       default:
         return next();
     }
   }
 
-  /**
-   *
-   * Render the example.
-   *
-   * @return {Component} component
-   */
+  renderEditor(props, editor, next) {
+    if(!this.__init && typeof this['onInit'] === 'function') {
+      this.__init = true;
+      return this.onInit(props, editor, next);
+    } else {
+      return next();
+    }
+  }
 
+  // Render the editor.
   render() {
-    const that = this;
-    const panes = [
-      { menuItem: 'Rich Text',
-        render: () =>
-          (<EditorWrapper>
-            <Editor
-              ref={(thisEditor) => { that.editor = thisEditor; }}
-              placeholder="Write some markdown..."
-              defaultValue={that.initialValue}
-              value={that.state.slateValue}
-              onKeyDown={that.onKeyDown.bind(that)}
-              renderNode={that.renderNode.bind(that)}
-              onChange={that.handleSlateOnChange.bind(that)}
-              schema={schema}
-              renderEditor={that.renderEditor.bind(that)}
-              renderMark={that.renderMark.bind(that)}
-            />
-          </EditorWrapper>),
-      },
-      { menuItem: 'Markdown',
-        render: () =>
-          (<Form>
-            <TextArea
-              autoHeight
-              placeholder="Write some markdown..."
-              value={that.state.markdown}
-              onChange={that.handleTextAreaOnChange.bind(that)}
-            />
-          </Form>),
-      },
-    ];
-
     return (
-      <div>
-        <Tab menu={{ pointing: true }} panes={panes} />
+      <div className="doc">
+        <Editor
+          className="doc-inner"
+          value={this.state.value}
+          schema={schema}
+          plugins={plugins}
+          onChange={this.onChange.bind(this)}
+          onKeyDown={this.onKeyDown.bind(this)}
+          renderNode={this.renderNode.bind(this)}
+          renderMark={this.renderMark.bind(this)}
+          renderEditor={this.renderEditor.bind(this)}
+        />
+        <div className="doc-inner">
+          <textarea className="markdown-box" value={this.state.markdown} onChange={event => this.onMarkdownChange(event)}></textarea>
+        </div>
       </div>
     );
   }
 }
 
-MarkdownEditor.propTypes = {
-  handleTextChange: PropTypes.func,
-  text: PropTypes.string,
-};
-
-export { MarkdownEditor, MarkdownToSlateConverter, SlateToMarkdownConverter };
+export { MarkdownEditor };
