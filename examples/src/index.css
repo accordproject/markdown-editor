@@ -1,6 +1,14 @@
+body {
+	margin: 0;
+	padding: 0;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	background-color: rgba(0, 0, 0, 0.01);
+}
+
 code {
-	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-		monospace;
+	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 pre {
@@ -19,13 +27,19 @@ html {
 	height: 100%;
 }
 
-body {
-	min-height: 100vh;
-	margin: 0;
-	padding: 0;
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-		Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
-	background-color: rgb(240, 240, 240);
+.doc {
+	margin: 20px;
+	height: calc(100vh - 40px);
+	display: flex;
+	flex-direction: row;
+	background-color: #fff;
+}
+
+.doc .doc-inner {
+	width: 50%;
+	border: 1px solid rgba(0, 0, 0, 0.3);
+	padding: 20px;
+	overflow: auto;
 }
 
 h1 {
@@ -38,12 +52,11 @@ blockquote {
 	margin: 10px auto;
 	font-family: Open Sans;
 	font-style: italic;
-	color: #555555;
 	padding: 1.0em 10px 1.2em 15px;
-	border-left: 8px solid #9d7ff2;
-	line-height: 1.1;
+	border-left: 5px solid #484848;
+	line-height: 1;
 	position: relative;
-	background: #ededed;
+	font-style: italic !important;
 }
 
 a {
@@ -53,7 +66,7 @@ a {
 blockquote::before {
 	font-family: Arial;
 	content: '\201C';
-	color: #9d7ff2;
+	color: #484848;
 	font-size: 1em;
 	position: absolute;
 	left: 5px;
@@ -88,4 +101,11 @@ blockquote span {
 	background-color: #3D4F5D;
 	position: fixed;
 	border-radius: 8px;
+}
+
+.markdown-box {
+	width: 100%;
+	border: none;
+	height: 100%;
+	outline: none;
 }
