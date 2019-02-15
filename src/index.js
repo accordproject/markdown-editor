@@ -1,8 +1,9 @@
 // Import React!
 import React from "react";
-import { Editor } from "slate-react";
+import { Editor, getEventTransfer } from "slate-react";
 import { Value } from "slate";
 import schema from "./schema";
+import { FromHTML } from './html/fromHTML';
 
 import List from "./plugins/list";
 import { Markdown } from "./markdown";
@@ -60,10 +61,11 @@ const plugins = [List()];
 class MarkdownEditor extends React.Component {
   constructor() {
     super();
-    this.state = { value: Value.fromJSON({document: {nodes: []}}), markdown: markdown };
+    this.state = { value: Value.fromJSON({ document: { nodes: [] } }), markdown: markdown };
     this.initialized = false;
     this.editor = null;
     this.markdown = new Markdown();
+    this.fromHTML = new FromHTML();
   }
 
   onInit(editor, props, next) {
@@ -79,7 +81,7 @@ class MarkdownEditor extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({value: this.markdown.fromMarkdown.convert(this.editor, markdown)});
+    this.setState({ value: this.markdown.fromMarkdown.convert(this.editor, markdown) });
   }
 
   // On change, update the app's React state with the new editor value.
@@ -94,7 +96,7 @@ class MarkdownEditor extends React.Component {
     if (this.isMarkdownEditorFocused()) {
       const markdown = this.markdown.toMarkdown.convert(this.editor, value);
       this.setState({ markdown });
-      console.log('%cTo Markdown:', 'font-weight:bold;', "\n", markdown, "\n", value.toJSON());
+      // console.log('%cTo Markdown:', 'font-weight:bold;', "\n", markdown, "\n", value.toJSON());
     }
   };
 
@@ -106,7 +108,7 @@ class MarkdownEditor extends React.Component {
     this.setState({ markdown: event.target.value });
     const value = this.markdown.fromMarkdown.convert(this.editor, event.target.value);
     this.setState({ value });
-    console.log('%cFrom Markdown:', 'font-weight:bold;', "\n", event.target.value, "\n", value.toJSON());
+    // console.log('%cFrom Markdown:', 'font-weight:bold;', "\n", event.target.value, "\n", value.toJSON());
   };
 
   getPlugin(plugin, by_key = 'plugin', in_array = false) {
@@ -242,6 +244,13 @@ class MarkdownEditor extends React.Component {
     }
   }
 
+  onPaste(event, editor, next) {
+    const transfer = getEventTransfer(event);
+    if (transfer.type !== 'html') return next();
+    const { document } = this.fromHTML.convert(this.editor, transfer.html);
+    editor.insertFragment(document);
+  }
+
   /**
    * Get the block type for a series of auto-markdown shortcut `chars`.
    *
@@ -342,7 +351,7 @@ class MarkdownEditor extends React.Component {
   }
 
   renderEditor(props, editor, next) {
-    if(!this.__init && typeof this['onInit'] === 'function') {
+    if (!this.__init && typeof this['onInit'] === 'function') {
       this.__init = true;
       return this.onInit(props, editor, next);
     } else {
@@ -361,6 +370,7 @@ class MarkdownEditor extends React.Component {
           plugins={plugins}
           onChange={this.onChange.bind(this)}
           onKeyDown={this.onKeyDown.bind(this)}
+          onPaste={this.onPaste.bind(this)}
           renderNode={this.renderNode.bind(this)}
           renderMark={this.renderMark.bind(this)}
           renderEditor={this.renderEditor.bind(this)}

@@ -69,7 +69,35 @@ export class ToMarkdown {
         return `[${node.nodes.get(0).leaves.get(0).text}](${node.data.get('href')})`;
     }
 
-    horizontal_rule(node) {
+    horizontal_rule(editor, node) {
         return `--- \n`;
+    }
+
+    block_quote(editor, node) {
+        return `> ${this.recursive(editor, node.nodes)}${NL}`;
+    }
+
+    heading_one(editor, node) {
+        return `# ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+    }
+
+    heading_two(editor, node) {
+        return `## ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+    }
+
+    heading_three(editor, node) {
+        return `### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+    }
+
+    heading_four(editor, node) {
+        return `#### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+    }
+
+    heading_five(editor, node) {
+        return `##### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+    }
+
+    heading_six(editor, node) {
+        return `###### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
     }
 }

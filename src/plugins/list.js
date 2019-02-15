@@ -2,7 +2,7 @@ import React from "react";
 
 function List() {
   const plugin = 'list';
-  const tags = ['list', 'list-item'];
+  const tags = ['ul', 'ol', 'li'];
   const markdownTags = ['list', 'item'];
   const schema = {
     blocks: {
@@ -114,6 +114,24 @@ function List() {
     }
   }
 
+  function fromHTML(editor, el, next) {
+    if (['ul', 'ol'].includes(el.tagName.toLowerCase())) {
+      return {
+        object: 'block',
+        type: 'list',
+        data: { list_type: el.tagName.toLowerCase() },
+        nodes: next(el.childNodes),
+      };
+    } else {
+      return {
+        object: 'block',
+        type: 'list-item',
+        data: {},
+        nodes: next(el.childNodes),
+      };
+    }
+  }
+
   return {
     plugin,
     tags,
@@ -122,7 +140,8 @@ function List() {
     onKeyDown,
     renderNode,
     toMarkdown,
-    fromMarkdown
+    fromMarkdown,
+    fromHTML
   };
 }
 
