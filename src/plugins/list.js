@@ -74,13 +74,13 @@ function List() {
    * @param {Value} value
    * @param {Editor} editor
    */
-  function toMarkdown(editor, value) {
+  function toMarkdown(editor, toMarkdown, value) {
     let markdown = '';
     const list_type = value.data.get('list_type', 'ol');
     const list_style_type = list_type === 'ol' ? '1. ' : '* ';
 
     value.nodes.forEach((li) => {
-      const text = editor.helpers.markdown.toMarkdown(editor, li.nodes);
+      const text = toMarkdown(editor, li.nodes);
       markdown += `   ${list_style_type}${text}\n`;
     });
 

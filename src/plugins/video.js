@@ -50,7 +50,6 @@ function Video() {
     if (!src) {
       src = 'https://www.youtube.com/embed/dQw4w9WgXcQ';
     }
-    console.log(src);
 
     return (<iframe
       {...attributes}

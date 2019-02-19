@@ -27,7 +27,17 @@ This is ***bold and italic*** text
 
 > This is a quote.
 ## Heading Two
-This is more text.`;
+This is more text.
+
+### Sub heading
+
+Video:
+
+<video/>
+
+Another video:
+
+<video src="https://www.youtube.com/embed/cmmq-JBMbbQ"/>`;
 
 /**
  * A plugin based rich-text editor that uses Common Mark for serialization.
@@ -42,17 +52,18 @@ class MarkdownEditor extends React.Component {
     super(props);
     this.state = { value: Value.fromJSON({ document: { nodes: [] } }),
       markdown: props.markdown ? props.markdown : defaultMarkdown };
-    this.editor = null;
     this.markdown = new Markdown();
     this.fromHTML = new FromHTML();
+    this.editor = React.createRef();
 
     this.handleOnChange = this.onChange.bind(this);
     this.handleOnKeyDown = this.onKeyDown.bind(this);
     this.handleOnPaste = this.onPaste.bind(this);
     this.handleRenderNode = this.renderNode.bind(this);
     this.handleRenderMark = this.renderMark.bind(this);
-    this.handleRenderEditor = this.renderEditor.bind(this);
-    this.handleGetPlugin = this.getPlugin.bind(this);
+    this.handleFindPluginByHtmlTag = this.findPluginByHtmlTag.bind(this);
+    this.handleFindPluginByMarkdownTag = this.findPluginByMarkdownTag.bind(this);
+    this.handleToMarkdown = this.markdown.toMarkdown.recursive.bind(this.markdown.toMarkdown);
 
     this.schema = baseSchema;
     this.props.plugins.forEach((plugin) => {
@@ -62,35 +73,34 @@ class MarkdownEditor extends React.Component {
     });
   }
 
+  /**
+   * Called by React when the component has been mounted into the DOM tree
+   */
   componentDidMount() {
-    this.state.value = this.markdown.fromMarkdown.convert(this.editor, this.state.markdown);
+    this.onChange({ value: this.markdown.fromMarkdown.convert(
+      this.editor, this.handleFindPluginByMarkdownTag, this.state.markdown) });
   }
 
-  onInit(editor, props, next) {
-    this.editor = editor;
-    this.editor.getPlugin = this.handleGetPlugin;
-    this.editor.helpers = {
-      markdown: {
-        toMarkdown: this.markdown.toMarkdown.recursive.bind(this.markdown.toMarkdown),
-      },
-    };
-
-    return next();
-  }
-
-  // On change, update the app's React state with the new editor value.
+  /**
+   * On Slate editor change, update the app's React state with the new editor value.
+   * @param {*} param
+   */
   onChange({ value }) {
     this.setState({ value });
 
     if (this.isMarkdownEditorFocused()) {
-      const markdown = this.markdown.toMarkdown.convert(this.editor, value);
+      const markdown = this.markdown.toMarkdown.convert(this.editor, this.handleFindPluginByMarkdownTag, value);
       this.setState({ markdown });
     }
   }
 
+  /**
+   * On markdown editor change, update the app's React state with the new editor value
+   * @param {*} event
+   */
   onMarkdownChange(event) {
     this.setState({ markdown: event.target.value });
-    const value = this.markdown.fromMarkdown.convert(this.editor, event.target.value);
+    const value = this.markdown.fromMarkdown.convert(this.editor, this.handleFindPluginByMarkdownTag, event.target.value);
     this.setState({ value });
   }
 
@@ -200,6 +210,12 @@ class MarkdownEditor extends React.Component {
     return next();
   }
 
+  /**
+   * Called upon a keypress
+   * @param {*} event
+   * @param {*} editor
+   * @param {*} next
+   */
   onKeyDown(event, editor, next) {
     switch (event.key) {
       /* case ' ':
@@ -213,25 +229,18 @@ class MarkdownEditor extends React.Component {
     }
   }
 
+  /**
+   * Called on a paste
+   * @param {*} event
+   * @param {*} editor
+   * @param {*} next
+   */
   onPaste(event, editor, next) {
     const transfer = getEventTransfer(event);
     if (transfer.type !== 'html') return next();
-    const { document } = this.fromHTML.convert(this.editor, transfer.html);
+    const { document } = this.fromHTML.convert(this.editor, this.handleFindPluginByHtmlTag, transfer.html);
     editor.insertFragment(document);
     return undefined;
-  }
-
-  getPlugin(plugin, by_key = 'plugin', in_array = false) {
-    for (const p of this.props.plugins) {
-      if (in_array) {
-        if (p[by_key].includes(plugin)) {
-          return p;
-        }
-      } else if (p[by_key] === plugin) {
-        return p;
-      }
-    }
-    return null;
   }
 
   /**
@@ -268,10 +277,50 @@ class MarkdownEditor extends React.Component {
     }
   }
 
+  /**
+   * Returns the first plugin that can handle an HTML tag, or null
+   * @param {string} tag - the HTML tag to search for
+   */
+  findPluginByHtmlTag(tag) {
+    for (let n = 0; n < this.props.plugins.length; n += 1) {
+      const plugin = this.props.plugins[n];
+      if (plugin.tags.includes(tag)) {
+        return plugin;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Returns the first plugin that can handle a Markdown tag, or null
+   * @param {string} tag - the Markdown tag to search for
+   */
+  findPluginByMarkdownTag(tag) {
+    for (let n = 0; n < this.props.plugins.length; n += 1) {
+      const plugin = this.props.plugins[n];
+      if (plugin.markdownTags.includes(tag)) {
+        return plugin;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Return true if the markdown editor has focus
+   */
   isMarkdownEditorFocused() {
     return document.activeElement.getAttribute('data-slate-editor');
   }
 
+  /**
+   * Renders a default node
+   *
+   * @param {*} props
+   * @param {*} editor
+   * @param {*} next
+   */
   renderNode(props, editor, next) {
     const { node, attributes, children } = props;
 
@@ -333,19 +382,14 @@ class MarkdownEditor extends React.Component {
     }
   }
 
-  renderEditor(props, editor, next) {
-    if (!this.__init && typeof this.onInit === 'function') {
-      this.__init = true;
-      return this.onInit(props, editor, next);
-    }
-    return next();
-  }
-
-  // Render the editor.
+  /**
+   * Render this React component
+   */
   render() {
     return (
       <div className="doc">
         <Editor
+          ref={this.editor}
           className="doc-inner"
           value={this.state.value}
           schema={this.schema}
@@ -355,7 +399,9 @@ class MarkdownEditor extends React.Component {
           onPaste={this.handleOnPaste}
           renderNode={this.handleRenderNode}
           renderMark={this.handleRenderMark}
-          renderEditor={this.handleRenderEditor}
+          findPluginByHtmlTag={this.handleFindPluginByHtmlTag}
+          findPluginByMarkdownTag={this.handleFindPluginByMarkdownTag}
+          toMarkdown={this.handleToMarkdown}
         />
         <div className="doc-inner">
           <textarea className="markdown-box" value={this.state.markdown} onChange={event => this.onMarkdownChange(event)} />
@@ -365,6 +411,9 @@ class MarkdownEditor extends React.Component {
   }
 }
 
+/**
+ * The property types for this component
+ */
 MarkdownEditor.propTypes = {
   markdown: PropTypes.string,
   plugins: PropTypes.arrayOf(PropTypes.shape({

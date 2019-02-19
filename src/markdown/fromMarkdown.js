@@ -9,8 +9,9 @@ export class FromMarkdown {
     };
   }
 
-  convert(editor, markdownText) {
+  convert(editor, findPluginByMarkdownTag, markdownText) {
     this.editor = editor;
+    this.findPluginByMarkdownTag = findPluginByMarkdownTag;
     this.root = {
       document: {
         nodes: [],
@@ -31,7 +32,7 @@ export class FromMarkdown {
 
       if (typeof this[method] === 'function') {
         this[method](node, event);
-      } else if (!this.plugin_handle(node, event)) {
+      } else if (!this.plugin_handle(findPluginByMarkdownTag, node, event)) {
         console.log(`Unrecognized node: ${node.type}`);
       }
 
@@ -42,8 +43,8 @@ export class FromMarkdown {
     return Value.fromJSON(this.root);
   }
 
-  plugin_handle(node, event, tag = null) {
-    const plugin = this.editor.getPlugin(tag ? tag.tag : node.type, 'markdownTags', true);
+  plugin_handle(findPluginByMarkdownTag, node, event, tag = null) {
+    const plugin = findPluginByMarkdownTag(tag ? tag.tag : node.type);
 
     if (plugin && typeof plugin.fromMarkdown === 'function') {
       const markdown = plugin.fromMarkdown(this.editor, event, tag);
@@ -123,8 +124,6 @@ export class FromMarkdown {
         attributeString,
         content: item.textContent,
       };
-
-      console.log(JSON.stringify(tag));
 
       return tag;
     } catch (err) {
@@ -298,7 +297,7 @@ export class FromMarkdown {
   html_block(node, event) {
     const tag = this.parseHtmlBlock(node.literal);
 
-    if (tag && this.plugin_handle(node, event, tag)) {
+    if (tag && this.plugin_handle(this.findPluginByMarkdownTag, node, event, tag)) {
       // console.log('Custom html tag:', tag, "\n", 'Node:', node);
     } else {
       const block = {

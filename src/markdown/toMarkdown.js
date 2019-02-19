@@ -3,13 +3,15 @@ const NL = '\n';
 export class ToMarkdown {
   constructor() {
     this.stack = [];
+    this.findPluginByMarkdownTag = null;
   }
 
-  convert(editor, value) {
-    return this.recursive(editor, value.document.nodes);
+  convert(editor, findPluginByMarkdownTag, value) {
+    this.findPluginByMarkdownTag = findPluginByMarkdownTag;
+    return this.recursive(editor, findPluginByMarkdownTag, value.document.nodes);
   }
 
-  recursive(editor, nodes) {
+  recursive(editor, findPluginByMarkdownTag, nodes) {
     let markdown = '';
 
     nodes.forEach((node) => {
@@ -26,7 +28,7 @@ export class ToMarkdown {
           if (typeof this[method] === 'function') {
             markdown += this[method](editor, node);
           } else {
-            const plugin = editor.getPlugin(node.type);
+            const plugin = findPluginByMarkdownTag(node.type);
 
             if (plugin && typeof plugin.toMarkdown === 'function') {
               markdown += plugin.toMarkdown(editor, node);
@@ -87,7 +89,7 @@ export class ToMarkdown {
       }
     }
 
-    return `${this.recursive(editor, node.nodes)}${postfix}`;
+    return `${this.recursive(editor, this.findPluginByMarkdownTag, node.nodes)}${postfix}`;
   }
 
   link(editor, node) {
@@ -99,7 +101,7 @@ export class ToMarkdown {
   }
 
   block_quote(editor, node) {
-    return `> ${this.recursive(editor, node.nodes)}${NL}`;
+    return `> ${this.recursive(editor, this.findPluginByMarkdownTag, node.nodes)}${NL}`;
   }
 
   heading_one(editor, node) {
@@ -127,13 +129,13 @@ export class ToMarkdown {
   }
 
   html_block(editor, node) {
-    return this.recursive(editor, node.nodes);
+    return this.recursive(editor, this.findPluginByMarkdownTag, node.nodes);
   }
 
   code_block(editor, node) {
     const pre = `${NL}\`\`\`${NL}`;
     const post = `\`\`\`${NL}`;
-    const md = this.recursive(editor, node.nodes);
+    const md = this.recursive(editor, this.findPluginByMarkdownTag, node.nodes);
     return pre + md.trim() + NL + post;
   }
 }
