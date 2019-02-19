@@ -1,15 +1,16 @@
 import React from 'react';
 
-function Clause() {
-  const plugin = 'Clause';
-  const tags = ['Clause'];
-  const markdownTags = ['Clause'];
+/**
+ * A sample plugin that renders a Youtube video using an iframe
+ */
+function Video() {
+  const plugin = 'Video';
+  const tags = ['video'];
+  const markdownTags = ['video'];
   const schema = {
     blocks: {
-      Clause: {
-        nodes: [
-          { match: [{ object: 'text' }] },
-        ],
+      Video: {
+        nodes: [],
       },
     },
   };
@@ -20,8 +21,6 @@ function Clause() {
      * @param {Function} next
      */
   function onEnter(event, editor, next) {
-    // console.log('onEnter of Clause plugin');
-    // console.log(editor.value.document.getParent(editor.value.startBlock.key));
     return next();
   }
 
@@ -45,8 +44,22 @@ function Clause() {
      * @param {Function} next
      */
   function renderNode(props, editor, next) {
-    const { attributes, children } = props;
-    return <div {...attributes}>{children}</div>;
+    const { node, attributes, children } = props;
+
+    let src = node.data.get('attributes').src;
+    if (!src) {
+      src = 'https://www.youtube.com/embed/dQw4w9WgXcQ';
+    }
+    console.log(src);
+
+    return (<iframe
+      {...attributes}
+      src={src}
+      frameBorder="0"
+      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      title="video"
+    >{children}</iframe>);
   }
 
   /**
@@ -54,22 +67,14 @@ function Clause() {
      * @param {Editor} editor
      */
   function toMarkdown(editor, value) {
-    return `<Clause ${value.data.get('attr_string')}>${value.text}</Clause>\n\n`;
+    return `<video ${value.data.get('attr_string')}/>\n\n`;
   }
 
   function fromMarkdown(editor, event, tag) {
     const block = {
       object: 'block',
-      type: 'Clause',
+      type: 'video',
       data: Object.assign(tag),
-      nodes: [{
-        object: 'text',
-        leaves: [{
-          object: 'leaf',
-          text: tag.content,
-          marks: [],
-        }],
-      }],
     };
 
     return [
@@ -81,7 +86,7 @@ function Clause() {
   function fromHTML(editor, el, next) {
     return {
       object: 'block',
-      type: 'Clause',
+      type: 'video',
       data: {},
       nodes: next(el.childNodes),
     };
@@ -100,4 +105,4 @@ function Clause() {
   };
 }
 
-export default Clause;
+export default Video;

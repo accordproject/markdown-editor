@@ -2,400 +2,399 @@ import commonmark from 'commonmark';
 import { Value } from 'slate';
 
 export class FromMarkdown {
-    constructor() {
-        this.markMapping = {
-            'strong': 'bold',
-            'emph': 'italic'
-        };
+  constructor() {
+    this.markMapping = {
+      strong: 'bold',
+      emph: 'italic',
+    };
+  }
+
+  convert(editor, markdownText) {
+    this.editor = editor;
+    this.root = {
+      document: {
+        nodes: [],
+      },
+    };
+    this.stack = [];
+    this.marks = ['code', 'strong', 'emph'];
+
+    const reader = new commonmark.Parser();
+    const parsed = reader.parse(markdownText);
+    const walker = parsed.walker();
+    let event;
+    event = walker.next();
+
+    while (event) {
+      const node = event.node;
+      const method = node.type.replace('-', '_');
+
+      if (typeof this[method] === 'function') {
+        this[method](node, event);
+      } else if (!this.plugin_handle(node, event)) {
+        console.log(`Unrecognized node: ${node.type}`);
+      }
+
+      event = walker.next();
     }
 
-    convert(editor, markdownText) {
-        this.editor = editor;
-        this.root = {
-            document: {
-                nodes: []
-            }
-        };
-        this.stack = [];
-        this.marks = ['code', 'strong', 'emph'];
+    // console.log(JSON.stringify(this.root));
+    return Value.fromJSON(this.root);
+  }
 
-        const reader = new commonmark.Parser();
-        const parsed = reader.parse(markdownText);
-        const walker = parsed.walker();
-        let event;
-        event = walker.next();
+  plugin_handle(node, event, tag = null) {
+    const plugin = this.editor.getPlugin(tag ? tag.tag : node.type, 'markdownTags', true);
 
-        while (event) {
-            const node = event.node;
-            const method = node.type.replace('-', '_');
+    if (plugin && typeof plugin.fromMarkdown === 'function') {
+      const markdown = plugin.fromMarkdown(this.editor, event, tag);
 
-            if (typeof this[method] === 'function') {
-                this[method](node, event);
-            } else {
-                if (!this.plugin_handle(node, event)) {
-                    console.log(`Unrecognized node: ${node.type}`);
-                }
-            }
+      if (markdown === undefined) {
+        return true;
+      }
 
-            event = walker.next();
+      if (markdown.constructor === Array) {
+        for (const temp of markdown) {
+          this[temp.action](temp.block);
         }
-
-        // console.log(JSON.stringify(this.root));
-        return Value.fromJSON(this.root);
+      } else {
+        this[markdown.action](markdown.block);
+      }
+      return true;
     }
 
-    plugin_handle(node, event, tag = null) {
-        const plugin = this.editor.getPlugin(tag ? tag.tag : node.type, 'markdownTags', true);
+    return false;
+  }
 
-        if (plugin && typeof plugin.fromMarkdown === "function") {
-            const markdown = plugin.fromMarkdown(this.editor, event, tag);
-            // console.log('Output:', markdown);
+  /** ******** Helpers ********* */
 
-            if (markdown === undefined) {
-                return true;
-            }
+  peek() {
+    return this.stack[this.stack.length - 1];
+  }
 
-            if (markdown.constructor === Array) {
-                for (const temp of markdown) {
-                    this[temp.action](temp.block);
-                }
-            } else {
-                this[markdown.action](markdown.block);
-            }
-            return true;
-        }
-
-        return false;
+  push(obj, appendItem = true) {
+    if (appendItem) {
+      this.append(obj);
     }
 
-    /********** Helpers **********/
+    this.stack.push(obj);
+  }
 
-    peek() {
-        return this.stack[this.stack.length - 1];
+  append(obj) {
+    const top = this.peek();
+
+    if (top && top.nodes) {
+      top.nodes.push(obj);
+    } else {
+      throw new Error(`Cannot append. Invalid stack: ${JSON.stringify(this.stack, null, 4)}`);
+    }
+  }
+
+  pop() {
+    return this.stack.pop();
+  }
+
+  addTextLeaf(leaf) {
+    const top = this.peek();
+    const lastNode = top.nodes.length > 0 ? top.nodes[top.nodes.length - 1] : null;
+
+    if (lastNode && lastNode.object === 'text') {
+      lastNode.leaves.push(leaf);
+    } else {
+      this.append({ object: 'text', leaves: [leaf] });
+    }
+  }
+
+  parseHtmlBlock(string) {
+    try {
+      const doc = (new DOMParser()).parseFromString(string, 'text/html');
+      const item = doc.body.children.item(0);
+      const attributes = doc.body.children.item(0).attributes;
+      const attributeObject = {};
+      let attributeString = '';
+
+      for (let i = 0; i < attributes.length; i += 1) {
+        attributeString += `${attributes[i].name} = "${attributes[i].value}"`;
+        attributeObject[attributes[i].name] = attributes[i].value;
+      }
+
+      const tag = {
+        tag: item.nodeName.toLowerCase(),
+        attributes: attributeObject,
+        attributeString,
+        content: item.textContent,
+      };
+
+      console.log(JSON.stringify(tag));
+
+      return tag;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  parseAttributes(string) {
+    return string.trim().split(' ').filter(attr => attr.trim()).map((attr) => {
+      const parsed = attr.split('=');
+      return {
+        [parsed[0]]: parsed[1] ? parsed[1].replace(/^"/, '').replace(/"$/, '') : true,
+      };
+    });
+  }
+
+  /** ******** Nodes ********* */
+
+  document(node, event) {
+    if (event.entering) {
+      this.root = {
+        document: {
+          nodes: [],
+        },
+      };
     }
 
-    push(obj, appendItem = true) {
-        if (appendItem) {
-            this.append(obj);
-        }
+    this.push(this.root.document, false);
+  }
 
-        this.stack.push(obj);
+  text(node, event) {
+    if (node.parent && ['link'].includes(node.parent.type)) {
+      return;
     }
 
-    append(obj) {
-        const top = this.peek();
+    const leaf = {
+      object: 'leaf',
+      text: node.literal,
+      marks: this.getMarks(node),
+    };
 
-        if (top && top.nodes) {
-            top.nodes.push(obj);
-        } else {
-            throw new Error(`Cannot append. Invalid stack: ${JSON.stringify(this.stack, null, 4)}`);
-        }
+    this.addTextLeaf(leaf);
+  }
+
+  getMarks(node) {
+    // console.log('Node Parent:', node.parent ? node.parent.type : null);
+    const marks = [];
+    let parent = node.parent;
+
+    while (parent) {
+      if (!this.marks.includes(parent.type)) {
+        break;
+      }
+
+      marks.push({
+        object: 'mark',
+        type: this.markMapping[parent.type] ? this.markMapping[parent.type] : parent.type,
+        data: {},
+      });
+
+      parent = parent.parent;
     }
 
-    pop() {
-        return this.stack.pop();
-    }
+    return marks;
+  }
 
-    addTextLeaf(leaf) {
-        const top = this.peek();
-        const lastNode = top.nodes.length > 0 ? top.nodes[top.nodes.length - 1] : null;
-
-        if (lastNode && lastNode.object === 'text') {
-            lastNode.leaves.push(leaf);
-        } else {
-            this.append({ object: 'text', leaves: [leaf] });
-        }
-    }
-
-    getHTMLTag(string) {
-        const match = string.match(/^<([^\s]+)\s(.*?)>\/?/);
-
-        if (!match) {
-            return false;
-        }
-
-        const tag = {
-            tag: match[1],
-            has_closing: new RegExp(`</${match[1]}>$`).test(string),
-            attributes: this.parseAttributes(match[2]),
-            attr_string: match[2],
-            content: null
-        };
-
-        if (tag['has_closing']) {
-            const content_match = string.match(new RegExp(`${match[0]}([\\s\\S]*)</(?:[\\s]+)?${match[1]}(?:[\\s]+)?>`, 'i'));
-
-            if (content_match) {
-                tag['content'] = content_match[1];
-            }
-        }
-
-        return tag;
-    }
-
-    parseAttributes(string) {
-        return string.trim().split(' ').filter(attr => attr.trim()).map(attr => {
-            const parsed = attr.split('=');
-            return {
-                [parsed[0]]: parsed[1] ? parsed[1].replace(/^"/, '').replace(/"$/, '') : true
-            };
-        });
-    }
-
-    /********** Nodes **********/
-
-    document(node, event) {
-        if (event.entering) {
-            this.root = {
-                document: {
-                    nodes: [],
-                },
-            };
-        }
-
-        this.push(this.root.document, false);
-    }
-
-    text(node, event) {
-        if (node.parent && ['link'].includes(node.parent.type)) {
-            return;
-        }
-
-        const leaf = {
-            object: 'leaf',
-            text: node.literal,
-            marks: this.getMarks(node)
-        };
-
-        this.addTextLeaf(leaf);
-    }
-
-    getMarks(node) {
-        // console.log('Node Parent:', node.parent ? node.parent.type : null);
-        const marks = [];
-        let parent = node.parent;
-
-        while (parent) {
-            if (!this.marks.includes(parent.type)) {
-                break;
-            }
-
-            marks.push({
-                object: 'mark',
-                type: this.markMapping[parent.type] ? this.markMapping[parent.type] : parent.type,
-                data: {}
-            });
-
-            parent = parent.parent;
-        }
-
-        return marks;
-    }
-
-    paragraph(node, event) {
-        if (!["item", "block_quote"].includes(node.parent.type)) {
-            if (event.entering) {
-                const block = {
-                    object: 'block',
-                    type: 'paragraph',
-                    data: {},
-                    nodes: [],
-                };
-
-                this.push(block);
-            } else {
-                this.pop();
-            }
-        }
-    }
-
-    emph() {
-        // handled by text
-    }
-
-    strong() {
-        // handled by text
-    }
-
-    softbreak() {
-        this.addTextLeaf({
-            object: 'leaf',
-            text: ' \r',
-            marks: []
-        });
-    }
-
-    linebreak() {
-        this.addTextLeaf({
-            object: 'leaf',
-            text: '\r\n',
-            marks: []
-        });
-    }
-
-    thematic_break() {
+  paragraph(node, event) {
+    if (!['item', 'block_quote'].includes(node.parent.type)) {
+      if (event.entering) {
         const block = {
-            object: 'block',
-            isVoid: true,
-            type: 'horizontal_rule',
-        };
-        this.append(block);
-    }
-
-    code(node) {
-        const leaf = {
-            object: 'leaf',
-            text: node.literal,
-            marks: [{
-                object: 'mark',
-                type: 'code',
-                data: {}
-            }]
-        };
-
-        this.addTextLeaf(leaf);
-    }
-
-    code_block(node) {
-        const block = {
-            object: 'block',
-            type: 'code_block',
-            data: {},
-            nodes: [],
-        };
-
-        const para = {
-            object: 'block',
-            type: 'paragraph',
-            data: {},
-            nodes: [],
+          object: 'block',
+          type: 'paragraph',
+          data: {},
+          nodes: [],
         };
 
         this.push(block);
-        this.push(para);
-        this.addTextLeaf({
-            object: 'leaf',
-            text: node.literal,
-            marks: []
-        });
+      } else {
         this.pop();
-        this.pop();
+      }
     }
+  }
 
-    html_inline(node) {
-        const leaf = {
+  emph() {
+    // handled by text
+  }
+
+  strong() {
+    // handled by text
+  }
+
+  softbreak() {
+    this.addTextLeaf({
+      object: 'leaf',
+      text: ' \r',
+      marks: [],
+    });
+  }
+
+  linebreak() {
+    this.addTextLeaf({
+      object: 'leaf',
+      text: '\r\n',
+      marks: [],
+    });
+  }
+
+  thematic_break() {
+    const block = {
+      object: 'block',
+      isVoid: true,
+      type: 'horizontal_rule',
+    };
+    this.append(block);
+  }
+
+  code(node) {
+    const leaf = {
+      object: 'leaf',
+      text: node.literal,
+      marks: [{
+        object: 'mark',
+        type: 'code',
+        data: {},
+      }],
+    };
+
+    this.addTextLeaf(leaf);
+  }
+
+  code_block(node) {
+    const block = {
+      object: 'block',
+      type: 'code_block',
+      data: {},
+      nodes: [],
+    };
+
+    const para = {
+      object: 'block',
+      type: 'paragraph',
+      data: {},
+      nodes: [],
+    };
+
+    this.push(block);
+    this.push(para);
+    this.addTextLeaf({
+      object: 'leaf',
+      text: node.literal,
+      marks: [],
+    });
+    this.pop();
+    this.pop();
+  }
+
+  html_inline(node) {
+    const leaf = {
+      object: 'leaf',
+      text: node.literal,
+      marks: [{
+        object: 'mark',
+        type: 'html',
+        data: {},
+      }],
+    };
+
+    this.addTextLeaf(leaf);
+  }
+
+  html_block(node, event) {
+    const tag = this.parseHtmlBlock(node.literal);
+
+    if (tag && this.plugin_handle(node, event, tag)) {
+      // console.log('Custom html tag:', tag, "\n", 'Node:', node);
+    } else {
+      const block = {
+        object: 'block',
+        type: 'html_block',
+        data: {},
+        nodes: [],
+      };
+
+      const para = {
+        object: 'block',
+        type: 'paragraph',
+        data: {},
+        nodes: [],
+      };
+
+      this.push(block);
+      this.push(para);
+      this.addTextLeaf({
+        object: 'leaf',
+        text: node.literal,
+        marks: [{
+          object: 'mark',
+          type: 'html',
+          data: {},
+        }],
+      });
+      this.pop();
+      this.pop();
+    }
+  }
+
+  headingLevelConverter(level) {
+    switch (level) {
+      case 1:
+        return 'one';
+      case 2:
+        return 'two';
+      case 3:
+        return 'three';
+      case 4:
+        return 'four';
+      case 5:
+        return 'five';
+      case 6:
+        return 'six';
+      default:
+        return 'one';
+    }
+  }
+
+  heading(node, event) {
+    if (event.entering) {
+      const block = {
+        object: 'block',
+        type: `heading_${this.headingLevelConverter(node.level)}`,
+        data: {},
+        nodes: [],
+      };
+      this.push(block);
+    } else {
+      this.pop();
+    }
+  }
+
+  block_quote(node, event) {
+    if (event.entering) {
+      const block = {
+        object: 'block',
+        type: 'block_quote',
+        data: {},
+        nodes: [],
+      };
+      this.push(block);
+    } else {
+      this.pop();
+    }
+  }
+
+  link(node, event) {
+    if (event.entering) {
+      const inline = {
+        object: 'inline',
+        type: 'link',
+        data: { href: node.destination },
+        nodes: [{
+          object: 'text',
+          leaves: [{
             object: 'leaf',
-            text: node.literal,
-            marks: [{
-                object: 'mark',
-                type: 'html',
-                data: {}
-            }]
-        };
+            text: node.title ? node.title : node.firstChild.literal,
+            marks: this.getMarks(node),
+          }],
+        }],
+      };
 
-        this.addTextLeaf(leaf);
+      this.append(inline);
     }
-
-    html_block(node, event) {
-        const tag = this.getHTMLTag(node.literal);
-
-        if (tag && this.plugin_handle(node, event, tag)) {
-            // console.log('Custom html tag:', tag, "\n", 'Node:', node);
-        } else {
-            const block = {
-                object: 'block',
-                type: 'html_block',
-                data: {},
-                nodes: [],
-            };
-
-            const para = {
-                object: 'block',
-                type: 'paragraph',
-                data: {},
-                nodes: [],
-            };
-
-            this.push(block);
-            this.push(para);
-            this.addTextLeaf({
-                object: 'leaf',
-                text: node.literal,
-                marks: [{
-                    object: 'mark',
-                    type: 'html',
-                    data: {}
-                }]
-            });
-            this.pop();
-            this.pop();
-        }
-    }
-
-    headingLevelConverter(level) {
-        switch (level) {
-            case 1:
-                return 'one';
-            case 2:
-                return 'two';
-            case 3:
-                return 'three';
-            case 4:
-                return 'four';
-            case 5:
-                return 'five';
-            case 6:
-                return 'six';
-            default:
-                return 'one';
-        }
-    }
-
-    heading(node, event) {
-        if (event.entering) {
-            const block = {
-                object: 'block',
-                type: `heading_${this.headingLevelConverter(node.level)}`,
-                data: {},
-                nodes: [],
-            };
-            this.push(block);
-        } else {
-            this.pop();
-        }
-    }
-
-    block_quote(node, event) {
-        if (event.entering) {
-            const block = {
-                object: 'block',
-                type: 'block_quote',
-                data: {},
-                nodes: [],
-            };
-            this.push(block);
-        } else {
-            this.pop();
-        }
-    }
-
-    link(node, event) {
-        if (event.entering) {
-            const inline = {
-                object: 'inline',
-                type: 'link',
-                data: { href: node.destination },
-                nodes: [{
-                    object: 'text',
-                    leaves: [{
-                        object: 'leaf',
-                        text: node.title ? node.title : node.firstChild.literal,
-                        marks: this.getMarks(node)
-                    }]
-                }]
-            };
-
-            this.append(inline);
-        }
-    }
+  }
 }

@@ -1,124 +1,84 @@
-// Import React!
-import React from "react";
-import { Editor, getEventTransfer } from "slate-react";
-import { Value } from "slate";
-import schema from "./schema";
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import React from 'react';
+import { Editor, getEventTransfer } from 'slate-react';
+import { Value } from 'slate';
+import schema from './schema';
 import { FromHTML } from './html/fromHTML';
+import PropTypes from 'prop-types';
+import { Markdown } from './markdown';
 
-import List from "./plugins/list";
-import Clause from './plugins/clause';
-import { Markdown } from "./markdown";
-
-const markdown = `# Heading One
+const defaultMarkdown = `# Heading One
 This is text. This is *italic* text. This is **bold** text. This is a [link](https://clause.io). This is \`inline code\`.
 
 This is ***bold and italic*** text
 
 > This is a quote.
 ## Heading Two
-This is more text.
+This is more text.`;
 
-This is more text.
-
-### Heading Three
-
-\`\`\`
-namespace org.accordproject.time
-
-enum TemporalUnit {
-  o seconds
-  o weeks
-}
-
-\`\`\`
-#### Lists
-Bullet list:
-
-   * this is a list item
-   * this a second item
-
-Numbered list:
-
-   1. This is a numbered list item
-   1. Another numbered item
-
---- 
-That was a thematic break.
-
---- 
-This is inline HTML <responsive-image src="foo.jpg" />.
-
-While this is a block of HTML:
-
-<script type="text/ergo">
-This is some Ergo code.
-</script>
-
-This is an HTML block with a custom tag:
-
-<Clause template="foo" disabled>
-{
-  "one" : 1,
-  "two" : "three",
-  "four" : true
-}
-</Clause>
-
-This is a link reference definition followed by a ...
-
-Reference: 
-[this is a custom title](/url) with a custom title.
-`;
-const plugins = [
-  List(),
-  Clause()
-];
-
-// Define our app...
+/**
+ * A plugin based rich-text editor that uses Common Mark for serialization.
+ * The default markdown to be edited in passed in the 'markdown' property
+ * while the plugins are passed in the 'plugins' property.
+ *
+ * Plugins are responsible for serialization to/from markdown and HTML,
+ * rendering and schema definition.
+ */
 class MarkdownEditor extends React.Component {
-  constructor() {
-    super();
-    this.state = { value: Value.fromJSON({ document: { nodes: [] } }), markdown: markdown };
-    this.initialized = false;
+  constructor(props) {
+    super(props);
+    this.state = { value: Value.fromJSON({ document: { nodes: [] } }), markdown: props.markdown ? props.markdown : defaultMarkdown };
     this.editor = null;
     this.markdown = new Markdown();
     this.fromHTML = new FromHTML();
+
+    this.handleOnChange = this.onChange.bind(this);
+    this.handleOnKeyDown = this.onKeyDown.bind(this);
+    this.handleOnPaste = this.onPaste.bind(this);
+    this.handleRenderNode = this.renderNode.bind(this);
+    this.handleRenderMark = this.renderMark.bind(this);
+    this.handleRenderEditor = this.renderEditor.bind(this);
+    this.handleGetPlugin = this.getPlugin.bind(this);
+  }
+
+  componentDidMount() {
+    this.state.value = this.markdown.fromMarkdown.convert(this.editor, this.state.markdown);
   }
 
   onInit(editor, props, next) {
     this.editor = editor;
-    this.editor.getPlugin = this.getPlugin;
+    this.editor.getPlugin = this.handleGetPlugin;
     this.editor.helpers = {
       markdown: {
-        toMarkdown: this.markdown.toMarkdown.recursive.bind(this.markdown.toMarkdown)
+        toMarkdown: this.markdown.toMarkdown.recursive.bind(this.markdown.toMarkdown),
       },
     };
 
     return next();
   }
 
-  componentDidMount() {
-    this.setState({ value: this.markdown.fromMarkdown.convert(this.editor, markdown) });
-  }
-
   // On change, update the app's React state with the new editor value.
   onChange({ value }) {
     this.setState({ value });
-
-    if (this.initialized === false) {
-      this.setState({ value: this.markdown.fromMarkdown.convert(this.editor, markdown) });
-      this.initialized = true;
-    }
 
     if (this.isMarkdownEditorFocused()) {
       const markdown = this.markdown.toMarkdown.convert(this.editor, value);
       this.setState({ markdown });
       // console.log('%cTo Markdown:', 'font-weight:bold;', "\n", markdown, "\n", value.toJSON());
     }
-  };
-
-  isMarkdownEditorFocused() {
-    return document.activeElement.getAttribute('data-slate-editor');
   }
 
   onMarkdownChange(event) {
@@ -126,20 +86,6 @@ class MarkdownEditor extends React.Component {
     const value = this.markdown.fromMarkdown.convert(this.editor, event.target.value);
     this.setState({ value });
     // console.log('%cFrom Markdown:', 'font-weight:bold;', "\n", event.target.value, "\n", value.toJSON());
-  };
-
-  getPlugin(plugin, by_key = 'plugin', in_array = false) {
-    for (const p of plugins) {
-      if (in_array) {
-        if (p[by_key].includes(plugin)) {
-          return p;
-        }
-      } else {
-        if (p[by_key] === plugin) {
-          return p;
-        }
-      }
-    }
   }
 
   /**
@@ -244,7 +190,7 @@ class MarkdownEditor extends React.Component {
 
     // when you hit enter after a heading we insert a paragraph
     event.preventDefault();
-    editor.splitBlock().setBlocks('paragraph');
+    editor.splitBlock(0).setBlocks('paragraph');
     return next();
   }
 
@@ -266,6 +212,20 @@ class MarkdownEditor extends React.Component {
     if (transfer.type !== 'html') return next();
     const { document } = this.fromHTML.convert(this.editor, transfer.html);
     editor.insertFragment(document);
+    return undefined;
+  }
+
+  getPlugin(plugin, by_key = 'plugin', in_array = false) {
+    for (const p of this.props.plugins) {
+      if (in_array) {
+        if (p[by_key].includes(plugin)) {
+          return p;
+        }
+      } else if (p[by_key] === plugin) {
+        return p;
+      }
+    }
+    return null;
   }
 
   /**
@@ -302,11 +262,15 @@ class MarkdownEditor extends React.Component {
     }
   }
 
+  isMarkdownEditorFocused() {
+    return document.activeElement.getAttribute('data-slate-editor');
+  }
+
   renderNode(props, editor, next) {
     const { node, attributes, children } = props;
 
     switch (node.type) {
-      case "paragraph":
+      case 'paragraph':
         return <p {...attributes}>{children}</p>;
       case 'heading_one':
         return <h1 {...attributes}>{children}</h1>;
@@ -328,9 +292,9 @@ class MarkdownEditor extends React.Component {
         return <pre {...attributes}>{children}</pre>;
       case 'html_block':
         return <pre {...attributes}>{children}</pre>;
-      case "link": {
+      case 'link': {
         const { data } = node;
-        const href = data.get("href");
+        const href = data.get('href');
         return <a {...attributes} href={href}>{children}</a>;
       }
       default:
@@ -351,9 +315,9 @@ class MarkdownEditor extends React.Component {
     const { children, mark, attributes } = props;
 
     switch (mark.type) {
-      case "bold":
+      case 'bold':
         return <strong {...attributes}>{children}</strong>;
-      case "italic":
+      case 'italic':
         return <em {...attributes}>{children}</em>;
       case 'html':
       case 'code':
@@ -364,12 +328,11 @@ class MarkdownEditor extends React.Component {
   }
 
   renderEditor(props, editor, next) {
-    if (!this.__init && typeof this['onInit'] === 'function') {
+    if (!this.__init && typeof this.onInit === 'function') {
       this.__init = true;
       return this.onInit(props, editor, next);
-    } else {
-      return next();
     }
+    return next();
   }
 
   // Render the editor.
@@ -380,20 +343,36 @@ class MarkdownEditor extends React.Component {
           className="doc-inner"
           value={this.state.value}
           schema={schema}
-          plugins={plugins}
-          onChange={this.onChange.bind(this)}
-          onKeyDown={this.onKeyDown.bind(this)}
-          onPaste={this.onPaste.bind(this)}
-          renderNode={this.renderNode.bind(this)}
-          renderMark={this.renderMark.bind(this)}
-          renderEditor={this.renderEditor.bind(this)}
+          plugins={this.props.plugins}
+          onChange={this.handleOnChange}
+          onKeyDown={this.handleOnKeyDown}
+          onPaste={this.handleOnPaste}
+          renderNode={this.handleRenderNode}
+          renderMark={this.handleRenderMark}
+          renderEditor={this.handleRenderEditor}
         />
         <div className="doc-inner">
-          <textarea className="markdown-box" value={this.state.markdown} onChange={event => this.onMarkdownChange(event)}></textarea>
+          <textarea className="markdown-box" value={this.state.markdown} onChange={event => this.onMarkdownChange(event)} />
         </div>
       </div>
     );
   }
 }
+
+MarkdownEditor.propTypes = {
+  markdown: PropTypes.string,
+  plugins: PropTypes.arrayOf(PropTypes.shape({
+    onEnter: PropTypes.func,
+    onKeyDown: PropTypes.func,
+    renderNode: PropTypes.func.isRequired,
+    toMarkdown: PropTypes.func.isRequired,
+    fromMarkdown: PropTypes.func.isRequired,
+    fromHTML: PropTypes.func.isRequired,
+    plugin: PropTypes.string.isRequired,
+    tags: PropTypes.arrayOf(PropTypes.string).isRequired,
+    markdownTags: PropTypes.arrayOf(PropTypes.string).isRequired,
+    schema: PropTypes.object.isRequired,
+  })),
+};
 
 export { MarkdownEditor };

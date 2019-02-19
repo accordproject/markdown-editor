@@ -1,139 +1,139 @@
 const NL = '\n';
 
 export class ToMarkdown {
-    constructor() {
-        this.stack = [];
-    }
+  constructor() {
+    this.stack = [];
+  }
 
-    convert(editor, value) {
-        return this.recursive(editor, value.document.nodes);
-    }
+  convert(editor, value) {
+    return this.recursive(editor, value.document.nodes);
+  }
 
-    recursive(editor, nodes) {
-        let markdown = "";
+  recursive(editor, nodes) {
+    let markdown = '';
 
-        nodes.forEach(node => {
-            this.stack.push(node);
+    nodes.forEach((node) => {
+      this.stack.push(node);
 
-            switch (node.object) {
-                case 'text':
-                    markdown += this.text(editor, node);
-                    break;
-                case 'block':
-                case 'inline':
-                    const method = node.type.replace('-', '_');
+      switch (node.object) {
+        case 'text':
+          markdown += this.text(editor, node);
+          break;
+        case 'block':
+        case 'inline':
+          const method = node.type.replace('-', '_');
 
-                    if (typeof this[method] === 'function') {
-                        markdown += this[method](editor, node);
-                    } else {
-                        const plugin = editor.getPlugin(node.type);
+          if (typeof this[method] === 'function') {
+            markdown += this[method](editor, node);
+          } else {
+            const plugin = editor.getPlugin(node.type);
 
-                        if (plugin && typeof plugin.toMarkdown === "function") {
-                            markdown += plugin.toMarkdown(editor, node);
-                        }
-                    }
-                    break;
-                default:
+            if (plugin && typeof plugin.toMarkdown === 'function') {
+              markdown += plugin.toMarkdown(editor, node);
             }
+          }
+          break;
+        default:
+      }
 
-            this.stack.pop();
-        });
+      this.stack.pop();
+    });
 
-        return markdown;
+    return markdown;
+  }
+
+  getParent() {
+    if (!this.stack || this.stack.length < 1) {
+      return null;
     }
 
-    getParent() {
-        if (!this.stack || this.stack.length < 1) {
-            return null;
-        }
+    return this.stack[this.stack.length - 2];
+  }
 
-        return this.stack[this.stack.length - 2];
+  text(editor, node) {
+    let result = '';
+
+    node.leaves.forEach((leaf) => {
+      const isBold = leaf.marks.some(mark => mark.type === 'bold');
+      const isItalic = leaf.marks.some(mark => mark.type === 'italic');
+      const isCode = leaf.marks.some(mark => mark.type === 'code');
+      let mark = '';
+
+      if (isBold) {
+        mark = '**';
+      }
+
+      if (isItalic) {
+        mark += '*';
+      }
+
+      if (isCode) {
+        mark += '`';
+      }
+
+      result += mark + leaf.text + mark;
+    });
+
+    return result;
+  }
+
+  paragraph(editor, node) {
+    let postfix = `${NL}${NL}`;
+    const parent = this.getParent();
+
+    if (parent) {
+      if (parent.type === 'code_block' || parent.type === ('list_item')) {
+        postfix = NL;
+      }
     }
 
-    text(editor, node) {
-        let result = "";
+    return `${this.recursive(editor, node.nodes)}${postfix}`;
+  }
 
-        node.leaves.forEach(leaf => {
-            const isBold = leaf.marks.some(mark => mark.type === "bold");
-            const isItalic = leaf.marks.some(mark => mark.type === "italic");
-            const isCode = leaf.marks.some(mark => mark.type === "code");
-            let mark = "";
+  link(editor, node) {
+    return `[${node.nodes.get(0).leaves.get(0).text}](${node.data.get('href')})`;
+  }
 
-            if (isBold) {
-                mark = "**";
-            }
+  horizontal_rule(editor, node) {
+    return `--- \n`;
+  }
 
-            if (isItalic) {
-                mark += "*";
-            }
+  block_quote(editor, node) {
+    return `> ${this.recursive(editor, node.nodes)}${NL}`;
+  }
 
-            if (isCode) {
-                mark += "`";
-            }
+  heading_one(editor, node) {
+    return `# ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+  }
 
-            result += mark + leaf.text + mark;
-        });
+  heading_two(editor, node) {
+    return `## ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+  }
 
-        return result;
-    }
+  heading_three(editor, node) {
+    return `### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+  }
 
-    paragraph(editor, node) {
-        let postfix = `${NL}${NL}`;
-        const parent = this.getParent();
+  heading_four(editor, node) {
+    return `#### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+  }
 
-        if (parent) {
-            if (parent.type === 'code_block' || parent.type === ('list_item')) {
-                postfix = NL;
-            }
-        }
+  heading_five(editor, node) {
+    return `##### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+  }
 
-        return `${this.recursive(editor, node.nodes)}${postfix}`;
-    }
+  heading_six(editor, node) {
+    return `###### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+  }
 
-    link(editor, node) {
-        return `[${node.nodes.get(0).leaves.get(0).text}](${node.data.get('href')})`;
-    }
+  html_block(editor, node) {
+    return this.recursive(editor, node.nodes);
+  }
 
-    horizontal_rule(editor, node) {
-        return `--- \n`;
-    }
-
-    block_quote(editor, node) {
-        return `> ${this.recursive(editor, node.nodes)}${NL}`;
-    }
-
-    heading_one(editor, node) {
-        return `# ${node.nodes.get(0).leaves.get(0).text}${NL}`;
-    }
-
-    heading_two(editor, node) {
-        return `## ${node.nodes.get(0).leaves.get(0).text}${NL}`;
-    }
-
-    heading_three(editor, node) {
-        return `### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
-    }
-
-    heading_four(editor, node) {
-        return `#### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
-    }
-
-    heading_five(editor, node) {
-        return `##### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
-    }
-
-    heading_six(editor, node) {
-        return `###### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
-    }
-
-    html_block(editor, node) {
-        return this.recursive(editor, node.nodes);
-    }
-
-    code_block(editor, node) {
-        const pre = `${NL}\`\`\`${NL}`;
-        const post = `\`\`\`${NL}`;
-        const md = this.recursive(editor, node.nodes);
-        return pre + md.trim() + NL + post;
-    }
+  code_block(editor, node) {
+    const pre = `${NL}\`\`\`${NL}`;
+    const post = `\`\`\`${NL}`;
+    const md = this.recursive(editor, node.nodes);
+    return pre + md.trim() + NL + post;
+  }
 }
