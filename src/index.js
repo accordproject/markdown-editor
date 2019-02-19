@@ -15,7 +15,7 @@
 import React from 'react';
 import { Editor, getEventTransfer } from 'slate-react';
 import { Value } from 'slate';
-import schema from './schema';
+import baseSchema from './schema';
 import { FromHTML } from './html/fromHTML';
 import PropTypes from 'prop-types';
 import { Markdown } from './markdown';
@@ -40,7 +40,8 @@ This is more text.`;
 class MarkdownEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { value: Value.fromJSON({ document: { nodes: [] } }), markdown: props.markdown ? props.markdown : defaultMarkdown };
+    this.state = { value: Value.fromJSON({ document: { nodes: [] } }),
+      markdown: props.markdown ? props.markdown : defaultMarkdown };
     this.editor = null;
     this.markdown = new Markdown();
     this.fromHTML = new FromHTML();
@@ -52,6 +53,13 @@ class MarkdownEditor extends React.Component {
     this.handleRenderMark = this.renderMark.bind(this);
     this.handleRenderEditor = this.renderEditor.bind(this);
     this.handleGetPlugin = this.getPlugin.bind(this);
+
+    this.schema = baseSchema;
+    this.props.plugins.forEach((plugin) => {
+      plugin.tags.forEach((tag) => {
+        this.schema.document.nodes[0].match.push({ type: tag });
+      });
+    });
   }
 
   componentDidMount() {
@@ -77,7 +85,6 @@ class MarkdownEditor extends React.Component {
     if (this.isMarkdownEditorFocused()) {
       const markdown = this.markdown.toMarkdown.convert(this.editor, value);
       this.setState({ markdown });
-      // console.log('%cTo Markdown:', 'font-weight:bold;', "\n", markdown, "\n", value.toJSON());
     }
   }
 
@@ -85,7 +92,6 @@ class MarkdownEditor extends React.Component {
     this.setState({ markdown: event.target.value });
     const value = this.markdown.fromMarkdown.convert(this.editor, event.target.value);
     this.setState({ value });
-    // console.log('%cFrom Markdown:', 'font-weight:bold;', "\n", event.target.value, "\n", value.toJSON());
   }
 
   /**
@@ -342,7 +348,7 @@ class MarkdownEditor extends React.Component {
         <Editor
           className="doc-inner"
           value={this.state.value}
-          schema={schema}
+          schema={this.schema}
           plugins={this.props.plugins}
           onChange={this.handleOnChange}
           onKeyDown={this.handleOnKeyDown}

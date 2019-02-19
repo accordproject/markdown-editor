@@ -67,7 +67,7 @@ function Video() {
      * @param {Editor} editor
      */
   function toMarkdown(editor, value) {
-    return `<video ${value.data.get('attr_string')}/>\n\n`;
+    return `<video ${value.data.get('attributeString')}/>\n\n`;
   }
 
   function fromMarkdown(editor, event, tag) {

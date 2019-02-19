@@ -18,7 +18,6 @@ const schema = {
           { type: 'code_block' },
           { type: 'html_block' },
           { type: 'html_inline' },
-          { type: 'video' },
         ],
       },
     ],
