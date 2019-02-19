@@ -10,6 +10,7 @@ export class FromMarkdown {
     }
 
     convert(editor, markdownText) {
+        this.editor = editor;
         this.root = {
             document: {
                 nodes: []
@@ -29,18 +30,9 @@ export class FromMarkdown {
             const method = node.type.replace('-', '_');
 
             if (typeof this[method] === 'function') {
-                this[method](node, event.entering);
+                this[method](node, event);
             } else {
-                const plugin = editor.getPlugin(node.type, 'markdownTags', true);
-
-                if (plugin && typeof plugin.fromMarkdown === "function") {
-                    const markdown = plugin.fromMarkdown(editor, event);
-                    // console.log('Output:', markdown);
-
-                    if (markdown === undefined) continue
-
-                    this[markdown.action](markdown.block);
-                } else {
+                if (!this.plugin_handle(node, event)) {
                     console.log(`Unrecognized node: ${node.type}`);
                 }
             }
@@ -50,6 +42,30 @@ export class FromMarkdown {
 
         // console.log(JSON.stringify(this.root));
         return Value.fromJSON(this.root);
+    }
+
+    plugin_handle(node, event, tag = null) {
+        const plugin = this.editor.getPlugin(tag ? tag.tag : node.type, 'markdownTags', true);
+
+        if (plugin && typeof plugin.fromMarkdown === "function") {
+            const markdown = plugin.fromMarkdown(this.editor, event, tag);
+            // console.log('Output:', markdown);
+
+            if (markdown === undefined) {
+                return true;
+            }
+
+            if (markdown.constructor === Array) {
+                for (const temp of markdown) {
+                    this[temp.action](temp.block);
+                }
+            } else {
+                this[markdown.action](markdown.block);
+            }
+            return true;
+        }
+
+        return false;
     }
 
     /********** Helpers **********/
@@ -91,10 +107,45 @@ export class FromMarkdown {
         }
     }
 
+    getHTMLTag(string) {
+        const match = string.match(/^<([^\s]+)\s(.*?)>\/?/);
+
+        if (!match) {
+            return false;
+        }
+
+        const tag = {
+            tag: match[1],
+            has_closing: new RegExp(`</${match[1]}>$`).test(string),
+            attributes: this.parseAttributes(match[2]),
+            attr_string: match[2],
+            content: null
+        };
+
+        if (tag['has_closing']) {
+            const content_match = string.match(new RegExp(`${match[0]}([\\s\\S]*)</(?:[\\s]+)?${match[1]}(?:[\\s]+)?>`, 'i'));
+
+            if (content_match) {
+                tag['content'] = content_match[1];
+            }
+        }
+
+        return tag;
+    }
+
+    parseAttributes(string) {
+        return string.trim().split(' ').filter(attr => attr.trim()).map(attr => {
+            const parsed = attr.split('=');
+            return {
+                [parsed[0]]: parsed[1] ? parsed[1].replace(/^"/, '').replace(/"$/, '') : true
+            };
+        });
+    }
+
     /********** Nodes **********/
 
-    document(node, entering) {
-        if (entering) {
+    document(node, event) {
+        if (event.entering) {
             this.root = {
                 document: {
                     nodes: [],
@@ -105,7 +156,7 @@ export class FromMarkdown {
         this.push(this.root.document, false);
     }
 
-    text(node, entering) {
+    text(node, event) {
         if (node.parent && ['link'].includes(node.parent.type)) {
             return;
         }
@@ -141,9 +192,9 @@ export class FromMarkdown {
         return marks;
     }
 
-    paragraph(node, entering) {
+    paragraph(node, event) {
         if (!["item", "block_quote"].includes(node.parent.type)) {
-            if (entering) {
+            if (event.entering) {
                 const block = {
                     object: 'block',
                     type: 'paragraph',
@@ -205,18 +256,10 @@ export class FromMarkdown {
         this.addTextLeaf(leaf);
     }
 
-    code_block() {
-
-    }
-
-    html_inline() {
-
-    }
-
-    html_block(node) {
+    code_block(node) {
         const block = {
             object: 'block',
-            type: 'html_block',
+            type: 'code_block',
             data: {},
             nodes: [],
         };
@@ -233,14 +276,60 @@ export class FromMarkdown {
         this.addTextLeaf({
             object: 'leaf',
             text: node.literal,
+            marks: []
+        });
+        this.pop();
+        this.pop();
+    }
+
+    html_inline(node) {
+        const leaf = {
+            object: 'leaf',
+            text: node.literal,
             marks: [{
                 object: 'mark',
                 type: 'html',
                 data: {}
             }]
-        });
-        this.pop();
-        this.pop();
+        };
+
+        this.addTextLeaf(leaf);
+    }
+
+    html_block(node, event) {
+        const tag = this.getHTMLTag(node.literal);
+
+        if (tag && this.plugin_handle(node, event, tag)) {
+            // console.log('Custom html tag:', tag, "\n", 'Node:', node);
+        } else {
+            const block = {
+                object: 'block',
+                type: 'html_block',
+                data: {},
+                nodes: [],
+            };
+
+            const para = {
+                object: 'block',
+                type: 'paragraph',
+                data: {},
+                nodes: [],
+            };
+
+            this.push(block);
+            this.push(para);
+            this.addTextLeaf({
+                object: 'leaf',
+                text: node.literal,
+                marks: [{
+                    object: 'mark',
+                    type: 'html',
+                    data: {}
+                }]
+            });
+            this.pop();
+            this.pop();
+        }
     }
 
     headingLevelConverter(level) {
@@ -262,11 +351,11 @@ export class FromMarkdown {
         }
     }
 
-    heading(node, entering) {
-        if (entering) {
+    heading(node, event) {
+        if (event.entering) {
             const block = {
                 object: 'block',
-                type: `heading-${this.headingLevelConverter(node.level)}`,
+                type: `heading_${this.headingLevelConverter(node.level)}`,
                 data: {},
                 nodes: [],
             };
@@ -276,8 +365,8 @@ export class FromMarkdown {
         }
     }
 
-    block_quote(node, entering) {
-        if (entering) {
+    block_quote(node, event) {
+        if (event.entering) {
             const block = {
                 object: 'block',
                 type: 'block_quote',
@@ -290,8 +379,8 @@ export class FromMarkdown {
         }
     }
 
-    link(node, entering) {
-        if (entering) {
+    link(node, event) {
+        if (event.entering) {
             const inline = {
                 object: 'inline',
                 type: 'link',
