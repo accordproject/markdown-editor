@@ -7,9 +7,9 @@ function List() {
   const schema = {
     blocks: {
       list: {
-        nodes: [{ match: { type: "list-item" } }]
+        nodes: [{ match: { type: "list_item" } }]
       },
-      "list-item": {
+      "list_item": {
         parent: { type: "list" },
         nodes: [{ match: [{ object: "text" }, { type: "link" }] }],
         marks: [{ type: 'bold' }, { type: 'italic' }]
@@ -63,7 +63,7 @@ function List() {
         } else {
           return <ul {...attributes}>{children}</ul>;
         }
-      case "list-item":
+      case "list_item":
         return <li {...attributes}>{children}</li>;
       default:
         return next();
@@ -102,7 +102,7 @@ function List() {
       } else if (event.node.type === 'item') {
         block = {
           object: 'block',
-          type: 'list-item',
+          type: 'list_item',
           data: {},
           nodes: [],
         };
@@ -125,7 +125,7 @@ function List() {
     } else {
       return {
         object: 'block',
-        type: 'list-item',
+        type: 'list_item',
         data: {},
         nodes: next(el.childNodes),
       };

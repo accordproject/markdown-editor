@@ -1,6 +1,10 @@
 const NL = '\n';
 
 export class ToMarkdown {
+    constructor() {
+        this.stack = [];
+    }
+
     convert(editor, value) {
         return this.recursive(editor, value.document.nodes);
     }
@@ -9,6 +13,8 @@ export class ToMarkdown {
         let markdown = "";
 
         nodes.forEach(node => {
+            this.stack.push(node);
+
             switch (node.object) {
                 case 'text':
                     markdown += this.text(editor, node);
@@ -29,9 +35,19 @@ export class ToMarkdown {
                     break;
                 default:
             }
+
+            this.stack.pop();
         });
 
         return markdown;
+    }
+
+    getParent() {
+        if (!this.stack || this.stack.length < 1) {
+            return null;
+        }
+
+        return this.stack[this.stack.length - 2];
     }
 
     text(editor, node) {
@@ -62,7 +78,16 @@ export class ToMarkdown {
     }
 
     paragraph(editor, node) {
-        return `${this.recursive(editor, node.nodes)}${NL}${NL}`;
+        let postfix = `${NL}${NL}`;
+        const parent = this.getParent();
+
+        if (parent) {
+            if (parent.type === 'code_block' || parent.type === ('list_item')) {
+                postfix = NL;
+            }
+        }
+
+        return `${this.recursive(editor, node.nodes)}${postfix}`;
     }
 
     link(editor, node) {
@@ -99,5 +124,16 @@ export class ToMarkdown {
 
     heading_six(editor, node) {
         return `###### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+    }
+
+    html_block(editor, node) {
+        return this.recursive(editor, node.nodes);
+    }
+
+    code_block(editor, node) {
+        const pre = `${NL}\`\`\`${NL}`;
+        const post = `\`\`\`${NL}`;
+        const md = this.recursive(editor, node.nodes);
+        return pre + md.trim() + NL + post;
     }
 }

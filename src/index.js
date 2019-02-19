@@ -6,56 +6,73 @@ import schema from "./schema";
 import { FromHTML } from './html/fromHTML';
 
 import List from "./plugins/list";
+import Clause from './plugins/clause';
 import { Markdown } from "./markdown";
 
-const markdown = `
-# Heading One
+const markdown = `# Heading One
 This is text. This is *italic* text. This is **bold** text. This is a [link](https://clause.io). This is \`inline code\`.
 
 This is ***bold and italic*** text
+
 > This is a quote.
 ## Heading Two
 This is more text.
+
 This is more text.
+
 ### Heading Three
+
 \`\`\`
 namespace org.accordproject.time
+
 enum TemporalUnit {
   o seconds
   o weeks
 }
+
 \`\`\`
 #### Lists
 Bullet list:
+
    * this is a list item
    * this a second item
 
 Numbered list:
+
    1. This is a numbered list item
    1. Another numbered item
+
 --- 
 That was a thematic break.
 
----
-This is inline HTML <responsive-image src="foo.jpg" />. 
+--- 
+This is inline HTML <responsive-image src="foo.jpg" />.
+
 While this is a block of HTML:
+
 <script type="text/ergo">
 This is some Ergo code.
 </script>
+
 This is an HTML block with a custom tag:
-<Clause template="foo">
+
+<Clause template="foo" disabled>
 {
   "one" : 1,
   "two" : "three",
   "four" : true
 }
 </Clause>
+
 This is a link reference definition followed by a ...
-[mylink]: /url "this is a custom title"
-Reference:
-[mylink] with a custom title.
+
+Reference: 
+[this is a custom title](/url) with a custom title.
 `;
-const plugins = [List()];
+const plugins = [
+  List(),
+  Clause()
+];
 
 // Define our app...
 class MarkdownEditor extends React.Component {
@@ -144,10 +161,10 @@ class MarkdownEditor extends React.Component {
     const chars = startBlock.text.slice(0, start.offset).replace(/\s*/g, '');
     const type = this.getType(chars);
     if (!type) return next();
-    if (type === 'list-item' && startBlock.type === 'list-item') return next();
-    if (type === 'horizontal-rule') {
+    if (type === 'list_item' && startBlock.type === 'list_item') return next();
+    if (type === 'horizontal_rule') {
       const hr = {
-        type: 'horizontal-rule',
+        type: 'horizontal_rule',
       };
       editor.insertBlock(hr);
       // this CRASHES? editor.moveFocusToEndOfNode(hr);
@@ -156,9 +173,9 @@ class MarkdownEditor extends React.Component {
     event.preventDefault();
     editor.setBlocks(type);
 
-    if (type === 'list-item') {
+    if (type === 'list_item') {
       // TODO (DCS) what about ol?
-      editor.wrapBlock('ul-list');
+      editor.wrapBlock('ul_list');
     }
 
     editor.moveFocusToStartOfNode(startBlock).delete();
@@ -186,8 +203,8 @@ class MarkdownEditor extends React.Component {
     event.preventDefault();
     editor.setBlocks('paragraph');
 
-    if (startBlock.type === 'list-item') {
-      editor.unwrapBlock('ul-list');
+    if (startBlock.type === 'list_item') {
+      editor.unwrapBlock('list');
     }
 
     return undefined;
@@ -263,23 +280,23 @@ class MarkdownEditor extends React.Component {
       case '*':
       case '-':
       case '+':
-        return 'list-item';
+        return 'list_item';
       case '>':
-        return 'block-quote';
+        return 'block_quote';
       case '#':
-        return 'heading-one';
+        return 'heading_one';
       case '##':
-        return 'heading-two';
+        return 'heading_two';
       case '###':
-        return 'heading-three';
+        return 'heading_three';
       case '####':
-        return 'heading-four';
+        return 'heading_four';
       case '#####':
-        return 'heading-five';
+        return 'heading_five';
       case '######':
-        return 'heading-six';
+        return 'heading_six';
       case '---':
-        return 'horizontal-rule';
+        return 'horizontal_rule';
       default:
         return null;
     }
@@ -291,17 +308,17 @@ class MarkdownEditor extends React.Component {
     switch (node.type) {
       case "paragraph":
         return <p {...attributes}>{children}</p>;
-      case 'heading-one':
+      case 'heading_one':
         return <h1 {...attributes}>{children}</h1>;
-      case 'heading-two':
+      case 'heading_two':
         return <h2 {...attributes}>{children}</h2>;
-      case 'heading-three':
+      case 'heading_three':
         return <h3 {...attributes}>{children}</h3>;
-      case 'heading-four':
+      case 'heading_four':
         return <h4 {...attributes}>{children}</h4>;
-      case 'heading-five':
+      case 'heading_five':
         return <h5 {...attributes}>{children}</h5>;
-      case 'heading-six':
+      case 'heading_six':
         return <h6 {...attributes}>{children}</h6>;
       case 'horizontal_rule':
         return <hr {...attributes} />;
@@ -314,11 +331,7 @@ class MarkdownEditor extends React.Component {
       case "link": {
         const { data } = node;
         const href = data.get("href");
-        return (
-          <a {...attributes} href={href}>
-            {children}
-          </a>
-        );
+        return <a {...attributes} href={href}>{children}</a>;
       }
       default:
         return next();

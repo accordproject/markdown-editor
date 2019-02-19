@@ -4,12 +4,12 @@ const BLOCK_TAGS = {
     p: 'paragraph',
     blockquote: 'block_quote',
     pre: 'code',
-    h1: 'heading-one',
-    h2: 'heading-two',
-    h3: 'heading-three',
-    h4: 'heading-four',
-    h5: 'heading-five',
-    h6: 'heading-six',
+    h1: 'heading_one',
+    h2: 'heading_two',
+    h3: 'heading_three',
+    h4: 'heading_four',
+    h5: 'heading_five',
+    h6: 'heading_six',
 };
 
 const MARK_TAGS = {
