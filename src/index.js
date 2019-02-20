@@ -14,6 +14,7 @@
 
 import React from 'react';
 import { Editor, getEventTransfer } from 'slate-react';
+import { Tab, Form, Input, TextArea } from 'semantic-ui-react';
 import { Value } from 'slate';
 import baseSchema from './schema';
 import { FromHTML } from './html/fromHTML';
@@ -395,26 +396,42 @@ class MarkdownEditor extends React.Component {
    * Render this React component
    */
   render() {
+    const that = this;
+    const panes = [
+      { menuItem: 'Rich Text',
+        render: () =>
+          (<Editor
+            ref={this.editor}
+            className="doc-inner"
+            value={this.state.value}
+            schema={this.schema}
+            plugins={this.props.plugins}
+            onChange={this.handleOnChange}
+            onKeyDown={this.handleOnKeyDown}
+            onPaste={this.handleOnPaste}
+            renderNode={this.handleRenderNode}
+            renderMark={this.handleRenderMark}
+            findPluginByHtmlTag={this.handleFindPluginByHtmlTag}
+            findPluginByMarkdownTag={this.handleFindPluginByMarkdownTag}
+            toMarkdown={this.handleToMarkdown}
+          />),
+      },
+      { menuItem: 'Markdown',
+        render: () =>
+          (<Form>
+            <TextArea
+              autoHeight
+              placeholder="Write some markdown..."
+              value={that.state.markdown}
+              onChange={event => this.onMarkdownChange(event)}
+            />
+          </Form>),
+      },
+    ];
+
     return (
-      <div className="doc">
-        <Editor
-          ref={this.editor}
-          className="doc-inner"
-          value={this.state.value}
-          schema={this.schema}
-          plugins={this.props.plugins}
-          onChange={this.handleOnChange}
-          onKeyDown={this.handleOnKeyDown}
-          onPaste={this.handleOnPaste}
-          renderNode={this.handleRenderNode}
-          renderMark={this.handleRenderMark}
-          findPluginByHtmlTag={this.handleFindPluginByHtmlTag}
-          findPluginByMarkdownTag={this.handleFindPluginByMarkdownTag}
-          toMarkdown={this.handleToMarkdown}
-        />
-        <div className="doc-inner">
-          <textarea className="markdown-box" value={this.state.markdown} onChange={event => this.onMarkdownChange(event)} />
-        </div>
+      <div>
+        <Tab menu={{ pointing: true }} panes={panes} />
       </div>
     );
   }
