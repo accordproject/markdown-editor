@@ -9,7 +9,11 @@ import Video from '../../src/plugins/video';
 
 const plugins = [List(), Video()];
 
-ReactDOM.render(<MarkdownEditor plugins={plugins} />, document.getElementById('root'));
+function storeLocal(editor) {
+  localStorage.setItem('markdown-editor', editor.getMarkdown());
+}
+
+ReactDOM.render(<MarkdownEditor plugins={plugins} onChange={storeLocal} />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

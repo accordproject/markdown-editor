@@ -92,6 +92,8 @@ class MarkdownEditor extends React.Component {
       const markdown = this.markdown.toMarkdown.convert(this.editor, this.handleFindPluginByMarkdownTag, value);
       this.setState({ markdown });
     }
+
+    this.props.onChange(this);
   }
 
   /**
@@ -241,6 +243,13 @@ class MarkdownEditor extends React.Component {
     const { document } = this.fromHTML.convert(this.editor, this.handleFindPluginByHtmlTag, transfer.html);
     editor.insertFragment(document);
     return undefined;
+  }
+
+  /**
+   * Returns the contents of the editor as a markdown string
+   */
+  getMarkdown() {
+    return this.state.markdown;
   }
 
   /**
@@ -416,6 +425,7 @@ class MarkdownEditor extends React.Component {
  */
 MarkdownEditor.propTypes = {
   markdown: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
   plugins: PropTypes.arrayOf(PropTypes.shape({
     onEnter: PropTypes.func,
     onKeyDown: PropTypes.func,
