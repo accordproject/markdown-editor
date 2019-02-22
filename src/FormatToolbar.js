@@ -69,36 +69,36 @@ export default class FormatToolbar extends React.Component {
     const { document } = value;
 
     // Handle everything but list buttons.
-    if (type !== 'ul-list' && type !== 'ol-list') {
-      const isActive = this.hasBlock(editor, type);
-      const isList = this.hasBlock(editor, 'list-item');
+    if (type !== 'ul_list' && type !== 'ol_list') {
+      const isActive = FormatToolbar.hasBlock(editor, type);
+      const isList = FormatToolbar.hasBlock(editor, 'list_item');
 
       if (isList) {
         editor
           .setBlocks(isActive ? DEFAULT_NODE : type)
-          .unwrapBlock('ul-list')
-          .unwrapBlock('ol-list');
+          .unwrapBlock('ul_list')
+          .unwrapBlock('ol_list');
       } else {
         editor.setBlocks(isActive ? DEFAULT_NODE : type);
       }
     } else {
       // Handle the extra wrapping required for list buttons.
-      const isList = this.hasBlock(editor, 'list-item');
+      const isList = FormatToolbar.hasBlock(editor, 'list_item');
       const isType = value.blocks.some(block => !!document.getClosest(block.key, parent => parent.type === type));
 
       if (isList && isType) {
         editor
           .setBlocks(DEFAULT_NODE)
-          .unwrapBlock('ul-list')
-          .unwrapBlock('ol-list');
+          .unwrapBlock('ul_list')
+          .unwrapBlock('ol_list');
       } else if (isList) {
         editor
           .unwrapBlock(
-            type === 'ul-list' ? 'ol-list' : 'ul-list',
+            type === 'ul_list' ? 'ol_list' : 'ul_list',
           )
           .wrapBlock(type);
       } else {
-        editor.setBlocks('list-item').wrapBlock(type);
+        editor.setBlocks('list_item').wrapBlock(type);
       }
     }
   }
@@ -176,8 +176,8 @@ export default class FormatToolbar extends React.Component {
    * @return {Boolean}
    */
 
-  hasBlock(editor, type) {
-    const { value } = editor.state;
+  static hasBlock(editor, type) {
+    const { value } = editor;
     return value.blocks.some(node => node.type === type);
   }
 
@@ -236,21 +236,19 @@ export default class FormatToolbar extends React.Component {
   }
 
   render() {
-    const { rect } = this.props;
-    console.log(rect);
+    const { rect, pluginManager, editor } = this.props;
 
     if (rect) {
       return (
         <StyledToolbar className="format-toolbar" rect={rect}>
-          { this.renderBlockButton('heading-one', 'heading')}
-          { this.renderBlockButton('heading-two', 'h')}
+          { this.renderBlockButton('heading_one', 'heading')}
+          { this.renderBlockButton('heading_two', 'font')}
           { this.renderMarkButton('bold', 'bold')}
           { this.renderMarkButton('italic', 'italic')}
           { this.renderMarkButton('code', 'code')}
-          { this.renderBlockButton('block-quote', 'quote left')}
-          { this.renderBlockButton('ol-list', 'list ol')}
-          { this.renderBlockButton('ul-list', 'list ul')}
+          { this.renderBlockButton('block_quote', 'quote left')}
           { this.renderLinkButton()}
+          { pluginManager.renderToolbar(editor)}
         </StyledToolbar>
       );
     }
@@ -262,4 +260,5 @@ export default class FormatToolbar extends React.Component {
 FormatToolbar.propTypes = {
   editor: PropTypes.object.isRequired,
   rect: PropTypes.object,
+  pluginManager: PropTypes.object,
 };

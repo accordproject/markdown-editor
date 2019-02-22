@@ -18,7 +18,9 @@ export default class HoverMenu extends React.Component {
    */
 
   render() {
-    const { rect, innerRef, editor } = this.props;
+    const {
+      rect, pluginManager, innerRef, editor,
+    } = this.props;
     const root = window.document.getElementById('root');
 
     return ReactDOM.createPortal(
@@ -26,6 +28,7 @@ export default class HoverMenu extends React.Component {
         editor={editor}
         innerRef={innerRef}
         rect={rect}
+        pluginManager = {pluginManager}
       />,
       root,
     );
@@ -36,4 +39,5 @@ HoverMenu.propTypes = {
   editor: PropTypes.object.isRequired,
   innerRef: PropTypes.func.isRequired,
   rect: PropTypes.object,
+  pluginManager: PropTypes.object,
 };

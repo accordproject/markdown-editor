@@ -440,6 +440,7 @@ class MarkdownEditor extends React.Component {
           innerRef={menu => (this.menu = menu)}
           editor={editor}
           rect={this.state.rect}
+          pluginManager = {this.pluginManager}
         />
       </React.Fragment>
     );

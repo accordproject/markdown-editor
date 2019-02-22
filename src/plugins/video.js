@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon } from 'semantic-ui-react';
 
 /**
  * A sample plugin that renders a Youtube video using an iframe
@@ -90,6 +91,33 @@ function Video() {
     };
   }
 
+  /**
+   * When then button is clicked
+   *
+   * @param {Editor} editor
+   * @param {Event} event
+   */
+
+  function onClickButton(editor, event) {
+    event.preventDefault();
+    alert('Video plugin button clicked!');
+  }
+
+  /**
+   * Render a video toolbar button.
+   *
+   * @param {Editor} editor
+   * @return {Element}
+   */
+  function renderToolbar(editor) {
+    return (<Icon
+      key={plugin}
+      name='youtube'
+      aria-label='youtube'
+      onMouseDown={event => onClickButton(editor, event)}
+    />);
+  }
+
   return {
     plugin,
     tags,
@@ -100,6 +128,7 @@ function Video() {
     toMarkdown,
     fromMarkdown,
     fromHTML,
+    renderToolbar,
   };
 }
 

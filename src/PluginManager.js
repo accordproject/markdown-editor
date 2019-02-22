@@ -11,6 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import React from 'react';
 
 /**
  * Manages a set of plugins
@@ -50,5 +51,27 @@ export default class PluginManager {
     }
 
     return null;
+  }
+
+  /**
+   * Render the toolbar buttons for all plugins
+   *
+   * @param {Editor} editor
+   * @return {Element}
+   */
+  renderToolbar(editor) {
+    const buttons = [];
+    this.plugins.forEach((plugin) => {
+      if (plugin.renderToolbar) {
+        const button = plugin.renderToolbar(editor);
+        if (button) {
+          buttons.push(button);
+        }
+      }
+    });
+    if (buttons.length > 0) {
+      return (<React.Fragment>{buttons}</React.Fragment>);
+    }
+    return (<React.Fragment/>);
   }
 }
