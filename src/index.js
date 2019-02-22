@@ -33,6 +33,18 @@ This is ***bold and italic*** text
 ## Heading Two
 This is more text.
 
+Ordered lists:
+
+1. one
+1. two
+1. three
+
+Or:
+
+* apples
+* pears
+* peaches
+
 ### Sub heading
 
 Video:
