@@ -20,10 +20,16 @@ const MARK_TAGS = {
   code: 'code',
 };
 
+/**
+ * Converts from HTML
+ */
 export class FromHTML {
-  convert(editor, findPluginByHtmlTag, html) {
-    this.editor = editor;
+  constructor(findPluginByHtmlTag) {
     this.findPluginByHtmlTag = findPluginByHtmlTag;
+  }
+
+  convert(editor, html) {
+    this.editor = editor;
     this.serializer = new Html({ rules: [{ deserialize: this.serialize.bind(this) }] });
     return this.serializer.deserialize(html);
   }
@@ -66,6 +72,7 @@ export class FromHTML {
       return plugin.fromHTML(this.editor, el, next);
     }
     console.log(`Unrecognized html tag: ${tag}`);
+    return undefined;
   }
 
   a(el, next) {
