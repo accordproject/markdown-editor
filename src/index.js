@@ -19,7 +19,10 @@ import { Value } from 'slate';
 import PropTypes from 'prop-types';
 import baseSchema from './schema';
 import { FromHTML } from './html/fromHTML';
-import { Markdown } from './markdown';
+import FromMarkdown from './markdown/fromMarkdown';
+import ToMarkdown from './markdown/toMarkdown';
+
+import PluginManager from './PluginManager';
 
 const defaultMarkdown = `# Heading One
 This is text. This is *italic* text. This is **bold** text. This is a [link](https://clause.io). This is \`inline code\`.
@@ -48,7 +51,6 @@ Another video:
  * Plugins are responsible for serialization to/from markdown and HTML,
  * rendering and schema definition.
  */
-/* eslint class-methods-use-this: ["error", { "exceptMethods": ["renderMark"] }] */
 class MarkdownEditor extends React.Component {
   constructor(props) {
     super(props);
@@ -56,16 +58,14 @@ class MarkdownEditor extends React.Component {
       value: Value.fromJSON({ document: { nodes: [] } }),
       markdown: props.markdown ? props.markdown : defaultMarkdown,
     };
-    this.markdown = new Markdown();
     this.editor = React.createRef();
+    this.pluginManager = new PluginManager(this.props.plugins);
+    this.fromMarkdown = new FromMarkdown(this.pluginManager);
+    this.toMarkdown = new ToMarkdown(this.pluginManager);
 
     this.handleOnChange = this.onChange.bind(this);
     this.handleOnPaste = this.onPaste.bind(this);
-    this.handleFindPluginByHtmlTag = this.findPluginByHtmlTag.bind(this);
-    this.handleFindPluginByMarkdownTag = this.findPluginByMarkdownTag.bind(this);
-    this.handleToMarkdown = this.markdown.toMarkdown.recursive.bind(this.markdown.toMarkdown);
-
-    this.fromHTML = new FromHTML(this.handleFindPluginByHtmlTag);
+    this.fromHTML = new FromHTML(this.pluginManager);
 
     this.schema = baseSchema;
     this.props.plugins.forEach((plugin) => {
@@ -80,9 +80,7 @@ class MarkdownEditor extends React.Component {
    */
   componentDidMount() {
     this.onChange({
-      value: this.markdown.fromMarkdown.convert(
-        this.editor, this.handleFindPluginByMarkdownTag, this.state.markdown,
-      ),
+      value: this.fromMarkdown.convert(this.state.markdown),
     });
   }
 
@@ -94,9 +92,7 @@ class MarkdownEditor extends React.Component {
     this.setState({ value });
 
     if (MarkdownEditor.isMarkdownEditorFocused()) {
-      const markdown = this.markdown.toMarkdown.convert(
-        this.editor, this.handleFindPluginByMarkdownTag, value,
-      );
+      const markdown = this.toMarkdown.convert(value);
       this.setState({ markdown });
     }
 
@@ -109,9 +105,7 @@ class MarkdownEditor extends React.Component {
    */
   onMarkdownChange(event) {
     this.setState({ markdown: event.target.value });
-    const value = this.markdown.fromMarkdown.convert(
-      this.editor, this.handleFindPluginByMarkdownTag, event.target.value,
-    );
+    const value = this.fromMarkdown.convert(event.target.value);
     this.setState({ value });
   }
 
@@ -123,7 +117,6 @@ class MarkdownEditor extends React.Component {
    * @param {Editor} editor
    * @param {Function} next
    */
-
   static onSpace(event, editor, next) {
     const { value } = editor;
     const { selection } = value;
@@ -163,7 +156,6 @@ class MarkdownEditor extends React.Component {
    * @param {Editor} editor
    * @param {Function} next
    */
-
   static onBackspace(event, editor, next) {
     const { value } = editor;
     const { selection } = value;
@@ -192,9 +184,6 @@ class MarkdownEditor extends React.Component {
    * @param {Function} next
    */
   static onEnter(event, editor, next) {
-    // console.log(editor);
-    // console.log('onEnter of index.js');
-    // const { value } = editor;
     const { value } = editor;
     const { selection } = value;
     const { start, end, isExpanded } = selection;
@@ -244,6 +233,7 @@ class MarkdownEditor extends React.Component {
    * @param {*} event
    * @param {*} editor
    * @param {*} next
+   * @return {*} the react component
    */
   onPaste(event, editor, next) {
     const transfer = getEventTransfer(event);
@@ -266,7 +256,6 @@ class MarkdownEditor extends React.Component {
    * @param {String} chars
    * @return {String} block
    */
-
   static getType(chars) {
     switch (chars) {
       case '*':
@@ -295,36 +284,6 @@ class MarkdownEditor extends React.Component {
   }
 
   /**
-   * Returns the first plugin that can handle an HTML tag, or null
-   * @param {string} tag - the HTML tag to search for
-   */
-  findPluginByHtmlTag(tag) {
-    for (let n = 0; n < this.props.plugins.length; n += 1) {
-      const plugin = this.props.plugins[n];
-      if (plugin.tags.includes(tag)) {
-        return plugin;
-      }
-    }
-
-    return null;
-  }
-
-  /**
-   * Returns the first plugin that can handle a Markdown tag, or null
-   * @param {string} tag - the Markdown tag to search for
-   */
-  findPluginByMarkdownTag(tag) {
-    for (let n = 0; n < this.props.plugins.length; n += 1) {
-      const plugin = this.props.plugins[n];
-      if (plugin.markdownTags.includes(tag)) {
-        return plugin;
-      }
-    }
-
-    return null;
-  }
-
-  /**
    * Return true if the markdown editor has focus
    */
   static isMarkdownEditorFocused() {
@@ -337,6 +296,7 @@ class MarkdownEditor extends React.Component {
    * @param {*} props
    * @param {*} editor
    * @param {*} next
+   * @return {*} the react component
    */
   static renderNode(props, editor, next) {
     const { node, attributes, children } = props;
@@ -380,6 +340,7 @@ class MarkdownEditor extends React.Component {
    * @param {*} props
    * @param {*} editor
    * @param {*} next
+   * @return {*} the react component
    */
   static renderMark(props, editor, next) {
     const { children, mark, attributes } = props;
@@ -399,6 +360,7 @@ class MarkdownEditor extends React.Component {
 
   /**
    * Render this React component
+   * @return {*} the react component
    */
   render() {
     const panes = [

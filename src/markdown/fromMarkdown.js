@@ -1,23 +1,42 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import commonmark from 'commonmark';
 import { Value } from 'slate';
+import Stack from './Stack';
+import Markdown from './Markdown';
 
-export class FromMarkdown {
-  constructor() {
+/**
+ * Converts markdown text to a Slate.js value object.
+ * The markdown text is parsed using Common Mark.
+ * Custom HTML blocks are dispatched to a plugin.
+ */
+export default class FromMarkdown extends Markdown {
+  constructor(pluginManager) {
+    super(pluginManager);
+
     this.markMapping = {
       strong: 'bold',
       emph: 'italic',
     };
   }
 
-  convert(editor, findPluginByMarkdownTag, markdownText) {
-    this.editor = editor;
-    this.findPluginByMarkdownTag = findPluginByMarkdownTag;
-    this.root = {
-      document: {
-        nodes: [],
-      },
-    };
-    this.stack = [];
+  /**
+   * Converts markdown text to a Slate.js Value object.
+   * @param {*} markdownText
+   * @return {Object} the Slate.js Value object
+   */
+  convert(markdownText) {
     this.marks = ['code', 'strong', 'emph'];
 
     const reader = new commonmark.Parser();
@@ -27,89 +46,53 @@ export class FromMarkdown {
     event = walker.next();
 
     while (event) {
-      const node = event.node;
-      const method = node.type.replace('-', '_');
+      const { node } = event;
+      const method = Markdown.camelCase(node.type);
 
       if (typeof this[method] === 'function') {
         this[method](node, event);
-      } else if (!this.plugin_handle(findPluginByMarkdownTag, node, event)) {
-        console.log(`Unrecognized node: ${node.type}`);
+      } else if (!this.dispatchToPlugin(node, event)) {
+        console.log(`Didn't find a method ${method} to handle the node: ${node.type}`);
       }
 
       event = walker.next();
     }
 
-    // console.log(JSON.stringify(this.root));
+    if (!this.root) {
+      throw new Error('Failed to parse document.');
+    }
+
     return Value.fromJSON(this.root);
   }
 
-  plugin_handle(findPluginByMarkdownTag, node, event, tag = null) {
-    const plugin = findPluginByMarkdownTag(tag ? tag.tag : node.type);
+  /**
+   * Any nodes that are not processed by this class are dispatched to the
+   * PluginManager.
+   *
+   * @param {*} node
+   * @param {*} event
+   * @param {*} tag
+   */
+  dispatchToPlugin(node, event, tag = null) {
+    const plugin = this.pluginManager.findPluginByMarkdownTag(tag ? tag.tag : node.type);
 
     if (plugin && typeof plugin.fromMarkdown === 'function') {
-      const markdown = plugin.fromMarkdown(this.editor, event, tag);
-
-      if (markdown === undefined) {
-        return true;
-      }
-
-      if (markdown.constructor === Array) {
-        for (const temp of markdown) {
-          this[temp.action](temp.block);
-        }
-      } else {
-        this[markdown.action](markdown.block);
-      }
-      return true;
+      return plugin.fromMarkdown(this.stack, event, tag);
     }
 
     return false;
   }
 
-  /** ******** Helpers ********* */
-
-  peek() {
-    return this.stack[this.stack.length - 1];
-  }
-
-  push(obj, appendItem = true) {
-    if (appendItem) {
-      this.append(obj);
-    }
-
-    this.stack.push(obj);
-  }
-
-  append(obj) {
-    const top = this.peek();
-
-    if (top && top.nodes) {
-      top.nodes.push(obj);
-    } else {
-      throw new Error(`Cannot append. Invalid stack: ${JSON.stringify(this.stack, null, 4)}`);
-    }
-  }
-
-  pop() {
-    return this.stack.pop();
-  }
-
-  addTextLeaf(leaf) {
-    const top = this.peek();
-    const lastNode = top.nodes.length > 0 ? top.nodes[top.nodes.length - 1] : null;
-
-    if (lastNode && lastNode.object === 'text') {
-      lastNode.leaves.push(leaf);
-    } else {
-      this.append({ object: 'text', leaves: [leaf] });
-    }
-  }
-
-  parseHtmlBlock(string) {
+  /**
+   * Parses an HTML block and extracts the attributes, tag name and tag contents.
+   * @param {string} string
+   * @return {Object} - a tag object that holds the data for the html block
+   */
+  static parseHtmlBlock(string) {
     try {
       const doc = (new DOMParser()).parseFromString(string, 'text/html');
       const item = doc.body.children.item(0);
-      const attributes = doc.body.children.item(0).attributes;
+      const { attributes } = doc.body.children.item(0);
       const attributeObject = {};
       let attributeString = '';
 
@@ -131,17 +114,12 @@ export class FromMarkdown {
     }
   }
 
-  parseAttributes(string) {
-    return string.trim().split(' ').filter(attr => attr.trim()).map((attr) => {
-      const parsed = attr.split('=');
-      return {
-        [parsed[0]]: parsed[1] ? parsed[1].replace(/^"/, '').replace(/"$/, '') : true,
-      };
-    });
-  }
-
-  /** ******** Nodes ********* */
-
+  /**
+   * Handles the markdown document AST node, modifying the
+   * Stack.
+   * @param {*} node the AST node
+   * @param {*} event the parse event
+   */
   document(node, event) {
     if (event.entering) {
       this.root = {
@@ -149,12 +127,18 @@ export class FromMarkdown {
           nodes: [],
         },
       };
-    }
 
-    this.push(this.root.document, false);
+      this.stack = new Stack();
+      this.stack.push(this.root.document, false);
+    }
   }
 
-  text(node, event) {
+  /**
+   * Handles the markdown text AST node, modifying the
+   * Stack.
+   * @param {*} node the AST node
+   */
+  text(node) {
     if (node.parent && ['link'].includes(node.parent.type)) {
       return;
     }
@@ -165,13 +149,17 @@ export class FromMarkdown {
       marks: this.getMarks(node),
     };
 
-    this.addTextLeaf(leaf);
+    this.stack.addTextLeaf(leaf);
   }
 
+  /**
+   * Converts from commonmark marks to Slate.js marks
+   * @param {*} node the AST node
+   * @return {*} an array of Slate.js marks
+   */
   getMarks(node) {
-    // console.log('Node Parent:', node.parent ? node.parent.type : null);
     const marks = [];
-    let parent = node.parent;
+    let { parent } = node;
 
     while (parent) {
       if (!this.marks.includes(parent.type)) {
@@ -190,6 +178,12 @@ export class FromMarkdown {
     return marks;
   }
 
+  /**
+   * Handles the paragraph AST node, modifying the
+   * Stack.
+   * @param {*} node the AST node
+   * @param {*} event the parse event
+   */
   paragraph(node, event) {
     if (!['item', 'block_quote'].includes(node.parent.type)) {
       if (event.entering) {
@@ -200,46 +194,71 @@ export class FromMarkdown {
           nodes: [],
         };
 
-        this.push(block);
+        this.stack.push(block);
       } else {
-        this.pop();
+        this.stack.pop();
       }
     }
   }
 
+  /**
+   * Handles the emph AST node, modifying the
+   * Stack.
+   */
   emph() {
     // handled by text
   }
 
+  /**
+   * Handles the strong AST node, modifying the
+   * Stack.
+   */
   strong() {
     // handled by text
   }
 
+  /**
+   * Handles the softbreak AST node, modifying the
+   * Stack.
+   */
   softbreak() {
-    this.addTextLeaf({
+    this.stack.addTextLeaf({
       object: 'leaf',
       text: ' \r',
       marks: [],
     });
   }
 
+  /**
+   * Handles the linebreak AST node, modifying the
+   * Stack.
+   */
   linebreak() {
-    this.addTextLeaf({
+    this.stack.addTextLeaf({
       object: 'leaf',
       text: '\r\n',
       marks: [],
     });
   }
 
-  thematic_break() {
+  /**
+   * Handles the thematic-break AST node, modifying the
+   * Stack.
+   */
+  thematicBreak() {
     const block = {
       object: 'block',
       isVoid: true,
       type: 'horizontal_rule',
     };
-    this.append(block);
+    this.stack.append(block);
   }
 
+  /**
+   * Handles the code AST node, modifying the
+   * Stack.
+   * @param {*} node the AST node
+   */
   code(node) {
     const leaf = {
       object: 'leaf',
@@ -251,10 +270,15 @@ export class FromMarkdown {
       }],
     };
 
-    this.addTextLeaf(leaf);
+    this.stack.addTextLeaf(leaf);
   }
 
-  code_block(node) {
+  /**
+   * Handles the code-bloc AST node, modifying the
+   * Stack.
+   * @param {*} node the AST node
+   */
+  codeBlock(node) {
     const block = {
       object: 'block',
       type: 'code_block',
@@ -269,18 +293,23 @@ export class FromMarkdown {
       nodes: [],
     };
 
-    this.push(block);
-    this.push(para);
-    this.addTextLeaf({
+    this.stack.push(block);
+    this.stack.push(para);
+    this.stack.addTextLeaf({
       object: 'leaf',
       text: node.literal,
       marks: [],
     });
-    this.pop();
-    this.pop();
+    this.stack.pop();
+    this.stack.pop();
   }
 
-  html_inline(node) {
+  /**
+   * Handles the html-inline AST node, modifying the
+   * Stack.
+   * @param {*} node the AST node
+   */
+  htmlInline(node) {
     const leaf = {
       object: 'leaf',
       text: node.literal,
@@ -291,13 +320,17 @@ export class FromMarkdown {
       }],
     };
 
-    this.addTextLeaf(leaf);
+    this.stack.addTextLeaf(leaf);
   }
 
-  html_block(node, event) {
-    const tag = this.parseHtmlBlock(node.literal);
+  /**
+   * Handles the html-block AST node, modifying the
+   * Stack.
+   */
+  htmlBlock(node, event) {
+    const tag = FromMarkdown.parseHtmlBlock(node.literal);
 
-    if (tag && this.plugin_handle(this.findPluginByMarkdownTag, node, event, tag)) {
+    if (tag && this.dispatchToPlugin(node, event, tag)) {
       // console.log('Custom html tag:', tag, "\n", 'Node:', node);
     } else {
       const block = {
@@ -314,9 +347,9 @@ export class FromMarkdown {
         nodes: [],
       };
 
-      this.push(block);
-      this.push(para);
-      this.addTextLeaf({
+      this.stack.push(block);
+      this.stack.push(para);
+      this.stack.addTextLeaf({
         object: 'leaf',
         text: node.literal,
         marks: [{
@@ -325,12 +358,12 @@ export class FromMarkdown {
           data: {},
         }],
       });
-      this.pop();
-      this.pop();
+      this.stack.pop();
+      this.stack.pop();
     }
   }
 
-  headingLevelConverter(level) {
+  static headingLevelConverter(level) {
     switch (level) {
       case 1:
         return 'one';
@@ -353,17 +386,17 @@ export class FromMarkdown {
     if (event.entering) {
       const block = {
         object: 'block',
-        type: `heading_${this.headingLevelConverter(node.level)}`,
+        type: `heading_${FromMarkdown.headingLevelConverter(node.level)}`,
         data: {},
         nodes: [],
       };
-      this.push(block);
+      this.stack.push(block);
     } else {
-      this.pop();
+      this.stack.pop();
     }
   }
 
-  block_quote(node, event) {
+  blockQuote(node, event) {
     if (event.entering) {
       const block = {
         object: 'block',
@@ -371,9 +404,9 @@ export class FromMarkdown {
         data: {},
         nodes: [],
       };
-      this.push(block);
+      this.stack.push(block);
     } else {
-      this.pop();
+      this.stack.pop();
     }
   }
 
@@ -393,7 +426,7 @@ export class FromMarkdown {
         }],
       };
 
-      this.append(inline);
+      this.stack.append(inline);
     }
   }
 }

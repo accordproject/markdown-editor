@@ -1,17 +1,18 @@
+import Markdown from './Markdown';
+
 const NL = '\n';
 
-export class ToMarkdown {
-  constructor() {
+export default class ToMarkdown extends Markdown {
+  constructor(pluginManager) {
+    super(pluginManager);
     this.stack = [];
-    this.findPluginByMarkdownTag = null;
   }
 
-  convert(editor, findPluginByMarkdownTag, value) {
-    this.findPluginByMarkdownTag = findPluginByMarkdownTag;
-    return this.recursive(editor, findPluginByMarkdownTag, value.document.nodes);
+  convert(value) {
+    return this.recursive(value.document.nodes);
   }
 
-  recursive(editor, findPluginByMarkdownTag, nodes) {
+  recursive(nodes) {
     let markdown = '';
 
     nodes.forEach((node) => {
@@ -19,21 +20,26 @@ export class ToMarkdown {
 
       switch (node.object) {
         case 'text':
-          markdown += this.text(editor, node);
+          markdown += this.text(node);
           break;
         case 'block':
-        case 'inline':
-          const method = node.type.replace('-', '_');
+        case 'inline': {
+          const method = Markdown.camelCase(node.type);
 
           if (typeof this[method] === 'function') {
-            markdown += this[method](editor, node);
+            markdown += this[method](node);
           } else {
-            const plugin = findPluginByMarkdownTag(node.type);
+            const plugin = this.pluginManager.findPluginByMarkdownTag(node.type);
 
             if (plugin && typeof plugin.toMarkdown === 'function') {
-              markdown += plugin.toMarkdown(editor, node);
+              try {
+                markdown += plugin.toMarkdown(this, node);
+              } catch (err) {
+                console.log(`Exception from ${plugin.plugin}: ${err.message}`);
+              }
             }
           }
+        }
           break;
         default:
       }
@@ -52,7 +58,7 @@ export class ToMarkdown {
     return this.stack[this.stack.length - 2];
   }
 
-  text(editor, node) {
+  text(node) {
     let result = '';
 
     node.leaves.forEach((leaf) => {
@@ -79,7 +85,7 @@ export class ToMarkdown {
     return result;
   }
 
-  paragraph(editor, node) {
+  paragraph(node) {
     let postfix = `${NL}${NL}`;
     const parent = this.getParent();
 
@@ -89,53 +95,53 @@ export class ToMarkdown {
       }
     }
 
-    return `${this.recursive(editor, this.findPluginByMarkdownTag, node.nodes)}${postfix}`;
+    return `${this.recursive(node.nodes)}${postfix}`;
   }
 
-  link(editor, node) {
+  link(node) {
     return `[${node.nodes.get(0).leaves.get(0).text}](${node.data.get('href')})`;
   }
 
-  horizontal_rule(editor, node) {
+  horizontalRule(node) {
     return `--- \n`;
   }
 
-  block_quote(editor, node) {
-    return `> ${this.recursive(editor, this.findPluginByMarkdownTag, node.nodes)}${NL}`;
+  blockQuote(node) {
+    return `> ${this.recursive(node.nodes)}${NL}`;
   }
 
-  heading_one(editor, node) {
+  headingOne(node) {
     return `# ${node.nodes.get(0).leaves.get(0).text}${NL}`;
   }
 
-  heading_two(editor, node) {
+  headingTwo(node) {
     return `## ${node.nodes.get(0).leaves.get(0).text}${NL}`;
   }
 
-  heading_three(editor, node) {
+  headingThree(node) {
     return `### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
   }
 
-  heading_four(editor, node) {
+  headingFour(node) {
     return `#### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
   }
 
-  heading_five(editor, node) {
+  headingFive(node) {
     return `##### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
   }
 
-  heading_six(editor, node) {
+  headingSix(node) {
     return `###### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
   }
 
-  html_block(editor, node) {
-    return this.recursive(editor, this.findPluginByMarkdownTag, node.nodes);
+  htmlBlock(node) {
+    return this.recursive(node.nodes);
   }
 
-  code_block(editor, node) {
+  codeBlock(node) {
     const pre = `${NL}\`\`\`${NL}`;
     const post = `\`\`\`${NL}`;
-    const md = this.recursive(editor, this.findPluginByMarkdownTag, node.nodes);
+    const md = this.recursive(node.nodes);
     return pre + md.trim() + NL + post;
   }
 }

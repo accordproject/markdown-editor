@@ -62,24 +62,23 @@ function Video() {
   }
 
   /**
-     * @param {Value} value
-     * @param {Editor} editor
+     * @param {ToMarkdown} parent
+     * @param {Node} value
      */
-  function toMarkdown(editor, value) {
+  function toMarkdown(parent, value) {
     return `<video ${value.data.get('attributeString')}/>\n\n`;
   }
 
-  function fromMarkdown(editor, event, tag) {
+  function fromMarkdown(stack, event, tag) {
     const block = {
       object: 'block',
       type: 'video',
       data: Object.assign(tag),
     };
 
-    return [
-      { action: 'push', block },
-      { action: 'pop' },
-    ];
+    stack.push(block);
+    stack.pop();
+    return true;
   }
 
   function fromHTML(editor, el, next) {

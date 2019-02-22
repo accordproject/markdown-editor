@@ -23,8 +23,6 @@ function List() {
    * @param {Function} next
    */
   function onEnter(event, editor, next) {
-    // console.log('onEnter of list plugin');
-    // console.log(editor.value.document.getParent(editor.value.startBlock.key));
     return next();
   }
 
@@ -49,16 +47,16 @@ function List() {
    */
   function renderNode(props, editor, next) {
     const { node, attributes, children } = props;
-    const list_type = node.data.get('list_type', 'ul');
-    const list_style_type = node.data.get(
+    const listType = node.data.get('list_type', 'ul');
+    const listStyleType = node.data.get(
       'list_style_type',
-      list_type === 'ul' ? '1' : 'disc',
+      listType === 'ul' ? '1' : 'disc',
     );
 
     switch (node.type) {
       case 'list':
-        attributes.type = list_style_type;
-        if (list_type === 'ol') {
+        attributes.type = listStyleType;
+        if (listType === 'ol') {
           return <ol {...attributes}>{children}</ol>;
         }
         return <ul {...attributes}>{children}</ul>;
@@ -71,24 +69,24 @@ function List() {
   }
 
   /**
-   * @param {Value} value
-   * @param {Editor} editor
+   * @param {ToMarkdown} parent
+   * @param {Node} value
    */
-  function toMarkdown(editor, toMarkdown, value) {
+  function toMarkdown(parent, value) {
     let markdown = '';
-    const list_type = value.data.get('list_type', 'ol');
-    const list_style_type = list_type === 'ol' ? '1. ' : '* ';
+    const listType = value.data.get('list_type', 'ol');
+    const listStyleType = listType === 'ol' ? '1. ' : '* ';
 
     value.nodes.forEach((li) => {
-      const text = toMarkdown(editor, li.nodes);
-      markdown += `   ${list_style_type}${text}\n`;
+      const text = parent.recursive(li.nodes);
+      markdown += `   ${listStyleType}${text}\n`;
     });
 
     return markdown;
   }
 
-  function fromMarkdown(editor, event) {
-    const list_type = event.node.listType === 'bullet' ? 'ul' : 'ol';
+  function fromMarkdown(stack, event) {
+    const listType = event.node.listType === 'bullet' ? 'ul' : 'ol';
     let block = null;
 
     if (event.entering) {
@@ -96,7 +94,7 @@ function List() {
         block = {
           object: 'block',
           type: 'list',
-          data: { list_type },
+          data: { list_type: listType },
           nodes: [],
         };
       } else if (event.node.type === 'item') {
@@ -107,13 +105,15 @@ function List() {
           nodes: [],
         };
       }
-
-      return { action: 'push', block };
+      stack.push(block);
+    } else {
+      stack.pop();
     }
-    return { action: 'pop' };
+
+    return true;
   }
 
-  function fromHTML(editor, el, next) {
+  function fromHTML(el, next) {
     if (['ul', 'ol'].includes(el.tagName.toLowerCase())) {
       return {
         object: 'block',
