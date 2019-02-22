@@ -17,12 +17,20 @@ import { Editor, getEventTransfer } from 'slate-react';
 import { Tab, Form, TextArea } from 'semantic-ui-react';
 import { Value } from 'slate';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import baseSchema from './schema';
 import { FromHTML } from './html/fromHTML';
 import FromMarkdown from './markdown/fromMarkdown';
 import ToMarkdown from './markdown/toMarkdown';
 
 import PluginManager from './PluginManager';
+import HoverMenu from './HoverMenu';
+
+const EditorWrapper = styled.div`
+  background: #fff;
+  margin: 50px;
+  padding: 25px;
+`;
 
 const defaultMarkdown = `# Heading One
 This is text. This is *italic* text. This is **bold** text. This is a [link](https://clause.io). This is \`inline code\`.
@@ -75,9 +83,12 @@ class MarkdownEditor extends React.Component {
     this.fromMarkdown = new FromMarkdown(this.pluginManager);
     this.toMarkdown = new ToMarkdown(this.pluginManager);
 
+    this.handleRenderEditor = this.renderEditor.bind(this);
     this.handleOnChange = this.onChange.bind(this);
     this.handleOnPaste = this.onPaste.bind(this);
     this.fromHTML = new FromHTML(this.pluginManager);
+    this.menu = null;
+    this.state.rect = null;
 
     this.schema = baseSchema;
     this.props.plugins.forEach((plugin) => {
@@ -94,6 +105,12 @@ class MarkdownEditor extends React.Component {
     this.onChange({
       value: this.fromMarkdown.convert(this.state.markdown),
     });
+
+    this.updateMenu();
+  }
+
+  componentDidUpdate() {
+    this.updateMenu();
   }
 
   /**
@@ -255,6 +272,41 @@ class MarkdownEditor extends React.Component {
     return undefined;
   }
 
+  updateRect(oldRect, newRect) {
+    const oldString = JSON.stringify(oldRect);
+    const newString = JSON.stringify(newRect);
+
+    if (oldString !== newString) {
+      this.setState({ rect: newRect });
+    }
+  }
+
+  /**
+   * Update the menu's absolute position.
+   */
+
+  updateMenu() {
+    const { value } = this.state;
+    const oldRect = this.state.rect;
+
+    if (!value) {
+      this.updateRect(oldRect, null);
+      return;
+    }
+
+    const { fragment, selection } = value;
+
+    if (selection.isBlurred || selection.isCollapsed || fragment.text === '') {
+      this.updateRect(oldRect, null);
+      return;
+    }
+
+    const native = window.getSelection();
+    const range = native.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    this.updateRect(oldRect, rect);
+  }
+
   /**
    * Returns the contents of the editor as a markdown string
    */
@@ -371,6 +423,29 @@ class MarkdownEditor extends React.Component {
   }
 
   /**
+   * Render the editor.
+   *
+   * @param {Object} props
+   * @param {Function} next
+   * @return {Element}
+   */
+
+  renderEditor(props, ed, next) {
+    const { editor } = props;
+    const children = next();
+    return (
+      <React.Fragment>
+        {children}
+        <HoverMenu
+          innerRef={menu => (this.menu = menu)}
+          editor={editor}
+          rect={this.state.rect}
+        />
+      </React.Fragment>
+    );
+  }
+
+  /**
    * Render this React component
    * @return {*} the react component
    */
@@ -378,18 +453,21 @@ class MarkdownEditor extends React.Component {
     const panes = [
       {
         menuItem: 'Rich Text',
-        render: () => (<Editor
-            ref={this.editor}
-            className="doc-inner"
-            value={this.state.value}
-            schema={this.schema}
-            plugins={this.props.plugins}
-            onChange={this.handleOnChange}
-            onKeyDown={MarkdownEditor.onKeyDown}
-            onPaste={this.handleOnPaste}
-            renderNode={MarkdownEditor.renderNode}
-            renderMark={MarkdownEditor.renderMark}
-          />),
+        render: () => (
+            <EditorWrapper>
+              <Editor
+              ref={this.editor}
+              className="doc-inner"
+              value={this.state.value}
+              schema={this.schema}
+              plugins={this.props.plugins}
+              onChange={this.handleOnChange}
+              onKeyDown={MarkdownEditor.onKeyDown}
+              onPaste={this.handleOnPaste}
+              renderNode={MarkdownEditor.renderNode}
+              renderMark={MarkdownEditor.renderMark}
+              renderEditor={this.handleRenderEditor}/>
+            </EditorWrapper>),
       },
       {
         menuItem: 'Markdown',
