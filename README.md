@@ -40,6 +40,8 @@ https://github.com/accordproject/markdown-editor/blob/master/src/plugins/video.j
 
 ![overview image](overview.png)
 
+![markdown image](markdown.png)
+
 Run `npm start` and then navigate to: http://localhost:3001/examples
 
 ## Available Scripts
