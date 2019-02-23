@@ -153,7 +153,7 @@ export default class FormatToolbar extends React.Component {
    */
 
   hasLinks(editor) {
-    const { value } = editor.state;
+    const { value } = editor;
     return value.inlines.some(inline => inline.type === 'link');
   }
 
@@ -165,7 +165,7 @@ export default class FormatToolbar extends React.Component {
    */
 
   hasMark(editor, type) {
-    const { value } = editor.state;
+    const { value } = editor;
     return value.activeMarks.some(mark => mark.type === type);
   }
 
