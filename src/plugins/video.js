@@ -1,5 +1,10 @@
 import React from 'react';
 import { Icon } from 'semantic-ui-react';
+import styled from 'styled-components';
+
+const StyledIcon = styled(Icon)`
+  color: #ffffff !important;
+`;
 
 /**
  * A sample plugin that renders a Youtube video using an iframe
@@ -110,7 +115,7 @@ function Video() {
    * @return {Element}
    */
   function renderToolbar(editor) {
-    return (<Icon
+    return (<StyledIcon
       key={plugin}
       name='youtube'
       aria-label='youtube'

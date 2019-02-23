@@ -4,21 +4,19 @@ import styled from 'styled-components';
 import { Icon } from 'semantic-ui-react';
 
 const StyledToolbar = styled.div`
-  padding: 5px;
+  padding: 10px;
+  background-color: #302f2e !important;
   top: ${props => `${Math.max(10, props.rect.top - 35)}px`};
   left: ${props => `${Math.max(10, props.rect.left - 80)}px`};
+  opacity: 1.0;
+  z-index: 10;
+  position: fixed;
+  border-radius: 6px;
 `;
 
-// const StyledIcon = styled(Icon)`
-//   height: 15px;
-//   color: #F0F0F0 !important;
-// `;
-
-// const styles = {
-//   root: {
-//     flexGrow: 1,
-//   },
-// };
+const StyledIcon = styled(Icon)`
+  color: #ffffff !important;
+`;
 
 function wrapLink(editor, href) {
   editor.wrapInline({
@@ -194,7 +192,7 @@ export default class FormatToolbar extends React.Component {
     const { value } = editor;
     const isActive = value && value.activeMarks.some(mark => mark.type === type);
 
-    return (<Icon
+    return (<StyledIcon
       name={icon}
       aria-label={type}
       onMouseDown={event => this.onClickMark(event, type)}
@@ -210,7 +208,7 @@ export default class FormatToolbar extends React.Component {
    */
 
   renderBlockButton(type, icon) {
-    return (<Icon
+    return (<StyledIcon
       name={icon}
       aria-label={type}
       onMouseDown={event => this.onClickBlock(event, type)}
@@ -227,7 +225,7 @@ export default class FormatToolbar extends React.Component {
 
   renderLinkButton() {
     return (
-      <Icon
+      <StyledIcon
         name="linkify"
         aria-label="link"
         onMouseDown={event => this.onClickLink(event, this.props.editor)}
@@ -241,13 +239,15 @@ export default class FormatToolbar extends React.Component {
     if (rect) {
       return (
         <StyledToolbar className="format-toolbar" rect={rect}>
-          { this.renderBlockButton('heading_one', 'heading')}
-          { this.renderBlockButton('heading_two', 'font')}
           { this.renderMarkButton('bold', 'bold')}
           { this.renderMarkButton('italic', 'italic')}
+          { this.renderLinkButton()}
+          <StyledIcon name='ellipsis vertical'/>
+          { this.renderBlockButton('heading_one', 'text height')}
+          { this.renderBlockButton('heading_two', 'small text height')}
           { this.renderMarkButton('code', 'code')}
           { this.renderBlockButton('block_quote', 'quote left')}
-          { this.renderLinkButton()}
+          <StyledIcon name='ellipsis vertical'/>
           { pluginManager.renderToolbar(editor)}
         </StyledToolbar>
       );

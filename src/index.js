@@ -30,6 +30,18 @@ const EditorWrapper = styled.div`
   background: #fff;
   margin: 50px;
   padding: 25px;
+  font-family: serif;
+  font-style: normal;
+  font-variant: ;
+  font-weight: normal;
+  font-size: medium;
+  line-height: 100%;
+  word-spacing: normal;
+  letter-spacing: normal;
+  text-decoration: none;
+  text-transform: none;
+  text-align: left;
+  text-indent: 0ex;
 `;
 
 const defaultMarkdown = `# Heading One
