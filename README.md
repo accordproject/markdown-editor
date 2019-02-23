@@ -1,6 +1,6 @@
 This is a React component for a rich text editor that can read and write [CommonMark](https://commonmark.org) Markdown text. The editor uses [Slate.js](https://slatejs.org).
 
-The editor includes keyboard shortcuts for Markdown formatting and a pop-up formatting toolbar.
+The editor is plugin based and includes a pop-up formatting toolbar.
 
 This component is Apache-2 licensed Open Source. Contributors welcome!
 
@@ -17,7 +17,16 @@ npm install @accordproject/markdown-editor
 ```
 import { MarkdownEditor } from '@accordproject/markdown-editor';
 
-ReactDOM.render(<MarkdownEditor />, document.getElementById('root'));
+import List from '../../src/plugins/list';
+import Video from '../../src/plugins/video';
+
+const plugins = [List(), Video()];
+
+function storeLocal(editor) {
+  localStorage.setItem('markdown-editor', editor.getMarkdown());
+}
+
+ReactDOM.render(<MarkdownEditor plugins={plugins} onChange={storeLocal} />, document.getElementById('root'));
 ```
 
 ### Example
@@ -25,6 +34,9 @@ ReactDOM.render(<MarkdownEditor />, document.getElementById('root'));
 For an example React App see the ./examples/ folder.
 
 A `TextArea` containing CommonMark synchronized with a `MarkdownEditor` component, rendered using Slate.js.
+
+The code for the sample `video` plugin used in the demo is here:
+https://github.com/accordproject/markdown-editor/blob/master/src/plugins/video.js
 
 ![overview image](overview.png)
 
