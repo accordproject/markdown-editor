@@ -65,21 +65,31 @@ export default class ToMarkdown extends Markdown {
       const isBold = leaf.marks.some(mark => mark.type === 'bold');
       const isItalic = leaf.marks.some(mark => mark.type === 'italic');
       const isCode = leaf.marks.some(mark => mark.type === 'code');
-      let mark = '';
+      const isVariable = leaf.marks.some(mark => mark.type === 'variable');
+      let openMark = '';
+      let closeMark = '';
 
       if (isBold) {
-        mark = '**';
+        openMark = '**';
+        closeMark = '**';
       }
 
       if (isItalic) {
-        mark += '*';
+        openMark += '*';
+        closeMark += '*';
+      }
+
+      if (isVariable) {
+        openMark += '{{';
+        closeMark += '}}';
       }
 
       if (isCode) {
-        mark += '`';
+        openMark += '`';
+        closeMark += '`';
       }
 
-      result += mark + leaf.text + mark;
+      result += openMark + leaf.text + closeMark;
     });
 
     return result;

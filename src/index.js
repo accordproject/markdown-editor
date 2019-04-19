@@ -49,6 +49,8 @@ This is text. This is *italic* text. This is **bold** text. This is a [link](htt
 
 This is ***bold and italic*** text
 
+This is a sentence that contains {{a variable}} within it. And here is {{another}}.
+
 > This is a quote.
 ## Heading Two
 This is more text.
@@ -429,6 +431,8 @@ class MarkdownEditor extends React.Component {
       case 'html':
       case 'code':
         return <code {...attributes}>{children}</code>;
+      case 'variable':
+        return <mark {...attributes}>{children}</mark>;
       default:
         return next();
     }

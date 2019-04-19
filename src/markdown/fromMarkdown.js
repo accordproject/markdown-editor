@@ -16,6 +16,8 @@ import { Value } from 'slate';
 import Stack from './Stack';
 import Markdown from './Markdown';
 
+const regex = /{{(.*?)}}/gm;
+
 /**
  * Converts markdown text to a Slate.js value object.
  * The markdown text is parsed using Common Mark.
@@ -135,7 +137,8 @@ export default class FromMarkdown extends Markdown {
 
   /**
    * Handles the markdown text AST node, modifying the
-   * Stack.
+   * Stack. Any text between '{{' and '}}' is split
+   * and is given the 'variable' mark.
    * @param {*} node the AST node
    */
   text(node) {
@@ -143,17 +146,56 @@ export default class FromMarkdown extends Markdown {
       return;
     }
 
-    const leaf = {
-      object: 'leaf',
-      text: node.literal,
-      marks: this.getMarks(node),
-    };
+    // look for variables, and split into different
+    // text nodes, so we can apply marks
+    let m = regex.exec(node.literal);
+    let leftIndex = 0;
 
-    this.stack.addTextLeaf(leaf);
+    if (!m) {
+      const leaf = {
+        object: 'leaf',
+        text: node.literal,
+        marks: this.getMarks(node),
+      };
+
+      this.stack.addTextLeaf(leaf);
+    } else {
+      while (m) {
+        // This is necessary to avoid infinite loops with zero-width matches
+        if (m.index === regex.lastIndex) {
+          regex.lastIndex += 1;
+        }
+
+        m.forEach((match, groupIndex) => {
+          if (groupIndex == 1) {
+            const left = node.literal.substring(leftIndex, regex.lastIndex - match.length - 4);
+            leftIndex = regex.lastIndex;
+
+            let leaf = {
+              object: 'leaf',
+              text: left,
+              marks: [],
+            };
+
+            this.stack.addTextLeaf(leaf);
+
+            leaf = {
+              object: 'leaf',
+              text: match,
+              marks: [FromMarkdown.getVariableMark()],
+            };
+
+            this.stack.addTextLeaf(leaf);
+          }
+        });
+
+        m = regex.exec(node.literal);
+      }
+    }
   }
 
   /**
-   * Converts from commonmark marks to Slate.js marks
+   * Converts from commonmark marks to Slate.js marks.
    * @param {*} node the AST node
    * @return {*} an array of Slate.js marks
    */
@@ -176,6 +218,14 @@ export default class FromMarkdown extends Markdown {
     }
 
     return marks;
+  }
+
+  static getVariableMark() {
+    return {
+      object: 'mark',
+      type: 'variable',
+      data: {},
+    };
   }
 
   /**
