@@ -52,19 +52,26 @@ function Video() {
   function renderNode(props, editor, next) {
     const { node, attributes, children } = props;
 
-    let src = node.data.get('attributes').src;
-    if (!src) {
-      src = 'https://www.youtube.com/embed/dQw4w9WgXcQ';
-    }
+    switch (node.type) {
+      case 'video':
+      {
+        let src = node.data.get('attributes').src;
+        if (!src) {
+          src = 'https://www.youtube.com/embed/dQw4w9WgXcQ';
+        }
 
-    return (<iframe
-      {...attributes}
-      src={src}
-      frameBorder="0"
-      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-      allowFullScreen
-      title="video"
-    >{children}</iframe>);
+        return (<iframe
+        {...attributes}
+        src={src}
+        frameBorder="0"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        title="video"
+      >{children}</iframe>);
+      }
+      default:
+        return next();
+    }
   }
 
   /**
