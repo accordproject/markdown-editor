@@ -91,6 +91,7 @@ class MarkdownEditor extends React.Component {
     this.state = {
       value: Value.fromJSON({ document: { nodes: [] } }),
       markdown: props.markdown ? props.markdown : defaultMarkdown,
+      lockText: props.lockText,
     };
     this.editor = React.createRef();
     this.pluginManager = new PluginManager(this.props.plugins);
@@ -99,6 +100,8 @@ class MarkdownEditor extends React.Component {
 
     this.handleRenderEditor = this.renderEditor.bind(this);
     this.handleOnChange = this.onChange.bind(this);
+    this.handleOnBeforeInput = this.onBeforeInput.bind(this);
+    this.handleOnKeyDown = this.onKeyDown.bind(this);
     this.handleOnPaste = this.onPaste.bind(this);
     this.fromHTML = new FromHTML(this.pluginManager);
     this.menu = null;
@@ -258,17 +261,42 @@ class MarkdownEditor extends React.Component {
    * @param {*} editor
    * @param {*} next
    */
-  static onKeyDown(event, editor, next) {
-    switch (event.key) {
-      /* case ' ':
-        return this.onSpace(event, editor, next);
-      case 'Backspace':
-        return this.onBackspace(event, editor, next);
-      case "Enter":
-        return this.onEnter(event, editor, next); */
-      default:
-        return next();
+  onKeyDown(event, editor, next) {
+    if (event.key === 'Enter' || event.key === 'Backspace') {
+      if (this.isEditable(editor)) {
+        if (event.key === 'Enter') {
+          event.preventDefault(); // prevent adding newlines in variables
+          return false;
+        }
+      } else {
+        event.preventDefault(); // prevent editing non-editable text
+        return false;
+      }
     }
+
+    // otherwise we allow the edit
+    return next();
+  }
+
+  isEditable(editor) {
+    if (this.state.lockText) {
+      if (editor.value.activeMarks.size > 0 && editor.value.activeMarks.every(
+        (mark => mark.type === 'variable'),
+      )) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  onBeforeInput(event, editor, next) {
+    if (this.isEditable(editor)) {
+      return next();
+    }
+
+    event.preventDefault();
+    return false;
   }
 
   /**
@@ -479,7 +507,8 @@ class MarkdownEditor extends React.Component {
               schema={this.schema}
               plugins={this.props.plugins}
               onChange={this.handleOnChange}
-              onKeyDown={MarkdownEditor.onKeyDown}
+              onKeyDown={this.handleOnKeyDown}
+              onBeforeInput={this.handleOnBeforeInput}
               onPaste={this.handleOnPaste}
               renderNode={MarkdownEditor.renderNode}
               renderMark={MarkdownEditor.renderMark}
@@ -513,6 +542,7 @@ class MarkdownEditor extends React.Component {
 MarkdownEditor.propTypes = {
   markdown: PropTypes.string,
   onChange: PropTypes.func.isRequired,
+  lockText: PropTypes.bool.isRequired,
   plugins: PropTypes.arrayOf(PropTypes.shape({
     onEnter: PropTypes.func,
     onKeyDown: PropTypes.func,
