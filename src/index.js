@@ -283,11 +283,11 @@ class MarkdownEditor extends React.Component {
       if (editor.value.activeMarks.size > 0 && editor.value.activeMarks.every(
         (mark => mark.type === 'variable'),
       )) {
-        return true;
+        return false;
       }
     }
 
-    return false;
+    return true;
   }
 
   onBeforeInput(event, editor, next) {
