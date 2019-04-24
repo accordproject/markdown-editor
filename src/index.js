@@ -278,6 +278,12 @@ class MarkdownEditor extends React.Component {
     return next();
   }
 
+  /**
+   * Returns true if the editor should allow an edit. Edits are allowed for all
+   * text unless the lockText parameter is set in the state of the editor, in which
+   * case only variables are editable.
+   * @param {Editor} editor the Slate Editor
+   */
   isEditable(editor) {
     if (this.state.lockText) {
       if (editor.value.activeMarks.size > 0 && editor.value.activeMarks.every(
@@ -285,9 +291,11 @@ class MarkdownEditor extends React.Component {
       )) {
         return true;
       }
+
+      return false;
     }
 
-    return false;
+    return true;
   }
 
   onBeforeInput(event, editor, next) {
