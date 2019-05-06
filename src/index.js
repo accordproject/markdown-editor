@@ -32,7 +32,6 @@ const EditorWrapper = styled.div`
   padding: 25px;
   font-family: serif;
   font-style: normal;
-  font-variant: ;
   font-weight: normal;
   font-size: medium;
   line-height: 100%;
@@ -92,6 +91,7 @@ class MarkdownEditor extends React.Component {
       value: Value.fromJSON({ document: { nodes: [] } }),
       markdown: props.markdown ? props.markdown : defaultMarkdown,
       lockText: props.lockText,
+      rect: null,
     };
     this.editor = React.createRef();
     this.pluginManager = new PluginManager(this.props.plugins);
@@ -105,7 +105,6 @@ class MarkdownEditor extends React.Component {
     this.handleOnPaste = this.onPaste.bind(this);
     this.fromHTML = new FromHTML(this.pluginManager);
     this.menu = null;
-    this.state.rect = null;
 
     this.schema = baseSchema;
     this.props.plugins.forEach((plugin) => {
@@ -489,7 +488,9 @@ class MarkdownEditor extends React.Component {
       <React.Fragment>
         {children}
         <HoverMenu
-          innerRef={menu => (this.menu = menu)}
+          innerRef={(menu) => {
+            this.menu = menu;
+          }}
           editor={editor}
           rect={this.state.rect}
           pluginManager = {this.pluginManager}
