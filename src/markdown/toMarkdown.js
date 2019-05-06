@@ -114,8 +114,8 @@ export default class ToMarkdown extends Markdown {
     return `[${ToMarkdown.getTextFromNode(node)}](${node.data.get('href')})`;
   }
 
-  horizontalRule(node) {
-    return `--- \n`;
+  horizontalRule() {
+    return '--- \n';
   }
 
   blockQuote(node) {

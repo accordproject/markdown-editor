@@ -28,7 +28,7 @@ export default class HoverMenu extends React.Component {
         editor={editor}
         innerRef={innerRef}
         rect={rect}
-        pluginManager = {pluginManager}
+        pluginManager={pluginManager}
       />,
       root,
     );
