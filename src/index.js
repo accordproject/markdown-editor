@@ -103,6 +103,7 @@ class MarkdownEditor extends React.Component {
     this.handleOnBeforeInput = this.onBeforeInput.bind(this);
     this.handleOnKeyDown = this.onKeyDown.bind(this);
     this.handleOnPaste = this.onPaste.bind(this);
+
     this.fromHTML = new FromHTML(this.pluginManager);
     this.menu = null;
     this.state.rect = null;
@@ -202,9 +203,23 @@ class MarkdownEditor extends React.Component {
    * @param {Editor} editor
    * @param {Function} next
    */
-  static onBackspace(event, editor, next) {
+  onBackspace(event, editor, next) {
+    console.log(`key ${editor.value.selection.anchor.key}`);
+    console.log(`offset ${editor.value.selection.anchor.offset}`);
+    // console.log(`value ${editor.value}`);
+
+    const previous = editor.value.document.getPreviousText(editor.value.selection.anchor.key);
+    console.log(previous.text);
+    // const isAfter = previous.type === type && editor.value.focus.offset === 0;
+
+    if (!this.isEditable(editor)) {
+      event.preventDefault(); // prevent editing non-editable text
+      return false;
+    }
+
     const { value } = editor;
     const { selection } = value;
+
     if (selection.isExpanded) return next();
     if (selection.start.offset !== 0) return next();
 
@@ -229,16 +244,21 @@ class MarkdownEditor extends React.Component {
    * @param {Editor} editor
    * @param {Function} next
    */
-  static onEnter(event, editor, next) {
+  onEnter(event, editor, next) {
     const { value } = editor;
     const { selection } = value;
     const { start, end, isExpanded } = selection;
+
+    if (!this.isEditable(editor) || MarkdownEditor.isInVariable(value)) {
+      event.preventDefault(); // prevent adding newlines in variables
+      return false;
+    }
 
     if (isExpanded) return next();
 
     const { startBlock } = value;
     if (start.offset === 0 && startBlock.text.length === 0) {
-      return MarkdownEditor.onBackspace(event, editor, next);
+      return this.onBackspace(event, editor, next);
     }
 
     if (end.offset !== startBlock.text.length) return next();
@@ -262,20 +282,28 @@ class MarkdownEditor extends React.Component {
    * @param {*} next
    */
   onKeyDown(event, editor, next) {
-    if (event.key === 'Enter' || event.key === 'Backspace') {
-      if (this.isEditable(editor)) {
-        if (event.key === 'Enter') {
-          event.preventDefault(); // prevent adding newlines in variables
-          return false;
-        }
-      } else {
-        event.preventDefault(); // prevent editing non-editable text
-        return false;
-      }
+    switch (event.key) {
+      case 'Enter':
+        return this.onEnter(event, editor, next);
+      case 'Backspace':
+        return this.onBackspace(event, editor, next);
+      default:
+        return next(); // allow
+    }
+  }
+
+  /**
+   * Returns true if the selection is inside a variable
+   * @param {Value} value the Slate editor value
+   */
+  static isInVariable(value) {
+    if (value.activeMarks.size > 0 && value.activeMarks.every(
+      (mark => mark.type === 'variable'),
+    )) {
+      return true;
     }
 
-    // otherwise we allow the edit
-    return next();
+    return false;
   }
 
   /**
@@ -286,13 +314,7 @@ class MarkdownEditor extends React.Component {
    */
   isEditable(editor) {
     if (this.state.lockText) {
-      if (editor.value.activeMarks.size > 0 && editor.value.activeMarks.every(
-        (mark => mark.type === 'variable'),
-      )) {
-        return true;
-      }
-
-      return false;
+      return MarkdownEditor.isInVariable(editor.value);
     }
 
     return true;
@@ -345,6 +367,11 @@ class MarkdownEditor extends React.Component {
     }
 
     const { fragment, selection } = value;
+
+    if (MarkdownEditor.isInVariable(value)) {
+      console.log('So you wanna edit a variable?');
+      return;
+    }
 
     if (selection.isBlurred || selection.isCollapsed || fragment.text === '') {
       this.updateRect(oldRect, null);
