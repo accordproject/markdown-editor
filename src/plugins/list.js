@@ -45,7 +45,7 @@ function List() {
    * @param {Editor} editor
    * @param {Function} next
    */
-  function renderNode(props, editor, next) {
+  function renderBlock(props, editor, next) {
     const { node, attributes, children } = props;
     const listType = node.data.get('list_type', 'ul');
     const listStyleType = node.data.get(
@@ -136,7 +136,7 @@ function List() {
     markdownTags,
     schema,
     onKeyDown,
-    renderNode,
+    renderBlock,
     toMarkdown,
     fromMarkdown,
     fromHTML,

@@ -207,10 +207,11 @@ export default class FormatToolbar extends React.Component {
    * @return {Element}
    */
 
-  renderBlockButton(type, icon) {
+  renderBlockButton(type, icon, props) {
     return (<StyledIcon
       name={icon}
       aria-label={type}
+      {...props}
       onMouseDown={event => this.onClickBlock(event, type)}
     />);
   }
@@ -235,6 +236,7 @@ export default class FormatToolbar extends React.Component {
 
   render() {
     const { rect, pluginManager, editor } = this.props;
+    const smallIcon = { size: 'small' };
 
     if (rect) {
       return (
@@ -244,7 +246,7 @@ export default class FormatToolbar extends React.Component {
           { this.renderLinkButton()}
           <StyledIcon name='ellipsis vertical'/>
           { this.renderBlockButton('heading_one', 'text height')}
-          { this.renderBlockButton('heading_two', 'small text height')}
+          { this.renderBlockButton('heading_two', 'text height', smallIcon)}
           { this.renderMarkButton('code', 'code')}
           { this.renderBlockButton('block_quote', 'quote left')}
           <StyledIcon name='ellipsis vertical'/>

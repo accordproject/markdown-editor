@@ -61,36 +61,34 @@ export default class ToMarkdown extends Markdown {
   text(node) {
     let result = '';
 
-    node.leaves.forEach((leaf) => {
-      const isBold = leaf.marks.some(mark => mark.type === 'bold');
-      const isItalic = leaf.marks.some(mark => mark.type === 'italic');
-      const isCode = leaf.marks.some(mark => mark.type === 'code');
-      const isVariable = leaf.marks.some(mark => mark.type === 'variable');
-      let openMark = '';
-      let closeMark = '';
+    const isBold = node.marks.some(mark => mark.type === 'bold');
+    const isItalic = node.marks.some(mark => mark.type === 'italic');
+    const isCode = node.marks.some(mark => mark.type === 'code');
+    const isVariable = node.marks.some(mark => mark.type === 'variable');
+    let openMark = '';
+    let closeMark = '';
 
-      if (isBold) {
-        openMark = '**';
-        closeMark = '**';
-      }
+    if (isBold) {
+      openMark = '**';
+      closeMark = '**';
+    }
 
-      if (isItalic) {
-        openMark += '*';
-        closeMark += '*';
-      }
+    if (isItalic) {
+      openMark += '*';
+      closeMark += '*';
+    }
 
-      if (isVariable) {
-        openMark += '{{';
-        closeMark += '}}';
-      }
+    if (isVariable) {
+      openMark += '{{';
+      closeMark += '}}';
+    }
 
-      if (isCode) {
-        openMark += '`';
-        closeMark += '`';
-      }
+    if (isCode) {
+      openMark += '`';
+      closeMark += '`';
+    }
 
-      result += openMark + leaf.text + closeMark;
-    });
+    result += openMark + node.text + closeMark;
 
     return result;
   }
@@ -108,8 +106,12 @@ export default class ToMarkdown extends Markdown {
     return `${this.recursive(node.nodes)}${postfix}`;
   }
 
+  static getTextFromNode(node) {
+    return node.nodes.get(0).text;
+  }
+
   link(node) {
-    return `[${node.nodes.get(0).leaves.get(0).text}](${node.data.get('href')})`;
+    return `[${ToMarkdown.getTextFromNode(node)}](${node.data.get('href')})`;
   }
 
   horizontalRule(node) {
@@ -121,27 +123,27 @@ export default class ToMarkdown extends Markdown {
   }
 
   headingOne(node) {
-    return `# ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+    return `# ${ToMarkdown.getTextFromNode(node)}${NL}`;
   }
 
   headingTwo(node) {
-    return `## ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+    return `## ${ToMarkdown.getTextFromNode(node)}${NL}`;
   }
 
   headingThree(node) {
-    return `### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+    return `### ${ToMarkdown.getTextFromNode(node)}${NL}`;
   }
 
   headingFour(node) {
-    return `#### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+    return `#### ${ToMarkdown.getTextFromNode(node)}${NL}`;
   }
 
   headingFive(node) {
-    return `##### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+    return `##### ${ToMarkdown.getTextFromNode(node)}${NL}`;
   }
 
   headingSix(node) {
-    return `###### ${node.nodes.get(0).leaves.get(0).text}${NL}`;
+    return `###### ${ToMarkdown.getTextFromNode(node)}${NL}`;
   }
 
   htmlBlock(node) {

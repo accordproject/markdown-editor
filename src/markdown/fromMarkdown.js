@@ -468,11 +468,8 @@ export default class FromMarkdown extends Markdown {
         data: { href: node.destination },
         nodes: [{
           object: 'text',
-          leaves: [{
-            object: 'leaf',
-            text: node.title ? node.title : node.firstChild.literal,
-            marks: this.getMarks(node),
-          }],
+          text: node.title ? node.title : node.firstChild.literal,
+          marks: this.getMarks(node),
         }],
       };
 

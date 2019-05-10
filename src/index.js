@@ -204,12 +204,12 @@ class MarkdownEditor extends React.Component {
    * @param {Function} next
    */
   onBackspace(event, editor, next) {
-    console.log(`key ${editor.value.selection.anchor.key}`);
-    console.log(`offset ${editor.value.selection.anchor.offset}`);
+    // console.log(`key ${editor.value.selection.anchor.key}`);
+    // console.log(`offset ${editor.value.selection.anchor.offset}`);
     // console.log(`value ${editor.value}`);
 
     const previous = editor.value.document.getPreviousText(editor.value.selection.anchor.key);
-    console.log(previous.text);
+    // console.log(previous.text);
     // const isAfter = previous.type === type && editor.value.focus.offset === 0;
 
     if (!this.isEditable(editor)) {
@@ -432,6 +432,31 @@ class MarkdownEditor extends React.Component {
   }
 
   /**
+   * Render a Slate inline.
+   *
+   * @param {Object} props
+   * @param {Editor} editor
+   * @param {Function} next
+   * @return {Element}
+   */
+
+  static renderInline(props, editor, next) {
+    const { attributes, children, node } = props;
+
+    switch (node.type) {
+      case 'link': {
+        const { data } = node;
+        const href = data.get('href');
+        return <a {...attributes} href={href}>{children}</a>;
+      }
+
+      default: {
+        return next();
+      }
+    }
+  }
+
+  /**
    * Renders a default node
    *
    * @param {*} props
@@ -439,7 +464,7 @@ class MarkdownEditor extends React.Component {
    * @param {*} next
    * @return {*} the react component
    */
-  static renderNode(props, editor, next) {
+  static renderBlock(props, editor, next) {
     const { node, attributes, children } = props;
 
     switch (node.type) {
@@ -465,11 +490,6 @@ class MarkdownEditor extends React.Component {
         return <pre {...attributes}>{children}</pre>;
       case 'html_block':
         return <pre {...attributes}>{children}</pre>;
-      case 'link': {
-        const { data } = node;
-        const href = data.get('href');
-        return <a {...attributes} href={href}>{children}</a>;
-      }
       default:
         return next();
     }
@@ -545,7 +565,8 @@ class MarkdownEditor extends React.Component {
               onKeyDown={this.handleOnKeyDown}
               onBeforeInput={this.handleOnBeforeInput}
               onPaste={this.handleOnPaste}
-              renderNode={MarkdownEditor.renderNode}
+              renderBlock={MarkdownEditor.renderBlock}
+              renderInline={MarkdownEditor.renderInline}
               renderMark={MarkdownEditor.renderMark}
               renderEditor={this.handleRenderEditor}/>
             </EditorWrapper>),
@@ -554,7 +575,7 @@ class MarkdownEditor extends React.Component {
         menuItem: 'Markdown',
         render: () => (<Form>
             <TextArea
-              autoHeight
+              rows={20}
               placeholder="Write some markdown..."
               value={this.state.markdown}
               onChange={event => this.onMarkdownChange(event)}
@@ -581,7 +602,8 @@ MarkdownEditor.propTypes = {
   plugins: PropTypes.arrayOf(PropTypes.shape({
     onEnter: PropTypes.func,
     onKeyDown: PropTypes.func,
-    renderNode: PropTypes.func.isRequired,
+    renderBlock: PropTypes.func.isRequired,
+    renderInline: PropTypes.func,
     toMarkdown: PropTypes.func.isRequired,
     fromMarkdown: PropTypes.func.isRequired,
     fromHTML: PropTypes.func.isRequired,

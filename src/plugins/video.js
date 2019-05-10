@@ -49,7 +49,7 @@ function Video() {
      * @param {Editor} editor
      * @param {Function} next
      */
-  function renderNode(props, editor, next) {
+  function renderBlock(props, editor, next) {
     const { node, attributes, children } = props;
 
     switch (node.type) {
@@ -136,7 +136,7 @@ function Video() {
     markdownTags,
     schema,
     onKeyDown,
-    renderNode,
+    renderBlock,
     toMarkdown,
     fromMarkdown,
     fromHTML,

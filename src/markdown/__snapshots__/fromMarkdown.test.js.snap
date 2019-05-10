@@ -9,14 +9,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "This is",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "This is",
           },
         ],
         "object": "block",
@@ -26,14 +21,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "A quote.",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "A quote.",
           },
         ],
         "object": "block",
@@ -58,17 +48,12 @@ Object {
             "data": Object {},
             "nodes": Array [
               Object {
-                "leaves": Array [
-                  Object {
-                    "marks": Array [],
-                    "object": "leaf",
-                    "text": "  this is a multiline
+                "marks": Array [],
+                "object": "text",
+                "text": "  this is a multiline
   code
   block.
 ",
-                  },
-                ],
-                "object": "text",
               },
             ],
             "object": "block",
@@ -94,14 +79,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "This is ",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "This is ",
           },
           Object {
             "data": Object {
@@ -109,28 +89,18 @@ Object {
             },
             "nodes": Array [
               Object {
-                "leaves": Array [
-                  Object {
-                    "marks": Array [],
-                    "object": "leaf",
-                    "text": "a link",
-                  },
-                ],
+                "marks": Array [],
                 "object": "text",
+                "text": "a link",
               },
             ],
             "object": "inline",
             "type": "link",
           },
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": ".",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": ".",
           },
         ],
         "object": "block",
@@ -152,14 +122,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "This is a custom",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "This is a custom",
           },
         ],
         "object": "block",
@@ -172,22 +137,17 @@ Object {
             "data": Object {},
             "nodes": Array [
               Object {
-                "leaves": Array [
+                "marks": Array [
                   Object {
-                    "marks": Array [
-                      Object {
-                        "data": Object {},
-                        "object": "mark",
-                        "type": "html",
-                      },
-                    ],
-                    "object": "leaf",
-                    "text": "  <custom src=\\"property\\">
-  contents
-  </custom>",
+                    "data": Object {},
+                    "object": "mark",
+                    "type": "html",
                   },
                 ],
                 "object": "text",
+                "text": "  <custom src=\\"property\\">
+  contents
+  </custom>",
               },
             ],
             "object": "block",
@@ -201,14 +161,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "block.",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "block.",
           },
         ],
         "object": "block",
@@ -230,30 +185,25 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
+            "marks": Array [],
+            "object": "text",
+            "text": "This is a ",
+          },
+          Object {
+            "marks": Array [
               Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "This is a ",
-              },
-              Object {
-                "marks": Array [
-                  Object {
-                    "data": Object {},
-                    "object": "mark",
-                    "type": "html",
-                  },
-                ],
-                "object": "leaf",
-                "text": "<custom src=\\"property\\"/>",
-              },
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": " property.",
+                "data": Object {},
+                "object": "mark",
+                "type": "html",
               },
             ],
             "object": "text",
+            "text": "<custom src=\\"property\\"/>",
+          },
+          Object {
+            "marks": Array [],
+            "object": "text",
+            "text": " property.",
           },
         ],
         "object": "block",
@@ -275,14 +225,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "This is",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "This is",
           },
         ],
         "object": "block",
@@ -298,14 +243,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "A footer.",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "A footer.",
           },
         ],
         "object": "block",
@@ -327,14 +267,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "This is an ordered list:",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "This is an ordered list:",
           },
         ],
         "object": "block",
@@ -349,14 +284,9 @@ Object {
             "data": Object {},
             "nodes": Array [
               Object {
-                "leaves": Array [
-                  Object {
-                    "marks": Array [],
-                    "object": "leaf",
-                    "text": "one",
-                  },
-                ],
+                "marks": Array [],
                 "object": "text",
+                "text": "one",
               },
             ],
             "object": "block",
@@ -366,14 +296,9 @@ Object {
             "data": Object {},
             "nodes": Array [
               Object {
-                "leaves": Array [
-                  Object {
-                    "marks": Array [],
-                    "object": "leaf",
-                    "text": "two",
-                  },
-                ],
+                "marks": Array [],
                 "object": "text",
+                "text": "two",
               },
             ],
             "object": "block",
@@ -383,14 +308,9 @@ Object {
             "data": Object {},
             "nodes": Array [
               Object {
-                "leaves": Array [
-                  Object {
-                    "marks": Array [],
-                    "object": "leaf",
-                    "text": "three",
-                  },
-                ],
+                "marks": Array [],
                 "object": "text",
+                "text": "three",
               },
             ],
             "object": "block",
@@ -404,14 +324,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "Done.",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "Done.",
           },
         ],
         "object": "block",
@@ -433,14 +348,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "This is an unordered list:",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "This is an unordered list:",
           },
         ],
         "object": "block",
@@ -455,14 +365,9 @@ Object {
             "data": Object {},
             "nodes": Array [
               Object {
-                "leaves": Array [
-                  Object {
-                    "marks": Array [],
-                    "object": "leaf",
-                    "text": "one",
-                  },
-                ],
+                "marks": Array [],
                 "object": "text",
+                "text": "one",
               },
             ],
             "object": "block",
@@ -472,14 +377,9 @@ Object {
             "data": Object {},
             "nodes": Array [
               Object {
-                "leaves": Array [
-                  Object {
-                    "marks": Array [],
-                    "object": "leaf",
-                    "text": "two",
-                  },
-                ],
+                "marks": Array [],
                 "object": "text",
+                "text": "two",
               },
             ],
             "object": "block",
@@ -489,14 +389,9 @@ Object {
             "data": Object {},
             "nodes": Array [
               Object {
-                "leaves": Array [
-                  Object {
-                    "marks": Array [],
-                    "object": "leaf",
-                    "text": "three",
-                  },
-                ],
+                "marks": Array [],
                 "object": "text",
+                "text": "three",
               },
             ],
             "object": "block",
@@ -510,14 +405,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "Done.",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "Done.",
           },
         ],
         "object": "block",
@@ -539,14 +429,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "This is some text.",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "This is some text.",
           },
         ],
         "object": "block",
@@ -568,35 +453,30 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
+            "marks": Array [],
+            "object": "text",
+            "text": "This is ",
+          },
+          Object {
+            "marks": Array [
               Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "This is ",
+                "data": Object {},
+                "object": "mark",
+                "type": "bold",
               },
               Object {
-                "marks": Array [
-                  Object {
-                    "data": Object {},
-                    "object": "mark",
-                    "type": "bold",
-                  },
-                  Object {
-                    "data": Object {},
-                    "object": "mark",
-                    "type": "italic",
-                  },
-                ],
-                "object": "leaf",
-                "text": "some",
-              },
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": " text.",
+                "data": Object {},
+                "object": "mark",
+                "type": "italic",
               },
             ],
             "object": "text",
+            "text": "some",
+          },
+          Object {
+            "marks": Array [],
+            "object": "text",
+            "text": " text.",
           },
         ],
         "object": "block",
@@ -618,30 +498,25 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
+            "marks": Array [],
+            "object": "text",
+            "text": "This is ",
+          },
+          Object {
+            "marks": Array [
               Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "This is ",
-              },
-              Object {
-                "marks": Array [
-                  Object {
-                    "data": Object {},
-                    "object": "mark",
-                    "type": "bold",
-                  },
-                ],
-                "object": "leaf",
-                "text": "some",
-              },
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": " text.",
+                "data": Object {},
+                "object": "mark",
+                "type": "bold",
               },
             ],
             "object": "text",
+            "text": "some",
+          },
+          Object {
+            "marks": Array [],
+            "object": "text",
+            "text": " text.",
           },
         ],
         "object": "block",
@@ -663,14 +538,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "Heading One",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "Heading One",
           },
         ],
         "object": "block",
@@ -692,14 +562,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "Heading Two",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "Heading Two",
           },
         ],
         "object": "block",
@@ -721,14 +586,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "Heading Three",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "Heading Three",
           },
         ],
         "object": "block",
@@ -750,14 +610,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "Heading Four",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "Heading Four",
           },
         ],
         "object": "block",
@@ -779,14 +634,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "Heading Five",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "Heading Five",
           },
         ],
         "object": "block",
@@ -808,14 +658,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "Heading Six",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "Heading Six",
           },
         ],
         "object": "block",
@@ -837,30 +682,25 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
+            "marks": Array [],
+            "object": "text",
+            "text": "This is ",
+          },
+          Object {
+            "marks": Array [
               Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "This is ",
-              },
-              Object {
-                "marks": Array [
-                  Object {
-                    "data": Object {},
-                    "object": "mark",
-                    "type": "code",
-                  },
-                ],
-                "object": "leaf",
-                "text": "inline code",
-              },
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": ".",
+                "data": Object {},
+                "object": "mark",
+                "type": "code",
               },
             ],
             "object": "text",
+            "text": "inline code",
+          },
+          Object {
+            "marks": Array [],
+            "object": "text",
+            "text": ".",
           },
         ],
         "object": "block",
@@ -882,30 +722,25 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
+            "marks": Array [],
+            "object": "text",
+            "text": "This is ",
+          },
+          Object {
+            "marks": Array [
               Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "This is ",
-              },
-              Object {
-                "marks": Array [
-                  Object {
-                    "data": Object {},
-                    "object": "mark",
-                    "type": "italic",
-                  },
-                ],
-                "object": "leaf",
-                "text": "some",
-              },
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": " text.",
+                "data": Object {},
+                "object": "mark",
+                "type": "italic",
               },
             ],
             "object": "text",
+            "text": "some",
+          },
+          Object {
+            "marks": Array [],
+            "object": "text",
+            "text": " text.",
           },
         ],
         "object": "block",
@@ -927,14 +762,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "This is first paragraph.",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "This is first paragraph.",
           },
         ],
         "object": "block",
@@ -944,14 +774,9 @@ Object {
         "data": Object {},
         "nodes": Array [
           Object {
-            "leaves": Array [
-              Object {
-                "marks": Array [],
-                "object": "leaf",
-                "text": "This is second paragraph.",
-              },
-            ],
+            "marks": Array [],
             "object": "text",
+            "text": "This is second paragraph.",
           },
         ],
         "object": "block",

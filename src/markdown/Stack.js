@@ -76,13 +76,6 @@ export default class Stack {
    * @param {*} leaf the text node
    */
   addTextLeaf(leaf) {
-    const top = this.peek();
-    const lastNode = top.nodes.length > 0 ? top.nodes[top.nodes.length - 1] : null;
-
-    if (lastNode && lastNode.object === 'text') {
-      lastNode.leaves.push(leaf);
-    } else {
-      this.append({ object: 'text', leaves: [leaf] });
-    }
+    this.append({ object: 'text', text: leaf.text, marks: leaf.marks });
   }
 }
