@@ -525,7 +525,7 @@ class MarkdownEditor extends React.Component {
       case 'variable':
         return <mark {...attributes}>{children}</mark>;
       case 'error':
-        return <div className='error'{...attributes}>{children}</div>;
+        return <span className='error'{...attributes}>{children}</span>;
       default:
         return next();
     }
