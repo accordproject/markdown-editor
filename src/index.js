@@ -133,6 +133,17 @@ class MarkdownEditor extends React.Component {
   }
 
   /**
+   * Updates the text of the editor with new markdown text
+   * @param {string} text the new markdown text
+   */
+  setMarkdown(text) {
+    this.onChange({
+      value: this.fromMarkdown.convert(text),
+    });
+    this.updateMenu();
+  }
+
+  /**
    * On Slate editor change, update the app's React state with the new editor value.
    * @param {*} param
    */
