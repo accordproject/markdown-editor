@@ -14,6 +14,7 @@
 
 import React from 'react';
 import { Editor, getEventTransfer } from 'slate-react';
+import Plain from 'slate-plain-serializer';
 import { Tab, Form, TextArea } from 'semantic-ui-react';
 import { Value } from 'slate';
 import PropTypes from 'prop-types';
@@ -389,6 +390,13 @@ class MarkdownEditor extends React.Component {
    */
   getMarkdown() {
     return this.state.markdown;
+  }
+
+  /**
+   * Returns the contents of the editor as a plain text string
+   */
+  getPlainText() {
+    return Plain.serialize(this.state.value);
   }
 
   /**
