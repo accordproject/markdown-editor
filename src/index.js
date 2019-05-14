@@ -172,8 +172,8 @@ function MarkdownEditor(props) {
    * https://github.com/ianstormtaylor/slate/issues/2767
    */
   useEffect(() => {
-    const editor = editorRef.current;
-    if (props.lockText && editor) {
+    if (props.lockText && editorRef && editorRef.current) {
+      const editor = editorRef.current;
       const { document, annotations } = editor.value;
 
       // console.log('findVariables');
@@ -322,7 +322,7 @@ function MarkdownEditor(props) {
   * @param {Value} value the Slate editor value
   */
   const isInVariable = ((value) => {
-    console.log(value.selection.anchor);
+    // console.log(value.selection.anchor);
     value.annotations.filter(
       (ann => ann.type === 'variable'
               && value.selection.anchor.isInRange(ann)
@@ -479,9 +479,7 @@ function MarkdownEditor(props) {
     ? <Card fluid>
   <Card.Content>
   <EditorWrapper>
-              <
-              // @ts-ignore
-              Editor
+              <Editor
               ref={editorRef}
               className="doc-inner"
               readOnly={props.markdownMode}
@@ -489,7 +487,9 @@ function MarkdownEditor(props) {
               onChange={({ value }) => {
                 if (!props.markdownMode) {
                   setSlateValue(value);
-                  props.onChange(value, markdown);
+                  if (JSON.stringify(value) !== JSON.stringify(slateValue)) {
+                    props.onChange(value, markdown);
+                  }
                 }
               }}
               schema={slateSchema}
@@ -501,7 +501,7 @@ function MarkdownEditor(props) {
               renderInline={renderInline}
               renderMark={renderMark}
               renderAnnotation={renderAnnotation}/>
-              </EditorWrapper>
+    </EditorWrapper>
   </Card.Content>
 </Card>
     : <Card fluid>
@@ -516,11 +516,12 @@ function MarkdownEditor(props) {
                 onChange={(evt, data) => {
                   if (props.markdownMode) {
                     setMarkdown(evt.target.value);
-                    props.onChange(slateValue, evt.target.value);
+                    if (JSON.stringify(evt.target.value) !== JSON.stringify(markdown)) {
+                      props.onChange(slateValue, evt.target.value);
+                    }
                   }
                 }}
               />
-
   </Card.Content>
 </Card>;
 
