@@ -16,8 +16,6 @@ import { Value } from 'slate';
 import Stack from './Stack';
 import Markdown from './Markdown';
 
-const regex = /{{(.*?)}}/gm;
-
 /**
  * Converts markdown text to a Slate.js value object.
  * The markdown text is parsed using Common Mark.
@@ -64,6 +62,7 @@ export default class FromMarkdown extends Markdown {
       throw new Error('Failed to parse document.');
     }
 
+    // VariableMarker.markVariables(this.root);
     return Value.fromJSON(this.root);
   }
 
@@ -137,8 +136,7 @@ export default class FromMarkdown extends Markdown {
 
   /**
    * Handles the markdown text AST node, modifying the
-   * Stack. Any text between '{{' and '}}' is split
-   * and is given the 'variable' mark.
+   * Stack.
    * @param {*} node the AST node
    */
   text(node) {
@@ -146,52 +144,13 @@ export default class FromMarkdown extends Markdown {
       return;
     }
 
-    // look for variables, and split into different
-    // text nodes, so we can apply marks
-    let m = regex.exec(node.literal);
-    let leftIndex = 0;
+    const leaf = {
+      object: 'leaf',
+      text: node.literal,
+      marks: this.getMarks(node),
+    };
 
-    if (!m) {
-      const leaf = {
-        object: 'leaf',
-        text: node.literal,
-        marks: this.getMarks(node),
-      };
-
-      this.stack.addTextLeaf(leaf);
-    } else {
-      while (m) {
-        // This is necessary to avoid infinite loops with zero-width matches
-        if (m.index === regex.lastIndex) {
-          regex.lastIndex += 1;
-        }
-
-        m.forEach((match, groupIndex) => {
-          if (groupIndex == 1) {
-            const left = node.literal.substring(leftIndex, regex.lastIndex - match.length - 4);
-            leftIndex = regex.lastIndex;
-
-            let leaf = {
-              object: 'leaf',
-              text: left,
-              marks: [],
-            };
-
-            this.stack.addTextLeaf(leaf);
-
-            leaf = {
-              object: 'leaf',
-              text: match,
-              marks: [FromMarkdown.getVariableMark()],
-            };
-
-            this.stack.addTextLeaf(leaf);
-          }
-        });
-
-        m = regex.exec(node.literal);
-      }
-    }
+    this.stack.addTextLeaf(leaf);
   }
 
   /**
@@ -218,14 +177,6 @@ export default class FromMarkdown extends Markdown {
     }
 
     return marks;
-  }
-
-  static getVariableMark() {
-    return {
-      object: 'mark',
-      type: 'variable',
-      data: {},
-    };
   }
 
   /**
@@ -256,7 +207,7 @@ export default class FromMarkdown extends Markdown {
    * Stack.
    */
   emph() {
-    // handled by text
+  // handled by text
   }
 
   /**
@@ -264,7 +215,7 @@ export default class FromMarkdown extends Markdown {
    * Stack.
    */
   strong() {
-    // handled by text
+  // handled by text
   }
 
   /**
@@ -381,7 +332,7 @@ export default class FromMarkdown extends Markdown {
     const tag = FromMarkdown.parseHtmlBlock(node.literal);
 
     if (tag && this.dispatchToPlugin(node, event, tag)) {
-      // console.log('Custom html tag:', tag, "\n", 'Node:', node);
+    // console.log('Custom html tag:', tag, "\n", 'Node:', node);
     } else {
       const block = {
         object: 'block',

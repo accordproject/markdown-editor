@@ -12,20 +12,29 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import { Editor, getEventTransfer } from 'slate-react';
-import Plain from 'slate-plain-serializer';
-import { Tab, Form, TextArea } from 'semantic-ui-react';
+import React, {
+  useEffect, useState, useRef, useCallback
+} from 'react';
 import { Value } from 'slate';
+import { Editor, getEventTransfer } from 'slate-react';
+import {
+  Card, Checkbox, Segment
+} from 'semantic-ui-react';
+import TextareaAutosize from 'react-textarea-autosize';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import baseSchema from './schema';
-import { FromHTML } from './html/fromHTML';
 import FromMarkdown from './markdown/fromMarkdown';
 import ToMarkdown from './markdown/toMarkdown';
-
 import PluginManager from './PluginManager';
-import HoverMenu from './HoverMenu';
+import { FromHTML } from './html/fromHTML';
+
+import './styles.css';
+
+/**
+ * Regex used to identify variables
+ */
+const regex = /{{(.*?)}}/gm;
 
 const EditorWrapper = styled.div`
   background: #fff;
@@ -45,421 +54,181 @@ const EditorWrapper = styled.div`
   text-indent: 0ex;
 `;
 
-const defaultMarkdown = `# Heading One
-This is text. This is *italic* text. This is **bold** text. This is a [link](https://clause.io). This is \`inline code\`.
-
-This is ***bold and italic*** text
-
-This is a sentence that contains {{a variable}} within it. And here is {{another}}.
-
-> This is a quote.
-## Heading Two
-This is more text.
-
-Ordered lists:
-
-1. one
-1. two
-1. three
-
-Or:
-
-* apples
-* pears
-* peaches
-
-### Sub heading
-
-Video:
-
-<video/>
-
-Another video:
-
-<video src="https://www.youtube.com/embed/cmmq-JBMbbQ"/>`;
-
+/**
+ * a utility function to generate a random node id for annotations
+ */
+function uuidv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    // eslint-disable-next-line no-bitwise
+    const r = Math.random() * 16 | 0;
+    // eslint-disable-next-line no-bitwise, no-mixed-operators
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
 /**
  * A plugin based rich-text editor that uses Common Mark for serialization.
- * The default markdown to be edited in passed in the 'markdown' property
+ * The default markdown to be edited in passed in props 'markdown'
  * while the plugins are passed in the 'plugins' property.
  *
  * Plugins are responsible for serialization to/from markdown and HTML,
  * rendering and schema definition.
+ *
+ * When this editor runs in markdown mode it generates a read-only
+ * rich text view of the markdown, rendered using Slate.
+ *
+ * When the editor is not running in markdown mode the rich text editor
+ * is editable and the markdown text is generated from the contents of
+ * the Slate editor and both are passed to the props.onChange callback.
+ *
+ * When props.lockText is true and props.markdownMode is false then
+ * the editor will lock all text against edits except for variables.
+ * This feature is currently experimental and has bugs.
+ *
+ * @param {*} props the props for the component. See the declared PropTypes
+ * for details.
  */
-class MarkdownEditor extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: Value.fromJSON({ document: { nodes: [] } }),
-      markdown: props.markdown ? props.markdown : defaultMarkdown,
-      lockText: props.lockText,
-    };
-    this.editor = React.createRef();
-    this.pluginManager = new PluginManager(this.props.plugins);
-    this.fromMarkdown = new FromMarkdown(this.pluginManager);
-    this.toMarkdown = new ToMarkdown(this.pluginManager);
+function MarkdownEditor(props) {
+  /**
+   * A reference to the Slate Editor.
+   */
+  const editorRef = useRef(null);
 
-    this.handleRenderEditor = this.renderEditor.bind(this);
-    this.handleOnChange = this.onChange.bind(this);
-    this.handleOnBeforeInput = this.onBeforeInput.bind(this);
-    this.handleOnKeyDown = this.onKeyDown.bind(this);
-    this.handleOnPaste = this.onPaste.bind(this);
+  /**
+   * Whether to show the Slate editor
+   */
+  const [showSlate, setShowSlate] = useState(true);
 
-    this.fromHTML = new FromHTML(this.pluginManager);
-    this.menu = null;
-    this.state.rect = null;
+  /**
+   * Current Slate Value
+   */
+  const [slateValue, setSlateValue] = useState(Value.fromJSON({}));
 
-    this.schema = baseSchema;
-    this.props.plugins.forEach((plugin) => {
+  /**
+   * Current Markdown text
+   */
+  const [markdown, setMarkdown] = useState(props.markdown);
+
+  /**
+   * Slate Schema augmented by plugins
+   */
+  const [slateSchema, setSlateSchema] = useState(null);
+
+  /**
+   * Updates the Slate Schema when the plugins change
+   */
+  useEffect(() => {
+    const schema = JSON.parse(JSON.stringify(baseSchema));
+    props.plugins.forEach((plugin) => {
       plugin.tags.forEach((tag) => {
-        this.schema.document.nodes[0].match.push({ type: tag });
+        schema.document.nodes[0].match.push({ type: tag });
       });
     });
-  }
+    setSlateSchema(schema);
+  }, [props.plugins]);
 
   /**
-   * Called by React when the component has been mounted into the DOM tree
+   * When not in markdown mode:
+   * - Updates the Slate Value when the props markdown or the plugins change
    */
-  componentDidMount() {
-    this.onChange({
-      value: this.fromMarkdown.convert(this.state.markdown),
-    });
-
-    this.updateMenu();
-  }
-
-  componentDidUpdate() {
-    this.updateMenu();
-  }
+  useEffect(() => {
+    if (!props.markdownMode) {
+      const pluginManager = new PluginManager(props.plugins);
+      const fromMarkdown = new FromMarkdown(pluginManager);
+      const newSlateValue = fromMarkdown.convert(props.markdown);
+      setSlateValue(newSlateValue);
+    }
+  }, [props.markdownMode, props.markdown, props.plugins]);
 
   /**
-   * Updates the text of the editor with new markdown text
-   * @param {string} text the new markdown text
+   * When in markdown mode:
+   * - Updates the Slate Value when the markdown state or the plugins change
    */
-  setMarkdown(text) {
-    this.onChange({
-      value: this.fromMarkdown.convert(text),
-    });
-    this.updateMenu();
-  }
+  useEffect(() => {
+    if (props.markdownMode) {
+      const pluginManager = new PluginManager(props.plugins);
+      const fromMarkdown = new FromMarkdown(pluginManager);
+      const newSlateValue = fromMarkdown.convert(markdown);
+      setSlateValue(newSlateValue);
+    }
+  }, [props.markdownMode, markdown, props.plugins]);
 
   /**
-   * On Slate editor change, update the app's React state with the new editor value.
-   * @param {*} param
+   * When not in markdown mode:
+   * - Updates the markdown when the Slate Value or the plugins change
    */
-  onChange({ value }) {
-    this.setState({ value });
-
-    if (MarkdownEditor.isMarkdownEditorFocused()) {
-      const markdown = this.toMarkdown.convert(value);
-      this.setState({ markdown });
+  useEffect(() => {
+    if (!props.markdownMode) {
+      const pluginManager = new PluginManager(props.plugins);
+      const toMarkdown = new ToMarkdown(pluginManager);
+      const newMarkdown = toMarkdown.convert(slateValue);
+      setMarkdown(newMarkdown);
     }
-
-    this.props.onChange(this);
-  }
+  }, [props.markdownMode, slateValue, props.plugins]);
 
   /**
-   * On markdown editor change, update the app's React state with the new editor value
-   * @param {*} event
+   * When the Slate Value changes we update the variable annotations
+   * This currently has strange render issues, pending a release with this fix:
+   * https://github.com/ianstormtaylor/slate/issues/2767
    */
-  onMarkdownChange(event) {
-    this.setState({ markdown: event.target.value });
-    const value = this.fromMarkdown.convert(event.target.value);
-    this.setState({ value });
-  }
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (props.lockText && editor) {
+      const { document, annotations } = editor.value;
 
-  /**
-   * On space, if it was after an auto-markdown shortcut, convert the current
-   * node into the shortcut's corresponding type.
-   *
-   * @param {Event} event
-   * @param {Editor} editor
-   * @param {Function} next
-   */
-  static onSpace(event, editor, next) {
-    const { value } = editor;
-    const { selection } = value;
-    if (selection.isExpanded) return next();
+      // console.log('findVariables');
+      // Make the change to annotations without saving it into the undo history,
+      // so that there isn't a confusing behavior when undoing.
+      editor.withoutSaving(() => {
+        annotations.forEach((ann) => {
+          if (ann.type === 'variable') {
+            editor.removeAnnotation(ann);
+          }
+        });
 
-    const { startBlock } = value;
-    const { start } = selection;
-    const chars = startBlock.text.slice(0, start.offset).replace(/\s*/g, '');
-    const type = MarkdownEditor.getType(chars);
-    if (!type) return next();
-    if (type === 'list_item' && startBlock.type === 'list_item') return next();
-    if (type === 'horizontal_rule') {
-      const hr = {
-        type: 'horizontal_rule',
-      };
-      editor.insertBlock(hr);
-      // this CRASHES? editor.moveFocusToEndOfNode(hr);
+        // eslint-disable-next-line no-restricted-syntax
+        for (const [node, path] of document.texts()) {
+          const { key, text } = node;
+          let m = regex.exec(text);
+
+          while (m) {
+            // This is necessary to avoid infinite loops with zero-width matches
+            if (m.index === regex.lastIndex) {
+              regex.lastIndex += 1;
+            }
+
+            for (let groupIndex = 0; groupIndex < m.length; groupIndex += 1) {
+              const match = m[groupIndex];
+
+              if (groupIndex === 1) {
+                const focus = regex.lastIndex - match.length - 2;
+                const anchor = regex.lastIndex - 2;
+
+                // console.log(`*****${text}`);
+                // console.log(`key ${key}`);
+                // console.log(`match ${match}`);
+                // console.log(`focus ${focus}`);
+                // console.log(`anchor ${anchor}`);
+
+                editor.addAnnotation({
+                  key: `variable-${uuidv4()}`,
+                  type: 'variable',
+                  anchor: { path, key, offset: anchor },
+                  focus: { path, key, offset: focus },
+                });
+              }
+            }
+            m = regex.exec(text);
+          } // while
+        } // for
+      }); // withoutSaving
     }
-
-    event.preventDefault();
-    editor.setBlocks(type);
-
-    if (type === 'list_item') {
-      // TODO (DCS) what about ol?
-      editor.wrapBlock('ul_list');
-    }
-
-    editor.moveFocusToStartOfNode(startBlock).delete();
-    return undefined;
-  }
-
-  /**
-   * On backspace, if at the start of a non-paragraph, convert it back into a
-   * paragraph node.
-   *
-   * @param {Event} event
-   * @param {Editor} editor
-   * @param {Function} next
-   */
-  onBackspace(event, editor, next) {
-    // console.log(`key ${editor.value.selection.anchor.key}`);
-    // console.log(`offset ${editor.value.selection.anchor.offset}`);
-    // console.log(`value ${editor.value}`);
-
-    const previous = editor.value.document.getPreviousText(editor.value.selection.anchor.key);
-    // console.log(previous.text);
-    // const isAfter = previous.type === type && editor.value.focus.offset === 0;
-
-    if (!this.isEditable(editor)) {
-      event.preventDefault(); // prevent editing non-editable text
-      return false;
-    }
-
-    const { value } = editor;
-    const { selection } = value;
-
-    if (selection.isExpanded) return next();
-    if (selection.start.offset !== 0) return next();
-
-    const { startBlock } = value;
-    if (startBlock.type === 'paragraph') return next();
-
-    event.preventDefault();
-    editor.setBlocks('paragraph');
-
-    if (startBlock.type === 'list_item') {
-      editor.unwrapBlock('list');
-    }
-
-    return undefined;
-  }
-
-  /**
-   * On return, if at the end of a node type that should not be extended,
-   * create a new paragraph below it.
-   *
-   * @param {Event} event
-   * @param {Editor} editor
-   * @param {Function} next
-   */
-  onEnter(event, editor, next) {
-    const { value } = editor;
-    const { selection } = value;
-    const { start, end, isExpanded } = selection;
-
-    if (!this.isEditable(editor) || MarkdownEditor.isInVariable(value)) {
-      event.preventDefault(); // prevent adding newlines in variables
-      return false;
-    }
-
-    if (isExpanded) return next();
-
-    const { startBlock } = value;
-    if (start.offset === 0 && startBlock.text.length === 0) {
-      return this.onBackspace(event, editor, next);
-    }
-
-    if (end.offset !== startBlock.text.length) return next();
-
-    // if you hit enter inside anything that is not a heading
-    // we use the default behavior
-    if (!startBlock.type.startsWith('heading')) {
-      return next();
-    }
-
-    // when you hit enter after a heading we insert a paragraph
-    event.preventDefault();
-    editor.splitBlock(0).setBlocks('paragraph');
-    return next();
-  }
-
-  /**
-   * Called upon a keypress
-   * @param {*} event
-   * @param {*} editor
-   * @param {*} next
-   */
-  onKeyDown(event, editor, next) {
-    switch (event.key) {
-      case 'Enter':
-        return this.onEnter(event, editor, next);
-      case 'Backspace':
-        return this.onBackspace(event, editor, next);
-      default:
-        return next(); // allow
-    }
-  }
-
-  /**
-   * Returns true if the selection is inside a variable
-   * @param {Value} value the Slate editor value
-   */
-  static isInVariable(value) {
-    if (value.activeMarks.size > 0 && value.activeMarks.every(
-      (mark => mark.type === 'variable'),
-    )) {
-      return true;
-    }
-
-    return false;
-  }
-
-  /**
-   * Returns true if the editor should allow an edit. Edits are allowed for all
-   * text unless the lockText parameter is set in the state of the editor, in which
-   * case only variables are editable.
-   * @param {Editor} editor the Slate Editor
-   */
-  isEditable(editor) {
-    if (this.state.lockText) {
-      return MarkdownEditor.isInVariable(editor.value);
-    }
-
-    return true;
-  }
-
-  onBeforeInput(event, editor, next) {
-    if (this.isEditable(editor)) {
-      return next();
-    }
-
-    event.preventDefault();
-    return false;
-  }
-
-  /**
-   * Called on a paste
-   * @param {*} event
-   * @param {*} editor
-   * @param {*} next
-   * @return {*} the react component
-   */
-  onPaste(event, editor, next) {
-    const transfer = getEventTransfer(event);
-    if (transfer.type !== 'html') return next();
-    const { document } = this.fromHTML.convert(this.editor, transfer.html);
-    editor.insertFragment(document);
-    return undefined;
-  }
-
-  updateRect(oldRect, newRect) {
-    const oldString = JSON.stringify(oldRect);
-    const newString = JSON.stringify(newRect);
-
-    if (oldString !== newString) {
-      this.setState({ rect: newRect });
-    }
-  }
-
-  /**
-   * Update the menu's absolute position.
-   */
-
-  updateMenu() {
-    const { value } = this.state;
-    const oldRect = this.state.rect;
-
-    if (!value) {
-      this.updateRect(oldRect, null);
-      return;
-    }
-
-    const { fragment, selection } = value;
-
-    if (MarkdownEditor.isInVariable(value)) {
-      console.log('So you wanna edit a variable?');
-      return;
-    }
-
-    if (selection.isBlurred || selection.isCollapsed || fragment.text === '') {
-      this.updateRect(oldRect, null);
-      return;
-    }
-
-    const native = window.getSelection();
-    const range = native.getRangeAt(0);
-    const rect = range.getBoundingClientRect();
-    this.updateRect(oldRect, rect);
-  }
-
-  /**
-   * Returns the contents of the editor as a markdown string
-   */
-  getMarkdown() {
-    return this.state.markdown;
-  }
-
-  /**
-   * Returns the contents of the editor as a plain text string
-   */
-  getPlainText() {
-    return Plain.serialize(this.state.value);
-  }
-
-  /**
-   * Get the block type for a series of auto-markdown shortcut `chars`.
-   *
-   * @param {String} chars
-   * @return {String} block
-   */
-  static getType(chars) {
-    switch (chars) {
-      case '*':
-      case '-':
-      case '+':
-        return 'list_item';
-      case '>':
-        return 'block_quote';
-      case '#':
-        return 'heading_one';
-      case '##':
-        return 'heading_two';
-      case '###':
-        return 'heading_three';
-      case '####':
-        return 'heading_four';
-      case '#####':
-        return 'heading_five';
-      case '######':
-        return 'heading_six';
-      case '---':
-        return 'horizontal_rule';
-      default:
-        return null;
-    }
-  }
-
-  /**
-   * Return true if the markdown editor has focus
-   */
-  static isMarkdownEditorFocused() {
-    return document.activeElement.getAttribute('data-slate-editor');
-  }
+  }, [props.lockText, editorRef, slateValue.document]);
 
   /**
    * Render a Slate inline.
-   *
-   * @param {Object} props
-   * @param {Editor} editor
-   * @param {Function} next
-   * @return {Element}
    */
-
-  static renderInline(props, editor, next) {
+  const renderInline = useCallback((props, editor, next) => {
     const { attributes, children, node } = props;
 
     switch (node.type) {
@@ -473,17 +242,12 @@ class MarkdownEditor extends React.Component {
         return next();
       }
     }
-  }
+  }, [props]);
 
   /**
-   * Renders a default node
-   *
-   * @param {*} props
-   * @param {*} editor
-   * @param {*} next
-   * @return {*} the react component
+   * Renders a block
    */
-  static renderBlock(props, editor, next) {
+  const renderBlock = useCallback((props, editor, next) => {
     const { node, attributes, children } = props;
 
     switch (node.type) {
@@ -512,17 +276,12 @@ class MarkdownEditor extends React.Component {
       default:
         return next();
     }
-  }
+  }, [props]);
 
   /**
    * Render a Slate mark.
-   *
-   * @param {*} props
-   * @param {*} editor
-   * @param {*} next
-   * @return {*} the react component
    */
-  static renderMark(props, editor, next) {
+  const renderMark = useCallback((props, editor, next) => {
     const { children, mark, attributes } = props;
 
     switch (mark.type) {
@@ -533,96 +292,286 @@ class MarkdownEditor extends React.Component {
       case 'html':
       case 'code':
         return <code {...attributes}>{children}</code>;
-      case 'variable':
-        return <mark {...attributes}>{children}</mark>;
       case 'error':
         return <span className='error'{...attributes}>{children}</span>;
       default:
         return next();
     }
-  }
+  }, [props]);
 
   /**
-   * Render the editor.
-   *
-   * @param {Object} props
-   * @param {Function} next
-   * @return {Element}
+   * Render Slate annotations.
    */
+  const renderAnnotation = useCallback((props, editor, next) => {
+    const { children, annotation, attributes } = props;
 
-  renderEditor(props, ed, next) {
-    const { editor } = props;
-    const children = next();
-    return (
-      <React.Fragment>
-        {children}
-        <HoverMenu
-          innerRef={menu => (this.menu = menu)}
-          editor={editor}
-          rect={this.state.rect}
-          pluginManager = {this.pluginManager}
-        />
-      </React.Fragment>
-    );
-  }
+    switch (annotation.type) {
+      case 'variable':
+        return (
+          <span {...attributes} className='variable'>
+            {children}
+          </span>
+        );
+      default:
+        return next();
+    }
+  }, [props]);
 
   /**
-   * Render this React component
-   * @return {*} the react component
+  * Returns true if the selection is inside a variable
+  * @param {Value} value the Slate editor value
+  */
+  const isInVariable = ((value) => {
+    console.log(value.selection.anchor);
+    value.annotations.filter(
+      ((ann) => {
+        console.log(ann);
+        return ann.type === 'variable'
+              && value.selection.anchor.isInRange(ann);
+      })
+    ).size > 0;
+  });
+
+  /**
+  * Returns true if the editor should allow an edit. Edits are allowed for all
+  * text unless the lockText parameter is set in the state of the editor, in which
+  * case only variables are editable.
+  * @param {Editor} editor the Slate Editor
+  */
+  const isEditable = (editor) => {
+    if (props.lockText) {
+      return isInVariable(editor.value);
+    }
+
+    return true;
+  };
+
+  /**
+  * On backspace, if at the start of a non-paragraph, convert it back into a
+  * paragraph node.
+  *
+  * @param {Event} event
+  * @param {Editor} editor
+  * @param {Function} next
+  */
+  const handleBackspace = (event, editor, next) => {
+  // console.log(`key ${editor.value.selection.anchor.key}`);
+    // console.log(`offset ${editor.value.selection.anchor.offset}`);
+    // console.log(`value ${editor.value}`);
+
+    // const previous = editor.value.document.getPreviousText(editor.value.selection.anchor.key);
+    // console.log(previous.text);
+    // const isAfter = previous.type === type && editor.value.focus.offset === 0;
+
+    if (!isEditable(editor)) {
+      event.preventDefault(); // prevent editing non-editable text
+      return false;
+    }
+
+    const { value } = editor;
+    const { selection } = value;
+
+    if (selection.isExpanded) return next();
+    if (selection.start.offset !== 0) return next();
+
+    const { startBlock } = value;
+    if (startBlock.type === 'paragraph') return next();
+
+    event.preventDefault();
+    editor.setBlocks('paragraph');
+
+    // if (startBlock.type === 'list_item') {
+    //   editor.unwrapBlock('list');
+    // }
+
+    return undefined;
+  };
+
+  /**
+  * On return, if at the end of a node type that should not be extended,
+  * create a new paragraph below it.
+  *
+  * @param {Event} event
+  * @param {Editor} editor
+  * @param {Function} next
+  */
+  const handleEnter = (event, editor, next) => {
+    const { value } = editor;
+    const { selection } = value;
+    const { end, isExpanded } = selection;
+
+    if (!isEditable(editor) || isInVariable(value)) {
+      event.preventDefault(); // prevent adding newlines in variables
+      return false;
+    }
+
+    if (isExpanded) return next();
+
+    const { startBlock } = value;
+    if (end.offset !== startBlock.text.length) return next();
+
+    // if you hit enter inside anything that is not a heading
+    // we use the default behavior
+    if (!startBlock.type.startsWith('heading')) {
+      return next();
+    }
+
+    // when you hit enter after a heading we insert a paragraph
+    event.preventDefault();
+    editor.insertBlock('paragraph');
+    return next();
+  };
+
+  /**
+  * Called upon a keypress
+  * @param {*} event
+  * @param {*} editor
+  * @param {*} next
+  */
+  const onKeyDown = (event, editor, next) => {
+    switch (event.key) {
+      case 'Enter':
+        return handleEnter(event, editor, next);
+      case 'Backspace':
+        return handleBackspace(event, editor, next);
+      default:
+        return next(); // allow
+    }
+  };
+
+  const onBeforeInput = (event, editor, next) => {
+    if (isEditable(editor)) {
+      return next();
+    }
+
+    event.preventDefault();
+    return false;
+  };
+
+  /**
+  * Called on a paste
+  * @param {*} event
+  * @param {*} editor
+  * @param {*} next
+  * @return {*} the react component
+  */
+  const onPaste = (event, editor, next) => {
+    const transfer = getEventTransfer(event);
+    if (transfer.type !== 'html') return next();
+    const pluginManager = new PluginManager(props.plugins);
+    const fromHtml = new FromHTML(pluginManager);
+    // @ts-ignore
+    const { document } = fromHtml.convert(editor, transfer.html);
+    editor.insertFragment(document);
+    return undefined;
+  };
+
+  /**
+   * Toggle whether to show the Slate editor
+   * or the Markdown editor
    */
-  render() {
-    const panes = [
-      {
-        menuItem: 'Rich Text',
-        render: () => (
-            <EditorWrapper>
-              <Editor
-              ref={this.editor}
+  const toggleShowSlate = () => {
+    setShowSlate(!showSlate);
+  };
+
+  /**
+   * Render the component, based on showSlate
+   */
+  const card = showSlate
+    ? <Card fluid>
+  <Card.Content>
+  <EditorWrapper>
+              <
+              // @ts-ignore
+              Editor
+              ref={editorRef}
               className="doc-inner"
-              value={this.state.value}
-              schema={this.schema}
-              plugins={this.props.plugins}
-              onChange={this.handleOnChange}
-              onKeyDown={this.handleOnKeyDown}
-              onBeforeInput={this.handleOnBeforeInput}
-              onPaste={this.handleOnPaste}
-              renderBlock={MarkdownEditor.renderBlock}
-              renderInline={MarkdownEditor.renderInline}
-              renderMark={MarkdownEditor.renderMark}
-              renderEditor={this.handleRenderEditor}/>
-            </EditorWrapper>),
-      },
-      {
-        menuItem: 'Markdown',
-        render: () => (<Form>
-            <TextArea
-              rows={20}
-              placeholder="Write some markdown..."
-              value={this.state.markdown}
-              onChange={event => this.onMarkdownChange(event)}
-            />
-          </Form>),
-      },
-    ];
+              readOnly={props.markdownMode}
+              value={slateValue}
+              onChange={({ value }) => {
+                if (!props.markdownMode) {
+                  setSlateValue(value);
+                  props.onChange(value, markdown);
+                }
+              }}
+              schema={slateSchema}
+              plugins={props.plugins}
+              onBeforeInput={onBeforeInput}
+              onKeyDown={onKeyDown}
+              onPaste={onPaste}
+              renderBlock={renderBlock}
+              renderInline={renderInline}
+              renderMark={renderMark}
+              renderAnnotation={renderAnnotation}/>
+              </EditorWrapper>
+  </Card.Content>
+</Card>
+    : <Card fluid>
+  <Card.Content>
+  <TextareaAutosize
+                className={'textarea'}
+                width={'100%'}
+                placeholder={props.markdown}
+                readOnly={!props.markdownMode}
+                value={markdown}
+                // eslint-disable-next-line no-unused-vars
+                onChange={(evt, data) => {
+                  if (props.markdownMode) {
+                    setMarkdown(evt.target.value);
+                    props.onChange(slateValue, evt.target.value);
+                  }
+                }}
+              />
 
-    return (
-      <div>
-        <Tab menu={{ pointing: true }} panes={panes} />
-      </div>
-    );
-  }
+  </Card.Content>
+</Card>;
+
+  return (
+    <div>
+      <Segment raised>
+        <Checkbox toggle label='Edit' onChange={toggleShowSlate} checked={props.markdownMode ? !showSlate : showSlate} />
+      </Segment>
+    <Card.Group>
+      {card}
+  </Card.Group>
+  </div>
+  );
 }
 
 /**
  * The property types for this component
  */
 MarkdownEditor.propTypes = {
+  /**
+   * Initial contents for the editor (markdown text)
+   */
   markdown: PropTypes.string,
+
+  /**
+   * A callback that receives the Slate Value object and
+   * the corresponding markdown text
+   */
   onChange: PropTypes.func.isRequired,
-  lockText: PropTypes.bool.isRequired,
+
+  /**
+   * When set the Slate editor is read-only and updated
+   * from markdown state.
+   */
+  markdownMode: PropTypes.bool,
+
+  /**
+   * If true (and iff not in markdownMode) then
+   * only variables are editable in the Slate editor.
+   */
+  lockText: PropTypes.bool,
+
+  /**
+   * An array of plugins to extend the functionality of the editor
+   */
   plugins: PropTypes.arrayOf(PropTypes.shape({
     onEnter: PropTypes.func,
     onKeyDown: PropTypes.func,
+    onBeforeInput: PropTypes.func,
     renderBlock: PropTypes.func.isRequired,
     renderInline: PropTypes.func,
     toMarkdown: PropTypes.func.isRequired,
