@@ -1,6 +1,6 @@
 {
   "name": "@accordproject/markdown-editor",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A rich text editor that can read and write markdown text. Based on Slate.js.",
   "main": "dist/index.js",
   "repository": {
@@ -61,6 +61,7 @@
     "eslint-plugin-jest": "^22.5.1",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.13.0",
+    "eslint-plugin-react-hooks": "^1.6.0",
     "html-webpack-plugin": "^3.2.0",
     "jest": "^24.8.0",
     "moment-mini": "2.22.1",
@@ -86,7 +87,6 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-flipcard": "^0.2.1",
     "react-immutable-proptypes": "^2.1.0",
     "react-textarea-autosize": "^7.1.0",
     "semantic-ui-css": "^2.4.1",

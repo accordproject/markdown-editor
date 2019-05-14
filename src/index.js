@@ -242,7 +242,7 @@ function MarkdownEditor(props) {
         return next();
       }
     }
-  }, [props]);
+  }, []);
 
   /**
    * Renders a block
@@ -276,7 +276,7 @@ function MarkdownEditor(props) {
       default:
         return next();
     }
-  }, [props]);
+  }, []);
 
   /**
    * Render a Slate mark.
@@ -297,7 +297,7 @@ function MarkdownEditor(props) {
       default:
         return next();
     }
-  }, [props]);
+  }, []);
 
   /**
    * Render Slate annotations.
@@ -315,7 +315,7 @@ function MarkdownEditor(props) {
       default:
         return next();
     }
-  }, [props]);
+  }, []);
 
   /**
   * Returns true if the selection is inside a variable
@@ -324,11 +324,9 @@ function MarkdownEditor(props) {
   const isInVariable = ((value) => {
     console.log(value.selection.anchor);
     value.annotations.filter(
-      ((ann) => {
-        console.log(ann);
-        return ann.type === 'variable'
-              && value.selection.anchor.isInRange(ann);
-      })
+      (ann => ann.type === 'variable'
+              && value.selection.anchor.isInRange(ann)
+      )
     ).size > 0;
   });
 
