@@ -141,27 +141,27 @@ export default class ToMarkdown extends Markdown {
   }
 
   headingOne(node) {
-    return `${NL}# ${ToMarkdown.getTextFromNode(node)}`;
+    return `${NL}${NL}# ${ToMarkdown.getTextFromNode(node)}`;
   }
 
   headingTwo(node) {
-    return `${NL}## ${ToMarkdown.getTextFromNode(node)}`;
+    return `${NL}${NL}## ${ToMarkdown.getTextFromNode(node)}`;
   }
 
   headingThree(node) {
-    return `${NL}### ${ToMarkdown.getTextFromNode(node)}`;
+    return `${NL}${NL}### ${ToMarkdown.getTextFromNode(node)}`;
   }
 
   headingFour(node) {
-    return `${NL}#### ${ToMarkdown.getTextFromNode(node)}`;
+    return `${NL}${NL}#### ${ToMarkdown.getTextFromNode(node)}`;
   }
 
   headingFive(node) {
-    return `${NL}##### ${ToMarkdown.getTextFromNode(node)}`;
+    return `${NL}${NL}##### ${ToMarkdown.getTextFromNode(node)}`;
   }
 
   headingSix(node) {
-    return `${NL}###### ${ToMarkdown.getTextFromNode(node)}`;
+    return `${NL}${NL}###### ${ToMarkdown.getTextFromNode(node)}`;
   }
 
   htmlBlock(node) {
