@@ -225,7 +225,7 @@ export default class FromMarkdown extends Markdown {
   softbreak() {
     this.stack.addTextLeaf({
       object: 'leaf',
-      text: ' \r',
+      text: '  \n',
       marks: [],
     });
   }
@@ -237,7 +237,7 @@ export default class FromMarkdown extends Markdown {
   linebreak() {
     this.stack.addTextLeaf({
       object: 'leaf',
-      text: '\r\n',
+      text: '\n',
       marks: [],
     });
   }

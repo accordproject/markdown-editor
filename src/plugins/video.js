@@ -77,8 +77,9 @@ function Video() {
   /**
      * @param {ToMarkdown} parent
      * @param {Node} value
+     * @param {Integer} depth
      */
-  function toMarkdown(parent, value) {
+  function toMarkdown(parent, value, depth) {
     return `<video ${value.data.get('attributeString')}/>\n\n`;
   }
 
