@@ -71,15 +71,20 @@ function List() {
   /**
    * @param {ToMarkdown} parent
    * @param {Node} value
+   * @param {Integer} depth
    */
-  function toMarkdown(parent, value) {
+  function toMarkdown(parent, value, depth) {
     let markdown = '';
     const listType = value.data.get('list_type', 'ol');
     const listStyleType = listType === 'ol' ? '1. ' : '* ';
+    let indent = '';
+    for(let i = 0; i < depth-1; i++) {
+      indent += `   `;
+    }
 
     value.nodes.forEach((li) => {
       const text = parent.recursive(li.nodes);
-      markdown += `   ${listStyleType}${text}\n`;
+      markdown += `\n${indent}${listStyleType}${text}`;
     });
 
     return markdown;
