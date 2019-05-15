@@ -15,7 +15,6 @@
 import React, {
   useEffect, useState, useRef, useCallback
 } from 'react';
-import { Value } from 'slate';
 import { Editor, getEventTransfer } from 'slate-react';
 import {
   Card, Checkbox, Segment
