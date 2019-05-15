@@ -100,9 +100,13 @@ function MarkdownEditor(props) {
   const [showSlate, setShowSlate] = useState(true);
 
   /**
-   * Current Slate Value
+   * Current Slate Value, initialized from props.markdown
    */
-  const [slateValue, setSlateValue] = useState(Value.fromJSON({}));
+  const [slateValue, setSlateValue] = useState(() => {
+    const pluginManager = new PluginManager(props.plugins);
+    const fromMarkdown = new FromMarkdown(pluginManager);
+    return fromMarkdown.convert(props.markdown);
+  });
 
   /**
    * Current Markdown text
@@ -126,22 +130,6 @@ function MarkdownEditor(props) {
     });
     setSlateSchema(schema);
   }, [props.plugins]);
-
-  /**
-   * When not in markdown mode:
-   * - Updates the Slate Value when the props markdown or the plugins change
-   */
-  useEffect(() => {
-    if (!props.markdownMode) {
-      const pluginManager = new PluginManager(props.plugins);
-      const fromMarkdown = new FromMarkdown(pluginManager);
-      const newSlateValue = fromMarkdown.convert(props.markdown);
-      setSlateValue(newSlateValue);
-      props.onChange(newSlateValue, markdown);
-    }
-  // disabled because we WANT to ignore 'markdown' changes and send the old value
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.markdownMode, props.markdown, props.plugins, props]);
 
   /**
    * When in markdown mode:
