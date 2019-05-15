@@ -137,8 +137,11 @@ function MarkdownEditor(props) {
       const fromMarkdown = new FromMarkdown(pluginManager);
       const newSlateValue = fromMarkdown.convert(props.markdown);
       setSlateValue(newSlateValue);
+      props.onChange(newSlateValue, markdown);
     }
-  }, [props.markdownMode, props.markdown, props.plugins]);
+  // disabled because we WANT to ignore 'markdown' changes and send the old value
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.markdownMode, props.markdown, props.plugins, props]);
 
   /**
    * When in markdown mode:
@@ -150,8 +153,9 @@ function MarkdownEditor(props) {
       const fromMarkdown = new FromMarkdown(pluginManager);
       const newSlateValue = fromMarkdown.convert(markdown);
       setSlateValue(newSlateValue);
+      props.onChange(newSlateValue, markdown);
     }
-  }, [props.markdownMode, markdown, props.plugins]);
+  }, [props.markdownMode, markdown, props.plugins, props]);
 
   /**
    * When not in markdown mode:
@@ -163,8 +167,9 @@ function MarkdownEditor(props) {
       const toMarkdown = new ToMarkdown(pluginManager);
       const newMarkdown = toMarkdown.convert(slateValue);
       setMarkdown(newMarkdown);
+      props.onChange(slateValue, newMarkdown);
     }
-  }, [props.markdownMode, slateValue, props.plugins]);
+  }, [props.markdownMode, slateValue, props.plugins, props]);
 
   /**
    * When the Slate Value changes we update the variable annotations
@@ -487,9 +492,6 @@ function MarkdownEditor(props) {
               onChange={({ value }) => {
                 if (!props.markdownMode) {
                   setSlateValue(value);
-                  if (JSON.stringify(value) !== JSON.stringify(slateValue)) {
-                    props.onChange(value, markdown);
-                  }
                 }
               }}
               schema={slateSchema}
@@ -516,9 +518,6 @@ function MarkdownEditor(props) {
                 onChange={(evt, data) => {
                   if (props.markdownMode) {
                     setMarkdown(evt.target.value);
-                    if (JSON.stringify(evt.target.value) !== JSON.stringify(markdown)) {
-                      props.onChange(slateValue, evt.target.value);
-                    }
                   }
                 }}
               />
