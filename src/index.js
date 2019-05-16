@@ -41,7 +41,6 @@ const EditorWrapper = styled.div`
   padding: 25px;
   font-family: serif;
   font-style: normal;
-  font-variant: ;
   font-weight: normal;
   font-size: medium;
   line-height: 100%;

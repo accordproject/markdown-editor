@@ -6,6 +6,7 @@ export default class ToMarkdown extends Markdown {
   constructor(pluginManager) {
     super(pluginManager);
     this.stack = [];
+    this.first = false;
   }
 
   convert(value) {
@@ -15,8 +16,13 @@ export default class ToMarkdown extends Markdown {
   recursive(nodes) {
     let markdown = '';
 
-    nodes.forEach((node) => {
+    nodes.forEach((node, index) => {
       this.stack.push(node);
+      if (index === 0) {
+        this.setFirst(true);
+      } else {
+        this.setFirst(false);
+      }
 
       switch (node.object) {
         case 'text':
@@ -33,7 +39,7 @@ export default class ToMarkdown extends Markdown {
 
             if (plugin && typeof plugin.toMarkdown === 'function') {
               try {
-                markdown += plugin.toMarkdown(this, node);
+                markdown += plugin.toMarkdown(this, node, this.stack.length);
               } catch (err) {
                 console.log(`Exception from ${plugin.plugin}: ${err.message}`);
               }
@@ -58,6 +64,14 @@ export default class ToMarkdown extends Markdown {
     return this.stack[this.stack.length - 2];
   }
 
+  setFirst(first) {
+    this.first = first;
+  }
+  
+  isFirst() {
+    return this.first;
+  }
+  
   text(node) {
     let result = '';
 
@@ -94,16 +108,20 @@ export default class ToMarkdown extends Markdown {
   }
 
   paragraph(node) {
-    let postfix = `${NL}${NL}`;
+    let prefix = `${NL}${NL}`;
     const parent = this.getParent();
 
     if (parent) {
       if (parent.type === 'code_block' || parent.type === ('list_item')) {
-        postfix = NL;
+        prefix = NL;
       }
     }
 
-    return `${this.recursive(node.nodes)}${postfix}`;
+    if (this.isFirst()) {
+      prefix = '';
+    }
+
+    return `${prefix}${this.recursive(node.nodes)}`;
   }
 
   static getTextFromNode(node) {
@@ -115,45 +133,44 @@ export default class ToMarkdown extends Markdown {
   }
 
   horizontalRule(node) {
-    return `--- \n`;
+    return `${NL}${NL}---`;
   }
 
   blockQuote(node) {
-    return `> ${this.recursive(node.nodes)}${NL}`;
+    return `${NL}> ${this.recursive(node.nodes)}`;
   }
 
   headingOne(node) {
-    return `# ${ToMarkdown.getTextFromNode(node)}${NL}`;
+    return `${NL}${NL}# ${ToMarkdown.getTextFromNode(node)}`;
   }
 
   headingTwo(node) {
-    return `## ${ToMarkdown.getTextFromNode(node)}${NL}`;
+    return `${NL}${NL}## ${ToMarkdown.getTextFromNode(node)}`;
   }
 
   headingThree(node) {
-    return `### ${ToMarkdown.getTextFromNode(node)}${NL}`;
+    return `${NL}${NL}### ${ToMarkdown.getTextFromNode(node)}`;
   }
 
   headingFour(node) {
-    return `#### ${ToMarkdown.getTextFromNode(node)}${NL}`;
+    return `${NL}${NL}#### ${ToMarkdown.getTextFromNode(node)}`;
   }
 
   headingFive(node) {
-    return `##### ${ToMarkdown.getTextFromNode(node)}${NL}`;
+    return `${NL}${NL}##### ${ToMarkdown.getTextFromNode(node)}`;
   }
 
   headingSix(node) {
-    return `###### ${ToMarkdown.getTextFromNode(node)}${NL}`;
+    return `${NL}${NL}###### ${ToMarkdown.getTextFromNode(node)}`;
   }
 
   htmlBlock(node) {
-    return this.recursive(node.nodes);
+    return NL + NL + this.recursive(node.nodes);
   }
 
   codeBlock(node) {
-    const pre = `${NL}\`\`\`${NL}`;
-    const post = `\`\`\`${NL}`;
+    const quote = '\`\`\`';
     const md = this.recursive(node.nodes);
-    return pre + md.trim() + NL + post;
+    return quote + NL + md + quote;
   }
 }

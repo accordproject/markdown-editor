@@ -55,7 +55,7 @@ function Video() {
     switch (node.type) {
       case 'video':
       {
-        let src = node.data.get('attributes').src;
+        let { src } = node.data.get('attributes');
         if (!src) {
           src = 'https://www.youtube.com/embed/dQw4w9WgXcQ';
         }
@@ -77,8 +77,9 @@ function Video() {
   /**
      * @param {ToMarkdown} parent
      * @param {Node} value
+     * @param {Integer} depth
      */
-  function toMarkdown(parent, value) {
+  function toMarkdown(parent, value, depth) {
     return `<video ${value.data.get('attributeString')}/>\n\n`;
   }
 
