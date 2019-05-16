@@ -99,7 +99,8 @@ function MarkdownEditor(props) {
   const [showSlate, setShowSlate] = useState(true);
 
   /**
-   * Current Slate Value, initialized from props.markdown
+   * Current Slate Value, initialized by converting props.markdown
+   * to a Slate Value
    */
   const [slateValue, setSlateValue] = useState(() => {
     const pluginManager = new PluginManager(props.plugins);
