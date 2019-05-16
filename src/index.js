@@ -513,13 +513,14 @@ function MarkdownEditor(props) {
 
   return (
     <div>
-      <Segment raised>
-        <Checkbox toggle label='Edit' onChange={toggleShowSlate} checked={props.markdownMode ? !showSlate : showSlate} />
-      </Segment>
-    <Card.Group>
-      {card}
-  </Card.Group>
-  </div>
+      { props.showEditButton ?
+        <Segment raised>
+          <Checkbox toggle label='Edit' onChange={toggleShowSlate} checked={props.markdownMode ? !showSlate : showSlate} />
+        </Segment> : null }
+      <Card.Group>
+        {card}
+      </Card.Group>
+    </div>
   );
 }
 
@@ -551,6 +552,11 @@ MarkdownEditor.propTypes = {
   lockText: PropTypes.bool,
 
   /**
+   * If true then show the edit button.
+   */
+  showEditButton: PropTypes.bool,
+
+  /**
    * An array of plugins to extend the functionality of the editor
    */
   plugins: PropTypes.arrayOf(PropTypes.shape({
@@ -568,5 +574,11 @@ MarkdownEditor.propTypes = {
     schema: PropTypes.object.isRequired,
   })),
 };
+/**
+ * The default property values for this component
+ */
+MarkdownEditor.defaultProps = {
+  showEditButton: true,
+}
 
 export { MarkdownEditor };
