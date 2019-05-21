@@ -11,6 +11,7 @@ const StyledToolbar = styled.div`
   opacity: 1.0;
   z-index: 10;
   position: fixed;
+  margin-left: 200px;
   border-radius: 6px;
 `;
 
@@ -18,6 +19,9 @@ const StyledIcon = styled(Icon)`
   color: #ffffff !important;
 `;
 
+/**
+ * A change helper to standardize unwrapping links.
+ */
 function wrapLink(editor, href) {
   editor.wrapInline({
     type: 'link',
@@ -32,7 +36,6 @@ function wrapLink(editor, href) {
  *
  * @param {Editor} editor
  */
-
 function unwrapLink(editor) {
   editor.unwrapInline('link');
 }
@@ -82,7 +85,8 @@ export default class FormatToolbar extends React.Component {
     } else {
       // Handle the extra wrapping required for list buttons.
       const isList = FormatToolbar.hasBlock(editor, 'list_item');
-      const isType = value.blocks.some(block => !!document.getClosest(block.key, parent => parent.type === type));
+      const isType = value.blocks
+        .some(block => !!document.getClosest(block.key, parent => parent.type === type));
 
       if (isList && isType) {
         editor
@@ -149,7 +153,6 @@ export default class FormatToolbar extends React.Component {
    *
    * @return {Boolean} hasLinks
    */
-
   hasLinks(editor) {
     const { value } = editor;
     return value.inlines.some(inline => inline.type === 'link');
@@ -161,7 +164,6 @@ export default class FormatToolbar extends React.Component {
    * @param {String} type
    * @return {Boolean}
    */
-
   hasMark(editor, type) {
     const { value } = editor;
     return value.activeMarks.some(mark => mark.type === type);
