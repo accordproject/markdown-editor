@@ -13,8 +13,12 @@
  */
 
 import React, {
-  useEffect, useState, useRef, useCallback
-} from 'react';
+  useEffect,
+  useState,
+  useRef,
+  useCallback
+}
+  from 'react';
 import { Editor, getEventTransfer } from 'slate-react';
 import {
   Card, Checkbox, Segment
@@ -658,7 +662,7 @@ MarkdownEditor.propTypes = {
  * The default property values for this component
  */
 MarkdownEditor.defaultProps = {
-  showEditButton: true
+  showEditButton: true,
 };
 
 export { MarkdownEditor };
