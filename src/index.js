@@ -474,8 +474,8 @@ function MarkdownEditor(props) {
   /**
    * Render the hover-editing menu.
    */
-  const renderEditor = useCallback((props, ed, next) => {
-    const { editor } = props;
+  const renderEditor = useCallback((props, editor, next) => {
+    // const { editor } = props;
     const children = next();
     const pluginManager = new PluginManager(props.plugins);
     // const fromMarkdown = new FromMarkdown(pluginManager);
