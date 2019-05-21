@@ -30,3 +30,10 @@ body {
 .variable {
     background-color: #ffeeba;
 }
+
+.toolbarCheckbox {
+  display: grid;
+  justify-self: end;
+  align-self: center;
+  grid-column-start: 2;
+}
