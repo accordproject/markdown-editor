@@ -20,9 +20,7 @@ import React, {
 }
   from 'react';
 import { Editor, getEventTransfer } from 'slate-react';
-import {
-  Card, Checkbox, Segment
-} from 'semantic-ui-react';
+import { Card, Checkbox } from 'semantic-ui-react';
 import TextareaAutosize from 'react-textarea-autosize';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -31,6 +29,7 @@ import FromMarkdown from './markdown/fromMarkdown';
 import ToMarkdown from './markdown/toMarkdown';
 import PluginManager from './PluginManager';
 import { FromHTML } from './html/fromHTML';
+import FormatToolbar from './FormatToolbar';
 
 import './styles.css';
 
@@ -54,6 +53,17 @@ const EditorWrapper = styled.div`
   text-transform: none;
   text-align: left;
   text-indent: 0ex;
+`;
+
+const ToolbarWrapper = styled.div`
+  display: grid
+  grid-template-columns: auto 600px auto;
+  height: 36px;
+  border: 1px solid #414F58;
+  background: #FFFFFF;
+  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.1);
+  z-index: 10;
+  margin-bottom: 50px; // REMOVE THIS
 `;
 
 /**
@@ -545,6 +555,23 @@ function MarkdownEditor(props) {
     event.preventDefault();
     return false;
   });
+  /**
+   * Render the static-editing toolbar.
+   */
+  const renderEditor = useCallback((props, editor, next) => {
+    const children = next();
+    const pluginManager = new PluginManager(props.plugins);
+
+    return (
+      <div>
+        {children}
+        <FormatToolbar
+          editor={editor}
+          pluginManager={pluginManager}
+        />
+      </div>
+    );
+  }, []);
 
   /**
    * Render the component, based on showSlate
@@ -573,7 +600,8 @@ function MarkdownEditor(props) {
               renderBlock={renderBlock}
               renderInline={renderInline}
               renderMark={renderMark}
-              renderAnnotation={renderAnnotation}/>
+              renderAnnotation={renderAnnotation}
+              renderEditor={renderEditor}/>
     </EditorWrapper>
   </Card.Content>
 </Card>
@@ -597,10 +625,11 @@ function MarkdownEditor(props) {
 
   return (
     <div>
-      { props.showEditButton
-        ? <Segment raised>
-          <Checkbox toggle label='Edit' onChange={toggleShowSlate} checked={props.markdownMode ? !showSlate : showSlate} />
-        </Segment> : null }
+      <ToolbarWrapper>
+        { props.showEditButton
+          ? <Checkbox toggle label='Markdown' className='toolbarCheckbox' onChange={toggleShowSlate} checked={props.markdownMode ? showSlate : !showSlate} />
+          : null }
+      </ToolbarWrapper>
       <Card.Group>
         {card}
       </Card.Group>
