@@ -13,8 +13,12 @@
  */
 
 import React, {
-  useEffect, useState, useRef, useCallback
-} from 'react';
+  useEffect,
+  useState,
+  useRef,
+  useCallback
+}
+  from 'react';
 import { Editor, getEventTransfer } from 'slate-react';
 import {
   Card, Checkbox, Segment
@@ -513,8 +517,8 @@ function MarkdownEditor(props) {
 
   return (
     <div>
-      { props.showEditButton ?
-        <Segment raised>
+      { props.showEditButton
+        ? <Segment raised>
           <Checkbox toggle label='Edit' onChange={toggleShowSlate} checked={props.markdownMode ? !showSlate : showSlate} />
         </Segment> : null }
       <Card.Group>
@@ -579,6 +583,6 @@ MarkdownEditor.propTypes = {
  */
 MarkdownEditor.defaultProps = {
   showEditButton: true,
-}
+};
 
 export { MarkdownEditor };
