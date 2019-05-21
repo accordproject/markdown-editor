@@ -12,9 +12,14 @@
  * limitations under the License.
  */
 
-import React, {
-  useEffect, useState, useRef, useCallback
-} from 'react';
+import React,
+{
+  useEffect,
+  useState,
+  useRef,
+  useCallback
+}
+  from 'react';
 import { Editor, getEventTransfer } from 'slate-react';
 import {
   Card, Checkbox, Segment
@@ -27,6 +32,7 @@ import FromMarkdown from './markdown/fromMarkdown';
 import ToMarkdown from './markdown/toMarkdown';
 import PluginManager from './PluginManager';
 import { FromHTML } from './html/fromHTML';
+import HoverMenu from './HoverMenu';
 
 import './styles.css';
 
@@ -464,6 +470,29 @@ function MarkdownEditor(props) {
     setShowSlate(!showSlate);
   };
 
+
+  /**
+   * Render the hover-editing menu.
+   */
+  const renderEditor = useCallback((props, ed, next) => {
+    const { editor } = props;
+    const children = next();
+    const pluginManager = new PluginManager(props.plugins);
+    // const fromMarkdown = new FromMarkdown(pluginManager);
+    // const something = fromMarkdown.convert(props.markdown);
+    return (
+      <React.Fragment>
+        {children}
+        <HoverMenu
+          innerRef={menu => (this.menu = menu)}
+          editor={editor}
+          rect={{}}
+          pluginManager={pluginManager}
+        />
+      </React.Fragment>
+    );
+  }, []);
+
   /**
    * Render the component, based on showSlate
    */
@@ -489,7 +518,8 @@ function MarkdownEditor(props) {
               renderBlock={renderBlock}
               renderInline={renderInline}
               renderMark={renderMark}
-              renderAnnotation={renderAnnotation}/>
+              renderAnnotation={renderAnnotation}
+              renderEditor={renderEditor}/>
     </EditorWrapper>
   </Card.Content>
 </Card>
@@ -513,9 +543,9 @@ function MarkdownEditor(props) {
 
   return (
     <div>
-      { props.showEditButton ?
-        <Segment raised>
-          <Checkbox toggle label='Edit' onChange={toggleShowSlate} checked={props.markdownMode ? !showSlate : showSlate} />
+      { props.showEditButton
+        ? <Segment raised>
+          <Checkbox toggle label='Markdown' onChange={toggleShowSlate} checked={props.markdownMode ? showSlate : !showSlate} />
         </Segment> : null }
       <Card.Group>
         {card}
@@ -579,6 +609,6 @@ MarkdownEditor.propTypes = {
  */
 MarkdownEditor.defaultProps = {
   showEditButton: true,
-}
+};
 
 export { MarkdownEditor };
