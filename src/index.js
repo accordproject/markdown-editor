@@ -557,7 +557,7 @@ MarkdownEditor.propTypes = {
     onEnter: PropTypes.func,
     onKeyDown: PropTypes.func,
     onBeforeInput: PropTypes.func,
-    renderBlock: PropTypes.func.isRequired,
+    renderBlock: PropTypes.func,
     renderInline: PropTypes.func,
     toMarkdown: PropTypes.func.isRequired,
     fromMarkdown: PropTypes.func.isRequired,

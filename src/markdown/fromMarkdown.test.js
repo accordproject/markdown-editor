@@ -4,8 +4,78 @@ import List from '../plugins/list';
 
 let fromMarkdown = null;
 
+const Parent = () => {
+  const plugin = 'Parent';
+  const tags = ['parent'];
+  const markdownTags = ['parent'];
+  const schema = {
+    blocks: {
+      Parent: {
+        nodes: {
+          match: { type: 'child' },
+        }
+      },
+    },
+  };
+
+  function fromMarkdown(stack, event, tag) {
+    const block = {
+      object: 'block',
+      type: 'parent',
+      nodes: [],
+      data: Object.assign(tag),
+    };
+
+    stack.push(block);
+    return true;
+  }
+
+  return {
+    plugin,
+    tags,
+    markdownTags,
+    schema,
+    fromMarkdown,
+  };
+};
+
+const Child = () => {
+  const plugin = 'Child';
+  const tags = ['child'];
+  const markdownTags = ['child'];
+  const schema = {
+    blocks: {
+      Child: {
+        nodes: {
+          match: { type: 'paragraph' },
+        }
+      },
+    },
+  };
+
+  function fromMarkdown(stack, event, tag) {
+    const block = {
+      object: 'block',
+      type: 'child',
+      nodes: [],
+      data: Object.assign(tag),
+    };
+
+    stack.push(block);
+    return true;
+  }
+
+  return {
+    plugin,
+    tags,
+    markdownTags,
+    schema,
+    fromMarkdown,
+  };
+};
+
 beforeAll(() => {
-  const plugins = [List()];
+  const plugins = [List(), Parent(), Child()];
   const pluginManager = new PluginManager(plugins);
   fromMarkdown = new FromMarkdown(pluginManager);
 });
@@ -118,6 +188,22 @@ test('can convert a multiline html block', () => {
   expect(value.toJSON()).toMatchSnapshot();
 });
 
+
+test('can convert a multiline html block with nested html block', () => {
+  const markdownText = `This is a custom
+
+<parent src="baz">
+<child name="dan">
+Dan Selman
+</child>
+</parent>
+
+block that contains a html block with a nested block.`;
+  const value = fromMarkdown.convert(markdownText);
+  console.log(JSON.stringify(value.toJSON(), null, 2));
+  expect(value.toJSON()).toMatchSnapshot();
+});
+
 test('can convert an ordered list', () => {
   const markdownText = `This is an ordered list:
 1. one
@@ -155,4 +241,3 @@ test('can convert a code block', () => {
   const value = fromMarkdown.convert(markdownText);
   expect(value.toJSON()).toMatchSnapshot();
 });
-

@@ -59,7 +59,7 @@ export default class Stack {
     if (top && top.nodes) {
       top.nodes.push(obj);
     } else {
-      throw new Error(`Cannot append. Invalid stack: ${JSON.stringify(this.stack, null, 4)}`);
+      throw new Error(`Cannot append. Invalid stack: ${JSON.stringify(this.stack, null, 4)} obj: ${JSON.stringify(obj, null, 4)}`);
     }
   }
 

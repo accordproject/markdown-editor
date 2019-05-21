@@ -39,6 +39,30 @@ export default class FromMarkdown extends Markdown {
   convert(markdownText) {
     this.marks = ['code', 'strong', 'emph'];
 
+    this.root = {
+      document: {
+        nodes: [],
+      },
+    };
+
+    this.stack = new Stack();
+    this.stack.push(this.root.document, false);
+
+    this.subParse(markdownText);
+
+    if (!this.root) {
+      throw new Error('Failed to parse document.');
+    }
+
+    return Value.fromJSON(this.root);
+  }
+
+  /**
+   * Converts markdown text to a Slate.js Value object.
+   * @param {*} markdownText
+   */
+  subParse(markdownText) {
+    console.log(`Parsing: ${markdownText}`);
     const reader = new commonmark.Parser();
     const parsed = reader.parse(markdownText);
     const walker = parsed.walker();
@@ -57,13 +81,6 @@ export default class FromMarkdown extends Markdown {
 
       event = walker.next();
     }
-
-    if (!this.root) {
-      throw new Error('Failed to parse document.');
-    }
-
-    // VariableMarker.markVariables(this.root);
-    return Value.fromJSON(this.root);
   }
 
   /**
@@ -72,13 +89,13 @@ export default class FromMarkdown extends Markdown {
    *
    * @param {*} node
    * @param {*} event
-   * @param {*} tag
+   * @param {*} htmlBlock
    */
-  dispatchToPlugin(node, event, tag = null) {
-    const plugin = this.pluginManager.findPluginByMarkdownTag(tag ? tag.tag : node.type);
+  dispatchToPlugin(node, event, htmlBlock = null) {
+    const plugin = this.pluginManager.findPluginByMarkdownTag(htmlBlock ? htmlBlock.tag : node.type);
 
     if (plugin && typeof plugin.fromMarkdown === 'function') {
-      return plugin.fromMarkdown(this.stack, event, tag);
+      return plugin.fromMarkdown(this.stack, event, htmlBlock);
     }
 
     return false;
@@ -87,13 +104,14 @@ export default class FromMarkdown extends Markdown {
   /**
    * Parses an HTML block and extracts the attributes, tag name and tag contents.
    * @param {string} string
-   * @return {Object} - a tag object that holds the data for the html block
+   * @return {object} - an object that holds the data for the html block
    */
   static parseHtmlBlock(string) {
     try {
+      console.log(`parseHtmlBlock: ${string}`);
       const doc = (new DOMParser()).parseFromString(string, 'text/html');
       const item = doc.body.children.item(0);
-      const { attributes } = doc.body.children.item(0);
+      const { attributes } = item;
       const attributeObject = {};
       let attributeString = '';
 
@@ -106,11 +124,12 @@ export default class FromMarkdown extends Markdown {
         tag: item.nodeName.toLowerCase(),
         attributes: attributeObject,
         attributeString,
-        content: item.textContent,
+        content: item.innerHTML,
       };
 
       return tag;
     } catch (err) {
+      console.log(err);
       return null;
     }
   }
@@ -122,16 +141,6 @@ export default class FromMarkdown extends Markdown {
    * @param {*} event the parse event
    */
   document(node, event) {
-    if (event.entering) {
-      this.root = {
-        document: {
-          nodes: [],
-        },
-      };
-
-      this.stack = new Stack();
-      this.stack.push(this.root.document, false);
-    }
   }
 
   /**
@@ -329,11 +338,21 @@ export default class FromMarkdown extends Markdown {
    * Stack.
    */
   htmlBlock(node, event) {
-    const tag = FromMarkdown.parseHtmlBlock(node.literal);
+    const htmlBlock = FromMarkdown.parseHtmlBlock(node.literal);
 
-    if (tag && this.dispatchToPlugin(node, event, tag)) {
-    // console.log('Custom html tag:', tag, "\n", 'Node:', node);
+    if (htmlBlock && this.dispatchToPlugin(node, event, htmlBlock)) {
+      // a plugin handled this custom tag, so we now allow plugins to
+      // also handle the contents of the block
+      if (htmlBlock.content && htmlBlock.content.length > 0) {
+        console.log(`subParse: ${JSON.stringify(htmlBlock, null, 2)}`);
+        this.subParse(htmlBlock.content);
+      }
+      this.stack.pop();
     } else {
+      // no plugin registered for this tag, so we map the block
+      // to a paragraph with the 'html' mark set.
+      console.log(`Default: ${JSON.stringify(htmlBlock, null, 2)}`);
+
       const block = {
         object: 'block',
         type: 'html_block',

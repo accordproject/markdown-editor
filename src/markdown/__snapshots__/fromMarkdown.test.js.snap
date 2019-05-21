@@ -176,6 +176,88 @@ Object {
 }
 `;
 
+exports[`can convert a multiline html block with nested html block 1`] = `
+Object {
+  "document": Object {
+    "data": Object {},
+    "nodes": Array [
+      Object {
+        "data": Object {},
+        "nodes": Array [
+          Object {
+            "marks": Array [],
+            "object": "text",
+            "text": "This is a custom",
+          },
+        ],
+        "object": "block",
+        "type": "paragraph",
+      },
+      Object {
+        "data": Object {
+          "attributeString": "src = \\"baz\\"",
+          "attributes": Object {
+            "src": "baz",
+          },
+          "content": "
+<child name=\\"dan\\">
+Dan Selman
+</child>
+",
+          "tag": "parent",
+        },
+        "nodes": Array [
+          Object {
+            "data": Object {
+              "attributeString": "name = \\"dan\\"",
+              "attributes": Object {
+                "name": "dan",
+              },
+              "content": "
+Dan Selman
+",
+              "tag": "child",
+            },
+            "nodes": Array [
+              Object {
+                "data": Object {},
+                "nodes": Array [
+                  Object {
+                    "marks": Array [],
+                    "object": "text",
+                    "text": "Dan Selman",
+                  },
+                ],
+                "object": "block",
+                "type": "paragraph",
+              },
+            ],
+            "object": "block",
+            "type": "child",
+          },
+        ],
+        "object": "block",
+        "type": "parent",
+      },
+      Object {
+        "data": Object {},
+        "nodes": Array [
+          Object {
+            "marks": Array [],
+            "object": "text",
+            "text": "block that contains a html block with a nested block.",
+          },
+        ],
+        "object": "block",
+        "type": "paragraph",
+      },
+    ],
+    "object": "document",
+  },
+  "object": "value",
+}
+`;
+
 exports[`can convert a single line html block 1`] = `
 Object {
   "document": Object {
