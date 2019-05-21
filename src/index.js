@@ -13,8 +13,12 @@
  */
 
 import React, {
-  useEffect, useState, useRef, useCallback
-} from 'react';
+  useEffect,
+  useState,
+  useRef,
+  useCallback
+}
+  from 'react';
 import { Editor, getEventTransfer } from 'slate-react';
 import {
   Card, Checkbox, Segment
