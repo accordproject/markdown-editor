@@ -4,20 +4,32 @@ import styled from 'styled-components';
 import { Icon } from 'semantic-ui-react';
 
 const StyledToolbar = styled.div`
-  padding: 10px;
-  background-color: #302f2e !important;
-  top: ${props => `${Math.max(10, props.rect.top - 35)}px`};
-  left: ${props => `${Math.max(10, props.rect.left - 80)}px`};
-  opacity: 1.0;
-  z-index: 10;
-  position: fixed;
-  border-radius: 6px;
+  background-color: #FFFFFF !important;
+  top: -80px;  // ADJUST THIS TO ToolbarWrapper MARGIN
+  left: 550px;
+  width: 450px;
+  position: absolute;
+  display: grid
+  grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
 `;
 
 const StyledIcon = styled(Icon)`
-  color: #ffffff !important;
+  color: #949CA2 !important;
+  place-self: center;
 `;
 
+const VertDivider = styled.div`
+  box-sizing: border-box;
+  height: 24px;
+  width: 1px;
+  border: 1px solid #EFEFEF;
+  top: 10px;
+  place-self: center;
+`;
+
+/**
+ * A change helper to standardize wrapping links.
+ */
 function wrapLink(editor, href) {
   editor.wrapInline({
     type: 'link',
@@ -32,7 +44,6 @@ function wrapLink(editor, href) {
  *
  * @param {Editor} editor
  */
-
 function unwrapLink(editor) {
   editor.unwrapInline('link');
 }
@@ -82,7 +93,8 @@ export default class FormatToolbar extends React.Component {
     } else {
       // Handle the extra wrapping required for list buttons.
       const isList = FormatToolbar.hasBlock(editor, 'list_item');
-      const isType = value.blocks.some(block => !!document.getClosest(block.key, parent => parent.type === type));
+      const isType = value.blocks
+        .some(block => !!document.getClosest(block.key, parent => parent.type === type));
 
       if (isList && isType) {
         editor
@@ -149,7 +161,6 @@ export default class FormatToolbar extends React.Component {
    *
    * @return {Boolean} hasLinks
    */
-
   hasLinks(editor) {
     const { value } = editor;
     return value.inlines.some(inline => inline.type === 'link');
@@ -235,32 +246,32 @@ export default class FormatToolbar extends React.Component {
   }
 
   render() {
-    const { rect, pluginManager, editor } = this.props;
+    const { pluginManager, editor } = this.props;
     const smallIcon = { size: 'small' };
 
-    if (rect) {
-      return (
-        <StyledToolbar className="format-toolbar" rect={rect}>
+    return (
+        <StyledToolbar className="format-toolbar">
           { this.renderMarkButton('bold', 'bold')}
           { this.renderMarkButton('italic', 'italic')}
-          { this.renderLinkButton()}
-          <StyledIcon name='ellipsis vertical'/>
-          { this.renderBlockButton('heading_one', 'text height')}
-          { this.renderBlockButton('heading_two', 'text height', smallIcon)}
+          { this.renderMarkButton('underline', 'underline')}
+          <VertDivider />
           { this.renderMarkButton('code', 'code')}
           { this.renderBlockButton('block_quote', 'quote left')}
-          <StyledIcon name='ellipsis vertical'/>
+          { this.renderBlockButton('ul_list', 'list ul')}
+          { this.renderBlockButton('ol_list', 'list ol')}
+          <VertDivider />
+          { this.renderLinkButton()}
+          <VertDivider />
+          { this.renderBlockButton('heading_one', 'text height')}
+          { this.renderBlockButton('heading_two', 'text height', smallIcon)}
           { pluginManager.renderToolbar(editor)}
+          <VertDivider />
         </StyledToolbar>
-      );
-    }
-
-    return (<div />);
+    );
   }
 }
 
 FormatToolbar.propTypes = {
   editor: PropTypes.object.isRequired,
-  rect: PropTypes.object,
   pluginManager: PropTypes.object,
 };
