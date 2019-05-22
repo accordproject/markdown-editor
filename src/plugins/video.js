@@ -84,6 +84,9 @@ function Video() {
     return `<video ${value.data.get('attributeString')}/>\n\n`;
   }
 
+  /**
+     * @param {fromMarkdown} parent
+     */
   function fromMarkdown(stack, event, tag) {
     const block = {
       object: 'block',
@@ -96,6 +99,9 @@ function Video() {
     return true;
   }
 
+  /**
+     * @param {fromHTML} parent
+     */
   function fromHTML(editor, el, next) {
     return {
       object: 'block',
@@ -111,7 +117,6 @@ function Video() {
    * @param {Editor} editor
    * @param {Event} event
    */
-
   function onClickButton(editor, event) {
     event.preventDefault();
     alert('Video plugin button clicked!');
