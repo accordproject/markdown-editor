@@ -1,20 +1,36 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Icon } from 'semantic-ui-react';
+
+import BoldIcon from '../public/icons/bold.svg';
+import ItalicIcon from '../public/icons/italic.svg';
+import UnderlineIcon from '../public/icons/Underline.svg';
+import CodeIcon from '../public/icons/code.svg';
+import QuoteIcon from '../public/icons/open-quote.svg';
+import OLIcon from '../public/icons/OL.svg';
+import ULIcon from '../public/icons/UL.svg';
+import ParamIcon from '../public/icons/param.svg';
+import LinkImg from '../public/icons/hyperlink.svg';
+import UndoIcon from '../public/icons/navigation-left.svg';
+import RedoIcon from '../public/icons/navigation-right.svg';
 
 const StyledToolbar = styled.div`
-  background-color: #FFFFFF !important;
-  top: -80px;  // ADJUST THIS TO ToolbarWrapper MARGIN
-  left: 550px;
-  width: 450px;
-  position: absolute;
+  position: relative;
   display: grid
-  grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
+  grid-column-start: 1;
+  grid-row-start: 1;
+  justify-self: end;
+  grid-template-columns:
+    auto auto auto auto
+    auto auto auto auto
+    auto auto auto auto
+    auto auto auto auto;
+  width: 450px;
+  background-color: #FFFFFF !important;
 `;
 
-const StyledIcon = styled(Icon)`
-  color: #949CA2 !important;
+const StyledIcon = styled.img`
   place-self: center;
 `;
 
@@ -198,13 +214,14 @@ export default class FormatToolbar extends React.Component {
    * @return {Element}
    */
 
-  renderMarkButton(type, icon) {
+  renderMarkButton(type, icon, alt) {
     const { editor } = this.props;
     const { value } = editor;
     const isActive = value && value.activeMarks.some(mark => mark.type === type);
 
     return (<StyledIcon
-      name={icon}
+      alt={alt}
+      src={icon}
       aria-label={type}
       onMouseDown={event => this.onClickMark(event, type)}
     />);
@@ -218,9 +235,10 @@ export default class FormatToolbar extends React.Component {
    * @return {Element}
    */
 
-  renderBlockButton(type, icon, props) {
+  renderBlockButton(type, icon, alt, props) {
     return (<StyledIcon
-      name={icon}
+      alt={alt}
+      src={icon}
       aria-label={type}
       {...props}
       onMouseDown={event => this.onClickBlock(event, type)}
@@ -235,10 +253,11 @@ export default class FormatToolbar extends React.Component {
    * @return {Element}
    */
 
-  renderLinkButton() {
+  renderLinkButton(icon, alt) {
     return (
       <StyledIcon
-        name="linkify"
+        alt={alt}
+        src={icon}
         aria-label="link"
         onMouseDown={event => this.onClickLink(event, this.props.editor)}
       />
@@ -247,26 +266,31 @@ export default class FormatToolbar extends React.Component {
 
   render() {
     const { pluginManager, editor } = this.props;
-    const smallIcon = { size: 'small' };
+    const root = window.document.getElementById('root').querySelector('#toolbarwrapperid');
+    if (!root) { return null; }
 
-    return (
-        <StyledToolbar className="format-toolbar">
-          { this.renderMarkButton('bold', 'bold')}
-          { this.renderMarkButton('italic', 'italic')}
-          { this.renderMarkButton('underline', 'underline')}
-          <VertDivider />
-          { this.renderMarkButton('code', 'code')}
-          { this.renderBlockButton('block_quote', 'quote left')}
-          { this.renderBlockButton('ul_list', 'list ul')}
-          { this.renderBlockButton('ol_list', 'list ol')}
-          <VertDivider />
-          { this.renderLinkButton()}
-          <VertDivider />
-          { this.renderBlockButton('heading_one', 'text height')}
-          { this.renderBlockButton('heading_two', 'text height', smallIcon)}
-          { pluginManager.renderToolbar(editor)}
-          <VertDivider />
-        </StyledToolbar>
+    return ReactDOM.createPortal(
+      <StyledToolbar className="format-toolbar">
+        { this.renderMarkButton('bold', BoldIcon, 'Bold Button')}
+        { this.renderMarkButton('italic', ItalicIcon, 'Italic Button')}
+        { this.renderMarkButton('underline', UnderlineIcon, 'Underline Button')}
+        <VertDivider />
+        { this.renderMarkButton('code', CodeIcon, 'Code Button')}
+        { this.renderBlockButton('block_quote', QuoteIcon, 'Quote Button')}
+        { this.renderBlockButton('ul_list', ULIcon, 'Unordered List Button')}
+        { this.renderBlockButton('ol_list', OLIcon, 'Ordered List Button')}
+        <VertDivider />
+        { this.renderMarkButton('bold', ParamIcon, 'Parameter Button')}
+        { this.renderLinkButton(LinkImg, 'Hyperlink Button')}
+        <VertDivider />
+        { this.renderMarkButton('bold', UndoIcon, 'Undo Button')}
+        { this.renderMarkButton('italic', RedoIcon, 'Redo Button')}
+        {/* { this.renderBlockButton('heading_one', 'text height')} */}
+        {/* { this.renderBlockButton('heading_two', 'text height', smallIcon)} */}
+        { pluginManager.renderToolbar(editor)}
+        <VertDivider />
+      </StyledToolbar>,
+      root,
     );
   }
 }
