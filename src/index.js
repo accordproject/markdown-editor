@@ -57,13 +57,13 @@ const EditorWrapper = styled.div`
 
 const ToolbarWrapper = styled.div`
   display: grid
-  grid-template-columns: auto 600px auto;
+  grid-template-columns: 60% 40%;
+  grid-template-rows: 100%;
   height: 36px;
   border: 1px solid #414F58;
   background: #FFFFFF;
   box-shadow: 0 1px 4px 0 rgba(0,0,0,0.1);
-  z-index: 10;
-  margin-bottom: 50px; // REMOVE THIS
+  margin-bottom: 1px;
 `;
 
 /**
@@ -487,11 +487,11 @@ function MarkdownEditor(props) {
 
     return (
       <div>
-        {children}
         <FormatToolbar
           editor={editor}
           pluginManager={pluginManager}
         />
+        {children}
       </div>
     );
   }, []);
@@ -546,7 +546,7 @@ function MarkdownEditor(props) {
 
   return (
     <div>
-      <ToolbarWrapper>
+      <ToolbarWrapper id="toolbarwrapperid">
         { props.showEditButton
           ? <Checkbox toggle label='Markdown' className='toolbarCheckbox' onChange={toggleShowSlate} checked={props.markdownMode ? showSlate : !showSlate} />
           : null }
