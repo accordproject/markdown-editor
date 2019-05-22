@@ -29,7 +29,7 @@ body {
 
 .toolbarCheckbox {
   display: grid;
-  justify-self: end;
+  justify-self: start;
   align-self: center;
   grid-column-start: 2;
 }
