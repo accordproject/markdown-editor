@@ -3,7 +3,8 @@ import { Icon } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 const StyledIcon = styled(Icon)`
-  color: #ffffff !important;
+  color: #949CA2 !important;
+  place-self: center;
 `;
 
 /**
