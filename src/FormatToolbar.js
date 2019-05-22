@@ -15,6 +15,27 @@ import LinkImg from '../public/icons/hyperlink.svg';
 import UndoIcon from '../public/icons/navigation-left.svg';
 import RedoIcon from '../public/icons/navigation-right.svg';
 
+class Somethingsomthing extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+<svg width="11px" height="13px" viewBox="0 0 11 13" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<title>B Copy</title>
+<desc>Created with Sketch.</desc>
+<g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" fontFamily="IBMPlexSans-Bold, IBM Plex Sans" fontSize="18" fontWeight="bold">
+    <g id="contract---clause-edit-within-contract-editor" transform="translate(-440.000000, -48.000000)" fill="#949CA2">
+        <text id="B-Copy">
+            <tspan x="439" y="61">B</tspan>
+        </text>
+    </g>
+</g>
+</svg>);
+  }
+}
+
 const StyledToolbar = styled.div`
   position: relative;
   display: grid
@@ -32,6 +53,9 @@ const StyledToolbar = styled.div`
 
 const StyledIcon = styled.img`
   place-self: center;
+  padding: 5px;
+  border-radius: 3px;
+  background-color: ${props => props.bggg || '#FFFFFF'} !important;
 `;
 
 const VertDivider = styled.div`
@@ -214,7 +238,7 @@ export default class FormatToolbar extends React.Component {
    * @return {Element}
    */
 
-  renderMarkButton(type, icon, alt) {
+  renderMarkButton(type, icon, alt, bGround) {
     const { editor } = this.props;
     const { value } = editor;
     const isActive = value && value.activeMarks.some(mark => mark.type === type);
@@ -222,6 +246,7 @@ export default class FormatToolbar extends React.Component {
     return (<StyledIcon
       alt={alt}
       src={icon}
+      bggg={bGround}
       aria-label={type}
       onMouseDown={event => this.onClickMark(event, type)}
     />);
@@ -271,7 +296,7 @@ export default class FormatToolbar extends React.Component {
 
     return ReactDOM.createPortal(
       <StyledToolbar className="format-toolbar">
-        { this.renderMarkButton('bold', BoldIcon, 'Bold Button')}
+        { this.renderMarkButton('bold', Somethingsomthing('red'), 'Bold Button', '#F0F0F0')}
         { this.renderMarkButton('italic', ItalicIcon, 'Italic Button')}
         { this.renderMarkButton('underline', UnderlineIcon, 'Underline Button')}
         <VertDivider />
