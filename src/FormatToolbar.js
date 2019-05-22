@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import BoldIcon from '../public/icons/bold';
+import * as bIcon from '../public/icons/bold';
 import ItalicIcon from '../public/icons/italic.svg';
 import UnderlineIcon from '../public/icons/Underline.svg';
-import CodeIcon from '../public/icons/code';
+import * as cIcon from '../public/icons/code';
 import QuoteIcon from '../public/icons/open-quote.svg';
 import OLIcon from '../public/icons/OL.svg';
 import ULIcon from '../public/icons/UL.svg';
@@ -251,7 +251,7 @@ export default class FormatToolbar extends React.Component {
   }
 
 
-  renderTester(type, icon, heightInput, widthInput, paddingInput, fillColor, bgColor, vBox) {
+  renderTester(type, icon, hi, wi, pa, fill, bgColor, vBox) {
     const { editor } = this.props;
     const { value } = editor;
     const isActive = value && value.activeMarks.some(mark => mark.type === type);
@@ -261,11 +261,11 @@ export default class FormatToolbar extends React.Component {
         viewBox={vBox}
         aria-label={type}
         bggg={bgColor}
-        width={widthInput}
-        height={heightInput}
-        padding={paddingInput}
+        width={wi}
+        height={hi}
+        padding={pa}
         onMouseDown={event => this.onClickMark(event, type)}>
-          {icon(fillColor)}
+          {icon(fill)}
       </ SvgTester>
     );
   }
@@ -307,6 +307,7 @@ export default class FormatToolbar extends React.Component {
   // height + 10
   // width + 14
 
+  // type, heightInput, widthInput, paddingInput, vBox, icon
   render() {
     const { pluginManager, editor } = this.props;
     const root = window.document.getElementById('root').querySelector('#toolbarwrapperid');
@@ -314,11 +315,29 @@ export default class FormatToolbar extends React.Component {
 
     return ReactDOM.createPortal(
       <StyledToolbar className="format-toolbar">
-        { this.renderTester('bold', BoldIcon, '23px', '25px', '5px 7px', medGrayBG, lightGrayBG, '0 0 11 13')}
+        { this.renderTester(
+          bIcon.type(),
+          bIcon.icon,
+          bIcon.height(),
+          bIcon.width(),
+          bIcon.padding(),
+          medGrayBG,
+          lightGrayBG,
+          bIcon.vBox()
+        )}
         { this.renderMarkButton('italic', ItalicIcon, 'Italic Button')}
         { this.renderMarkButton('underline', UnderlineIcon, 'Underline Button')}
         <VertDivider />
-        { this.renderTester('code', CodeIcon, '24px', '26px', '4px 3px', medGrayBG, whiteBG, '0 0 20 12')}
+        { this.renderTester(
+          cIcon.type(),
+          cIcon.icon,
+          cIcon.height(),
+          cIcon.width(),
+          cIcon.padding(),
+          medGrayBG,
+          whiteBG,
+          cIcon.vBox()
+        )}
         { this.renderBlockButton('block_quote', QuoteIcon, 'Quote Button')}
         { this.renderBlockButton('ul_list', ULIcon, 'Unordered List Button')}
         { this.renderBlockButton('ol_list', OLIcon, 'Ordered List Button')}
