@@ -1,6 +1,16 @@
 import React from 'react';
 
-const CodeIcon = fillColor => (
+export const type = () => 'code';
+
+export const height = () => '24px';
+
+export const width = () => '26px';
+
+export const padding = () => '4px 3px';
+
+export const vBox = () => '0 0 20 12';
+
+export const icon = fillColor => (
     <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
         <g id="contract---clause-edit-within-contract-editor" transform="translate(-508.000000, -49.000000)" fill={fillColor} fillRule="nonzero">
             <g id="programming-hold-code" transform="translate(508.000000, 49.000000)">
@@ -11,5 +21,3 @@ const CodeIcon = fillColor => (
         </g>
     </g>
 );
-
-export default CodeIcon;
