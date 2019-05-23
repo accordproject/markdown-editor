@@ -67,16 +67,17 @@ export default class ToMarkdown extends Markdown {
   setFirst(first) {
     this.first = first;
   }
-  
+
   isFirst() {
     return this.first;
   }
-  
+
   text(node) {
     let result = '';
 
     const isBold = node.marks.some(mark => mark.type === 'bold');
     const isItalic = node.marks.some(mark => mark.type === 'italic');
+    const isUnderline = node.marks.some(mark => mark.type === 'underline');
     const isCode = node.marks.some(mark => mark.type === 'code');
     const isVariable = node.marks.some(mark => mark.type === 'variable');
     let openMark = '';
@@ -90,6 +91,11 @@ export default class ToMarkdown extends Markdown {
     if (isItalic) {
       openMark += '*';
       closeMark += '*';
+    }
+
+    if (isUnderline) {
+      openMark += '__';
+      closeMark += '__';
     }
 
     if (isVariable) {
