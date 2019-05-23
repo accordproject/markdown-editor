@@ -4,9 +4,9 @@ export const type = () => 'code';
 
 export const height = () => '24px';
 
-export const width = () => '26px';
+export const width = () => '24px';
 
-export const padding = () => '4px 3px';
+export const padding = () => '4px 2px';
 
 export const vBox = () => '0 0 20 12';
 
