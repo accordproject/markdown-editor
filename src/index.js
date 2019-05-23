@@ -159,9 +159,7 @@ function MarkdownEditor(props) {
   }, [props.markdownMode, slateValue, props.plugins, props]);
 
   /**
-   * When the Slate Value changes we update the variable annotations
-   * This currently has strange render issues, pending a release with this fix:
-   * https://github.com/ianstormtaylor/slate/issues/2767
+   * When the Slate Value changes we update the variable annotations.
    */
   useEffect(() => {
     if (props.lockText && editorRef && editorRef.current) {
@@ -199,15 +197,17 @@ function MarkdownEditor(props) {
                 // console.log(`*****${text}`);
                 // console.log(`key ${key}`);
                 // console.log(`match ${match}`);
-                // console.log(`focus ${focus}`);
-                // console.log(`anchor ${anchor}`);
+                // console.log(`anchor ${focus}`);
+                // console.log(`focus ${anchor}`);
 
-                editor.addAnnotation({
+                const annotation = {
                   key: `variable-${uuidv4()}`,
                   type: 'variable',
-                  anchor: { path, key, offset: anchor },
-                  focus: { path, key, offset: focus },
-                });
+                  anchor: { path, key, offset: focus - 1 },
+                  focus: { path, key, offset: anchor },
+                };
+                // console.log(`annotation ${JSON.stringify(annotation)}`);
+                editor.addAnnotation(annotation);
               }
             }
             m = regex.exec(text);
@@ -310,17 +310,23 @@ function MarkdownEditor(props) {
   }, []);
 
   /**
+  * Returns true if the anchor is inside a variable
+  * @param {Value} value the Slate editor value
+  * @param {*} anchor the anchor point
+  */
+  const isInVariableEx = ((value, anchor) => {
+    const result = value.annotations.filter(ann => (ann.type === 'variable'
+          && anchor.isInRange(ann)
+    ));
+
+    return result.size > 0;
+  });
+
+  /**
   * Returns true if the selection is inside a variable
   * @param {Value} value the Slate editor value
   */
-  const isInVariable = ((value) => {
-    // console.log(value.selection.anchor);
-    value.annotations.filter(
-      (ann => ann.type === 'variable'
-              && value.selection.anchor.isInRange(ann)
-      )
-    ).size > 0;
-  });
+  const isInVariable = (value => isInVariableEx(value, value.selection.anchor));
 
   /**
   * Returns true if the editor should allow an edit. Edits are allowed for all
@@ -330,7 +336,9 @@ function MarkdownEditor(props) {
   */
   const isEditable = (editor) => {
     if (props.lockText) {
-      return isInVariable(editor.value);
+      const { value } = editor;
+      const newAnchor = value.selection.anchor.moveBackward(1).normalize(value.document);
+      return isInVariableEx(value, newAnchor) && isInVariable(value);
     }
 
     return true;
@@ -345,21 +353,24 @@ function MarkdownEditor(props) {
   * @param {Function} next
   */
   const handleBackspace = (event, editor, next) => {
-  // console.log(`key ${editor.value.selection.anchor.key}`);
-    // console.log(`offset ${editor.value.selection.anchor.offset}`);
-    // console.log(`value ${editor.value}`);
-
-    // const previous = editor.value.document.getPreviousText(editor.value.selection.anchor.key);
-    // console.log(previous.text);
-    // const isAfter = previous.type === type && editor.value.focus.offset === 0;
-
-    if (!isEditable(editor)) {
-      event.preventDefault(); // prevent editing non-editable text
-      return false;
-    }
-
     const { value } = editor;
     const { selection } = value;
+
+    // const previous = value.document.getPreviousSibling(value.focusText.key);
+    // console.log(`key ${editor.value.selection.anchor.key}`);
+    // console.log(`offset ${editor.value.selection.anchor.offset}`);
+    // console.log(previous.text);
+
+    // console.log(`old anchor ${JSON.stringify(value.selection.anchor, null, 2)}`);
+    // console.log(`new anchor ${JSON.stringify(value.selection.anchor.moveBackward(1), null, 2)}`);
+
+    const newAnchor = value.selection.anchor.moveBackward(2).normalize(value.document);
+
+    if (props.lockText
+      && !(isInVariableEx(value, newAnchor) && isInVariable(value))) {
+      event.preventDefault(); // prevent editing non-editable text
+      return undefined;
+    }
 
     if (selection.isExpanded) return next();
     if (selection.start.offset !== 0) return next();
@@ -513,8 +524,8 @@ function MarkdownEditor(props) {
 
   return (
     <div>
-      { props.showEditButton ?
-        <Segment raised>
+      { props.showEditButton
+        ? <Segment raised>
           <Checkbox toggle label='Edit' onChange={toggleShowSlate} checked={props.markdownMode ? !showSlate : showSlate} />
         </Segment> : null }
       <Card.Group>
@@ -579,6 +590,6 @@ MarkdownEditor.propTypes = {
  */
 MarkdownEditor.defaultProps = {
   showEditButton: true,
-}
+};
 
 export { MarkdownEditor };

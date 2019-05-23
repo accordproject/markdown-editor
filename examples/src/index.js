@@ -48,7 +48,7 @@ Another video:
 
 <video src="https://www.youtube.com/embed/cmmq-JBMbbQ"/>`;
 
-ReactDOM.render(<MarkdownEditor plugins={plugins} lockText={false} markdownMode={false} markdown={defaultMarkdown} onChange={storeLocal}/>, document.getElementById('root'));
+ReactDOM.render(<MarkdownEditor plugins={plugins} lockText={true} markdownMode={false} markdown={defaultMarkdown} onChange={storeLocal}/>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
