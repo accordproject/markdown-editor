@@ -46,19 +46,19 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.4",
+    "@babel/core": "^7.4.5",
     "@babel/plugin-transform-modules-commonjs": "^7.4.4",
-    "@babel/preset-env": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.4.4",
-    "@clausehq/eslint-config": "^0.1.7",
+    "@clausehq/eslint-config": "^0.1.8",
     "babel-jest": "^24.8.0",
     "babel-loader": "^8.0.6",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-loopback": "^13.1.0",
     "eslint-plugin-import": "^2.17.2",
-    "eslint-plugin-jest": "^22.5.1",
+    "eslint-plugin-jest": "^22.6.4",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.13.0",
     "eslint-plugin-react-hooks": "^1.6.0",
@@ -66,10 +66,10 @@
     "jest": "^24.8.0",
     "moment-mini": "2.22.1",
     "react-scripts": "^3.0.1",
-    "semver": "6.0.0",
-    "webpack": "^4.31.0",
+    "semver": "6.1.0",
+    "webpack": "^4.32.2",
     "webpack-cli": "^3.3.2",
-    "webpack-dev-server": "^3.3.1"
+    "webpack-dev-server": "^3.4.1"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -92,10 +92,10 @@
     "react-textarea-autosize": "^7.1.0",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.87.1",
-    "slate": "^0.47.2",
-    "slate-html-serializer": "^0.8.4",
-    "slate-plain-serializer": "^0.7.4",
-    "slate-react": "^0.22.2",
+    "slate": "^0.47.3",
+    "slate-html-serializer": "^0.8.5",
+    "slate-plain-serializer": "^0.7.5",
+    "slate-react": "^0.22.3",
     "style-loader": "^0.23.1",
     "styled-components": "^4.2.0"
   }
