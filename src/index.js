@@ -338,6 +338,12 @@ function MarkdownEditor(props) {
         return <hr {...attributes} />;
       case 'block_quote':
         return <blockquote {...attributes}>{children}</blockquote>;
+      case 'list_item':
+        return <li {...attributes}>{children}</li>;
+      case 'ol_list':
+        return <ol {...attributes}>{children}</ol>;
+      case 'ul_list':
+        return <ul {...attributes}>{children}</ul>;
       case 'code_block':
         return <pre {...attributes}>{children}</pre>;
       case 'html_block':
@@ -355,13 +361,13 @@ function MarkdownEditor(props) {
     const { children, mark, attributes } = props;
 
     switch (mark.type) {
+      case 'html':
       case 'bold':
         return <strong {...attributes}>{children}</strong>;
       case 'italic':
         return <em {...attributes}>{children}</em>;
       case 'underline':
         return <u {...{ attributes }}>{children}</u>;
-      case 'html':
       case 'code':
         return <code {...attributes}>{children}</code>;
       case 'error':
