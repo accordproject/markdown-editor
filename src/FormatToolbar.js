@@ -15,24 +15,11 @@ import * as lIcon from '../public/icons/hyperlink';
 import * as unIcon from '../public/icons/navigation-left';
 import * as reIcon from '../public/icons/navigation-right';
 
-const SvgTester = styled.svg`
-  width: ${props => props.width};
-  height: ${props => props.height};
-  place-self: center;
-  user-select: none !important;
-  cursor: pointer;
-  background-color: #FFFFFF;
-  padding: ${props => props.padding};
-  border-radius: 5px;
-  &:hover {
-    background-color: #F0F0F0;
-  }
-`;
-
-const whiteBG = '#000000';
-const lightGrayBG = '#F0F0F0';
-const medGrayBG = '#949CA2';
-const darkGrayBG = '#414F58';
+const whColor = '#FFFFFF';
+const lgColor = '#F0F0F0';
+const mgColor = '#949CA2';
+const dgColor = '#414F58';
+const lkColor = '#2587DA';
 
 const StyledToolbar = styled.div`
   position: relative;
@@ -49,11 +36,18 @@ const StyledToolbar = styled.div`
   background-color: #FFFFFF !important;
 `;
 
-const StyledIcon = styled.img`
+const SvgTester = styled.svg`
+  width: ${props => props.width};
+  height: ${props => props.height};
   place-self: center;
-  padding: 5px;
-  border-radius: 3px;
-  background-color: ${props => props.bggg || '#FFFFFF'} !important;
+  user-select: none !important;
+  cursor: pointer;
+  background-color: ${props => props.background};
+  padding: ${props => props.padding};
+  border-radius: 5px;
+  &:hover {
+    background-color: #F0F0F0;
+  }
 `;
 
 const VertDivider = styled.div`
@@ -90,12 +84,22 @@ const DEFAULT_NODE = 'paragraph';
 
 export default class FormatToolbar extends React.Component {
   /**
-   * When a mark button is clicked, toggle the current mark.
+   * When a mark button is clicked, toggle undo or redo.
    *
+   * @param {Event} event
+   * @param {String} action
+   */
+  onClickHistory(event, action) {
+    const { editor } = this.props;
+    event.preventDefault();
+    ((action === 'undo') ? editor.undo() : editor.redo());
+  }
+
+  /**
+   * When a mark button is clicked, toggle the current mark.
    * @param {Event} event
    * @param {String} type
    */
-
   onClickMark(event, type) {
     const { editor } = this.props;
     event.preventDefault();
@@ -104,7 +108,6 @@ export default class FormatToolbar extends React.Component {
 
   /**
    * When a block button is clicked, toggle the block type.
-   *
    * @param {Event} event
    * @param {String} type
    */
@@ -154,10 +157,8 @@ export default class FormatToolbar extends React.Component {
   /**
    * When clicking a link, if the selection has a link in it, remove the link.
    * Otherwise, add a new link with an href and text.
-   *
    * @param {Event} event
    */
-
   onClickLink(event, editor) {
     event.preventDefault();
 
@@ -196,7 +197,6 @@ export default class FormatToolbar extends React.Component {
 
   /**
    * Check whether the current selection has a link in it.
-   *
    * @return {Boolean} hasLinks
    */
   hasLinks(editor) {
@@ -206,11 +206,9 @@ export default class FormatToolbar extends React.Component {
 
   /**
    * Check if the current selection has a mark with `type` in it.
-   *
    * @param {String} type
    * @return {Boolean}
    */
-
   hasMark(editor, type) {
     const { value } = editor;
     return value.activeMarks.some(mark => mark.type === type);
@@ -218,11 +216,9 @@ export default class FormatToolbar extends React.Component {
 
   /**
    * Check if the any of the currently selected blocks are of `type`.
-   *
    * @param {String} type
    * @return {Boolean}
    */
-
   static hasBlock(editor, type) {
     const { value } = editor;
     return value.blocks.some(node => node.type === type);
@@ -230,104 +226,87 @@ export default class FormatToolbar extends React.Component {
 
   /**
    * Render a mark-toggling toolbar button.
-   *
-   * @param {String} type
-   * @param {String} icon
-   * @return {Element}
    */
-
-  renderMarkButton(type, icon, alt, bGround) {
+  renderMarkButton(type, icon, hi, wi, pa, vBox) {
     const { editor } = this.props;
-    const { value } = editor;
-    const isActive = value && value.activeMarks.some(mark => mark.type === type);
-
-    return (<StyledIcon
-      alt={alt}
-      src={icon}
-      bggg={bGround}
-      aria-label={type}
-      onMouseDown={event => this.onClickMark(event, type)}
-    />);
-  }
-
-
-  renderTester(type, icon, hi, wi, pa, fill, bgColor, vBox) {
-    const { editor } = this.props;
-    const { value } = editor;
-    const isActive = value && value.activeMarks.some(mark => mark.type === type);
+    const isActive = this.hasMark(editor, type);
+    const fillActivity = isActive ? dgColor : mgColor;
+    const bgActivity = isActive ? lgColor : whColor;
 
     return (
       <SvgTester
         viewBox={vBox}
         aria-label={type}
-        bggg={bgColor}
+        background={bgActivity}
         width={wi}
         height={hi}
         padding={pa}
         onMouseDown={event => this.onClickMark(event, type)}>
-          {icon(fill)}
-      </ SvgTester>
-    );
-  }
-
-  renderBlockTester(type, icon, hi, wi, pa, fill, bgColor, vBox, props) {
-    return (
-      <SvgTester
-        viewBox={vBox}
-        aria-label={type}
-        bggg={bgColor}
-        width={wi}
-        height={hi}
-        padding={pa}
-        {...props}
-        onMouseDown={event => this.onClickMark(event, type)}>
-          {icon(fill)}
+          {icon(fillActivity)}
       </ SvgTester>
     );
   }
 
   /**
    * Render a block modifying button
-   *
-   * @param {String} type
-   * @param {String} icon
-   * @return {Element}
    */
-  renderBlockButton(type, icon, alt, props) {
-    return (<StyledIcon
-      alt={alt}
-      src={icon}
-      aria-label={type}
-      {...props}
-      onMouseDown={event => this.onClickBlock(event, type)}
-    />);
+  renderBlockButton(type, icon, hi, wi, pa, fill, bgColor, vBox, props) {
+    return (
+      <SvgTester
+        viewBox={vBox}
+        aria-label={type}
+        background={bgColor}
+        width={wi}
+        height={hi}
+        padding={pa}
+        {...props}
+        onMouseDown={event => this.onClickBlock(event, type)}>
+          {icon(fill)}
+      </ SvgTester>
+    );
   }
 
   /**
-   * Render a mark-toggling toolbar button.
-   *
-   * @param {String} type
-   * @param {String} icon
-   * @return {Element}
+   * Render a link-toggling toolbar button.
    */
-  renderLinkButton(type, icon, hi, wi, pa, fill, bgColor, vBox) {
+  renderLinkButton(type, icon, hi, wi, pa, vBox) {
+    const { editor } = this.props;
+    const isActive = this.hasLinks(editor);
+    const fillActivity = isActive ? lkColor : mgColor;
+    const bgActivity = isActive ? lgColor : whColor;
+
     return (
       <SvgTester
         aria-label={type}
-        bggg={bgColor}
+        background={bgActivity}
         width={wi}
         height={hi}
         padding={pa}
         viewBox={vBox}
         onMouseDown={event => this.onClickLink(event, this.props.editor)}>
+          {icon(fillActivity)}
+      </ SvgTester>
+    );
+  }
+
+  /**
+   * Render a history-toggling toolbar button.
+   */
+  renderHistoryButton(type, icon, hi, wi, pa, fill, bgColor, vBox, action) {
+    return (
+      <SvgTester
+        aria-label={type}
+        background={bgColor}
+        width={wi}
+        height={hi}
+        padding={pa}
+        viewBox={vBox}
+        onMouseDown={event => this.onClickHistory(event, action, this.props.editor)}>
           {icon(fill)}
       </ SvgTester>
     );
   }
-  // height + 10
-  // width + 14
 
-  // type, heightInput, widthInput, paddingInput, vBox, icon
   render() {
     const { pluginManager, editor } = this.props;
     const root = window.document.getElementById('root').querySelector('#toolbarwrapperid');
@@ -335,119 +314,131 @@ export default class FormatToolbar extends React.Component {
 
     return ReactDOM.createPortal(
       <StyledToolbar className="format-toolbar">
-        { this.renderTester(
-          bIcon.type(),
-          bIcon.icon,
-          bIcon.height(),
-          bIcon.width(),
-          bIcon.padding(),
-          medGrayBG,
-          lightGrayBG,
-          bIcon.vBox()
-        )}
-        { this.renderTester(
-          iIcon.type(),
-          iIcon.icon,
-          iIcon.height(),
-          iIcon.width(),
-          iIcon.padding(),
-          medGrayBG,
-          whiteBG,
-          iIcon.vBox()
-        )}
-        { this.renderTester(
-          uIcon.type(),
-          uIcon.icon,
-          uIcon.height(),
-          uIcon.width(),
-          uIcon.padding(),
-          medGrayBG,
-          whiteBG,
-          uIcon.vBox()
-        )}
+        {
+          this.renderMarkButton(
+            bIcon.type(),
+            bIcon.icon,
+            bIcon.height(),
+            bIcon.width(),
+            bIcon.padding(),
+            bIcon.vBox()
+          )
+        }
+        {
+          this.renderMarkButton(
+            iIcon.type(),
+            iIcon.icon,
+            iIcon.height(),
+            iIcon.width(),
+            iIcon.padding(),
+            iIcon.vBox()
+          )
+        }
+        {
+          this.renderMarkButton(
+            uIcon.type(),
+            uIcon.icon,
+            uIcon.height(),
+            uIcon.width(),
+            uIcon.padding(),
+            uIcon.vBox()
+          )
+        }
         <VertDivider />
-        { this.renderTester(
-          cIcon.type(),
-          cIcon.icon,
-          cIcon.height(),
-          cIcon.width(),
-          cIcon.padding(),
-          medGrayBG,
-          whiteBG,
-          cIcon.vBox()
-        )}
-        { this.renderBlockTester(
-          qIcon.type(),
-          qIcon.icon,
-          qIcon.height(),
-          qIcon.width(),
-          qIcon.padding(),
-          medGrayBG,
-          whiteBG,
-          qIcon.vBox()
-        )}
-        { this.renderBlockTester(
-          ulIcon.type(),
-          ulIcon.icon,
-          ulIcon.height(),
-          ulIcon.width(),
-          ulIcon.padding(),
-          medGrayBG,
-          whiteBG,
-          ulIcon.vBox()
-        )}
-        { this.renderBlockTester(
-          olIcon.type(),
-          olIcon.icon,
-          olIcon.height(),
-          olIcon.width(),
-          olIcon.padding(),
-          medGrayBG,
-          whiteBG,
-          olIcon.vBox()
-        )}
+        {
+          this.renderMarkButton(
+            cIcon.type(),
+            cIcon.icon,
+            cIcon.height(),
+            cIcon.width(),
+            cIcon.padding(),
+            cIcon.vBox()
+          )
+        }
+        {
+          this.renderBlockButton(
+            qIcon.type(),
+            qIcon.icon,
+            qIcon.height(),
+            qIcon.width(),
+            qIcon.padding(),
+            mgColor,
+            whColor,
+            qIcon.vBox()
+          )
+        }
+        {
+          this.renderBlockButton(
+            ulIcon.type(),
+            ulIcon.icon,
+            ulIcon.height(),
+            ulIcon.width(),
+            ulIcon.padding(),
+            mgColor,
+            whColor,
+            ulIcon.vBox()
+          )
+        }
+        {
+          this.renderBlockButton(
+            olIcon.type(),
+            olIcon.icon,
+            olIcon.height(),
+            olIcon.width(),
+            olIcon.padding(),
+            mgColor,
+            whColor,
+            olIcon.vBox()
+          )
+        }
         <VertDivider />
-        { this.renderTester(
-          pIcon.type(),
-          pIcon.icon,
-          pIcon.height(),
-          pIcon.width(),
-          pIcon.padding(),
-          medGrayBG,
-          whiteBG,
-          pIcon.vBox()
-        )}
-        { this.renderLinkButton(
-          lIcon.type(),
-          lIcon.icon,
-          lIcon.height(),
-          lIcon.width(),
-          lIcon.padding(),
-          medGrayBG,
-          whiteBG,
-          lIcon.vBox()
-        )}
+        {
+          this.renderMarkButton(
+            pIcon.type(),
+            pIcon.icon,
+            pIcon.height(),
+            pIcon.width(),
+            pIcon.padding(),
+            pIcon.vBox()
+          )
+        }
+        {
+          this.renderLinkButton(
+            lIcon.type(),
+            lIcon.icon,
+            lIcon.height(),
+            lIcon.width(),
+            lIcon.padding(),
+            lIcon.vBox()
+          )
+        }
         <VertDivider />
-        { this.renderTester(
-          unIcon.type(),
-          unIcon.icon,
-          unIcon.height(),
-          unIcon.width(),
-          unIcon.padding(),
-          medGrayBG,
-          whiteBG,
-          unIcon.vBox()
-        )}
-        { this.renderTester(
-          reIcon.type(),
-          reIcon.icon,
-          reIcon.height(),
-          reIcon.width(),
-          reIcon.padding(),
-          medGrayBG,
-          whiteBG,
-          reIcon.vBox()
-        )}
+        {
+          this.renderHistoryButton(
+            unIcon.type(),
+            unIcon.icon,
+            unIcon.height(),
+            unIcon.width(),
+            unIcon.padding(),
+            mgColor,
+            whColor,
+            unIcon.vBox(),
+            'undo'
+          )
+      }
+        {
+          this.renderHistoryButton(
+            reIcon.type(),
+            reIcon.icon,
+            reIcon.height(),
+            reIcon.width(),
+            reIcon.padding(),
+            mgColor,
+            whColor,
+            reIcon.vBox(),
+            'redo'
+          )
+      }
         {/* { this.renderBlockButton('heading_one', 'text height')} */}
         {/* { this.renderBlockButton('heading_two', 'text height', smallIcon)} */}
         { pluginManager.renderToolbar(editor)}
