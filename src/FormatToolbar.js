@@ -4,16 +4,16 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import * as bIcon from '../public/icons/bold';
-import ItalicIcon from '../public/icons/italic.svg';
-import UnderlineIcon from '../public/icons/Underline.svg';
+import * as iIcon from '../public/icons/italic';
+import * as uIcon from '../public/icons/underline';
 import * as cIcon from '../public/icons/code';
-import QuoteIcon from '../public/icons/open-quote.svg';
-import OLIcon from '../public/icons/OL.svg';
-import ULIcon from '../public/icons/UL.svg';
-import ParamIcon from '../public/icons/param.svg';
-import LinkImg from '../public/icons/hyperlink.svg';
-import UndoIcon from '../public/icons/navigation-left.svg';
-import RedoIcon from '../public/icons/navigation-right.svg';
+import * as qIcon from '../public/icons/open-quote';
+import * as olIcon from '../public/icons/OL';
+import * as ulIcon from '../public/icons/UL';
+import * as pIcon from '../public/icons/param';
+import * as lIcon from '../public/icons/hyperlink';
+import * as unIcon from '../public/icons/navigation-left';
+import * as reIcon from '../public/icons/navigation-right';
 
 const SvgTester = styled.svg`
   width: ${props => props.width};
@@ -270,6 +270,22 @@ export default class FormatToolbar extends React.Component {
     );
   }
 
+  renderBlockTester(type, icon, hi, wi, pa, fill, bgColor, vBox, props) {
+    return (
+      <SvgTester
+        viewBox={vBox}
+        aria-label={type}
+        bggg={bgColor}
+        width={wi}
+        height={hi}
+        padding={pa}
+        {...props}
+        onMouseDown={event => this.onClickMark(event, type)}>
+          {icon(fill)}
+      </ SvgTester>
+    );
+  }
+
   /**
    * Render a block modifying button
    *
@@ -294,14 +310,18 @@ export default class FormatToolbar extends React.Component {
    * @param {String} icon
    * @return {Element}
    */
-  renderLinkButton(icon, alt) {
+  renderLinkButton(type, icon, hi, wi, pa, fill, bgColor, vBox) {
     return (
-      <StyledIcon
-        alt={alt}
-        src={icon}
-        aria-label="link"
-        onMouseDown={event => this.onClickLink(event, this.props.editor)}
-      />
+      <SvgTester
+        aria-label={type}
+        bggg={bgColor}
+        width={wi}
+        height={hi}
+        padding={pa}
+        viewBox={vBox}
+        onMouseDown={event => this.onClickLink(event, this.props.editor)}>
+          {icon(fill)}
+      </ SvgTester>
     );
   }
   // height + 10
@@ -325,8 +345,26 @@ export default class FormatToolbar extends React.Component {
           lightGrayBG,
           bIcon.vBox()
         )}
-        { this.renderMarkButton('italic', ItalicIcon, 'Italic Button')}
-        { this.renderMarkButton('underline', UnderlineIcon, 'Underline Button')}
+        { this.renderTester(
+          iIcon.type(),
+          iIcon.icon,
+          iIcon.height(),
+          iIcon.width(),
+          iIcon.padding(),
+          medGrayBG,
+          whiteBG,
+          iIcon.vBox()
+        )}
+        { this.renderTester(
+          uIcon.type(),
+          uIcon.icon,
+          uIcon.height(),
+          uIcon.width(),
+          uIcon.padding(),
+          medGrayBG,
+          whiteBG,
+          uIcon.vBox()
+        )}
         <VertDivider />
         { this.renderTester(
           cIcon.type(),
@@ -338,15 +376,78 @@ export default class FormatToolbar extends React.Component {
           whiteBG,
           cIcon.vBox()
         )}
-        { this.renderBlockButton('block_quote', QuoteIcon, 'Quote Button')}
-        { this.renderBlockButton('ul_list', ULIcon, 'Unordered List Button')}
-        { this.renderBlockButton('ol_list', OLIcon, 'Ordered List Button')}
+        { this.renderBlockTester(
+          qIcon.type(),
+          qIcon.icon,
+          qIcon.height(),
+          qIcon.width(),
+          qIcon.padding(),
+          medGrayBG,
+          whiteBG,
+          qIcon.vBox()
+        )}
+        { this.renderBlockTester(
+          ulIcon.type(),
+          ulIcon.icon,
+          ulIcon.height(),
+          ulIcon.width(),
+          ulIcon.padding(),
+          medGrayBG,
+          whiteBG,
+          ulIcon.vBox()
+        )}
+        { this.renderBlockTester(
+          olIcon.type(),
+          olIcon.icon,
+          olIcon.height(),
+          olIcon.width(),
+          olIcon.padding(),
+          medGrayBG,
+          whiteBG,
+          olIcon.vBox()
+        )}
         <VertDivider />
-        { this.renderMarkButton('bold', ParamIcon, 'Parameter Button')}
-        { this.renderLinkButton(LinkImg, 'Hyperlink Button')}
+        { this.renderTester(
+          pIcon.type(),
+          pIcon.icon,
+          pIcon.height(),
+          pIcon.width(),
+          pIcon.padding(),
+          medGrayBG,
+          whiteBG,
+          pIcon.vBox()
+        )}
+        { this.renderLinkButton(
+          lIcon.type(),
+          lIcon.icon,
+          lIcon.height(),
+          lIcon.width(),
+          lIcon.padding(),
+          medGrayBG,
+          whiteBG,
+          lIcon.vBox()
+        )}
         <VertDivider />
-        { this.renderMarkButton('bold', UndoIcon, 'Undo Button')}
-        { this.renderMarkButton('italic', RedoIcon, 'Redo Button')}
+        { this.renderTester(
+          unIcon.type(),
+          unIcon.icon,
+          unIcon.height(),
+          unIcon.width(),
+          unIcon.padding(),
+          medGrayBG,
+          whiteBG,
+          unIcon.vBox()
+        )}
+        { this.renderTester(
+          reIcon.type(),
+          reIcon.icon,
+          reIcon.height(),
+          reIcon.width(),
+          reIcon.padding(),
+          medGrayBG,
+          whiteBG,
+          reIcon.vBox()
+        )}
         {/* { this.renderBlockButton('heading_one', 'text height')} */}
         {/* { this.renderBlockButton('heading_two', 'text height', smallIcon)} */}
         { pluginManager.renderToolbar(editor)}
