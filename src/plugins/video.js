@@ -4,7 +4,16 @@ import styled from 'styled-components';
 
 const StyledIcon = styled(Icon)`
   color: #949CA2 !important;
-  place-self: center;
+  position: abosulte;
+  width: 24px !important;
+  height: 23px !important;
+  margin: 6px 0 0 5px !important;
+  padding: 3px 0 0 0 !important;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+    background-color: #F0F0F0;
+  }
 `;
 
 /**
