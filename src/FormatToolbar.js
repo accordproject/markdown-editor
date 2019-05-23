@@ -21,6 +21,8 @@ const mgColor = '#949CA2';
 const dgColor = '#414F58';
 const lkColor = '#2587DA';
 
+const DEFAULT_NODE = 'paragraph';
+
 const StyledToolbar = styled.div`
   position: relative;
   display: grid
@@ -62,32 +64,88 @@ const VertDivider = styled.div`
 /**
  * A change helper to standardize wrapping links.
  */
-function wrapLink(editor, href) {
+const wrapLink = (editor, href) => {
   editor.wrapInline({
     type: 'link',
     data: { href },
   });
-
   editor.moveToEnd();
-}
+};
 
 /**
  * A change helper to standardize unwrapping links.
- *
- * @param {Editor} editor
  */
-function unwrapLink(editor) {
+const unwrapLink = (editor) => {
   editor.unwrapInline('link');
-}
+};
 
-const DEFAULT_NODE = 'paragraph';
+/**
+ * Check if the current selection has a mark with `type` in it.
+ */
+const hasMark = (editor, type) => {
+  const { value } = editor;
+  return value.activeMarks.some(mark => mark.type === type);
+};
+
+/**
+ * Check whether the current selection has a link in it.
+ */
+const hasLinks = (editor) => {
+  const { value } = editor;
+  return value.inlines.some(inline => inline.type === 'link');
+};
+
+/**
+* Check if the any of the currently selected blocks are of `type`.
+*/
+const hasBlock = (editor, type) => {
+  const { value } = editor;
+  return value.blocks.some(node => node.type === type);
+};
+
+/**
+ * When clicking a link, if the selection has a link in it, remove the link.
+ * Otherwise, add a new link with an href and text.
+ */
+const onClickLink = (event, editor) => {
+  event.preventDefault();
+
+  const { value } = editor;
+  const hasLinksBool = hasLinks(editor);
+
+  if (hasLinksBool) {
+    editor.command(unwrapLink);
+  } else if (value.selection.isExpanded) {
+    const href = window.prompt('Enter the URL of the link:');
+
+    if (href === null) {
+      return;
+    }
+
+    editor.command(wrapLink, href);
+  } else {
+    const href = window.prompt('Enter the URL of the link:');
+
+    if (href === null) {
+      return;
+    }
+
+    const text = window.prompt('Enter the text for the link:');
+
+    if (text === null) {
+      return;
+    }
+
+    editor
+      .insertText(text)
+      .moveFocusBackward(text.length)
+      .command(wrapLink, href);
+  }
+};
 
 export default class FormatToolbar extends React.Component {
   /**
    * When a mark button is clicked, toggle undo or redo.
-   *
-   * @param {Event} event
-   * @param {String} action
    */
   onClickHistory(event, action) {
     const { editor } = this.props;
@@ -97,8 +155,6 @@ export default class FormatToolbar extends React.Component {
 
   /**
    * When a mark button is clicked, toggle the current mark.
-   * @param {Event} event
-   * @param {String} type
    */
   onClickMark(event, type) {
     const { editor } = this.props;
@@ -108,8 +164,6 @@ export default class FormatToolbar extends React.Component {
 
   /**
    * When a block button is clicked, toggle the block type.
-   * @param {Event} event
-   * @param {String} type
    */
   onClickBlock(event, type) {
     event.preventDefault();
@@ -117,11 +171,14 @@ export default class FormatToolbar extends React.Component {
     const { editor } = this.props;
     const { value } = editor;
     const { document } = value;
+    console.log('type?? ', type);
 
     // Handle everything but list buttons.
     if (type !== 'ul_list' && type !== 'ol_list') {
-      const isActive = FormatToolbar.hasBlock(editor, type);
-      const isList = FormatToolbar.hasBlock(editor, 'list_item');
+      const isActive = hasBlock(editor, type);
+      const isList = hasBlock(editor, 'list_item');
+      console.log('isActive?? ', isActive);
+      console.log('isList?? ', isList);
 
       if (isList) {
         editor
@@ -133,9 +190,11 @@ export default class FormatToolbar extends React.Component {
       }
     } else {
       // Handle the extra wrapping required for list buttons.
-      const isList = FormatToolbar.hasBlock(editor, 'list_item');
+      const isList = hasBlock(editor, 'list_item');
       const isType = value.blocks
         .some(block => !!document.getClosest(block.key, parent => parent.type === type));
+      console.log('list_item isList?? ', isList);
+      console.log('list_item isType?? ', isType);
 
       if (isList && isType) {
         editor
@@ -155,81 +214,11 @@ export default class FormatToolbar extends React.Component {
   }
 
   /**
-   * When clicking a link, if the selection has a link in it, remove the link.
-   * Otherwise, add a new link with an href and text.
-   * @param {Event} event
-   */
-  onClickLink(event, editor) {
-    event.preventDefault();
-
-    const { value } = editor;
-    const hasLinks = this.hasLinks(editor);
-
-    if (hasLinks) {
-      editor.command(unwrapLink);
-    } else if (value.selection.isExpanded) {
-      const href = window.prompt('Enter the URL of the link:');
-
-      if (href === null) {
-        return;
-      }
-
-      editor.command(wrapLink, href);
-    } else {
-      const href = window.prompt('Enter the URL of the link:');
-
-      if (href === null) {
-        return;
-      }
-
-      const text = window.prompt('Enter the text for the link:');
-
-      if (text === null) {
-        return;
-      }
-
-      editor
-        .insertText(text)
-        .moveFocusBackward(text.length)
-        .command(wrapLink, href);
-    }
-  }
-
-  /**
-   * Check whether the current selection has a link in it.
-   * @return {Boolean} hasLinks
-   */
-  hasLinks(editor) {
-    const { value } = editor;
-    return value.inlines.some(inline => inline.type === 'link');
-  }
-
-  /**
-   * Check if the current selection has a mark with `type` in it.
-   * @param {String} type
-   * @return {Boolean}
-   */
-  hasMark(editor, type) {
-    const { value } = editor;
-    return value.activeMarks.some(mark => mark.type === type);
-  }
-
-  /**
-   * Check if the any of the currently selected blocks are of `type`.
-   * @param {String} type
-   * @return {Boolean}
-   */
-  static hasBlock(editor, type) {
-    const { value } = editor;
-    return value.blocks.some(node => node.type === type);
-  }
-
-  /**
    * Render a mark-toggling toolbar button.
    */
   renderMarkButton(type, icon, hi, wi, pa, vBox) {
     const { editor } = this.props;
-    const isActive = this.hasMark(editor, type);
+    const isActive = hasMark(editor, type);
     const fillActivity = isActive ? dgColor : mgColor;
     const bgActivity = isActive ? lgColor : whColor;
 
@@ -250,18 +239,23 @@ export default class FormatToolbar extends React.Component {
   /**
    * Render a block modifying button
    */
-  renderBlockButton(type, icon, hi, wi, pa, fill, bgColor, vBox, props) {
+  renderBlockButton(type, icon, hi, wi, pa, vBox, props) {
+    const { editor } = this.props;
+    const isActive = hasBlock(editor, type);
+    const fillActivity = isActive ? dgColor : mgColor;
+    const bgActivity = isActive ? lgColor : whColor;
+
     return (
       <SvgTester
         viewBox={vBox}
         aria-label={type}
-        background={bgColor}
+        background={bgActivity}
         width={wi}
         height={hi}
         padding={pa}
         {...props}
         onMouseDown={event => this.onClickBlock(event, type)}>
-          {icon(fill)}
+          {icon(fillActivity)}
       </ SvgTester>
     );
   }
@@ -271,7 +265,7 @@ export default class FormatToolbar extends React.Component {
    */
   renderLinkButton(type, icon, hi, wi, pa, vBox) {
     const { editor } = this.props;
-    const isActive = this.hasLinks(editor);
+    const isActive = hasLinks(editor);
     const fillActivity = isActive ? lkColor : mgColor;
     const bgActivity = isActive ? lgColor : whColor;
 
@@ -283,7 +277,7 @@ export default class FormatToolbar extends React.Component {
         height={hi}
         padding={pa}
         viewBox={vBox}
-        onMouseDown={event => this.onClickLink(event, this.props.editor)}>
+        onMouseDown={event => onClickLink(event, this.props.editor)}>
           {icon(fillActivity)}
       </ SvgTester>
     );
@@ -292,17 +286,17 @@ export default class FormatToolbar extends React.Component {
   /**
    * Render a history-toggling toolbar button.
    */
-  renderHistoryButton(type, icon, hi, wi, pa, fill, bgColor, vBox, action) {
+  renderHistoryButton(type, icon, hi, wi, pa, vBox, action) {
     return (
       <SvgTester
         aria-label={type}
-        background={bgColor}
+        background={whColor}
         width={wi}
         height={hi}
         padding={pa}
         viewBox={vBox}
         onMouseDown={event => this.onClickHistory(event, action, this.props.editor)}>
-          {icon(fill)}
+          {icon(mgColor)}
       </ SvgTester>
     );
   }
@@ -362,8 +356,6 @@ export default class FormatToolbar extends React.Component {
             qIcon.height(),
             qIcon.width(),
             qIcon.padding(),
-            mgColor,
-            whColor,
             qIcon.vBox()
           )
         }
@@ -374,8 +366,6 @@ export default class FormatToolbar extends React.Component {
             ulIcon.height(),
             ulIcon.width(),
             ulIcon.padding(),
-            mgColor,
-            whColor,
             ulIcon.vBox()
           )
         }
@@ -386,8 +376,6 @@ export default class FormatToolbar extends React.Component {
             olIcon.height(),
             olIcon.width(),
             olIcon.padding(),
-            mgColor,
-            whColor,
             olIcon.vBox()
           )
         }
@@ -420,8 +408,6 @@ export default class FormatToolbar extends React.Component {
             unIcon.height(),
             unIcon.width(),
             unIcon.padding(),
-            mgColor,
-            whColor,
             unIcon.vBox(),
             'undo'
           )
@@ -433,8 +419,6 @@ export default class FormatToolbar extends React.Component {
             reIcon.height(),
             reIcon.width(),
             reIcon.padding(),
-            mgColor,
-            whColor,
             reIcon.vBox(),
             'redo'
           )

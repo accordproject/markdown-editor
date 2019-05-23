@@ -6,6 +6,49 @@ const NL = '\n';
 /**
  * A plugin-based Slate -> Markdown converter.
  */
+
+const text = (node) => {
+  let result = '';
+
+  const isBold = node.marks.some(mark => mark.type === 'bold');
+  const isItalic = node.marks.some(mark => mark.type === 'italic');
+  const isUnderline = node.marks.some(mark => mark.type === 'underline');
+  const isCode = node.marks.some(mark => mark.type === 'code');
+  const isVariable = node.marks.some(mark => mark.type === 'variable');
+  let openMark = '';
+  let closeMark = '';
+
+  if (isBold) {
+    openMark = '**';
+    closeMark = '**';
+  }
+
+  if (isItalic) {
+    openMark += '*';
+    closeMark += '*';
+  }
+
+  if (isUnderline) {
+    openMark += '__';
+    closeMark += '__';
+  }
+
+  if (isVariable) {
+    openMark += '{{';
+    closeMark += '}}';
+  }
+
+  if (isCode) {
+    openMark += '`';
+    closeMark += '`';
+  }
+
+  result += openMark + node.text + closeMark;
+
+  return result;
+};
+
+
 export default class ToMarkdown extends Markdown {
   constructor(pluginManager) {
     super(pluginManager);
@@ -30,7 +73,7 @@ export default class ToMarkdown extends Markdown {
 
       switch (node.object) {
         case 'text':
-          markdown += this.text(node);
+          markdown += text(node);
           break;
         case 'block':
         case 'inline': {
@@ -78,47 +121,6 @@ export default class ToMarkdown extends Markdown {
     return this.first;
   }
 
-  text(node) {
-    let result = '';
-
-    const isBold = node.marks.some(mark => mark.type === 'bold');
-    const isItalic = node.marks.some(mark => mark.type === 'italic');
-    const isUnderline = node.marks.some(mark => mark.type === 'underline');
-    const isCode = node.marks.some(mark => mark.type === 'code');
-    const isVariable = node.marks.some(mark => mark.type === 'variable');
-    let openMark = '';
-    let closeMark = '';
-
-    if (isBold) {
-      openMark = '**';
-      closeMark = '**';
-    }
-
-    if (isItalic) {
-      openMark += '*';
-      closeMark += '*';
-    }
-
-    if (isUnderline) {
-      openMark += '__';
-      closeMark += '__';
-    }
-
-    if (isVariable) {
-      openMark += '{{';
-      closeMark += '}}';
-    }
-
-    if (isCode) {
-      openMark += '`';
-      closeMark += '`';
-    }
-
-    result += openMark + node.text + closeMark;
-
-    return result;
-  }
-
   paragraph(node) {
     let prefix = `${NL}${NL}`;
     const parent = this.getParent();
@@ -151,6 +153,12 @@ export default class ToMarkdown extends Markdown {
 
   blockQuote(node) {
     return `${NL}> ${this.recursive(node.nodes)}`;
+  }
+
+  blockList(node) {
+    const md = this.recursive(node.nodes);
+    const open = '* ';
+    return NL + open + md + NL;
   }
 
   headingOne(node) {
