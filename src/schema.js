@@ -41,6 +41,14 @@ const schema = {
     horizontal_rule: {
       isVoid: true,
     },
+    list: {
+      nodes: [{ match: { type: 'list_item' } }],
+    },
+    list_item: {
+      parent: { type: 'list' },
+      nodes: [{ match: [{ object: 'text' }, { type: 'link' }] }],
+      marks: [{ type: 'bold' }, { type: 'italic' }],
+    },
   },
 };
 

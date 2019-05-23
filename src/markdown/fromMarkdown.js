@@ -38,7 +38,7 @@ export default class FromMarkdown extends Markdown {
    * @return {Object} the Slate.js Value object
    */
   convert(markdownText) {
-    this.marks = ['code', 'strong', 'emph', 'under'];
+    this.marks = ['code', 'strong', 'emph', 'under', 'variable'];
 
     const reader = new commonmark.Parser();
     const parsed = reader.parse(markdownText);
@@ -415,6 +415,20 @@ export default class FromMarkdown extends Markdown {
         nodes: [],
       };
       this.stack.push(block);
+    } else {
+      this.stack.pop();
+    }
+  }
+
+  blockList(node, event) {
+    if (event.entering) {
+      const list = {
+        object: 'list',
+        type: 'ol_list',
+        data: {},
+        nodes: [],
+      };
+      this.stack.push(list);
     } else {
       this.stack.pop();
     }

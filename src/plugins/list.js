@@ -1,5 +1,7 @@
 import React from 'react';
 
+/**
+   */
 function List() {
   const plugin = 'list';
   const tags = ['ul', 'ol', 'li'];
@@ -78,8 +80,8 @@ function List() {
     const listType = value.data.get('list_type', 'ol');
     const listStyleType = listType === 'ol' ? '1. ' : '* ';
     let indent = '';
-    for(let i = 0; i < depth-1; i++) {
-      indent += `   `;
+    for (let i = 0; i < depth - 1; i++) {
+      indent += '   ';
     }
 
     value.nodes.forEach((li) => {
@@ -90,6 +92,8 @@ function List() {
     return markdown;
   }
 
+  /**
+   */
   function fromMarkdown(stack, event) {
     const listType = event.node.listType === 'bullet' ? 'ul' : 'ol';
     let block = null;
@@ -118,6 +122,8 @@ function List() {
     return true;
   }
 
+  /**
+   */
   function fromHTML(el, next) {
     if (['ul', 'ol'].includes(el.tagName.toLowerCase())) {
       return {
