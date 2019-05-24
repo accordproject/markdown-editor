@@ -10,7 +10,6 @@ const schema = {
         match: [
           { type: 'paragraph' },
           { type: 'quote' },
-          { type: 'list' },
           { type: 'link' },
           { type: 'horizontal_rule' },
           { type: 'heading_one' },
@@ -47,7 +46,7 @@ const schema = {
     list_item: {
       parent: { type: 'list' },
       nodes: [{ match: [{ object: 'text' }, { type: 'link' }] }],
-      marks: [{ type: 'bold' }, { type: 'italic' }],
+      marks: [{ type: 'bold' }, { type: 'italic' }, { type: 'italic' }, { type: 'code' }],
     },
   },
 };
