@@ -469,19 +469,19 @@ export default class FromMarkdown extends Markdown {
     }
   }
 
-  blockList(node, event) {
-    if (event.entering) {
-      const list = {
-        object: 'list',
-        type: 'ol_list',
-        data: {},
-        nodes: [],
-      };
-      this.stack.push(list);
-    } else {
-      this.stack.pop();
-    }
-  }
+  // blockList(node, event) {
+  //   if (event.entering) {
+  //     const block = {
+  //       object: 'block',
+  //       type: 'ol_list',
+  //       data: {},
+  //       nodes: [],
+  //     };
+  //     this.stack.push(block);
+  //   } else {
+  //     this.stack.pop();
+  //   }
+  // }
 
   link(node, event) {
     if (event.entering) {
