@@ -320,6 +320,8 @@ function MarkdownEditor(props) {
     // console.log(node.type);
 
     switch (node.type) {
+      case 'horizontal_rule':
+        return <hr {...attributes} />;
       case 'paragraph':
         return <p {...attributes}>{children}</p>;
       case 'heading_one':
@@ -334,20 +336,24 @@ function MarkdownEditor(props) {
         return <h5 {...attributes}>{children}</h5>;
       case 'heading_six':
         return <h6 {...attributes}>{children}</h6>;
-      case 'horizontal_rule':
-        return <hr {...attributes} />;
-      case 'block_quote':
-        return <blockquote {...attributes}>{children}</blockquote>;
-      case 'list_item':
-        return <li {...attributes}>{children}</li>;
-      case 'ol_list':
-        return <ol {...attributes}>{children}</ol>;
-      case 'ul_list':
-        return <ul {...attributes}>{children}</ul>;
       case 'code_block':
         return <pre {...attributes}>{children}</pre>;
       case 'html_block':
         return <pre {...attributes}>{children}</pre>;
+      case 'ol_list':
+        return (
+            <ol {...attributes}>
+              <li>{children}</li>
+            </ol>
+        );
+      case 'ul_list':
+        return (
+            <ul {...attributes}>
+              <li>{children}</li>
+            </ul>
+        );
+      case 'block_quote':
+        return <blockquote {...attributes}>{children}</blockquote>;
       default:
         return next();
     }
