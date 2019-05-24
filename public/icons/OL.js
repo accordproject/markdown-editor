@@ -1,5 +1,6 @@
 import React from 'react';
 
+// may need to change this type value to 'list' or 'ol'
 export const type = () => 'ol_list';
 
 export const height = () => '24px';
