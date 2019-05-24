@@ -230,7 +230,7 @@ export default class FormatToolbar extends React.Component {
         width={wi}
         height={hi}
         padding={pa}
-        onMouseDown={event => this.onClickMark(event, type)}>
+        onPointerDown={event => this.onClickMark(event, type)}>
           {icon(fillActivity)}
       </ SvgTester>
     );
@@ -254,7 +254,7 @@ export default class FormatToolbar extends React.Component {
         height={hi}
         padding={pa}
         {...props}
-        onMouseDown={event => this.onClickBlock(event, type)}>
+        onPointerDown={event => this.onClickBlock(event, type)}>
           {icon(fillActivity)}
       </ SvgTester>
     );
@@ -277,7 +277,7 @@ export default class FormatToolbar extends React.Component {
         height={hi}
         padding={pa}
         viewBox={vBox}
-        onMouseDown={event => onClickLink(event, this.props.editor)}>
+        onPointerDown={event => onClickLink(event, this.props.editor)}>
           {icon(fillActivity)}
       </ SvgTester>
     );
@@ -295,7 +295,7 @@ export default class FormatToolbar extends React.Component {
         height={hi}
         padding={pa}
         viewBox={vBox}
-        onMouseDown={event => this.onClickHistory(event, action, this.props.editor)}>
+        onPointerDown={event => this.onClickHistory(event, action, this.props.editor)}>
           {icon(mgColor)}
       </ SvgTester>
     );
