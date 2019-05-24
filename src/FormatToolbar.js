@@ -171,14 +171,11 @@ export default class FormatToolbar extends React.Component {
     const { editor } = this.props;
     const { value } = editor;
     const { document } = value;
-    console.log('type?? ', type);
 
     // Handle everything but list buttons.
     if (type !== 'ul_list' && type !== 'ol_list') {
       const isActive = hasBlock(editor, type);
       const isList = hasBlock(editor, 'list_item');
-      console.log('isActive?? ', isActive);
-      console.log('isList?? ', isList);
 
       if (isList) {
         editor
@@ -193,8 +190,6 @@ export default class FormatToolbar extends React.Component {
       const isList = hasBlock(editor, 'list_item');
       const isType = value.blocks
         .some(block => !!document.getClosest(block.key, parent => parent.type === type));
-      console.log('list_item isList?? ', isList);
-      console.log('list_item isType?? ', isType);
 
       if (isList && isType) {
         editor
