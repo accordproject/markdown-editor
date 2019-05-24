@@ -52,6 +52,7 @@ function List() {
     const listType = node.data.get('list_type', 'ul');
     const listStyleType = node.data.get(
       'list_style_type',
+      // MAY NEED change
       listType === 'ul' ? '1' : 'disc',
     );
 
