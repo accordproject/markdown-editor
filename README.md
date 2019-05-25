@@ -27,7 +27,7 @@ function storeLocal(value, markdown) {
 }
 
 const defaultMarkdown = '# Hello World.';
-s
+
 ReactDOM.render(<MarkdownEditor plugins={plugins} lockText={false} markdownMode={false} markdown={defaultMarkdown} onChange={storeLocal}/>
 , document.getElementById('root'));
 ```
