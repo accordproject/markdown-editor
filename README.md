@@ -16,17 +16,20 @@ npm install @accordproject/markdown-editor
 
 ```
 import { MarkdownEditor } from '@accordproject/markdown-editor';
-
-import List from '../../src/plugins/list';
-import Video from '../../src/plugins/video';
+import List from '@accordproject/markdown-editor/dist/plugins/list';
+import Video from '@accordproject/markdown-editor/dist/plugins/video';
 
 const plugins = [List(), Video()];
 
-function storeLocal(editor) {
-  localStorage.setItem('markdown-editor', editor.getMarkdown());
+function storeLocal(value, markdown) {
+  // console.log(markdown);
+  localStorage.setItem('markdown-editor', markdown);
 }
 
-ReactDOM.render(<MarkdownEditor plugins={plugins} onChange={storeLocal} />, document.getElementById('root'));
+const defaultMarkdown = '# Hello World.';
+s
+ReactDOM.render(<MarkdownEditor plugins={plugins} lockText={false} markdownMode={false} markdown={defaultMarkdown} onChange={storeLocal}/>
+, document.getElementById('root'));
 ```
 
 ### Example
