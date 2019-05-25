@@ -81,7 +81,6 @@ function uuidv4() {
  *
  * When props.lockText is true and props.markdownMode is false then
  * the editor will lock all text against edits except for variables.
- * This feature is currently experimental and has bugs.
  *
  * @param {*} props the props for the component. See the declared PropTypes
  * for details.
@@ -118,108 +117,166 @@ function MarkdownEditor(props) {
   const [slateSchema, setSlateSchema] = useState(null);
 
   /**
+   * Destructure props for efficiency
+   */
+  const {
+    markdownMode, onChange, plugins, lockText
+  } = props;
+
+  /**
+   * Returns true if the editor is in lockText mode
+   * Note that we have to use an annotation for lockText
+   * (synced with props.lockText) because Slate doesn't update
+   * the Editor component when callbacks (like onBeforeInput) change.
+   */
+  const isEditorLockText = useCallback((editor) => {
+    const { value } = editor;
+    const result = value.annotations.filter(ann => (ann.type === 'lockText'));
+    return result.size > 0;
+  }, []);
+
+  /**
    * Updates the Slate Schema when the plugins change
    */
   useEffect(() => {
     const schema = JSON.parse(JSON.stringify(baseSchema));
-    props.plugins.forEach((plugin) => {
+    plugins.forEach((plugin) => {
       plugin.tags.forEach((tag) => {
         schema.document.nodes[0].match.push({ type: tag });
       });
     });
     setSlateSchema(schema);
-  }, [props.plugins]);
+  }, [plugins]);
 
   /**
    * When in markdown mode:
    * - Updates the Slate Value when the markdown state or the plugins change
    */
   useEffect(() => {
-    if (props.markdownMode) {
-      const pluginManager = new PluginManager(props.plugins);
+    if (markdownMode) {
+      const pluginManager = new PluginManager(plugins);
       const fromMarkdown = new FromMarkdown(pluginManager);
       const newSlateValue = fromMarkdown.convert(markdown);
       setSlateValue(newSlateValue);
-      props.onChange(newSlateValue, markdown);
+      onChange(newSlateValue, markdown);
     }
-  }, [props.markdownMode, markdown, props.plugins, props]);
+  }, [markdown, markdownMode, onChange, plugins]);
 
   /**
    * When not in markdown mode:
    * - Updates the markdown when the Slate Value or the plugins change
    */
   useEffect(() => {
-    if (!props.markdownMode) {
-      const pluginManager = new PluginManager(props.plugins);
+    if (!markdownMode) {
+      const pluginManager = new PluginManager(plugins);
       const toMarkdown = new ToMarkdown(pluginManager);
       const newMarkdown = toMarkdown.convert(slateValue);
       setMarkdown(newMarkdown);
-      props.onChange(slateValue, newMarkdown);
+      onChange(slateValue, newMarkdown);
     }
-  }, [props.markdownMode, slateValue, props.plugins, props]);
+  }, [markdownMode, onChange, plugins, slateValue]);
 
   /**
-   * When the Slate Value changes we update the variable annotations.
+   * When not in markdown mode:
+   * - Set a lockText annotation on the editor equal to props.lockText
    */
   useEffect(() => {
-    if (props.lockText && editorRef && editorRef.current) {
-      const editor = editorRef.current;
-      const { document, annotations } = editor.value;
+    if (!markdownMode) {
+      if (editorRef && editorRef.current) {
+        const editor = editorRef.current;
+        const { annotations, selection } = editor.value;
 
-      // console.log('findVariables');
-      // Make the change to annotations without saving it into the undo history,
-      // so that there isn't a confusing behavior when undoing.
-      editor.withoutSaving(() => {
-        annotations.forEach((ann) => {
-          if (ann.type === 'variable') {
-            editor.removeAnnotation(ann);
+        editor.withoutSaving(() => {
+          annotations.forEach((ann) => {
+            if (ann.type === 'lockText') {
+              editor.removeAnnotation(ann);
+            }
+          });
+
+          if (lockText) {
+            // it doesn't matter where we put the annotation
+            // so we use the current selection
+            const annotation = {
+              key: `lockText-${uuidv4()}`,
+              type: 'lockText',
+              anchor: selection.anchor,
+              focus: selection.focus,
+            };
+            editor.addAnnotation(annotation);
           }
         });
-
-        // eslint-disable-next-line no-restricted-syntax
-        for (const [node, path] of document.texts()) {
-          const { key, text } = node;
-          let m = regex.exec(text);
-
-          while (m) {
-            // This is necessary to avoid infinite loops with zero-width matches
-            if (m.index === regex.lastIndex) {
-              regex.lastIndex += 1;
-            }
-
-            for (let groupIndex = 0; groupIndex < m.length; groupIndex += 1) {
-              const match = m[groupIndex];
-
-              if (groupIndex === 1) {
-                const focus = regex.lastIndex - match.length - 2;
-                const anchor = regex.lastIndex - 2;
-
-                // console.log(`*****${text}`);
-                // console.log(`key ${key}`);
-                // console.log(`match ${match}`);
-                // console.log(`anchor ${focus}`);
-                // console.log(`focus ${anchor}`);
-
-                const annotation = {
-                  key: `variable-${uuidv4()}`,
-                  type: 'variable',
-                  anchor: { path, key, offset: focus - 1 },
-                  focus: { path, key, offset: anchor },
-                };
-                // console.log(`annotation ${JSON.stringify(annotation)}`);
-                editor.addAnnotation(annotation);
-              }
-            }
-            m = regex.exec(text);
-          } // while
-        } // for
-      }); // withoutSaving
+      }
     }
-  }, [props.lockText, editorRef, slateValue.document]);
+  }, [lockText, markdownMode]);
+
+  /**
+   * When the Slate Value changes or markdownMode changes
+   * we update the variable annotations.
+   */
+  useEffect(() => {
+    if (editorRef && editorRef.current) {
+      const editor = editorRef.current;
+
+      if (isEditorLockText(editor)) {
+        const { document, annotations } = editor.value;
+
+        // console.log('findVariables');
+        // Make the change to annotations without saving it into the undo history,
+        // so that there isn't a confusing behavior when undoing.
+        editor.withoutSaving(() => {
+          annotations.forEach((ann) => {
+            if (ann.type === 'variable') {
+              editor.removeAnnotation(ann);
+            }
+          });
+
+          // eslint-disable-next-line no-restricted-syntax
+          for (const [node, path] of document.texts()) {
+            const { key, text } = node;
+            let m = regex.exec(text);
+
+            while (m) {
+              // This is necessary to avoid infinite loops with zero-width matches
+              if (m.index === regex.lastIndex) {
+                regex.lastIndex += 1;
+              }
+
+              for (let groupIndex = 0; groupIndex < m.length; groupIndex += 1) {
+                const match = m[groupIndex];
+
+                if (groupIndex === 1) {
+                  const focus = regex.lastIndex - match.length - 2;
+                  const anchor = regex.lastIndex - 2;
+
+                  // console.log(`*****${text}`);
+                  // console.log(`key ${key}`);
+                  // console.log(`match ${match}`);
+                  // console.log(`anchor ${focus}`);
+                  // console.log(`focus ${anchor}`);
+
+                  const annotation = {
+                    key: `variable-${uuidv4()}`,
+                    type: 'variable',
+                    anchor: { path, key, offset: focus - 1 },
+                    focus: { path, key, offset: anchor },
+                  };
+                  // console.log(`annotation ${JSON.stringify(annotation)}`);
+                  editor.addAnnotation(annotation);
+                }
+              }
+              m = regex.exec(text);
+            } // while
+          } // for
+        }); // withoutSaving
+      } // lockText
+    }
+  // @ts-ignore
+  }, [editorRef, isEditorLockText, lockText, slateValue.document]);
 
   /**
    * Render a Slate inline.
    */
+  // @ts-ignore
   const renderInline = useCallback((props, editor, next) => {
     const { attributes, children, node } = props;
 
@@ -239,6 +296,7 @@ function MarkdownEditor(props) {
   /**
    * Renders a block
    */
+  // @ts-ignore
   const renderBlock = useCallback((props, editor, next) => {
     const { node, attributes, children } = props;
 
@@ -273,6 +331,7 @@ function MarkdownEditor(props) {
   /**
    * Render a Slate mark.
    */
+  // @ts-ignore
   const renderMark = useCallback((props, editor, next) => {
     const { children, mark, attributes } = props;
 
@@ -294,6 +353,7 @@ function MarkdownEditor(props) {
   /**
    * Render Slate annotations.
    */
+  // @ts-ignore
   const renderAnnotation = useCallback((props, editor, next) => {
     const { children, annotation, attributes } = props;
 
@@ -311,22 +371,20 @@ function MarkdownEditor(props) {
 
   /**
   * Returns true if the anchor is inside a variable
-  * @param {Value} value the Slate editor value
+  * @param {*} value the Slate editor value
   * @param {*} anchor the anchor point
   */
-  const isInVariableEx = ((value, anchor) => {
-    const result = value.annotations.filter(ann => (ann.type === 'variable'
-          && anchor.isInRange(ann)
-    ));
-
+  const isInVariableEx = useCallback(((value, anchor) => {
+    const result = value.annotations.filter(ann => (ann.type === 'variable' && anchor.isInRange(ann)));
     return result.size > 0;
-  });
+  }), []);
 
   /**
   * Returns true if the selection is inside a variable
-  * @param {Value} value the Slate editor value
+  * @param {*} value the Slate editor value
   */
-  const isInVariable = (value => isInVariableEx(value, value.selection.anchor));
+  const isInVariable = useCallback(value => isInVariableEx(value, value.selection.anchor), [isInVariableEx]);
+
 
   /**
   * Returns true if the editor should allow an edit. Edits are allowed for all
@@ -334,15 +392,16 @@ function MarkdownEditor(props) {
   * case only variables are editable.
   * @param {Editor} editor the Slate Editor
   */
-  const isEditable = (editor) => {
-    if (props.lockText) {
+  const isEditable = useCallback((editor) => {
+    if (isEditorLockText(editor)) {
       const { value } = editor;
+      // prevent removing the variable by protecting the first character
       const newAnchor = value.selection.anchor.moveBackward(1).normalize(value.document);
       return isInVariableEx(value, newAnchor) && isInVariable(value);
     }
 
     return true;
-  };
+  }, [isEditorLockText, isInVariable, isInVariableEx]);
 
   /**
   * On backspace, if at the start of a non-paragraph, convert it back into a
@@ -356,17 +415,10 @@ function MarkdownEditor(props) {
     const { value } = editor;
     const { selection } = value;
 
-    // const previous = value.document.getPreviousSibling(value.focusText.key);
-    // console.log(`key ${editor.value.selection.anchor.key}`);
-    // console.log(`offset ${editor.value.selection.anchor.offset}`);
-    // console.log(previous.text);
-
-    // console.log(`old anchor ${JSON.stringify(value.selection.anchor, null, 2)}`);
-    // console.log(`new anchor ${JSON.stringify(value.selection.anchor.moveBackward(1), null, 2)}`);
-
+    // protect characters to prevent removal of variables
     const newAnchor = value.selection.anchor.moveBackward(2).normalize(value.document);
 
-    if (props.lockText
+    if (isEditorLockText(editor)
       && !(isInVariableEx(value, newAnchor) && isInVariable(value))) {
       event.preventDefault(); // prevent editing non-editable text
       return undefined;
@@ -440,15 +492,6 @@ function MarkdownEditor(props) {
     }
   };
 
-  const onBeforeInput = (event, editor, next) => {
-    if (isEditable(editor)) {
-      return next();
-    }
-
-    event.preventDefault();
-    return false;
-  };
-
   /**
   * Called on a paste
   * @param {*} event
@@ -457,14 +500,18 @@ function MarkdownEditor(props) {
   * @return {*} the react component
   */
   const onPaste = (event, editor, next) => {
-    const transfer = getEventTransfer(event);
-    if (transfer.type !== 'html') return next();
-    const pluginManager = new PluginManager(props.plugins);
-    const fromHtml = new FromHTML(pluginManager);
-    // @ts-ignore
-    const { document } = fromHtml.convert(editor, transfer.html);
-    editor.insertFragment(document);
-    return undefined;
+    if (isEditable(editor)) {
+      const transfer = getEventTransfer(event);
+      if (transfer.type !== 'html') return next();
+      const pluginManager = new PluginManager(props.plugins);
+      const fromHtml = new FromHTML(pluginManager);
+      // @ts-ignore
+      const { document } = fromHtml.convert(editor, transfer.html);
+      editor.insertFragment(document);
+      return undefined;
+    }
+
+    return false;
   };
 
   /**
@@ -476,13 +523,30 @@ function MarkdownEditor(props) {
   };
 
   /**
+   * When in lockText mode prevent edits to non-variables
+   * @param {*} event
+   * @param {*} editor
+   * @param {*} next
+   */
+  const onBeforeInput = ((event, editor, next) => {
+    if (isEditable(editor)) {
+      return next();
+    }
+
+    event.preventDefault();
+    return false;
+  });
+
+  /**
    * Render the component, based on showSlate
    */
   const card = showSlate
     ? <Card fluid>
   <Card.Content>
   <EditorWrapper>
-              <Editor
+              <
+// @ts-ignore
+              Editor
               ref={editorRef}
               className="doc-inner"
               readOnly={props.markdownMode}
@@ -560,7 +624,7 @@ MarkdownEditor.propTypes = {
    * If true (and iff not in markdownMode) then
    * only variables are editable in the Slate editor.
    */
-  lockText: PropTypes.bool,
+  lockText: PropTypes.bool.isRequired,
 
   /**
    * If true then show the edit button.
@@ -589,7 +653,7 @@ MarkdownEditor.propTypes = {
  * The default property values for this component
  */
 MarkdownEditor.defaultProps = {
-  showEditButton: true,
+  showEditButton: true
 };
 
 export { MarkdownEditor };
