@@ -24,30 +24,28 @@ function List() {
    * @param {Editor} editor
    * @param {Function} next
    */
-  function onEnter(event, editor, next) {
-    return next();
-  }
+  const onEnter = (event, editor, next) => next();
 
   /**
    * @param {Event} event
    * @param {Editor} editor
    * @param {Function} next
    */
-  function onKeyDown(event, editor, next) {
+  const onKeyDown = (event, editor, next) => {
     switch (event.key) {
       case 'Enter':
         return onEnter(event, editor, next);
       default:
         return next();
     }
-  }
+  };
 
   /**
    * @param {Object} props
    * @param {Editor} editor
    * @param {Function} next
    */
-  function renderBlock(props, editor, next) {
+  const renderBlock = (props, editor, next) => {
     const { node, attributes, children } = props;
     const listType = node.data.get('list_type', 'ul');
     const listStyleType = node.data.get(
@@ -69,14 +67,14 @@ function List() {
       default:
         return next();
     }
-  }
+  };
 
   /**
    * @param {ToMarkdown} parent
    * @param {Node} value
    * @param {Integer} depth
    */
-  function toMarkdown(parent, value, depth) {
+  const toMarkdown = (parent, value, depth) => {
     let markdown = '';
     const listType = value.data.get('list_type', 'ol');
     const listStyleType = listType === 'ol' ? '1. ' : '* ';
@@ -91,11 +89,11 @@ function List() {
     });
 
     return markdown;
-  }
+  };
 
   /**
    */
-  function fromMarkdown(stack, event) {
+  const fromMarkdown = (stack, event) => {
     const listType = event.node.listType === 'bullet' ? 'ul' : 'ol';
     let block = null;
 
@@ -121,11 +119,11 @@ function List() {
     }
 
     return true;
-  }
+  };
 
   /**
    */
-  function fromHTML(el, next) {
+  const fromHTML = (el, next) => {
     if (['ul', 'ol'].includes(el.tagName.toLowerCase())) {
       return {
         object: 'block',
@@ -140,7 +138,7 @@ function List() {
       data: {},
       nodes: next(el.childNodes),
     };
-  }
+  };
 
   return {
     plugin,
