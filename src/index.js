@@ -33,7 +33,7 @@ import './styles.css';
 /**
  * Regex used to identify variables
  */
-const regex = /{{(.*?)}}/gm;
+const regex = /\[{(.*?)}\]/gm;
 
 const EditorWrapper = styled.div`
   background: #fff;

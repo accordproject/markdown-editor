@@ -93,8 +93,8 @@ export default class ToMarkdown extends Markdown {
     }
 
     if (isVariable) {
-      openMark += '{{';
-      closeMark += '}}';
+      openMark += '[{';
+      closeMark += '}]';
     }
 
     if (isCode) {

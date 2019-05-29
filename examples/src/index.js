@@ -20,8 +20,8 @@ This is text. This is *italic* text. This is **bold** text. This is a [link](htt
 
 This is ***bold and italic*** text
 
-This is a sentence that ***contains*** {{"a variable"}} within it. And here is {{another}} with some text after.
-And here is more {{variables}}% with newlines and {{punctuation}} and text.
+This is a sentence that ***contains*** [{"a variable"}] within it. And here is [{another}] with some text after.
+And here is more [{variables}]% with newlines and [{punctuation}] and text.
 
 > This is a quote.
 ## Heading Two
