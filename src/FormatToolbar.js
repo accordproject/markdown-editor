@@ -104,6 +104,14 @@ const hasBlock = (editor, type) => {
 };
 
 /**
+* Return selected block of given type.
+*/
+const getSelBlock = (editor, type) => {
+  const { value } = editor;
+  return value.blocks.find(node => node.type === type);
+};
+
+/**
  * When clicking a link, if the selection has a link in it, remove the link.
  * Otherwise, add a new link with an href and text.
  */
@@ -165,45 +173,70 @@ export default class FormatToolbar extends React.Component {
   /**
    * When a block button is clicked, toggle the block type.
    */
-  onClickBlock(event, type) {
+  onClickBlock(event, type, blockProps) {
     event.preventDefault();
+
+    // function SetNodeData(editor, node, newData) {
+    // editor.withoutSaving(() => {
+    //   editor.setNodeByKey(node.key, { data: newData });
+    // });
+    // }
 
     const { editor } = this.props;
     const { value } = editor;
     const { document } = value;
 
+
+    // find(
+    //   predicate: (value: T, key: number, iter: this) => boolean,
+    //   context?: any,
+    //   notSetValue?: T
+    //   ): T | undefined
+
+    // editor.withoutSaving(() => {
+    //   editor.setNodeByKey(node.key, { data: blockProps });
+    // });
+
     // Handle everything but list buttons.
-    if (type !== 'ul_list' && type !== 'ol_list') {
+    if (type !== 'list') {
       const isActive = hasBlock(editor, type);
       const isList = hasBlock(editor, 'list_item');
+      console.log('isList1: ', isList);
+      console.log('type = list: ', type);
 
       if (isList) {
         editor
           .setBlocks(isActive ? DEFAULT_NODE : type)
-          .unwrapBlock('ul_list')
-          .unwrapBlock('ol_list');
+          .unwrapBlock('list');
       } else {
         editor.setBlocks(isActive ? DEFAULT_NODE : type);
       }
     } else {
       // Handle the extra wrapping required for list buttons.
-      const isList = hasBlock(editor, 'list_item');
-      const isType = value.blocks
-        .some(block => !!document.getClosest(block.key, parent => parent.type === type));
+      const selectedListItem = getSelBlock(editor, 'list_item');
+      const parentBlock = document.getClosest(selectedListItem.key, parent => parent.type === type);
+      console.log('type != list: ', type);
+      console.log('selectedListItem: ', selectedListItem);
+      console.log('parentBlock: ', parentBlock);
+      console.log('blockProps: ', blockProps);
 
-      if (isList && isType) {
+      if (parentBlock.type !== 'list' && selectedListItem.type === type) {
         editor
           .setBlocks(DEFAULT_NODE)
-          .unwrapBlock('ul_list')
-          .unwrapBlock('ol_list');
-      } else if (isList) {
+          .unwrapBlock('list');
+      } else if (parentBlock.type !== 'list' && selectedListItem.type !== type) {
         editor
-          .unwrapBlock(
-            type === 'ul_list' ? 'ol_list' : 'ul_list',
-          )
-          .wrapBlock(type);
+          .unwrapBlock(selectedListItem.type)
+          .wrapBlock(type)
+          .withoutSaving(() => {
+            editor.setNodeByKey(parentBlock.key, { list_type: 'ul' });
+          });
       } else {
-        editor.setBlocks('list_item').wrapBlock(type);
+        editor.setBlocks('list_item')
+          .wrapBlock(type)
+          .withoutSaving(() => {
+            editor.setNodeByKey(parentBlock.key, { list_type: 'ul' });
+          });
       }
     }
   }
@@ -249,7 +282,7 @@ export default class FormatToolbar extends React.Component {
         height={hi}
         padding={pa}
         {...props}
-        onPointerDown={event => this.onClickBlock(event, type)}>
+        onPointerDown={event => this.onClickBlock(event, type, props)}>
           {icon(fillActivity)}
       </ SvgTester>
     );
@@ -361,7 +394,8 @@ export default class FormatToolbar extends React.Component {
             ulIcon.height(),
             ulIcon.width(),
             ulIcon.padding(),
-            ulIcon.vBox()
+            ulIcon.vBox(),
+            { list_type: 'ul' }
           )
         }
         {
@@ -371,7 +405,8 @@ export default class FormatToolbar extends React.Component {
             olIcon.height(),
             olIcon.width(),
             olIcon.padding(),
-            olIcon.vBox()
+            olIcon.vBox(),
+            { list_type: 'ol' }
           )
         }
         <VertDivider />
