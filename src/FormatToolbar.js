@@ -106,7 +106,7 @@ const hasBlock = (editor, type) => {
 /**
 * Return selected block of given type.
 */
-const getSelBlock = (editor, type) => {
+const getSelectedBlock = (editor, type) => {
   const { value } = editor;
   return value.blocks.find(node => node.type === type);
 };
@@ -176,68 +176,87 @@ export default class FormatToolbar extends React.Component {
   onClickBlock(event, type, blockProps) {
     event.preventDefault();
 
-    // function SetNodeData(editor, node, newData) {
-    // editor.withoutSaving(() => {
-    //   editor.setNodeByKey(node.key, { data: newData });
-    // });
-    // }
-
     const { editor } = this.props;
     const { value } = editor;
     const { document } = value;
-
-
-    // find(
-    //   predicate: (value: T, key: number, iter: this) => boolean,
-    //   context?: any,
-    //   notSetValue?: T
-    //   ): T | undefined
-
-    // editor.withoutSaving(() => {
-    //   editor.setNodeByKey(node.key, { data: blockProps });
-    // });
+    console.log('type: ', type);
 
     // Handle everything but list buttons.
     if (type !== 'list') {
       const isActive = hasBlock(editor, type);
       const isList = hasBlock(editor, 'list_item');
-      console.log('isList1: ', isList);
-      console.log('type = list: ', type);
+      console.log('a');
+      console.log('isList: ', isList);
 
       if (isList) {
+        console.log('YES: ');
+
+        // THIS IS if you make a list item into quote
+        // Currently errors by deleting 2 blocks
         editor
           .setBlocks(isActive ? DEFAULT_NODE : type)
           .unwrapBlock('list');
       } else {
+        console.log('NO: ');
         editor.setBlocks(isActive ? DEFAULT_NODE : type);
       }
     } else {
       // Handle the extra wrapping required for list buttons.
-      const selectedListItem = getSelBlock(editor, 'list_item');
-      const parentBlock = document.getClosest(selectedListItem.key, parent => parent.type === type);
-      console.log('type != list: ', type);
-      console.log('selectedListItem: ', selectedListItem);
-      console.log('parentBlock: ', parentBlock);
-      console.log('blockProps: ', blockProps);
+      const selectedListItem = getSelectedBlock(editor, 'list_item');
 
-      if (parentBlock.type !== 'list' && selectedListItem.type === type) {
-        editor
-          .setBlocks(DEFAULT_NODE)
-          .unwrapBlock('list');
-      } else if (parentBlock.type !== 'list' && selectedListItem.type !== type) {
-        editor
-          .unwrapBlock(selectedListItem.type)
-          .wrapBlock(type)
-          .withoutSaving(() => {
-            editor.setNodeByKey(parentBlock.key, { list_type: 'ul' });
+      if (selectedListItem) {
+        // if what is selected is ALREADY a list
+        const parentBlock = document
+          .getClosest(selectedListItem.key, parent => parent.type === type);
+        const parentListType = parentBlock.data._root.entries[0][1];
+
+        if (parentListType !== blockProps.list_type) {
+          const varIIII = (parentListType === 'ul') ? 'ol' : 'ul';
+          editor.withoutSaving(() => {
+            editor.setNodeByKey(parentBlock.key, { data: { list_type: varIIII } });
           });
+        }
       } else {
-        editor.setBlocks('list_item')
-          .wrapBlock(type)
-          .withoutSaving(() => {
-            editor.setNodeByKey(parentBlock.key, { list_type: 'ul' });
+        // if what is selected is NOT a list
+        console.log('Hope Im here: ', document);
+        editor
+          .setBlocks('list_item')
+          .wrapBlock('list')
+          .withoutSaving((hehrer) => {
+            editor.setNodeByKey(hehrer.key, { data: { list_type: 'ul' } });
           });
       }
+
+
+      console.log('b');
+      // console.log('selectedListItem: ', selectedListItem.type);
+      // console.log('parentBlock: ', parentBlock.type);
+
+      // include checks for parentBlock (and selectedListItem) aren't null
+
+      // write all diff cases out, map out handling them correctly
+
+      // list item, list, list wrong type, list right type, not a list
+
+      // if (parentBlock.type !== 'list' && selectedListItem.type === type) {
+      //   console.log('1: ');
+      //   editor
+      //     .setBlocks(DEFAULT_NODE)
+      //     .unwrapBlock('list');
+      // } else if (parentBlock.type !== 'list' && selectedListItem.type !== type) {
+      //   console.log('2: ');
+      //   editor
+      //     .unwrapBlock(selectedListItem.type)
+      //     .wrapBlock(type)
+      //     .withoutSaving(() => {
+      //       editor.setNodeByKey(parentBlock.key, { data: { list_type: 'ul' } });
+      //     });
+      // } else {
+      //   console.log('3: ');
+      // editor.withoutSaving(() => {
+      //   editor.setNodeByKey(this.key, { data: { list_type: 'ol' } });
+      // });
+      // }
     }
   }
 
