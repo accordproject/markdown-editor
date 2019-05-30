@@ -82,7 +82,8 @@ export default class ToMarkdown extends Markdown {
           if (typeof this[method] === 'function') {
             markdown += this[method](node);
           } else {
-            const plugin = this.pluginManager.findPluginByMarkdownTag(node.type);
+            const pluginType = (node.type === 'video') ? 'video' : 'list';
+            const plugin = this.pluginManager.findPluginByMarkdownTag(pluginType);
 
             if (plugin && typeof plugin.toMarkdown === 'function') {
               try {
