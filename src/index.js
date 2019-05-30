@@ -338,12 +338,6 @@ function MarkdownEditor(props) {
         return <hr {...attributes} />;
       case 'block_quote':
         return <blockquote {...attributes}>{children}</blockquote>;
-      // case 'list_item':
-      //   return <li {...attributes}>{children}</li>;
-      // case 'ol_list':
-      //   return <ol {...attributes}>{children}</ol>;
-      // case 'ul_list':
-      //   return <ul {...attributes}>{children}</ul>;
       case 'code_block':
         return <pre {...attributes}>{children}</pre>;
       case 'html_block':
@@ -411,7 +405,6 @@ function MarkdownEditor(props) {
   * @param {*} value the Slate editor value
   */
   const isInVariable = useCallback(value => isInVariableEx(value, value.selection.anchor), [isInVariableEx]);
-
 
   /**
   * Returns true if the editor should allow an edit. Edits are allowed for all
