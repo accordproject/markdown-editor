@@ -13,6 +13,7 @@
  */
 import commonmark from 'commonmark';
 import { Value } from 'slate';
+import escape from 'escape-html';
 import Stack from './Stack';
 import Markdown from './Markdown';
 
@@ -86,6 +87,7 @@ export default class FromMarkdown extends Markdown {
 
   /**
    * Parses an HTML block and extracts the attributes, tag name and tag contents.
+   * Note that this will return null for strings like this: </foo>
    * @param {string} string
    * @return {Object} - a tag object that holds the data for the html block
    */
@@ -107,10 +109,12 @@ export default class FromMarkdown extends Markdown {
         attributes: attributeObject,
         attributeString,
         content: item.textContent,
+        closed: string.endsWith('/>')
       };
 
       return tag;
     } catch (err) {
+      // no children, so we return null
       return null;
     }
   }
@@ -310,18 +314,63 @@ export default class FromMarkdown extends Markdown {
    * Stack.
    * @param {*} node the AST node
    */
-  htmlInline(node) {
-    const leaf = {
-      object: 'leaf',
-      text: node.literal,
-      marks: [{
-        object: 'mark',
-        type: 'html',
-        data: {},
-      }],
-    };
+  htmlInline(node, event) {
+    const tagInfo = FromMarkdown.parseHtmlBlock(node.literal);
 
-    this.stack.addTextLeaf(leaf);
+    // if we have a tag then this isn't a closing element. E.g. </foo>
+    if (tagInfo) {
+      if (tagInfo.closed) {
+        // self-closing tag, e.g. <foo src="bar"/>
+        const handled = this.dispatchToPlugin(node, event, tagInfo);
+        if (!handled) {
+          const leaf = {
+            object: 'leaf',
+            text: node.literal,
+            marks: [{
+              object: 'mark',
+              type: 'html',
+              data: {},
+            }],
+          };
+          this.stack.addTextLeaf(leaf);
+        }
+      } else {
+        // this is an opening tag for an inline html
+        // we don't currrently support plugins handling these
+        // we just convert them to html_inline
+        // e.g. <foo src="bar">
+        const block = {
+          object: 'inline',
+          type: 'html_inline',
+          data: {},
+          nodes: [],
+        };
+
+        this.stack.push(block);
+        this.stack.addTextLeaf({
+          object: 'leaf',
+          text: node.literal,
+          marks: [{
+            object: 'mark',
+            type: 'html',
+            data: {},
+          }],
+        });
+      }
+    } else {
+      // closing tag
+      // e.g. </foo>
+      this.stack.addTextLeaf({
+        object: 'leaf',
+        text: node.literal,
+        marks: [{
+          object: 'mark',
+          type: 'html',
+          data: {},
+        }],
+      });
+      this.stack.pop();
+    }
   }
 
   /**

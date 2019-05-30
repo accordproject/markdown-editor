@@ -286,6 +286,9 @@ function MarkdownEditor(props) {
         const href = data.get('href');
         return <a {...attributes} href={href}>{children}</a>;
       }
+      case 'html_inline': {
+        return <span className='html_inline' {...attributes}>{children}</span>;
+      }
 
       default: {
         return next();
@@ -299,6 +302,8 @@ function MarkdownEditor(props) {
   // @ts-ignore
   const renderBlock = useCallback((props, editor, next) => {
     const { node, attributes, children } = props;
+
+    // console.log(node.type);
 
     switch (node.type) {
       case 'paragraph':

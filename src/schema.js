@@ -30,8 +30,13 @@ const schema = {
   blocks: {
     paragraph: {
       nodes: [
-        { match: [{ object: 'text' }, { type: 'link' }] },
+        { match: [{ object: 'text' }, { type: 'html_inline' }, { type: 'link' }] },
       ],
+    },
+    html_block: {
+      nodes: [
+        { match: { type: 'paragraph' } },
+      ]
     },
     quote: {
       nodes: [

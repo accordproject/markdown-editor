@@ -1,7 +1,11 @@
+/* eslint-disable class-methods-use-this */
 import Markdown from './Markdown';
 
 const NL = '\n';
 
+/**
+ * A plugin-based Slate -> Markdown converter.
+ */
 export default class ToMarkdown extends Markdown {
   constructor(pluginManager) {
     super(pluginManager);
@@ -43,6 +47,8 @@ export default class ToMarkdown extends Markdown {
               } catch (err) {
                 console.log(`Exception from ${plugin.plugin}: ${err.message}`);
               }
+            } else {
+              throw new Error(`Cannot find a handler for ${method} with ${node}`);
             }
           }
         }
@@ -67,11 +73,11 @@ export default class ToMarkdown extends Markdown {
   setFirst(first) {
     this.first = first;
   }
-  
+
   isFirst() {
     return this.first;
   }
-  
+
   text(node) {
     let result = '';
 
@@ -132,6 +138,7 @@ export default class ToMarkdown extends Markdown {
     return `[${ToMarkdown.getTextFromNode(node)}](${node.data.get('href')})`;
   }
 
+  // eslint-disable-next-line no-unused-vars
   horizontalRule(node) {
     return `${NL}${NL}---`;
   }
@@ -168,7 +175,12 @@ export default class ToMarkdown extends Markdown {
     return NL + NL + this.recursive(node.nodes);
   }
 
+  htmlInline(node) {
+    return this.recursive(node.nodes);
+  }
+
   codeBlock(node) {
+    // eslint-disable-next-line no-useless-escape
     const quote = '\`\`\`';
     const md = this.recursive(node.nodes);
     return quote + NL + md + quote;

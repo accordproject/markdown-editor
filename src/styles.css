@@ -23,6 +23,10 @@ body {
     color: red;
 }
 
+.html_inline {
+    color: rgb(0, 60, 255);
+}
+
 .variable {
     background-color: #ffeeba;
 }

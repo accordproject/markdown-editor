@@ -15,12 +15,18 @@ function storeLocal(value, markdown) {
   localStorage.setItem('markdown-editor', markdown);
 }
 
+const defaultMarkdown2 = 'Foo <variable src="bar">a variable</variable> within it.';
+
 const defaultMarkdown = `# Heading One
 This is text. This is *italic* text. This is **bold** text. This is a [link](https://clause.io). This is \`inline code\`.
 
 This is ***bold and italic*** text
 
-This is a sentence that ***contains*** {{"a variable"}} within it. And here is {{another}} with some text after.
+<variable src="baz">
+this is some content
+</variable>
+
+This is a <variable src="foo"/> sentence that ***contains*** <variable src="bar">a variable</variable> within it. And here is {{another}} with some text after.
 And here is more {{variables}}% with newlines and {{punctuation}} and text.
 
 > This is a quote.

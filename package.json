@@ -57,7 +57,7 @@
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-loopback": "^13.1.0",
-    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-import": "^2.17.3",
     "eslint-plugin-jest": "^22.6.4",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.13.0",
@@ -66,7 +66,7 @@
     "jest": "^24.8.0",
     "moment-mini": "2.22.1",
     "react-scripts": "^3.0.1",
-    "semver": "6.1.0",
+    "semver": "6.1.1",
     "webpack": "^4.32.2",
     "webpack-cli": "^3.3.2",
     "webpack-dev-server": "^3.4.1"
@@ -97,6 +97,6 @@
     "slate-plain-serializer": "^0.7.5",
     "slate-react": "^0.22.3",
     "style-loader": "^0.23.1",
-    "styled-components": "^4.2.0"
+    "styled-components": "^4.2.1"
   }
 }
