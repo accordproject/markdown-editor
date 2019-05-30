@@ -8,11 +8,14 @@ function List() {
   const markdownTags = ['list', 'item'];
   const schema = {
     blocks: {
-      list: {
+      ol_list: {
+        nodes: [{ match: { type: 'list_item' } }],
+      },
+      ul_list: {
         nodes: [{ match: { type: 'list_item' } }],
       },
       list_item: {
-        parent: { type: 'list' },
+        parent: [{ type: 'ol_list' }, { type: 'ul_list' }],
         nodes: [{ match: [{ object: 'text' }, { type: 'link' }] }],
         marks: [{ type: 'bold' }, { type: 'italic' }],
       },
@@ -47,21 +50,20 @@ function List() {
    */
   const renderBlock = (props, editor, next) => {
     const { node, attributes, children } = props;
-    const listType = node.data.get('list_type', 'ul');
-    const listStyleType = node.data.get(
-      'list_style_type',
-      // MAY NEED change
-      listType === 'ul' ? '1' : 'disc',
-    );
+    // const listType = node.data.get('list_type', 'ul');
+    // const listStyleType = node.data.get(
+    //   'list_style_type',
+    //   // MAY NEED change
+    //   listType === 'ul' ? '1' : 'disc',
+    // );
+
+    // console.log('node: ', node);
 
     switch (node.type) {
-      case 'list':
-        attributes.type = listStyleType;
-        if (listType === 'ol') {
-          return <ol {...attributes}>{children}</ol>;
-        }
+      case 'ol_list':
+        return <ol {...attributes}>{children}</ol>;
+      case 'ul_list':
         return <ul {...attributes}>{children}</ul>;
-
       case 'list_item':
         return <li {...attributes}>{children}</li>;
       default:
@@ -76,13 +78,12 @@ function List() {
    */
   const toMarkdown = (parent, value, depth) => {
     let markdown = '';
-    const listType = value.data.get('list_type', 'ol');
-    const listStyleType = listType === 'ol' ? '1. ' : '* ';
+    const listStyleType = (value.type === 'ol_list') ? '1. ' : '* ';
     let indent = '';
     for (let i = 0; i < depth - 1; i++) {
       indent += '   ';
     }
-
+    // console.log('value.data: ', listType);
     value.nodes.forEach((li) => {
       const text = parent.recursive(li.nodes);
       markdown += `\n${indent}${listStyleType}${text}`;
@@ -94,25 +95,29 @@ function List() {
   /**
    */
   const fromMarkdown = (stack, event) => {
-    const listType = event.node.listType === 'bullet' ? 'ul' : 'ol';
-    let block = null;
+    // const listType = event.node.listType === 'ol_list' ? 'ul_list' : 'ol_list';
+
+    // event.node.type will be 'ul_list' or other
+    // const block = null;
+    let newType = null;
+    // console.log('event.node: ', event.node.listType);
+    if (event.node.listType === 'ordered') {
+      newType = 'ol_list';
+    }
+    if (event.node.listType === 'bullet') {
+      newType = 'ul_list';
+    }
+    if (event.node.type === 'item') {
+      newType = 'list_item';
+    }
 
     if (event.entering) {
-      if (event.node.type === 'list') {
-        block = {
-          object: 'block',
-          type: 'list',
-          data: { list_type: listType },
-          nodes: [],
-        };
-      } else if (event.node.type === 'item') {
-        block = {
-          object: 'block',
-          type: 'list_item',
-          data: {},
-          nodes: [],
-        };
-      }
+      const block = {
+        object: 'block',
+        type: newType,
+        data: {},
+        nodes: [],
+      };
       stack.push(block);
     } else {
       stack.pop();
@@ -124,10 +129,18 @@ function List() {
   /**
    */
   const fromHTML = (el, next) => {
-    if (['ul', 'ol'].includes(el.tagName.toLowerCase())) {
+    if (['ol_list'].includes(el.tagName.toLowerCase())) {
       return {
         object: 'block',
-        type: 'list',
+        type: 'ol_list',
+        data: { list_type: el.tagName.toLowerCase() },
+        nodes: next(el.childNodes),
+      };
+    }
+    if (['ul_list'].includes(el.tagName.toLowerCase())) {
+      return {
+        object: 'block',
+        type: 'ul_list',
         data: { list_type: el.tagName.toLowerCase() },
         nodes: next(el.childNodes),
       };
