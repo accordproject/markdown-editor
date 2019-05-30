@@ -182,7 +182,7 @@ export default class FormatToolbar extends React.Component {
     console.log('type: ', type);
 
     // Handle everything but list buttons.
-    if (type !== 'list') {
+    if (type !== 'ol_list' && type !== 'ul_list') {
       const isActive = hasBlock(editor, type);
       const isList = hasBlock(editor, 'list_item');
       console.log('a');
@@ -203,6 +203,7 @@ export default class FormatToolbar extends React.Component {
     } else {
       // Handle the extra wrapping required for list buttons.
       const selectedListItem = getSelectedBlock(editor, 'list_item');
+      console.log('selectedListItem: ', selectedListItem);
 
       if (selectedListItem) {
         // if what is selected is ALREADY a list
@@ -221,10 +222,10 @@ export default class FormatToolbar extends React.Component {
         console.log('Hope Im here: ', document);
         editor
           .setBlocks('list_item')
-          .wrapBlock('list')
-          .withoutSaving((hehrer) => {
-            editor.setNodeByKey(hehrer.key, { data: { list_type: 'ul' } });
-          });
+          .wrapBlock('ul_list');
+        // .withoutSaving((hehrer) => {
+        //   editor.setNodeByKey(hehrer.key, { data: { list_type: 'ul' } });
+        // });
       }
 
 
