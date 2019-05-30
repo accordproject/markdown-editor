@@ -182,7 +182,6 @@ function MarkdownEditor(props) {
       const editor = editorRef.current;
       const { document, annotations } = editor.value;
 
-      // console.log('findVariables');
       // Make the change to annotations without saving it into the undo history,
       // so that there isn't a confusing behavior when undoing.
       editor.withoutSaving(() => {
@@ -210,12 +209,6 @@ function MarkdownEditor(props) {
                 const focus = regex.lastIndex - match.length - 2;
                 const anchor = regex.lastIndex - 2;
 
-                // console.log(`*****${text}`);
-                // console.log(`key ${key}`);
-                // console.log(`match ${match}`);
-                // console.log(`focus ${focus}`);
-                // console.log(`anchor ${anchor}`);
-
                 editor.addAnnotation({
                   key: `variable-${uuidv4()}`,
                   type: 'variable',
@@ -225,9 +218,9 @@ function MarkdownEditor(props) {
               }
             }
             m = regex.exec(text);
-          } // while
-        } // for
-      }); // withoutSaving
+          }
+        }
+      });
     }
   }, [props.lockText, editorRef, slateValue.document]);
 
@@ -275,12 +268,6 @@ function MarkdownEditor(props) {
         return <hr {...attributes} />;
       case 'block_quote':
         return <blockquote {...attributes}>{children}</blockquote>;
-      // case 'list_item':
-      //   return <li {...attributes}>{children}</li>;
-      // case 'ol_list':
-      //   return <ol {...attributes}>{children}</ol>;
-      // case 'ul_list':
-      //   return <ul {...attributes}>{children}</ul>;
       case 'code_block':
         return <pre {...attributes}>{children}</pre>;
       case 'html_block':
@@ -336,7 +323,6 @@ function MarkdownEditor(props) {
   * @param {Value} value the Slate editor value
   */
   const isInVariable = ((value) => {
-    // console.log(value.selection.anchor);
     value.annotations.filter(
       (ann => ann.type === 'variable'
               && value.selection.anchor.isInRange(ann)
@@ -367,14 +353,6 @@ function MarkdownEditor(props) {
   * @param {Function} next
   */
   const handleBackspace = (event, editor, next) => {
-  // console.log(`key ${editor.value.selection.anchor.key}`);
-    // console.log(`offset ${editor.value.selection.anchor.offset}`);
-    // console.log(`value ${editor.value}`);
-
-    // const previous = editor.value.document.getPreviousText(editor.value.selection.anchor.key);
-    // console.log(previous.text);
-    // const isAfter = previous.type === type && editor.value.focus.offset === 0;
-
     if (!isEditable(editor)) {
       event.preventDefault(); // prevent editing non-editable text
       return false;
