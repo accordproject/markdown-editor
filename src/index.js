@@ -234,7 +234,6 @@ function MarkdownEditor(props) {
       if (isEditorLockText(editor)) {
         const { document, annotations } = editor.value;
 
-        // console.log('findVariables');
         // Make the change to annotations without saving it into the undo history,
         // so that there isn't a confusing behavior when undoing.
         editor.withoutSaving(() => {
@@ -262,27 +261,20 @@ function MarkdownEditor(props) {
                   const focus = regex.lastIndex - match.length - 2;
                   const anchor = regex.lastIndex - 2;
 
-                  // console.log(`*****${text}`);
-                  // console.log(`key ${key}`);
-                  // console.log(`match ${match}`);
-                  // console.log(`anchor ${focus}`);
-                  // console.log(`focus ${anchor}`);
-
                   const annotation = {
                     key: `variable-${uuidv4()}`,
                     type: 'variable',
                     anchor: { path, key, offset: focus - 1 },
                     focus: { path, key, offset: anchor },
                   };
-                  // console.log(`annotation ${JSON.stringify(annotation)}`);
                   editor.addAnnotation(annotation);
                 }
               }
               m = regex.exec(text);
-            } // while
-          } // for
-        }); // withoutSaving
-      } // lockText
+            }
+          }
+        });
+      }
     }
   // @ts-ignore
   }, [editorRef, isEditorLockText, lockText, slateValue.document]);
@@ -317,8 +309,6 @@ function MarkdownEditor(props) {
   const renderBlock = useCallback((props, editor, next) => {
     const { node, attributes, children } = props;
 
-    // console.log(node.type);
-
     switch (node.type) {
       case 'paragraph':
         return <p {...attributes}>{children}</p>;
@@ -338,12 +328,6 @@ function MarkdownEditor(props) {
         return <hr {...attributes} />;
       case 'block_quote':
         return <blockquote {...attributes}>{children}</blockquote>;
-      // case 'list_item':
-      //   return <li {...attributes}>{children}</li>;
-      // case 'ol_list':
-      //   return <ol {...attributes}>{children}</ol>;
-      // case 'ul_list':
-      //   return <ul {...attributes}>{children}</ul>;
       case 'code_block':
         return <pre {...attributes}>{children}</pre>;
       case 'html_block':
