@@ -173,91 +173,59 @@ export default class FormatToolbar extends React.Component {
   /**
    * When a block button is clicked, toggle the block type.
    */
-  onClickBlock(event, type, blockProps) {
+  onClickBlock(event, type) {
     event.preventDefault();
 
     const { editor } = this.props;
     const { value } = editor;
     const { document } = value;
-    console.log('type: ', type);
+    const oppType = (type === 'ol_list' ? 'ul_list' : 'ol_list');
 
     // Handle everything but list buttons.
     if (type !== 'ol_list' && type !== 'ul_list') {
       const isActive = hasBlock(editor, type);
       const isList = hasBlock(editor, 'list_item');
-      console.log('a');
-      console.log('isList: ', isList);
 
       if (isList) {
-        console.log('YES: ');
-
         // THIS IS if you make a list item into quote
-        // Currently errors by deleting 2 blocks
-        editor
-          .setBlocks(isActive ? DEFAULT_NODE : type)
-          .unwrapBlock('list');
+        editor.withoutNormalizing(() => {
+          editor
+            .setBlocks(isActive ? DEFAULT_NODE : type)
+            .unwrapBlock('list');
+        });
       } else {
-        console.log('NO: ');
         editor.setBlocks(isActive ? DEFAULT_NODE : type);
       }
     } else {
       // Handle the extra wrapping required for list buttons.
-      const selectedListItem = getSelectedBlock(editor, 'list_item');
-      console.log('selectedListItem: ', selectedListItem);
+      const isList = hasBlock(editor, 'list_item');
+      const isType = value.blocks
+        .some(block => !!document.getClosest(block.key, parent => parent.type === type));
 
-      if (selectedListItem) {
+      if (isList && isType) {
         // if what is selected is ALREADY a list
-        const parentBlock = document
-          .getClosest(selectedListItem.key, parent => parent.type === type);
-        const parentListType = parentBlock.data._root.entries[0][1];
+        console.log('Number 1');
 
-        if (parentListType !== blockProps.list_type) {
-          const varIIII = (parentListType === 'ul') ? 'ol' : 'ul';
-          editor.withoutSaving(() => {
-            editor.setNodeByKey(parentBlock.key, { data: { list_type: varIIII } });
-          });
-        }
-      } else {
+        editor.withoutNormalizing(() => {
+          editor
+            .setBlocks(DEFAULT_NODE)
+            .unwrapBlock(type);
+        });
+      } else if (isList) {
         // if what is selected is NOT a list
-        console.log('Hope Im here: ', document);
-        editor
-          .setBlocks('list_item')
-          .wrapBlock('ul_list');
-        // .withoutSaving((hehrer) => {
-        //   editor.setNodeByKey(hehrer.key, { data: { list_type: 'ul' } });
-        // });
+        console.log('Number 2');
+
+        editor.withoutNormalizing(() => {
+          editor
+            .unwrapBlock(oppType)
+            .wrapBlock(type);
+        });
+      } else {
+        console.log('Number 3');
+        editor.withoutNormalizing(() => {
+          editor.setBlocks('list_item').wrapBlock(type);
+        });
       }
-
-
-      console.log('b');
-      // console.log('selectedListItem: ', selectedListItem.type);
-      // console.log('parentBlock: ', parentBlock.type);
-
-      // include checks for parentBlock (and selectedListItem) aren't null
-
-      // write all diff cases out, map out handling them correctly
-
-      // list item, list, list wrong type, list right type, not a list
-
-      // if (parentBlock.type !== 'list' && selectedListItem.type === type) {
-      //   console.log('1: ');
-      //   editor
-      //     .setBlocks(DEFAULT_NODE)
-      //     .unwrapBlock('list');
-      // } else if (parentBlock.type !== 'list' && selectedListItem.type !== type) {
-      //   console.log('2: ');
-      //   editor
-      //     .unwrapBlock(selectedListItem.type)
-      //     .wrapBlock(type)
-      //     .withoutSaving(() => {
-      //       editor.setNodeByKey(parentBlock.key, { data: { list_type: 'ul' } });
-      //     });
-      // } else {
-      //   console.log('3: ');
-      // editor.withoutSaving(() => {
-      //   editor.setNodeByKey(this.key, { data: { list_type: 'ol' } });
-      // });
-      // }
     }
   }
 
@@ -414,8 +382,7 @@ export default class FormatToolbar extends React.Component {
             ulIcon.height(),
             ulIcon.width(),
             ulIcon.padding(),
-            ulIcon.vBox(),
-            { list_type: 'ul' }
+            ulIcon.vBox()
           )
         }
         {
@@ -425,8 +392,7 @@ export default class FormatToolbar extends React.Component {
             olIcon.height(),
             olIcon.width(),
             olIcon.padding(),
-            olIcon.vBox(),
-            { list_type: 'ol' }
+            olIcon.vBox()
           )
         }
         <VertDivider />
