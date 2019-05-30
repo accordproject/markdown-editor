@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const type = () => 'list';
+export const type = () => 'ul_list';
 
 export const height = () => '24px';
 
