@@ -23,6 +23,8 @@ This is ***bold and italic*** text
 This is a sentence that ***contains*** [{"a variable"}] within it. And here is [{another}] with some text after.
 And here is more [{variables}]% with newlines and [{punctuation}] and text.
 
+A {{computed variable}} here.
+
 > This is a quote.
 ## Heading Two
 This is more text.

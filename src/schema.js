@@ -2,6 +2,9 @@ const schema = {
   annotations: {
     variable: {
       isAtomic: true,
+    },
+    variableComputed: {
+      isAtomic: true,
     }
   },
   document: {

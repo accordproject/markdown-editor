@@ -34,6 +34,7 @@ import './styles.css';
  * Regex used to identify variables
  */
 const regex = /\[{(.*?)}\]/gm;
+const regexComputed = /{{(.*?)}}/gm;
 
 const EditorWrapper = styled.div`
   background: #fff;
@@ -225,7 +226,7 @@ function MarkdownEditor(props) {
         // so that there isn't a confusing behavior when undoing.
         editor.withoutSaving(() => {
           annotations.forEach((ann) => {
-            if (ann.type === 'variable') {
+            if (ann.type === 'variable' || ann.type === 'variableComputed') {
               editor.removeAnnotation(ann);
             }
           });
@@ -265,6 +266,39 @@ function MarkdownEditor(props) {
                 }
               }
               m = regex.exec(text);
+            } // while
+            let m2 = regexComputed.exec(text);
+
+            while (m2) {
+              // This is necessary to avoid infinite loops with zero-width matches
+              if (m2.index === regexComputed.lastIndex) {
+                regexComputed.lastIndex += 1;
+              }
+
+              for (let groupIndex = 0; groupIndex < m2.length; groupIndex += 1) {
+                const match = m2[groupIndex];
+
+                if (groupIndex === 1) {
+                  const focus = regexComputed.lastIndex - match.length - 2;
+                  const anchor = regexComputed.lastIndex - 2;
+
+                  // console.log(`*****${text}`);
+                  // console.log(`key ${key}`);
+                  // console.log(`match ${match}`);
+                  // console.log(`anchor ${focus}`);
+                  // console.log(`focus ${anchor}`);
+
+                  const annotation = {
+                    key: `variable-${uuidv4()}`,
+                    type: 'variableComputed',
+                    anchor: { path, key, offset: focus - 1 },
+                    focus: { path, key, offset: anchor },
+                  };
+                  // console.log(`annotation ${JSON.stringify(annotation)}`);
+                  editor.addAnnotation(annotation);
+                }
+              }
+              m2 = regexComputed.exec(text);
             } // while
           } // for
         }); // withoutSaving
@@ -364,6 +398,12 @@ function MarkdownEditor(props) {
             {children}
           </span>
         );
+      case 'variableComputed':
+        return (
+          <span {...attributes} className='variableComputed'>
+            {children}
+          </span>
+        );
       default:
         return next();
     }
@@ -385,8 +425,7 @@ function MarkdownEditor(props) {
   */
   const isInVariable = useCallback(value => isInVariableEx(value, value.selection.anchor), [isInVariableEx]);
 
-
-  /**
+ /**
   * Returns true if the editor should allow an edit. Edits are allowed for all
   * text unless the lockText parameter is set in the state of the editor, in which
   * case only variables are editable.

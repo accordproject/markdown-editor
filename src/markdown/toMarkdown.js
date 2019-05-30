@@ -79,6 +79,7 @@ export default class ToMarkdown extends Markdown {
     const isItalic = node.marks.some(mark => mark.type === 'italic');
     const isCode = node.marks.some(mark => mark.type === 'code');
     const isVariable = node.marks.some(mark => mark.type === 'variable');
+    const isVariableComputed = node.marks.some(mark => mark.type === 'variableComputed');
     let openMark = '';
     let closeMark = '';
 
@@ -95,6 +96,11 @@ export default class ToMarkdown extends Markdown {
     if (isVariable) {
       openMark += '[{';
       closeMark += '}]';
+    }
+
+    if (isVariableComputed) {
+      openMark += '{{';
+      closeMark += '}}';
     }
 
     if (isCode) {
