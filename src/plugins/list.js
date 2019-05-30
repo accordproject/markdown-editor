@@ -3,7 +3,7 @@ import React from 'react';
 /**
    */
 function List() {
-  const plugin = 'list';
+  const plugin = 'List';
   const tags = ['ul', 'ol', 'li'];
   const markdownTags = ['list', 'item'];
   const schema = {
@@ -50,14 +50,6 @@ function List() {
    */
   const renderBlock = (props, editor, next) => {
     const { node, attributes, children } = props;
-    // const listType = node.data.get('list_type', 'ul');
-    // const listStyleType = node.data.get(
-    //   'list_style_type',
-    //   // MAY NEED change
-    //   listType === 'ul' ? '1' : 'disc',
-    // );
-
-    // console.log('node: ', node);
 
     switch (node.type) {
       case 'ol_list':
@@ -83,7 +75,6 @@ function List() {
     for (let i = 0; i < depth - 1; i++) {
       indent += '   ';
     }
-    // console.log('value.data: ', listType);
     value.nodes.forEach((li) => {
       const text = parent.recursive(li.nodes);
       markdown += `\n${indent}${listStyleType}${text}`;
@@ -95,12 +86,7 @@ function List() {
   /**
    */
   const fromMarkdown = (stack, event) => {
-    // const listType = event.node.listType === 'ol_list' ? 'ul_list' : 'ol_list';
-
-    // event.node.type will be 'ul_list' or other
-    // const block = null;
     let newType = null;
-    // console.log('event.node: ', event.node.listType);
     if (event.node.listType === 'ordered') {
       newType = 'ol_list';
     }
