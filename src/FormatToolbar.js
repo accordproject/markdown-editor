@@ -40,7 +40,7 @@ const StyledToolbar = styled.div`
   background-color: #FFFFFF !important;
 `;
 
-const SvgTester = styled.svg`
+const ToolbarIcon = styled.svg`
   width: ${props => props.width};
   height: ${props => props.height};
   place-self: center;
@@ -141,7 +141,7 @@ export default class FormatToolbar extends React.Component {
     const bgActivity = isActive ? lightGrey : whiteColor;
 
     return (
-      <SvgTester
+      <ToolbarIcon
         viewBox={vBox}
         aria-label={type}
         background={bgActivity}
@@ -150,7 +150,7 @@ export default class FormatToolbar extends React.Component {
         padding={pa}
         onPointerDown={event => this.onClickMark(event, type)}>
           {icon(fillActivity)}
-      </ SvgTester>
+      </ ToolbarIcon>
     );
   }
 
@@ -164,7 +164,7 @@ export default class FormatToolbar extends React.Component {
     const bgActivity = isActive ? lightGrey : whiteColor;
 
     return (
-      <SvgTester
+      <ToolbarIcon
         viewBox={vBox}
         aria-label={type}
         background={bgActivity}
@@ -174,7 +174,7 @@ export default class FormatToolbar extends React.Component {
         {...props}
         onPointerDown={event => this.onClickBlock(event, type, props)}>
           {icon(fillActivity)}
-      </ SvgTester>
+      </ ToolbarIcon>
     );
   }
 
@@ -188,7 +188,7 @@ export default class FormatToolbar extends React.Component {
     const bgActivity = isActive ? lightGrey : whiteColor;
 
     return (
-      <SvgTester
+      <ToolbarIcon
         aria-label={type}
         background={bgActivity}
         width={wi}
@@ -197,7 +197,7 @@ export default class FormatToolbar extends React.Component {
         viewBox={vBox}
         onPointerDown={event => action.onClickLink(event, this.props.editor)}>
           {icon(fillActivity)}
-      </ SvgTester>
+      </ ToolbarIcon>
     );
   }
 
@@ -206,7 +206,7 @@ export default class FormatToolbar extends React.Component {
    */
   renderHistoryButton(type, icon, hi, wi, pa, vBox, action) {
     return (
-      <SvgTester
+      <ToolbarIcon
         aria-label={type}
         background={whiteColor}
         width={wi}
@@ -215,7 +215,7 @@ export default class FormatToolbar extends React.Component {
         viewBox={vBox}
         onPointerDown={event => this.onClickHistory(event, action, this.props.editor)}>
           {icon(mediumGrey)}
-      </ SvgTester>
+      </ ToolbarIcon>
     );
   }
 
