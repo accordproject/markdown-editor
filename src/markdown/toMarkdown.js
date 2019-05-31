@@ -154,12 +154,6 @@ export default class ToMarkdown extends Markdown {
     return `${NL}> ${this.recursive(node.nodes)}`;
   }
 
-  // blockList(node) {
-  //   const md = this.recursive(node.nodes);
-  //   const open = '1. ';
-  //   return NL + open + md + NL;
-  // }
-
   headingOne(node) {
     return `${NL}${NL}# ${ToMarkdown.getTextFromNode(node)}`;
   }
