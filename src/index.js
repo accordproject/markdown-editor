@@ -345,13 +345,13 @@ function MarkdownEditor(props) {
     const { children, mark, attributes } = props;
 
     switch (mark.type) {
-      case 'html':
       case 'bold':
         return <strong {...attributes}>{children}</strong>;
       case 'italic':
         return <em {...attributes}>{children}</em>;
       case 'underline':
         return <u {...{ attributes }}>{children}</u>;
+      case 'html':
       case 'code':
         return <code {...attributes}>{children}</code>;
       case 'error':
