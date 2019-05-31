@@ -276,9 +276,7 @@ Object {
         "type": "paragraph",
       },
       Object {
-        "data": Object {
-          "list_type": "ol",
-        },
+        "data": Object {},
         "nodes": Array [
           Object {
             "data": Object {},
@@ -318,7 +316,7 @@ Object {
           },
         ],
         "object": "block",
-        "type": "list",
+        "type": "ol_list",
       },
       Object {
         "data": Object {},
@@ -357,9 +355,7 @@ Object {
         "type": "paragraph",
       },
       Object {
-        "data": Object {
-          "list_type": "ul",
-        },
+        "data": Object {},
         "nodes": Array [
           Object {
             "data": Object {},
@@ -399,7 +395,7 @@ Object {
           },
         ],
         "object": "block",
-        "type": "list",
+        "type": "ul_list",
       },
       Object {
         "data": Object {},
