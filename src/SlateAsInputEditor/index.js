@@ -1,32 +1,21 @@
-/*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import React, {
-  useEffect, useState, useRef, useCallback
-} from 'react';
+  useEffect,
+  useState,
+  useRef,
+  useCallback
+}
+  from 'react';
 import { Editor, getEventTransfer } from 'slate-react';
-import {
-  Card, Checkbox, Segment
-} from 'semantic-ui-react';
-import TextareaAutosize from 'react-textarea-autosize';
+import { Value } from 'slate';
+import { Card } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import baseSchema from '../schema';
-import FromMarkdown from '../markdown/fromMarkdown';
+// import FromMarkdown from '../markdown/fromMarkdown';
 import ToMarkdown from '../markdown/toMarkdown';
 import PluginManager from '../PluginManager';
 import { FromHTML } from '../html/fromHTML';
+import FormatToolbar from '../FormatToolbar';
 
 import '../styles.css';
 
@@ -52,6 +41,141 @@ const EditorWrapper = styled.div`
   text-indent: 0ex;
 `;
 
+const ToolbarWrapper = styled.div`
+  display: grid
+  grid-template-columns: 60% 40%;
+  grid-template-rows: 100%;
+  height: 36px;
+  border: 1px solid #414F58;
+  background: #FFFFFF;
+  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.1);
+  margin-bottom: 1px;
+`;
+
+const defaultValue = Value.fromJSON({
+  object: 'value',
+  document: {
+    object: 'document',
+    data: {},
+    nodes: [
+      {
+        object: 'block',
+        type: 'heading_one',
+        data: {},
+        nodes: [
+          {
+            object: 'text',
+            text: 'Supply Agreement',
+            marks: []
+          }
+        ]
+      },
+      {
+        object: 'block',
+        type: 'paragraph',
+        data: {},
+        nodes: [
+          {
+            object: 'text',
+            text: 'This is a supply agreement between Party A and Party B.',
+            marks: []
+          }
+        ]
+      },
+      {
+        object: 'block',
+        type: 'heading_one',
+        data: {},
+        nodes: [
+          {
+            object: 'text',
+            text: 'Payment',
+            marks: []
+          }
+        ]
+      },
+      {
+        object: 'block',
+        type: 'clause',
+        data: {
+          tag: 'clause',
+          attributes: {
+            src: 'https://templates.accordproject.org/archives/full-payment-upon-signature@0.7.1.cta'
+          },
+          attributeString: 'src = "https://templates.accordproject.org/archives/full-payment-upon-signature@0.7.1.cta"',
+          content: '\n  Upon the signing of this Agreement, "Dan" shall pay the total purchase price to "Steve" in the amount of 0.01 USD.\n  ',
+          closed: false
+        },
+        nodes: [
+          {
+            object: 'block',
+            type: 'paragraph',
+            data: {},
+            nodes: [
+              {
+                object: 'text',
+                text: '\n  Upon the signing of this Agreement, "Dan" shall pay the total purchase price to "Steve" in the amount of 0.01 USD.\n  ',
+                marks: []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        object: 'block',
+        type: 'heading_two',
+        data: {},
+        nodes: [
+          {
+            object: 'text',
+            text: 'Late Delivery And Penalty',
+            marks: []
+          }
+        ]
+      },
+      {
+        object: 'block',
+        type: 'clause',
+        data: {
+          tag: 'clause',
+          attributes: {
+            src: 'https://templates.accordproject.org/archives/latedeliveryandpenalty@0.13.1.cta'
+          },
+          attributeString: 'src = "https://templates.accordproject.org/archives/latedeliveryandpenalty@0.13.1.cta"',
+          content: '\n  Late Delivery and Penalty. In case of delayed delivery except for Force Majeure cases, "Dan" (the Seller) shall pay to "Steve" (the Buyer) for every 2 days of delay penalty amounting to 10.5% of the total value of the Equipment whose delivery has been delayed. Any fractional part of a days is to be considered a full days. The total amount of penalty shall not however, exceed 55% of the total value of the Equipment involved in late delivery. If the delay is more than 15 days, the Buyer is entitled to terminate this Contract.\n  ',
+          closed: false
+        },
+        nodes: [
+          {
+            object: 'block',
+            type: 'paragraph',
+            data: {},
+            nodes: [
+              {
+                object: 'text',
+                text: '\n  Late Delivery and Penalty. In case of delayed delivery except for Force Majeure cases, "Dan" (the Seller) shall pay to "Steve" (the Buyer) for every 2 days of delay penalty amounting to 10.5% of the total value of the Equipment whose delivery has been delayed. Any fractional part of a days is to be considered a full days. The total amount of penalty shall not however, exceed 55% of the total value of the Equipment involved in late delivery. If the delay is more than 15 days, the Buyer is entitled to terminate this Contract.\n  ',
+                marks: []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        object: 'block',
+        type: 'paragraph',
+        data: {},
+        nodes: [
+          {
+            object: 'text',
+            text: 'End.',
+            marks: []
+          }
+        ]
+      }
+    ]
+  }
+});
+
 /**
  * a utility function to generate a random node id for annotations
  */
@@ -66,21 +190,18 @@ function uuidv4() {
 }
 /**
  * A plugin based rich-text editor that uses Common Mark for serialization.
- * The default markdown to be edited in passed in props 'markdown'
+ * The default slate value to be edited is passed in props 'value'
  * while the plugins are passed in the 'plugins' property.
  *
  * Plugins are responsible for serialization to/from markdown and HTML,
  * rendering and schema definition.
  *
- * When this editor runs in markdown mode it generates a read-only
- * rich text view of the markdown, rendered using Slate.
+ * The rich text editor is editable and the markdown text is generated from
+ * the contents of the Slate editor and both are passed to the props.onChange
+ * callback.
  *
- * When the editor is not running in markdown mode the rich text editor
- * is editable and the markdown text is generated from the contents of
- * the Slate editor and both are passed to the props.onChange callback.
- *
- * When props.lockText is true and props.markdownMode is false then
- * the editor will lock all text against edits except for variables.
+ * When props.lockText is true the editor will lock all text against edits
+ * except for variables.
  *
  * @param {*} props the props for the component. See the declared PropTypes
  * for details.
@@ -100,16 +221,7 @@ function SlateAsInputEditor(props) {
    * Current Slate Value, initialized by converting props.markdown
    * to a Slate Value
    */
-  const [slateValue, setSlateValue] = useState(() => {
-    const pluginManager = new PluginManager(props.plugins);
-    const fromMarkdown = new FromMarkdown(pluginManager);
-    return fromMarkdown.convert(props.markdown);
-  });
-
-  /**
-   * Current Markdown text
-   */
-  const [markdown, setMarkdown] = useState(props.markdown);
+  const [slateValue, setSlateValue] = useState(props.value || Value.fromJSON(defaultValue));
 
   /**
    * Slate Schema augmented by plugins
@@ -149,63 +261,43 @@ function SlateAsInputEditor(props) {
   }, [plugins]);
 
   /**
-   * When in markdown mode:
-   * - Updates the Slate Value when the markdown state or the plugins change
-   */
-  useEffect(() => {
-    if (markdownMode) {
-      const pluginManager = new PluginManager(plugins);
-      const fromMarkdown = new FromMarkdown(pluginManager);
-      const newSlateValue = fromMarkdown.convert(markdown);
-      setSlateValue(newSlateValue);
-      onChange(newSlateValue, markdown);
-    }
-  }, [markdown, markdownMode, onChange, plugins]);
-
-  /**
-   * When not in markdown mode:
    * - Updates the markdown when the Slate Value or the plugins change
    */
   useEffect(() => {
-    if (!markdownMode) {
-      const pluginManager = new PluginManager(plugins);
-      const toMarkdown = new ToMarkdown(pluginManager);
-      const newMarkdown = toMarkdown.convert(slateValue);
-      setMarkdown(newMarkdown);
-      onChange(slateValue, newMarkdown);
-    }
+    const pluginManager = new PluginManager(plugins);
+    const toMarkdown = new ToMarkdown(pluginManager);
+    const newMarkdown = toMarkdown.convert(slateValue);
+    console.log('in useEffect markdown', newMarkdown);
+    onChange(slateValue, newMarkdown);
   }, [markdownMode, onChange, plugins, slateValue]);
 
   /**
-   * When not in markdown mode:
    * - Set a lockText annotation on the editor equal to props.lockText
    */
   useEffect(() => {
-    if (!markdownMode) {
-      if (editorRef && editorRef.current) {
-        const editor = editorRef.current;
-        const { annotations, selection } = editor.value;
+    if (editorRef && editorRef.current) {
+      const editor = editorRef.current;
+      const { annotations, selection } = editor.value;
 
-        editor.withoutSaving(() => {
-          annotations.forEach((ann) => {
-            if (ann.type === 'lockText') {
-              editor.removeAnnotation(ann);
-            }
-          });
-
-          if (lockText) {
-            // it doesn't matter where we put the annotation
-            // so we use the current selection
-            const annotation = {
-              key: `lockText-${uuidv4()}`,
-              type: 'lockText',
-              anchor: selection.anchor,
-              focus: selection.focus,
-            };
-            editor.addAnnotation(annotation);
+      editor.withoutSaving(() => {
+        annotations.forEach((ann) => {
+          if (ann.type === 'lockText') {
+            editor.removeAnnotation(ann);
           }
         });
-      }
+
+        if (lockText) {
+          // it doesn't matter where we put the annotation
+          // so we use the current selection
+          const annotation = {
+            key: `lockText-${uuidv4()}`,
+            type: 'lockText',
+            anchor: selection.anchor,
+            focus: selection.focus,
+          };
+          editor.addAnnotation(annotation);
+        }
+      });
     }
   }, [lockText, markdownMode]);
 
@@ -220,7 +312,6 @@ function SlateAsInputEditor(props) {
       if (isEditorLockText(editor)) {
         const { document, annotations } = editor.value;
 
-        // console.log('findVariables');
         // Make the change to annotations without saving it into the undo history,
         // so that there isn't a confusing behavior when undoing.
         editor.withoutSaving(() => {
@@ -248,27 +339,20 @@ function SlateAsInputEditor(props) {
                   const focus = regex.lastIndex - match.length - 2;
                   const anchor = regex.lastIndex - 2;
 
-                  // console.log(`*****${text}`);
-                  // console.log(`key ${key}`);
-                  // console.log(`match ${match}`);
-                  // console.log(`anchor ${focus}`);
-                  // console.log(`focus ${anchor}`);
-
                   const annotation = {
                     key: `variable-${uuidv4()}`,
                     type: 'variable',
                     anchor: { path, key, offset: focus - 1 },
                     focus: { path, key, offset: anchor },
                   };
-                  // console.log(`annotation ${JSON.stringify(annotation)}`);
                   editor.addAnnotation(annotation);
                 }
               }
               m = regex.exec(text);
-            } // while
-          } // for
-        }); // withoutSaving
-      } // lockText
+            }
+          }
+        });
+      }
     }
   // @ts-ignore
   }, [editorRef, isEditorLockText, lockText, slateValue.document]);
@@ -302,8 +386,6 @@ function SlateAsInputEditor(props) {
   // @ts-ignore
   const renderBlock = useCallback((props, editor, next) => {
     const { node, attributes, children } = props;
-
-    // console.log(node.type);
 
     switch (node.type) {
       case 'paragraph':
@@ -345,6 +427,8 @@ function SlateAsInputEditor(props) {
         return <strong {...attributes}>{children}</strong>;
       case 'italic':
         return <em {...attributes}>{children}</em>;
+      case 'underline':
+        return <u {...{ attributes }}>{children}</u>;
       case 'html':
       case 'code':
         return <code {...attributes}>{children}</code>;
@@ -541,12 +625,28 @@ function SlateAsInputEditor(props) {
     event.preventDefault();
     return false;
   });
+  /**
+   * Render the static-editing toolbar.
+   */
+  const renderEditor = useCallback((props, editor, next) => {
+    const children = next();
+    const pluginManager = new PluginManager(props.plugins);
+
+    return (
+      <div>
+        <FormatToolbar
+          editor={editor}
+          pluginManager={pluginManager}
+        />
+        {children}
+      </div>
+    );
+  }, []);
 
   /**
    * Render the component, based on showSlate
    */
-  const card = showSlate
-    ? <Card fluid>
+  const card = <Card fluid>
   <Card.Content>
   <EditorWrapper>
               <
@@ -554,12 +654,9 @@ function SlateAsInputEditor(props) {
               Editor
               ref={editorRef}
               className="doc-inner"
-              readOnly={props.markdownMode}
               value={slateValue}
               onChange={({ value }) => {
-                if (!props.markdownMode) {
-                  setSlateValue(value);
-                }
+                setSlateValue(value);
               }}
               schema={slateSchema}
               plugins={props.plugins}
@@ -569,34 +666,15 @@ function SlateAsInputEditor(props) {
               renderBlock={renderBlock}
               renderInline={renderInline}
               renderMark={renderMark}
-              renderAnnotation={renderAnnotation}/>
+              renderAnnotation={renderAnnotation}
+              renderEditor={renderEditor}/>
     </EditorWrapper>
-  </Card.Content>
-</Card>
-    : <Card fluid>
-  <Card.Content>
-  <TextareaAutosize
-                className={'textarea'}
-                width={'100%'}
-                placeholder={props.markdown}
-                readOnly={!props.markdownMode}
-                value={markdown}
-                // eslint-disable-next-line no-unused-vars
-                onChange={(evt, data) => {
-                  if (props.markdownMode) {
-                    setMarkdown(evt.target.value);
-                  }
-                }}
-              />
   </Card.Content>
 </Card>;
 
   return (
     <div>
-      { props.showEditButton
-        ? <Segment raised>
-          <Checkbox toggle label='Edit' onChange={toggleShowSlate} checked={props.markdownMode ? !showSlate : showSlate} />
-        </Segment> : null }
+      <ToolbarWrapper id="toolbarwrapperid" />
       <Card.Group>
         {card}
       </Card.Group>
@@ -609,9 +687,9 @@ function SlateAsInputEditor(props) {
  */
 SlateAsInputEditor.propTypes = {
   /**
-   * Initial contents for the editor (markdown text)
+   * Initial contents for the editor (slate value)
    */
-  markdown: PropTypes.string,
+  value: PropTypes.object,
 
   /**
    * A callback that receives the Slate Value object and
@@ -658,7 +736,7 @@ SlateAsInputEditor.propTypes = {
  * The default property values for this component
  */
 SlateAsInputEditor.defaultProps = {
-  showEditButton: true
+  showEditButton: true,
 };
 
 export default SlateAsInputEditor;
