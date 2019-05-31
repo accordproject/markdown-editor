@@ -10,6 +10,9 @@ const BLOCK_TAGS = {
   h4: 'heading_four',
   h5: 'heading_five',
   h6: 'heading_six',
+  li: 'list_item',
+  ol: 'ol_list',
+  ul: 'ul_list',
 };
 
 const MARK_TAGS = {

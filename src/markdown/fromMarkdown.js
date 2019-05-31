@@ -29,6 +29,7 @@ export default class FromMarkdown extends Markdown {
     this.markMapping = {
       strong: 'bold',
       emph: 'italic',
+      under: 'underline',
     };
   }
 
@@ -38,7 +39,7 @@ export default class FromMarkdown extends Markdown {
    * @return {Object} the Slate.js Value object
    */
   convert(markdownText) {
-    this.marks = ['code', 'strong', 'emph'];
+    this.marks = ['code', 'strong', 'emph', 'under', 'variable'];
 
     const reader = new commonmark.Parser();
     const parsed = reader.parse(markdownText);
@@ -204,6 +205,14 @@ export default class FromMarkdown extends Markdown {
         this.stack.pop();
       }
     }
+  }
+
+  /**
+   * Handles the emph AST node, modifying the
+   * Stack.
+   */
+  under() {
+  // handled by text
   }
 
   /**
