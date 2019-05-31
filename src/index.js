@@ -195,28 +195,16 @@ function MarkdownEditor(props) {
    * - Set a lockText annotation on the editor equal to props.lockText
    */
   useEffect(() => {
-    if (!markdownMode) {
-      if (editorRef && editorRef.current) {
-        const editor = editorRef.current;
-        const { annotations, selection } = editor.value;
+    if (props.lockText && editorRef && editorRef.current) {
+      const editor = editorRef.current;
+      const { document, annotations } = editor.value;
 
-        editor.withoutSaving(() => {
-          annotations.forEach((ann) => {
-            if (ann.type === 'lockText') {
-              editor.removeAnnotation(ann);
-            }
-          });
-
-          if (lockText) {
-            // it doesn't matter where we put the annotation
-            // so we use the current selection
-            const annotation = {
-              key: `lockText-${uuidv4()}`,
-              type: 'lockText',
-              anchor: selection.anchor,
-              focus: selection.focus,
-            };
-            editor.addAnnotation(annotation);
+      // Make the change to annotations without saving it into the undo history,
+      // so that there isn't a confusing behavior when undoing.
+      editor.withoutSaving(() => {
+        annotations.forEach((ann) => {
+          if (ann.type === 'variable') {
+            editor.removeAnnotation(ann);
           }
         });
       }
@@ -261,20 +249,26 @@ function MarkdownEditor(props) {
                   const focus = regex.lastIndex - match.length - 2;
                   const anchor = regex.lastIndex - 2;
 
-                  const annotation = {
-                    key: `variable-${uuidv4()}`,
-                    type: 'variable',
-                    anchor: { path, key, offset: focus - 1 },
-                    focus: { path, key, offset: anchor },
-                  };
-                  editor.addAnnotation(annotation);
-                }
+            for (let groupIndex = 0; groupIndex < m.length; groupIndex += 1) {
+              const match = m[groupIndex];
+
+              if (groupIndex === 1) {
+                const focus = regex.lastIndex - match.length - 2;
+                const anchor = regex.lastIndex - 2;
+
+                editor.addAnnotation({
+                  key: `variable-${uuidv4()}`,
+                  type: 'variable',
+                  anchor: { path, key, offset: anchor },
+                  focus: { path, key, offset: focus },
+                });
               }
               m = regex.exec(text);
             }
+            m = regex.exec(text);
           }
-        });
-      }
+        }
+      });
     }
   // @ts-ignore
   }, [editorRef, isEditorLockText, lockText, slateValue.document]);
@@ -394,8 +388,13 @@ function MarkdownEditor(props) {
   * Returns true if the selection is inside a variable
   * @param {*} value the Slate editor value
   */
-  const isInVariable = useCallback(value => isInVariableEx(value, value.selection.anchor), [isInVariableEx]);
-
+  const isInVariable = ((value) => {
+    value.annotations.filter(
+      (ann => ann.type === 'variable'
+              && value.selection.anchor.isInRange(ann)
+      )
+    ).size > 0;
+  });
 
   /**
   * Returns true if the editor should allow an edit. Edits are allowed for all
@@ -423,14 +422,7 @@ function MarkdownEditor(props) {
   * @param {Function} next
   */
   const handleBackspace = (event, editor, next) => {
-    const { value } = editor;
-    const { selection } = value;
-
-    // protect characters to prevent removal of variables
-    const newAnchor = value.selection.anchor.moveBackward(2).normalize(value.document);
-
-    if (isEditorLockText(editor)
-      && !(isInVariableEx(value, newAnchor) && isInVariable(value))) {
+    if (!isEditable(editor)) {
       event.preventDefault(); // prevent editing non-editable text
       return undefined;
     }
@@ -533,20 +525,6 @@ function MarkdownEditor(props) {
     setShowSlate(!showSlate);
   };
 
-  /**
-   * When in lockText mode prevent edits to non-variables
-   * @param {*} event
-   * @param {*} editor
-   * @param {*} next
-   */
-  const onBeforeInput = ((event, editor, next) => {
-    if (isEditable(editor)) {
-      return next();
-    }
-
-    event.preventDefault();
-    return false;
-  });
   /**
    * Render the static-editing toolbar.
    */

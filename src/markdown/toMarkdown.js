@@ -3,9 +3,12 @@ import Markdown from './Markdown';
 
 const NL = '\n';
 
+<<<<<<< HEAD
 /**
  * A plugin-based Slate -> Markdown converter.
  */
+=======
+>>>>>>> b24bf4a8e51d64aba16998b7f7c3e43ee84ea133
 const text = (node) => {
   let result = '';
 
