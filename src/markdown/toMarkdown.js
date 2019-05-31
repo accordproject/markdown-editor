@@ -6,6 +6,47 @@ const NL = '\n';
 /**
  * A plugin-based Slate -> Markdown converter.
  */
+const text = (node) => {
+  let result = '';
+
+  const isBold = node.marks.some(mark => mark.type === 'bold');
+  const isItalic = node.marks.some(mark => mark.type === 'italic');
+  const isUnderline = node.marks.some(mark => mark.type === 'underline');
+  const isCode = node.marks.some(mark => mark.type === 'code');
+  const isVariable = node.marks.some(mark => mark.type === 'variable');
+  let openMark = '';
+  let closeMark = '';
+
+  if (isBold) {
+    openMark = '**';
+    closeMark = '**';
+  }
+
+  if (isItalic) {
+    openMark += '*';
+    closeMark += '*';
+  }
+
+  if (isUnderline) {
+    openMark += '__';
+    closeMark += '__';
+  }
+
+  if (isVariable) {
+    openMark += '{{';
+    closeMark += '}}';
+  }
+
+  if (isCode) {
+    openMark += '`';
+    closeMark += '`';
+  }
+
+  result += openMark + node.text + closeMark;
+
+  return result;
+};
+
 export default class ToMarkdown extends Markdown {
   constructor(pluginManager) {
     super(pluginManager);
@@ -30,7 +71,7 @@ export default class ToMarkdown extends Markdown {
 
       switch (node.object) {
         case 'text':
-          markdown += this.text(node);
+          markdown += text(node);
           break;
         case 'block':
         case 'inline': {
@@ -39,7 +80,8 @@ export default class ToMarkdown extends Markdown {
           if (typeof this[method] === 'function') {
             markdown += this[method](node);
           } else {
-            const plugin = this.pluginManager.findPluginByMarkdownTag(node.type);
+            const pluginType = (node.type === 'video') ? 'video' : 'list';
+            const plugin = this.pluginManager.findPluginByMarkdownTag(pluginType);
 
             if (plugin && typeof plugin.toMarkdown === 'function') {
               try {
@@ -76,41 +118,6 @@ export default class ToMarkdown extends Markdown {
 
   isFirst() {
     return this.first;
-  }
-
-  text(node) {
-    let result = '';
-
-    const isBold = node.marks.some(mark => mark.type === 'bold');
-    const isItalic = node.marks.some(mark => mark.type === 'italic');
-    const isCode = node.marks.some(mark => mark.type === 'code');
-    const isVariable = node.marks.some(mark => mark.type === 'variable');
-    let openMark = '';
-    let closeMark = '';
-
-    if (isBold) {
-      openMark = '**';
-      closeMark = '**';
-    }
-
-    if (isItalic) {
-      openMark += '*';
-      closeMark += '*';
-    }
-
-    if (isVariable) {
-      openMark += '{{';
-      closeMark += '}}';
-    }
-
-    if (isCode) {
-      openMark += '`';
-      closeMark += '`';
-    }
-
-    result += openMark + node.text + closeMark;
-
-    return result;
   }
 
   paragraph(node) {

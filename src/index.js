@@ -13,12 +13,14 @@
  */
 
 import React, {
-  useEffect, useState, useRef, useCallback
-} from 'react';
+  useEffect,
+  useState,
+  useRef,
+  useCallback
+}
+  from 'react';
 import { Editor, getEventTransfer } from 'slate-react';
-import {
-  Card, Checkbox, Segment
-} from 'semantic-ui-react';
+import { Card, Checkbox } from 'semantic-ui-react';
 import TextareaAutosize from 'react-textarea-autosize';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -27,6 +29,7 @@ import FromMarkdown from './markdown/fromMarkdown';
 import ToMarkdown from './markdown/toMarkdown';
 import PluginManager from './PluginManager';
 import { FromHTML } from './html/fromHTML';
+import FormatToolbar from './FormatToolbar';
 
 import './styles.css';
 
@@ -50,6 +53,17 @@ const EditorWrapper = styled.div`
   text-transform: none;
   text-align: left;
   text-indent: 0ex;
+`;
+
+const ToolbarWrapper = styled.div`
+  display: grid
+  grid-template-columns: 60% 40%;
+  grid-template-rows: 100%;
+  height: 36px;
+  border: 1px solid #414F58;
+  background: #FFFFFF;
+  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.1);
+  margin-bottom: 1px;
 `;
 
 /**
@@ -220,7 +234,6 @@ function MarkdownEditor(props) {
       if (isEditorLockText(editor)) {
         const { document, annotations } = editor.value;
 
-        // console.log('findVariables');
         // Make the change to annotations without saving it into the undo history,
         // so that there isn't a confusing behavior when undoing.
         editor.withoutSaving(() => {
@@ -248,27 +261,20 @@ function MarkdownEditor(props) {
                   const focus = regex.lastIndex - match.length - 2;
                   const anchor = regex.lastIndex - 2;
 
-                  // console.log(`*****${text}`);
-                  // console.log(`key ${key}`);
-                  // console.log(`match ${match}`);
-                  // console.log(`anchor ${focus}`);
-                  // console.log(`focus ${anchor}`);
-
                   const annotation = {
                     key: `variable-${uuidv4()}`,
                     type: 'variable',
                     anchor: { path, key, offset: focus - 1 },
                     focus: { path, key, offset: anchor },
                   };
-                  // console.log(`annotation ${JSON.stringify(annotation)}`);
                   editor.addAnnotation(annotation);
                 }
               }
               m = regex.exec(text);
-            } // while
-          } // for
-        }); // withoutSaving
-      } // lockText
+            }
+          }
+        });
+      }
     }
   // @ts-ignore
   }, [editorRef, isEditorLockText, lockText, slateValue.document]);
@@ -302,8 +308,6 @@ function MarkdownEditor(props) {
   // @ts-ignore
   const renderBlock = useCallback((props, editor, next) => {
     const { node, attributes, children } = props;
-
-    // console.log(node.type);
 
     switch (node.type) {
       case 'paragraph':
@@ -345,6 +349,8 @@ function MarkdownEditor(props) {
         return <strong {...attributes}>{children}</strong>;
       case 'italic':
         return <em {...attributes}>{children}</em>;
+      case 'underline':
+        return <u {...{ attributes }}>{children}</u>;
       case 'html':
       case 'code':
         return <code {...attributes}>{children}</code>;
@@ -541,6 +547,23 @@ function MarkdownEditor(props) {
     event.preventDefault();
     return false;
   });
+  /**
+   * Render the static-editing toolbar.
+   */
+  const renderEditor = useCallback((props, editor, next) => {
+    const children = next();
+    const pluginManager = new PluginManager(props.plugins);
+
+    return (
+      <div>
+        <FormatToolbar
+          editor={editor}
+          pluginManager={pluginManager}
+        />
+        {children}
+      </div>
+    );
+  }, []);
 
   /**
    * Render the component, based on showSlate
@@ -569,7 +592,8 @@ function MarkdownEditor(props) {
               renderBlock={renderBlock}
               renderInline={renderInline}
               renderMark={renderMark}
-              renderAnnotation={renderAnnotation}/>
+              renderAnnotation={renderAnnotation}
+              renderEditor={renderEditor}/>
     </EditorWrapper>
   </Card.Content>
 </Card>
@@ -593,10 +617,11 @@ function MarkdownEditor(props) {
 
   return (
     <div>
-      { props.showEditButton
-        ? <Segment raised>
-          <Checkbox toggle label='Edit' onChange={toggleShowSlate} checked={props.markdownMode ? !showSlate : showSlate} />
-        </Segment> : null }
+      <ToolbarWrapper id="toolbarwrapperid">
+        { props.showEditButton
+          ? <Checkbox toggle label='Markdown' className='toolbarCheckbox' onChange={toggleShowSlate} checked={props.markdownMode ? showSlate : !showSlate} />
+          : null }
+      </ToolbarWrapper>
       <Card.Group>
         {card}
       </Card.Group>
@@ -658,7 +683,7 @@ MarkdownEditor.propTypes = {
  * The default property values for this component
  */
 MarkdownEditor.defaultProps = {
-  showEditButton: true
+  showEditButton: true,
 };
 
 export { MarkdownEditor };

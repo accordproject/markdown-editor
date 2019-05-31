@@ -3,7 +3,17 @@ import { Icon } from 'semantic-ui-react';
 import styled from 'styled-components';
 
 const StyledIcon = styled(Icon)`
-  color: #ffffff !important;
+  color: #949CA2 !important;
+  position: abosulte;
+  width: 24px !important;
+  height: 23px !important;
+  margin: 6px 0 0 5px !important;
+  padding: 3px 0 0 0 !important;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+    background-color: #F0F0F0;
+  }
 `;
 
 /**
@@ -83,6 +93,9 @@ function Video() {
     return `<video ${value.data.get('attributeString')}/>\n\n`;
   }
 
+  /**
+     * @param {fromMarkdown} parent
+     */
   function fromMarkdown(stack, event, tag) {
     const block = {
       object: 'block',
@@ -95,6 +108,9 @@ function Video() {
     return true;
   }
 
+  /**
+     * @param {fromHTML} parent
+     */
   function fromHTML(editor, el, next) {
     return {
       object: 'block',
@@ -110,7 +126,6 @@ function Video() {
    * @param {Editor} editor
    * @param {Event} event
    */
-
   function onClickButton(editor, event) {
     event.preventDefault();
     alert('Video plugin button clicked!');
