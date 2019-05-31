@@ -1,12 +1,14 @@
-This is a React component for a rich text editor that can read and write [CommonMark](https://commonmark.org) Markdown text. The editor uses [Slate.js](https://slatejs.org).
+# Markdown Editor
 
-The editor is plugin based and includes a pop-up formatting toolbar.
+[![Netlify Status](https://api.netlify.com/api/v1/badges/952fdc5d-a2bb-4895-a375-25ea1c6f30d8/deploy-status)](https://app.netlify.com/sites/accordproject-markdown-editor/deploys) [![npm version](https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor.svg)](https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor)
+
+This is a React component for a rich text editor that can read and write [CommonMark](https://commonmark.org) Markdown text. The editor uses [Slate](https://docs.slatejs.org/).
+
+The editor is plugin based and includes a static formatting toolbar.
 
 This component is Apache-2 licensed Open Source. Contributors welcome!
 
-### Demo
-
-https://accordproject-markdown-editor.netlify.com/examples/
+### [Demo](https://accordproject-markdown-editor.netlify.com/examples/)
 
 ### Usage
 
@@ -34,9 +36,9 @@ ReactDOM.render(<MarkdownEditor plugins={plugins} lockText={false} markdownMode=
 
 ### Example
 
-For an example React App see the ./examples/ folder.
+For an example React App see the `./examples/` folder.
 
-A `TextArea` containing CommonMark synchronized with a `MarkdownEditor` component, rendered using Slate.js.
+A `TextArea` containing [CommonMark](https://commonmark.org) synchronized with a `MarkdownEditor` component, rendered using [Slate](https://docs.slatejs.org/).
 
 The code for the sample `video` plugin used in the demo is here:
 https://github.com/accordproject/markdown-editor/blob/master/src/plugins/video.js
@@ -54,7 +56,7 @@ In the project directory, you can run:
 ### `npm start`
 
 Runs the app in the development mode.<br>
-Open [http://localhost:3001](http://localhost:3001) to view it in the browser.
+Open [http://localhost:3001/examples](http://localhost:3001/examples) to view it in the browser.
 
 The page will reload if you make edits.<br>
 
