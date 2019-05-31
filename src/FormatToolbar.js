@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
+import * as action from './toolbarMethods';
+
 import * as bIcon from '../public/icons/bold';
 import * as iIcon from '../public/icons/italic';
 import * as uIcon from '../public/icons/underline';
@@ -15,11 +17,11 @@ import * as lIcon from '../public/icons/hyperlink';
 import * as unIcon from '../public/icons/navigation-left';
 import * as reIcon from '../public/icons/navigation-right';
 
-const whColor = '#FFFFFF';
-const lgColor = '#F0F0F0';
-const mgColor = '#949CA2';
-const dgColor = '#414F58';
-const lkColor = '#2587DA';
+const whiteColor = '#FFFFFF';
+const lightGrey = '#F0F0F0';
+const mediumGrey = '#949CA2';
+const darkGrey = '#414F58';
+const linkColor = '#2587DA';
 
 const DEFAULT_NODE = 'paragraph';
 
@@ -61,119 +63,6 @@ const VertDivider = styled.div`
   place-self: center;
 `;
 
-/**
- * A change helper to standardize wrapping links.
- */
-const wrapLink = (editor, href) => {
-  editor.wrapInline({
-    type: 'link',
-    data: { href },
-  });
-  editor.moveToEnd();
-};
-
-/**
- * A change helper to standardize unwrapping links.
- */
-const unwrapLink = (editor) => {
-  editor.unwrapInline('link');
-};
-
-/**
- * Check if the current selection has a mark with `type` in it.
- */
-const hasMark = (editor, type) => {
-  const { value } = editor;
-  return value.activeMarks.some(mark => mark.type === type);
-};
-
-/**
- * Check whether the current selection has a link in it.
- */
-const hasLinks = (editor) => {
-  const { value } = editor;
-  return value.inlines.some(inline => inline.type === 'link');
-};
-
-/**
-* Return selected block of given type.
-*/
-const getSelectedBlock = (editor, type) => {
-  const { value } = editor;
-  return value.blocks.find(node => node.type === type);
-};
-
-/**
-* Return parent block of given selection.
-*/
-const getParentBlock = (editor, type, item) => {
-  const { value } = editor;
-  const { document } = value;
-  return document.getClosest(item.key, parent => parent.type === type);
-};
-
-/**
-* Return type of given selected parent.
-*/
-const getParentBlockType = block => (block ? block.type : block);
-
-/**
-* Check if the any of the currently selected blocks are of `type`.
-*/
-const hasBlock = (editor, type) => {
-  const { value } = editor;
-  const { document } = value;
-  const selectListItem = getSelectedBlock(editor, 'list_item');
-  if (selectListItem) {
-    const parentBlock = getParentBlock(editor, type, selectListItem);
-    const parentBlockType = getParentBlockType(parentBlock);
-    return value
-      .blocks.some(block => !!document
-        .getClosest(block.key, parent => parent.type === parentBlockType));
-  }
-  return value.blocks.some(node => node.type === type);
-};
-
-/**
- * When clicking a link, if the selection has a link in it, remove the link.
- * Otherwise, add a new link with an href and text.
- */
-const onClickLink = (event, editor) => {
-  event.preventDefault();
-
-  const { value } = editor;
-  const hasLinksBool = hasLinks(editor);
-
-  if (hasLinksBool) {
-    editor.command(unwrapLink);
-  } else if (value.selection.isExpanded) {
-    const href = window.prompt('Enter the URL of the link:');
-
-    if (href === null) {
-      return;
-    }
-
-    editor.command(wrapLink, href);
-  } else {
-    const href = window.prompt('Enter the URL of the link:');
-
-    if (href === null) {
-      return;
-    }
-
-    const text = window.prompt('Enter the text for the link:');
-
-    if (text === null) {
-      return;
-    }
-
-    editor
-      .insertText(text)
-      .moveFocusBackward(text.length)
-      .command(wrapLink, href);
-  }
-};
-
 export default class FormatToolbar extends React.Component {
   /**
    * When a mark button is clicked, toggle undo or redo.
@@ -198,53 +87,43 @@ export default class FormatToolbar extends React.Component {
    */
   onClickBlock(event, type) {
     event.preventDefault();
-
     const { editor } = this.props;
-    const { value } = editor;
-    const { document } = value;
     const oppType = (type === 'ol_list' ? 'ul_list' : 'ol_list');
-
-    // Handle everything but list buttons.
+    // Handle everything but list buttons, such as quotes.
     if (type !== 'ol_list' && type !== 'ul_list') {
-      const isActive = hasBlock(editor, type);
-      const isList = hasBlock(editor, 'list_item');
-
+      const isActive = action.hasBlock(editor, type);
+      const isList = action.hasBlock(editor, 'list_item');
+      // Click quote on a current list.
       if (isList) {
-        // THIS IS if you make a list item into quote
         editor.withoutNormalizing(() => {
           editor
             .setBlocks(isActive ? DEFAULT_NODE : type)
             .unwrapBlock('list');
         });
+      // Click quote on a paragraph or quote.
       } else {
         editor.setBlocks(isActive ? DEFAULT_NODE : type);
       }
+    // Handle the extra wrapping required for list buttons.
     } else {
-      // Handle the extra wrapping required for list buttons.
-      const isList = hasBlock(editor, 'list_item');
-      const isType = value.blocks
-        .some(block => !!document.getClosest(block.key, parent => parent.type === type));
-
+      const isList = action.getListBool(editor, type);
+      const isType = action.getTypeBool(editor, type);
+      // Selection is a list of button type.
       if (isList && isType) {
-        // if what is selected is ALREADY a list
-        console.log('Number 1');
-
         editor.withoutNormalizing(() => {
           editor
             .setBlocks(DEFAULT_NODE)
             .unwrapBlock(type);
         });
+      // Selection is a list but not of button type.
       } else if (isList) {
-        // if what is selected is NOT a list
-        console.log('Number 2');
-
         editor.withoutNormalizing(() => {
           editor
             .unwrapBlock(oppType)
             .wrapBlock(type);
         });
+      // Selection is not a list.
       } else {
-        console.log('Number 3');
         editor.withoutNormalizing(() => {
           editor.setBlocks('list_item').wrapBlock(type);
         });
@@ -257,9 +136,9 @@ export default class FormatToolbar extends React.Component {
    */
   renderMarkButton(type, icon, hi, wi, pa, vBox) {
     const { editor } = this.props;
-    const isActive = hasMark(editor, type);
-    const fillActivity = isActive ? dgColor : mgColor;
-    const bgActivity = isActive ? lgColor : whColor;
+    const isActive = action.hasMark(editor, type);
+    const fillActivity = isActive ? darkGrey : mediumGrey;
+    const bgActivity = isActive ? lightGrey : whiteColor;
 
     return (
       <SvgTester
@@ -280,9 +159,9 @@ export default class FormatToolbar extends React.Component {
    */
   renderBlockButton(type, icon, hi, wi, pa, vBox, props) {
     const { editor } = this.props;
-    const isActive = hasBlock(editor, type);
-    const fillActivity = isActive ? dgColor : mgColor;
-    const bgActivity = isActive ? lgColor : whColor;
+    const isActive = action.hasBlock(editor, type);
+    const fillActivity = isActive ? darkGrey : mediumGrey;
+    const bgActivity = isActive ? lightGrey : whiteColor;
 
     return (
       <SvgTester
@@ -304,9 +183,9 @@ export default class FormatToolbar extends React.Component {
    */
   renderLinkButton(type, icon, hi, wi, pa, vBox) {
     const { editor } = this.props;
-    const isActive = hasLinks(editor);
-    const fillActivity = isActive ? lkColor : mgColor;
-    const bgActivity = isActive ? lgColor : whColor;
+    const isActive = action.hasLinks(editor);
+    const fillActivity = isActive ? linkColor : mediumGrey;
+    const bgActivity = isActive ? lightGrey : whiteColor;
 
     return (
       <SvgTester
@@ -316,7 +195,7 @@ export default class FormatToolbar extends React.Component {
         height={hi}
         padding={pa}
         viewBox={vBox}
-        onPointerDown={event => onClickLink(event, this.props.editor)}>
+        onPointerDown={event => action.onClickLink(event, this.props.editor)}>
           {icon(fillActivity)}
       </ SvgTester>
     );
@@ -329,13 +208,13 @@ export default class FormatToolbar extends React.Component {
     return (
       <SvgTester
         aria-label={type}
-        background={whColor}
+        background={whiteColor}
         width={wi}
         height={hi}
         padding={pa}
         viewBox={vBox}
         onPointerDown={event => this.onClickHistory(event, action, this.props.editor)}>
-          {icon(mgColor)}
+          {icon(mediumGrey)}
       </ SvgTester>
     );
   }
