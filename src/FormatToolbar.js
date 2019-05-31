@@ -96,19 +96,42 @@ const hasLinks = (editor) => {
 };
 
 /**
-* Check if the any of the currently selected blocks are of `type`.
-*/
-const hasBlock = (editor, type) => {
-  const { value } = editor;
-  return value.blocks.some(node => node.type === type);
-};
-
-/**
 * Return selected block of given type.
 */
 const getSelectedBlock = (editor, type) => {
   const { value } = editor;
   return value.blocks.find(node => node.type === type);
+};
+
+/**
+* Return parent block of given selection.
+*/
+const getParentBlock = (editor, type, item) => {
+  const { value } = editor;
+  const { document } = value;
+  return document.getClosest(item.key, parent => parent.type === type);
+};
+
+/**
+* Return type of given selected parent.
+*/
+const getParentBlockType = block => (block ? block.type : block);
+
+/**
+* Check if the any of the currently selected blocks are of `type`.
+*/
+const hasBlock = (editor, type) => {
+  const { value } = editor;
+  const { document } = value;
+  const selectListItem = getSelectedBlock(editor, 'list_item');
+  if (selectListItem) {
+    const parentBlock = getParentBlock(editor, type, selectListItem);
+    const parentBlockType = getParentBlockType(parentBlock);
+    return value
+      .blocks.some(block => !!document
+        .getClosest(block.key, parent => parent.type === parentBlockType));
+  }
+  return value.blocks.some(node => node.type === type);
 };
 
 /**
@@ -439,8 +462,6 @@ export default class FormatToolbar extends React.Component {
             'redo'
           )
       }
-        {/* { this.renderBlockButton('heading_one', 'text height')} */}
-        {/* { this.renderBlockButton('heading_two', 'text height', smallIcon)} */}
         { pluginManager.renderToolbar(editor)}
         <VertDivider />
       </StyledToolbar>,
