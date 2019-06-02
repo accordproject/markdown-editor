@@ -11,11 +11,11 @@ import { Card } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import baseSchema from '../schema';
-// import FromMarkdown from '../markdown/fromMarkdown';
 import ToMarkdown from '../markdown/toMarkdown';
 import PluginManager from '../PluginManager';
 import { FromHTML } from '../html/fromHTML';
 import FormatToolbar from '../FormatToolbar';
+import initialValue from './default';
 
 import '../styles.css';
 
@@ -52,129 +52,7 @@ const ToolbarWrapper = styled.div`
   margin-bottom: 1px;
 `;
 
-const defaultValue = Value.fromJSON({
-  object: 'value',
-  document: {
-    object: 'document',
-    data: {},
-    nodes: [
-      {
-        object: 'block',
-        type: 'heading_one',
-        data: {},
-        nodes: [
-          {
-            object: 'text',
-            text: 'Supply Agreement',
-            marks: []
-          }
-        ]
-      },
-      {
-        object: 'block',
-        type: 'paragraph',
-        data: {},
-        nodes: [
-          {
-            object: 'text',
-            text: 'This is a supply agreement between Party A and Party B.',
-            marks: []
-          }
-        ]
-      },
-      {
-        object: 'block',
-        type: 'heading_one',
-        data: {},
-        nodes: [
-          {
-            object: 'text',
-            text: 'Payment',
-            marks: []
-          }
-        ]
-      },
-      {
-        object: 'block',
-        type: 'clause',
-        data: {
-          tag: 'clause',
-          attributes: {
-            src: 'https://templates.accordproject.org/archives/full-payment-upon-signature@0.7.1.cta'
-          },
-          attributeString: 'src = "https://templates.accordproject.org/archives/full-payment-upon-signature@0.7.1.cta"',
-          content: '\n  Upon the signing of this Agreement, "Dan" shall pay the total purchase price to "Steve" in the amount of 0.01 USD.\n  ',
-          closed: false
-        },
-        nodes: [
-          {
-            object: 'block',
-            type: 'paragraph',
-            data: {},
-            nodes: [
-              {
-                object: 'text',
-                text: '\n  Upon the signing of this Agreement, "Dan" shall pay the total purchase price to "Steve" in the amount of 0.01 USD.\n  ',
-                marks: []
-              }
-            ]
-          }
-        ]
-      },
-      {
-        object: 'block',
-        type: 'heading_two',
-        data: {},
-        nodes: [
-          {
-            object: 'text',
-            text: 'Late Delivery And Penalty',
-            marks: []
-          }
-        ]
-      },
-      {
-        object: 'block',
-        type: 'clause',
-        data: {
-          tag: 'clause',
-          attributes: {
-            src: 'https://templates.accordproject.org/archives/latedeliveryandpenalty@0.13.1.cta'
-          },
-          attributeString: 'src = "https://templates.accordproject.org/archives/latedeliveryandpenalty@0.13.1.cta"',
-          content: '\n  Late Delivery and Penalty. In case of delayed delivery except for Force Majeure cases, "Dan" (the Seller) shall pay to "Steve" (the Buyer) for every 2 days of delay penalty amounting to 10.5% of the total value of the Equipment whose delivery has been delayed. Any fractional part of a days is to be considered a full days. The total amount of penalty shall not however, exceed 55% of the total value of the Equipment involved in late delivery. If the delay is more than 15 days, the Buyer is entitled to terminate this Contract.\n  ',
-          closed: false
-        },
-        nodes: [
-          {
-            object: 'block',
-            type: 'paragraph',
-            data: {},
-            nodes: [
-              {
-                object: 'text',
-                text: '\n  Late Delivery and Penalty. In case of delayed delivery except for Force Majeure cases, "Dan" (the Seller) shall pay to "Steve" (the Buyer) for every 2 days of delay penalty amounting to 10.5% of the total value of the Equipment whose delivery has been delayed. Any fractional part of a days is to be considered a full days. The total amount of penalty shall not however, exceed 55% of the total value of the Equipment involved in late delivery. If the delay is more than 15 days, the Buyer is entitled to terminate this Contract.\n  ',
-                marks: []
-              }
-            ]
-          }
-        ]
-      },
-      {
-        object: 'block',
-        type: 'paragraph',
-        data: {},
-        nodes: [
-          {
-            object: 'text',
-            text: 'End.',
-            marks: []
-          }
-        ]
-      }
-    ]
-  }
-});
+const defaultValue = Value.fromJSON(initialValue);
 
 /**
  * a utility function to generate a random node id for annotations
@@ -213,11 +91,6 @@ function SlateAsInputEditor(props) {
   const editorRef = useRef(null);
 
   /**
-   * Whether to show the Slate editor
-   */
-  const [showSlate, setShowSlate] = useState(true);
-
-  /**
    * Current Slate Value, initialized by converting props.markdown
    * to a Slate Value
    */
@@ -232,8 +105,18 @@ function SlateAsInputEditor(props) {
    * Destructure props for efficiency
    */
   const {
-    markdownMode, onChange, plugins, lockText
+    onChange, plugins, lockText
   } = props;
+
+  /**
+   * Allow setting slate value imperatively
+   */
+  const setValue = useCallback((slateValue) => {
+    if (editorRef && editorRef.current) {
+      const editor = editorRef.current;
+      editor.setValue(slateValue);
+    }
+  }, []);
 
   /**
    * Returns true if the editor is in lockText mode
@@ -267,9 +150,8 @@ function SlateAsInputEditor(props) {
     const pluginManager = new PluginManager(plugins);
     const toMarkdown = new ToMarkdown(pluginManager);
     const newMarkdown = toMarkdown.convert(slateValue);
-    console.log('in useEffect markdown', newMarkdown);
     onChange(slateValue, newMarkdown);
-  }, [markdownMode, onChange, plugins, slateValue]);
+  }, [onChange, plugins, slateValue]);
 
   /**
    * - Set a lockText annotation on the editor equal to props.lockText
@@ -299,7 +181,7 @@ function SlateAsInputEditor(props) {
         }
       });
     }
-  }, [lockText, markdownMode]);
+  }, [lockText]);
 
   /**
    * When the Slate Value changes or markdownMode changes
@@ -604,14 +486,6 @@ function SlateAsInputEditor(props) {
   };
 
   /**
-   * Toggle whether to show the Slate editor
-   * or the Markdown editor
-   */
-  const toggleShowSlate = () => {
-    setShowSlate(!showSlate);
-  };
-
-  /**
    * When in lockText mode prevent edits to non-variables
    * @param {*} event
    * @param {*} editor
@@ -655,6 +529,7 @@ function SlateAsInputEditor(props) {
               ref={editorRef}
               className="doc-inner"
               value={slateValue}
+              readOnly={props.readOnly}
               onChange={({ value }) => {
                 setSlateValue(value);
               }}
@@ -698,14 +573,7 @@ SlateAsInputEditor.propTypes = {
   onChange: PropTypes.func.isRequired,
 
   /**
-   * When set the Slate editor is read-only and updated
-   * from markdown state.
-   */
-  markdownMode: PropTypes.bool,
-
-  /**
-   * If true (and iff not in markdownMode) then
-   * only variables are editable in the Slate editor.
+   * If true then only variables are editable in the Slate editor.
    */
   lockText: PropTypes.bool.isRequired,
 
@@ -713,6 +581,11 @@ SlateAsInputEditor.propTypes = {
    * If true then show the edit button.
    */
   showEditButton: PropTypes.bool,
+
+  /**
+   * When set to the true the contents of the editor are read-only
+   */
+  readOnly: PropTypes.bool,
 
   /**
    * An array of plugins to extend the functionality of the editor
