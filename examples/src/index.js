@@ -1,10 +1,9 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   Divider, Grid, Segment
 } from 'semantic-ui-react';
 
 import ReactDOM from 'react-dom';
-import { Value } from 'slate';
 import './index.css';
 import MarkdownAsInputEditor from '../../src/MarkdownAsInputEditor';
 import SlateAsInputEditor from '../../src/SlateAsInputEditor';
