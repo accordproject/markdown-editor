@@ -109,16 +109,6 @@ function SlateAsInputEditor(props) {
   } = props;
 
   /**
-   * Allow setting slate value imperatively
-   */
-  const setValue = useCallback((slateValue) => {
-    if (editorRef && editorRef.current) {
-      const editor = editorRef.current;
-      editor.setValue(slateValue);
-    }
-  }, []);
-
-  /**
    * Returns true if the editor is in lockText mode
    * Note that we have to use an annotation for lockText
    * (synced with props.lockText) because Slate doesn't update
