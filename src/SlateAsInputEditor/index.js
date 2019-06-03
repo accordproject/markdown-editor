@@ -147,6 +147,13 @@ function SlateAsInputEditor(props) {
   }, [onChange, plugins, slateValue]);
 
   /**
+   * - Updates the Slate value on state when props.value changes
+   */
+  useEffect(() => {
+    setSlateValue(props.value ? Value.fromJSON(props.value) : defaultValue);
+  }, [props.value]);
+
+  /**
    * - Set a lockText annotation on the editor equal to props.lockText
    */
   useEffect(() => {
@@ -516,26 +523,25 @@ function SlateAsInputEditor(props) {
   const card = <Card fluid>
   <Card.Content>
   <EditorWrapper>
-              <
-// @ts-ignore
-              Editor
-              ref={editorRef}
-              className="doc-inner"
-              value={slateValue}
-              readOnly={props.readOnly}
-              onChange={({ value }) => {
-                setSlateValue(value);
-              }}
-              schema={slateSchema}
-              plugins={props.plugins}
-              onBeforeInput={onBeforeInput}
-              onKeyDown={onKeyDown}
-              onPaste={onPaste}
-              renderBlock={renderBlock}
-              renderInline={renderInline}
-              renderMark={renderMark}
-              renderAnnotation={renderAnnotation}
-              renderEditor={renderEditor}/>
+    <Editor
+      ref={editorRef}
+      className="doc-inner"
+      value={slateValue}
+      readOnly={props.readOnly}
+      onChange={({ value }) => {
+        setSlateValue(value);
+      }}
+      schema={slateSchema}
+      plugins={props.plugins}
+      onBeforeInput={onBeforeInput}
+      onKeyDown={onKeyDown}
+      onPaste={onPaste}
+      renderBlock={renderBlock}
+      renderInline={renderInline}
+      renderMark={renderMark}
+      renderAnnotation={renderAnnotation}
+      renderEditor={renderEditor}
+    />
     </EditorWrapper>
   </Card.Content>
 </Card>;
