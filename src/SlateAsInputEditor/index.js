@@ -94,7 +94,10 @@ function SlateAsInputEditor(props) {
    * Current Slate Value, initialized by converting props.markdown
    * to a Slate Value
    */
-  const [slateValue, setSlateValue] = useState(props.value || Value.fromJSON(defaultValue));
+  const [
+    slateValue,
+    setSlateValue
+  ] = useState(props.value ? Value.fromJSON(props.value) : defaultValue);
 
   /**
    * Slate Schema augmented by plugins
