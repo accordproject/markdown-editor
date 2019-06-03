@@ -1,21 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
+import {
+  Divider, Grid, Segment
+} from 'semantic-ui-react';
+
 import ReactDOM from 'react-dom';
-import { Checkbox, Segment } from 'semantic-ui-react';
 import './index.css';
-import { MarkdownEditor } from '../../src';
+import MarkdownAsInputEditor from '../../src/MarkdownAsInputEditor';
+import SlateAsInputEditor from '../../src/SlateAsInputEditor';
+
 import * as serviceWorker from './serviceWorker';
 import 'semantic-ui-css/semantic.min.css';
 import List from '../../src/plugins/list';
 import Video from '../../src/plugins/video';
 
 const plugins = [List(), Video()];
-
-function storeLocal(value, markdown) {
-  // console.log(markdown);
-  localStorage.setItem('markdown-editor', markdown);
-}
-
-const defaultMarkdown2 = 'Foo <variable src="bar">a variable</variable> within it.';
 
 const defaultMarkdown = `# Heading One
 This is text. This is *italic* text. This is **bold** text. This is a [link](https://clause.io). This is \`inline code\`.
@@ -62,38 +60,41 @@ Another video:
  */
 function Demo() {
   /**
-   * Whether to lock text
+   * Current Slate Value
    */
-  const [lockText, setLockText] = useState(true);
+  const [slateValue, setSlateValue] = useState();
 
   /**
-   * Whether use markdown mode
+   * Called when the markdown changes
    */
-  const [markdownMode, setMarkdownMode] = useState(false);
+  const onMarkdownChange = useCallback((slateValue, markdown) => {
+    localStorage.setItem('markdown-editor', markdown);
+    console.log('onMarkdownChange', markdown);
+    setSlateValue(slateValue);
+  }, []);
 
   /**
-   * Toggle whether to lock the text
+   * Called when the Slate Value changes
    */
-  const toggleLockText = () => {
-    setLockText(!lockText);
-  };
-
-  /**
-   * Toggle whether to use markdown model
-   */
-  const toggleMarkdownMode = () => {
-    setMarkdownMode(!markdownMode);
-  };
+  const onSlateValueChange = useCallback((slateValue, markdown) => {
+    localStorage.setItem('slate-editor-value', slateValue);
+    console.log('onSlateValueChange', markdown);
+  }, []);
 
   return (
     <div>
-      <Segment raised>
-        <Checkbox toggle label='Lock Text' onChange={toggleLockText} checked={lockText} />
-      </Segment>
-      <Segment raised>
-        <Checkbox toggle label='Markdown Mode' onChange={toggleMarkdownMode} checked={markdownMode} />
-      </Segment>
-      <MarkdownEditor plugins={plugins} lockText={lockText} markdownMode={markdownMode} markdown={defaultMarkdown} onChange={storeLocal}/>
+      <Segment>
+    <Grid columns={2}>
+      <Grid.Column>
+        <MarkdownAsInputEditor plugins={plugins} markdown={defaultMarkdown} onChange={onMarkdownChange}/>
+      </Grid.Column>
+
+      <Grid.Column>
+        <SlateAsInputEditor readOnly={false} lockText={false} plugins={plugins} value={slateValue} onChange={onSlateValueChange}/>
+      </Grid.Column>
+    </Grid>
+    <Divider vertical>Preview</Divider>
+  </Segment>
     </div>
   );
 }

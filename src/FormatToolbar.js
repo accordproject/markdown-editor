@@ -5,17 +5,17 @@ import styled from 'styled-components';
 
 import * as action from './toolbarMethods';
 
-import * as bIcon from '../public/icons/bold';
-import * as iIcon from '../public/icons/italic';
-import * as uIcon from '../public/icons/underline';
-import * as cIcon from '../public/icons/code';
-import * as qIcon from '../public/icons/open-quote';
-import * as olIcon from '../public/icons/OL';
-import * as ulIcon from '../public/icons/UL';
-import * as pIcon from '../public/icons/param';
-import * as lIcon from '../public/icons/hyperlink';
-import * as unIcon from '../public/icons/navigation-left';
-import * as reIcon from '../public/icons/navigation-right';
+import * as bIcon from './icons/bold';
+import * as iIcon from './icons/italic';
+import * as uIcon from './icons/underline';
+import * as cIcon from './icons/code';
+import * as qIcon from './icons/open-quote';
+import * as olIcon from './icons/OL';
+import * as ulIcon from './icons/UL';
+import * as pIcon from './icons/param';
+import * as lIcon from './icons/hyperlink';
+import * as unIcon from './icons/navigation-left';
+import * as reIcon from './icons/navigation-right';
 
 const whiteColor = '#FFFFFF';
 const lightGrey = '#F0F0F0';
