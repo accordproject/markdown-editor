@@ -42,9 +42,6 @@ const EditorWrapper = styled.div`
 `;
 
 const ToolbarWrapper = styled.div`
-  display: grid
-  grid-template-columns: 60% 40%;
-  grid-template-rows: 100%;
   height: 36px;
   border: 1px solid #414F58;
   background: #FFFFFF;

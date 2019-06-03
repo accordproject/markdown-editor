@@ -17,6 +17,8 @@ import * as lIcon from './icons/hyperlink';
 import * as unIcon from './icons/navigation-left';
 import * as reIcon from './icons/navigation-right';
 
+import './toolbar.css';
+
 const whiteColor = '#FFFFFF';
 const lightGrey = '#F0F0F0';
 const mediumGrey = '#949CA2';
@@ -27,15 +29,7 @@ const DEFAULT_NODE = 'paragraph';
 
 const StyledToolbar = styled.div`
   position: relative;
-  display: grid
-  grid-column-start: 1;
-  grid-row-start: 1;
   justify-self: end;
-  grid-template-columns:
-    auto auto auto auto
-    auto auto auto auto
-    auto auto auto auto
-    auto auto auto auto;
   width: 450px;
   background-color: #FFFFFF !important;
 `;
@@ -61,6 +55,21 @@ const VertDivider = styled.div`
   border: 1px solid #EFEFEF;
   top: 10px;
   place-self: center;
+  @media (max-width: 1050px) {
+    display: none;
+  }
+`;
+
+const VertDividerResponsive = styled.div`
+  box-sizing: border-box;
+  height: 24px;
+  width: 1px;
+  border: 1px solid #EFEFEF;
+  top: 10px;
+  place-self: center;
+  @media (max-width: 1340px) {
+    display: none;
+  }
 `;
 
 export default class FormatToolbar extends React.Component {
@@ -134,7 +143,7 @@ export default class FormatToolbar extends React.Component {
   /**
    * Render a mark-toggling toolbar button.
    */
-  renderMarkButton(type, icon, hi, wi, pa, vBox) {
+  renderMarkButton(type, icon, hi, wi, pa, vBox, classInput) {
     const { editor } = this.props;
     const isActive = action.hasMark(editor, type);
     const fillActivity = isActive ? darkGrey : mediumGrey;
@@ -148,6 +157,7 @@ export default class FormatToolbar extends React.Component {
         width={wi}
         height={hi}
         padding={pa}
+        className={classInput}
         onPointerDown={event => this.onClickMark(event, type)}>
           {icon(fillActivity)}
       </ ToolbarIcon>
@@ -157,7 +167,7 @@ export default class FormatToolbar extends React.Component {
   /**
    * Render a block modifying button
    */
-  renderBlockButton(type, icon, hi, wi, pa, vBox, props) {
+  renderBlockButton(type, icon, hi, wi, pa, vBox, classInput, props) {
     const { editor } = this.props;
     const isActive = action.hasBlock(editor, type);
     const fillActivity = isActive ? darkGrey : mediumGrey;
@@ -171,6 +181,7 @@ export default class FormatToolbar extends React.Component {
         width={wi}
         height={hi}
         padding={pa}
+        className={classInput}
         {...props}
         onPointerDown={event => this.onClickBlock(event, type, props)}>
           {icon(fillActivity)}
@@ -181,7 +192,7 @@ export default class FormatToolbar extends React.Component {
   /**
    * Render a link-toggling toolbar button.
    */
-  renderLinkButton(type, icon, hi, wi, pa, vBox) {
+  renderLinkButton(type, icon, hi, wi, pa, vBox, classInput) {
     const { editor } = this.props;
     const isActive = action.hasLinks(editor);
     const fillActivity = isActive ? linkColor : mediumGrey;
@@ -195,6 +206,7 @@ export default class FormatToolbar extends React.Component {
         height={hi}
         padding={pa}
         viewBox={vBox}
+        className={classInput}
         onPointerDown={event => action.onClickLink(event, this.props.editor)}>
           {icon(fillActivity)}
       </ ToolbarIcon>
@@ -204,7 +216,7 @@ export default class FormatToolbar extends React.Component {
   /**
    * Render a history-toggling toolbar button.
    */
-  renderHistoryButton(type, icon, hi, wi, pa, vBox, action) {
+  renderHistoryButton(type, icon, hi, wi, pa, vBox, action, classInput) {
     return (
       <ToolbarIcon
         aria-label={type}
@@ -213,6 +225,7 @@ export default class FormatToolbar extends React.Component {
         height={hi}
         padding={pa}
         viewBox={vBox}
+        className={classInput}
         onPointerDown={event => this.onClickHistory(event, action, this.props.editor)}>
           {icon(mediumGrey)}
       </ ToolbarIcon>
@@ -233,7 +246,8 @@ export default class FormatToolbar extends React.Component {
             bIcon.height(),
             bIcon.width(),
             bIcon.padding(),
-            bIcon.vBox()
+            bIcon.vBox(),
+            'toolbar-1x1'
           )
         }
         {
@@ -243,7 +257,8 @@ export default class FormatToolbar extends React.Component {
             iIcon.height(),
             iIcon.width(),
             iIcon.padding(),
-            iIcon.vBox()
+            iIcon.vBox(),
+            'toolbar-1x2'
           )
         }
         {
@@ -253,10 +268,11 @@ export default class FormatToolbar extends React.Component {
             uIcon.height(),
             uIcon.width(),
             uIcon.padding(),
-            uIcon.vBox()
+            uIcon.vBox(),
+            'toolbar-1x3'
           )
         }
-        <VertDivider />
+        <VertDivider className='toolbar-1x4'/>
         {
           this.renderMarkButton(
             cIcon.type(),
@@ -264,7 +280,8 @@ export default class FormatToolbar extends React.Component {
             cIcon.height(),
             cIcon.width(),
             cIcon.padding(),
-            cIcon.vBox()
+            cIcon.vBox(),
+            'toolbar-1x5'
           )
         }
         {
@@ -274,7 +291,8 @@ export default class FormatToolbar extends React.Component {
             qIcon.height(),
             qIcon.width(),
             qIcon.padding(),
-            qIcon.vBox()
+            qIcon.vBox(),
+            'toolbar-1x6'
           )
         }
         {
@@ -284,7 +302,8 @@ export default class FormatToolbar extends React.Component {
             ulIcon.height(),
             ulIcon.width(),
             ulIcon.padding(),
-            ulIcon.vBox()
+            ulIcon.vBox(),
+            'toolbar-1x7'
           )
         }
         {
@@ -294,10 +313,11 @@ export default class FormatToolbar extends React.Component {
             olIcon.height(),
             olIcon.width(),
             olIcon.padding(),
-            olIcon.vBox()
+            olIcon.vBox(),
+            'toolbar-1x8'
           )
         }
-        <VertDivider />
+        <VertDivider className='toolbar-1x9' />
         {
           this.renderMarkButton(
             pIcon.type(),
@@ -305,7 +325,8 @@ export default class FormatToolbar extends React.Component {
             pIcon.height(),
             pIcon.width(),
             pIcon.padding(),
-            pIcon.vBox()
+            pIcon.vBox(),
+            'toolbar-1x10'
           )
         }
         {
@@ -315,10 +336,11 @@ export default class FormatToolbar extends React.Component {
             lIcon.height(),
             lIcon.width(),
             lIcon.padding(),
-            lIcon.vBox()
+            lIcon.vBox(),
+            'toolbar-1x11'
           )
         }
-        <VertDivider />
+        <VertDividerResponsive className='toolbar-2x1' />
         {
           this.renderHistoryButton(
             unIcon.type(),
@@ -327,7 +349,8 @@ export default class FormatToolbar extends React.Component {
             unIcon.width(),
             unIcon.padding(),
             unIcon.vBox(),
-            'undo'
+            'undo',
+            'toolbar-2x2'
           )
       }
         {
@@ -338,11 +361,12 @@ export default class FormatToolbar extends React.Component {
             reIcon.width(),
             reIcon.padding(),
             reIcon.vBox(),
-            'redo'
+            'redo',
+            'toolbar-2x3'
           )
       }
         { pluginManager.renderToolbar(editor)}
-        <VertDivider />
+        <VertDivider className='toolbar-2x4'/>
       </StyledToolbar>,
       root,
     );
