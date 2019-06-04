@@ -417,7 +417,6 @@ export default class FormatToolbar extends React.Component {
           )
       }
         { pluginManager.renderToolbar(editor)}
-        <VertDivider className='toolbar-2x4'/>
       </StyledToolbar>,
       root,
     );
