@@ -30,7 +30,7 @@ const DEFAULT_NODE = 'paragraph';
 
 const StyledToolbar = styled.div`
   position: relative;
-  justify-self: end;
+  justify-self: center;
   width: 450px;
   background-color: #FFFFFF !important;
 `;
@@ -56,22 +56,11 @@ const VertDivider = styled.div`
   border: 1px solid #EFEFEF;
   top: 10px;
   place-self: center;
-  @media (max-width: 1050px) {
-    display: none;
-  }
 `;
 
-const VertDividerResponsive = styled.div`
-  box-sizing: border-box;
-  height: 24px;
-  width: 1px;
-  border: 1px solid #EFEFEF;
-  top: 10px;
-  place-self: center;
-  @media (max-width: 1340px) {
-    display: none;
-  }
-`;
+const DropdownStyle = {
+  alignSelf: 'center',
+};
 
 const DropdownHeader1 = {
   fontSize: '25px',
@@ -266,6 +255,7 @@ export default class FormatToolbar extends React.Component {
           className='toolbar-0x0'
           openOnFocus
           simple
+          style={ DropdownStyle }
         >
           <Dropdown.Menu>
             <Dropdown.Item
@@ -391,7 +381,7 @@ export default class FormatToolbar extends React.Component {
             'toolbar-2x1'
           )
         }
-        <VertDividerResponsive className='toolbar-4x3' />
+        <VertDivider className='toolbar-4x3' />
         {
           this.renderHistoryButton(
             unIcon.type(),
