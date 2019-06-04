@@ -2,9 +2,19 @@
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/952fdc5d-a2bb-4895-a375-25ea1c6f30d8/deploy-status)](https://app.netlify.com/sites/accordproject-markdown-editor/deploys) [![npm version](https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor.svg)](https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor)
 
-This is a React component for a rich text editor that can read and write [CommonMark](https://commonmark.org) Markdown text. The editor uses [Slate](https://docs.slatejs.org/).
+This repo contains two React-based editors:
+1. A WYSIWYG  [Slate](https://docs.slatejs.org/)-based editor that edits rich text and calls an `onChange`
+   callback with the modified Slate DOM and the [CommonMark](https://commonmark.org markdown serilization.
+2. A TextArea-based markdown editor that edits markdown text and calls an `onChange`
+   callback with the equivalent Slate DOM and the modified markdown text.
 
-The editor is plugin based and includes a static formatting toolbar.
+Using these editors you could allow people to either edit rich formatted text using
+markdown (and provide a WYSIWYG preview), or allow them to edit using a WYSIWYG
+editor and use markdown for persistence.
+
+The editor is plugin-based and includes a formatting toolbar. Plugins are used to
+extend the core editor with support with new formatting functionality and/or new
+types of blocks.
 
 This component is Apache-2 licensed Open Source. Contributors welcome!
 
@@ -17,20 +27,20 @@ npm install @accordproject/markdown-editor
 ```
 
 ```
-import { MarkdownEditor } from '@accordproject/markdown-editor';
+import { SlateAsInputEditor } from '@accordproject/markdown-editor';
 import List from '@accordproject/markdown-editor/dist/plugins/list';
 import Video from '@accordproject/markdown-editor/dist/plugins/video';
 
 const plugins = [List(), Video()];
 
-function storeLocal(value, markdown) {
+function storeLocal(slateValue, markdown) {
   // console.log(markdown);
   localStorage.setItem('markdown-editor', markdown);
 }
 
 const defaultMarkdown = '# Hello World.';
 
-ReactDOM.render(<MarkdownEditor plugins={plugins} lockText={false} markdownMode={false} markdown={defaultMarkdown} onChange={storeLocal}/>
+ReactDOM.render(<SlateAsInputEditor plugins={plugins} lockText={false} onChange={storeLocal}/>
 , document.getElementById('root'));
 ```
 
@@ -44,8 +54,6 @@ The code for the sample `video` plugin used in the demo is here:
 https://github.com/accordproject/markdown-editor/blob/master/src/plugins/video.js
 
 ![overview image](overview.png)
-
-![markdown image](markdown.png)
 
 Run `npm start` and then navigate to: http://localhost:3001/examples
 

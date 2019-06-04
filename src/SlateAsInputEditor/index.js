@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import React, {
   useEffect,
   useState,
@@ -49,6 +63,7 @@ const ToolbarWrapper = styled.div`
   margin-bottom: 1px;
 `;
 
+// @ts-ignore
 const defaultValue = Value.fromJSON(initialValue);
 
 /**
@@ -83,13 +98,19 @@ function uuidv4() {
  */
 function SlateAsInputEditor(props) {
   /**
+   * Destructure props for efficiency
+   */
+  const {
+    onChange, plugins, lockText
+  } = props;
+
+  /**
    * A reference to the Slate Editor.
    */
   const editorRef = useRef(null);
 
   /**
-   * Current Slate Value, initialized by converting props.markdown
-   * to a Slate Value
+   * Current Slate Value
    */
   const [
     slateValue,
@@ -100,13 +121,6 @@ function SlateAsInputEditor(props) {
    * Slate Schema augmented by plugins
    */
   const [slateSchema, setSlateSchema] = useState(null);
-
-  /**
-   * Destructure props for efficiency
-   */
-  const {
-    onChange, plugins, lockText
-  } = props;
 
   /**
    * Returns true if the editor is in lockText mode
@@ -134,7 +148,8 @@ function SlateAsInputEditor(props) {
   }, [plugins]);
 
   /**
-   * - Updates the markdown when the Slate Value or the plugins change
+   * Calls onChange with the modified markdown when the
+   * Slate Value or the plugins change
    */
   useEffect(() => {
     const pluginManager = new PluginManager(plugins);
@@ -144,14 +159,14 @@ function SlateAsInputEditor(props) {
   }, [onChange, plugins, slateValue]);
 
   /**
-   * - Updates the Slate value on state when props.value changes
+   * Updates the Slate value in state when props.value changes
    */
   useEffect(() => {
     setSlateValue(props.value ? Value.fromJSON(props.value) : defaultValue);
   }, [props.value]);
 
   /**
-   * - Set a lockText annotation on the editor equal to props.lockText
+   * Set a lockText annotation on the editor equal to props.lockText
    */
   useEffect(() => {
     if (editorRef && editorRef.current) {
@@ -181,8 +196,7 @@ function SlateAsInputEditor(props) {
   }, [lockText]);
 
   /**
-   * When the Slate Value changes or markdownMode changes
-   * we update the variable annotations.
+   * When the Slate Value changes changes update the variable annotations.
    */
   useEffect(() => {
     if (editorRef && editorRef.current) {
@@ -401,10 +415,6 @@ function SlateAsInputEditor(props) {
     event.preventDefault();
     editor.setBlocks('paragraph');
 
-    // if (startBlock.type === 'list_item') {
-    //   editor.unwrapBlock('list');
-    // }
-
     return undefined;
   };
 
@@ -496,8 +506,9 @@ function SlateAsInputEditor(props) {
     event.preventDefault();
     return false;
   });
+
   /**
-   * Render the static-editing toolbar.
+   * Render the toolbar.
    */
   const renderEditor = useCallback((props, editor, next) => {
     const children = next();
@@ -515,7 +526,7 @@ function SlateAsInputEditor(props) {
   }, []);
 
   /**
-   * Render the component, based on showSlate
+   * Render the component
    */
   const card = <Card fluid>
   <Card.Content>
@@ -574,11 +585,6 @@ SlateAsInputEditor.propTypes = {
   lockText: PropTypes.bool.isRequired,
 
   /**
-   * If true then show the edit button.
-   */
-  showEditButton: PropTypes.bool,
-
-  /**
    * When set to the true the contents of the editor are read-only
    */
   readOnly: PropTypes.bool,
@@ -605,7 +611,6 @@ SlateAsInputEditor.propTypes = {
  * The default property values for this component
  */
 SlateAsInputEditor.defaultProps = {
-  showEditButton: true,
 };
 
 export default SlateAsInputEditor;
