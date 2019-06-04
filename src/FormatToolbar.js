@@ -263,7 +263,7 @@ export default class FormatToolbar extends React.Component {
       <StyledToolbar className="format-toolbar">
         <Dropdown
           text='Style'
-          className='toolbar-0x1'
+          className='toolbar-0x0'
           openOnFocus
           simple
         >
@@ -289,7 +289,7 @@ export default class FormatToolbar extends React.Component {
             />
           </Dropdown.Menu>
         </Dropdown>
-        <VertDivider className='toolbar-0x2'/>
+        <VertDivider className='toolbar-4x0'/>
         {
           this.renderMarkButton(
             bIcon.type(),
@@ -298,7 +298,7 @@ export default class FormatToolbar extends React.Component {
             bIcon.width(),
             bIcon.padding(),
             bIcon.vBox(),
-            'toolbar-1x1'
+            'toolbar-0x1'
           )
         }
         {
@@ -309,7 +309,7 @@ export default class FormatToolbar extends React.Component {
             iIcon.width(),
             iIcon.padding(),
             iIcon.vBox(),
-            'toolbar-1x2'
+            'toolbar-0x2'
           )
         }
         {
@@ -320,10 +320,10 @@ export default class FormatToolbar extends React.Component {
             uIcon.width(),
             uIcon.padding(),
             uIcon.vBox(),
-            'toolbar-1x3'
+            'toolbar-0x3'
           )
         }
-        <VertDivider className='toolbar-1x4'/>
+        <VertDivider className='toolbar-4x1'/>
         {
           this.renderMarkButton(
             cIcon.type(),
@@ -332,7 +332,7 @@ export default class FormatToolbar extends React.Component {
             cIcon.width(),
             cIcon.padding(),
             cIcon.vBox(),
-            'toolbar-1x5'
+            'toolbar-1x0'
           )
         }
         {
@@ -343,7 +343,7 @@ export default class FormatToolbar extends React.Component {
             qIcon.width(),
             qIcon.padding(),
             qIcon.vBox(),
-            'toolbar-1x6'
+            'toolbar-1x1'
           )
         }
         {
@@ -354,7 +354,7 @@ export default class FormatToolbar extends React.Component {
             ulIcon.width(),
             ulIcon.padding(),
             ulIcon.vBox(),
-            'toolbar-1x7'
+            'toolbar-1x2'
           )
         }
         {
@@ -365,10 +365,10 @@ export default class FormatToolbar extends React.Component {
             olIcon.width(),
             olIcon.padding(),
             olIcon.vBox(),
-            'toolbar-1x8'
+            'toolbar-1x3'
           )
         }
-        <VertDivider className='toolbar-1x9' />
+        <VertDivider className='toolbar-4x2' />
         {
           this.renderMarkButton(
             pIcon.type(),
@@ -377,7 +377,7 @@ export default class FormatToolbar extends React.Component {
             pIcon.width(),
             pIcon.padding(),
             pIcon.vBox(),
-            'toolbar-1x10'
+            'toolbar-2x0'
           )
         }
         {
@@ -388,10 +388,10 @@ export default class FormatToolbar extends React.Component {
             lIcon.width(),
             lIcon.padding(),
             lIcon.vBox(),
-            'toolbar-1x11'
+            'toolbar-2x1'
           )
         }
-        <VertDividerResponsive className='toolbar-2x1' />
+        <VertDividerResponsive className='toolbar-4x3' />
         {
           this.renderHistoryButton(
             unIcon.type(),
