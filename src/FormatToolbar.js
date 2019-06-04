@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { Dropdown } from 'semantic-ui-react';
 
 import * as action from './toolbarMethods';
 
@@ -29,7 +30,7 @@ const DEFAULT_NODE = 'paragraph';
 
 const StyledToolbar = styled.div`
   position: relative;
-  justify-self: end;
+  justify-self: center;
   width: 450px;
   background-color: #FFFFFF !important;
 `;
@@ -55,22 +56,32 @@ const VertDivider = styled.div`
   border: 1px solid #EFEFEF;
   top: 10px;
   place-self: center;
-  @media (max-width: 1050px) {
-    display: none;
-  }
 `;
 
-const VertDividerResponsive = styled.div`
-  box-sizing: border-box;
-  height: 24px;
-  width: 1px;
-  border: 1px solid #EFEFEF;
-  top: 10px;
-  place-self: center;
-  @media (max-width: 1340px) {
-    display: none;
-  }
-`;
+const DropdownStyle = {
+  alignSelf: 'center',
+};
+
+const DropdownHeader1 = {
+  fontSize: '25px',
+  lineHeight: '23px',
+  fontWeight: 'bold',
+  color: '#122330',
+};
+
+const DropdownHeader2 = {
+  fontSize: '20px',
+  lineHeight: '20px',
+  fontWeight: 'bold',
+  color: '#122330',
+};
+
+const DropdownHeader3 = {
+  fontSize: '16px',
+  lineHeight: '16px',
+  fontWeight: 'bold',
+  color: '#122330',
+};
 
 export default class FormatToolbar extends React.Component {
   /**
@@ -239,6 +250,36 @@ export default class FormatToolbar extends React.Component {
 
     return ReactDOM.createPortal(
       <StyledToolbar className="format-toolbar">
+        <Dropdown
+          text='Style'
+          className='toolbar-0x0'
+          openOnFocus
+          simple
+          style={ DropdownStyle }
+        >
+          <Dropdown.Menu>
+            <Dropdown.Item
+              text='Normal'
+              onClick={event => this.onClickBlock(event, 'paragraph')}
+            />
+            <Dropdown.Item
+              text='Header 1'
+              style={ DropdownHeader1 }
+              onClick={event => this.onClickBlock(event, 'heading_one')}
+            />
+            <Dropdown.Item
+              text='Header 2'
+              style={ DropdownHeader2 }
+              onClick={event => this.onClickBlock(event, 'heading_two')}
+            />
+            <Dropdown.Item
+              text='Header 3'
+              style={ DropdownHeader3 }
+              onClick={event => this.onClickBlock(event, 'heading_three')}
+            />
+          </Dropdown.Menu>
+        </Dropdown>
+        <VertDivider className='toolbar-4x0'/>
         {
           this.renderMarkButton(
             bIcon.type(),
@@ -247,7 +288,7 @@ export default class FormatToolbar extends React.Component {
             bIcon.width(),
             bIcon.padding(),
             bIcon.vBox(),
-            'toolbar-1x1'
+            'toolbar-0x1'
           )
         }
         {
@@ -258,7 +299,7 @@ export default class FormatToolbar extends React.Component {
             iIcon.width(),
             iIcon.padding(),
             iIcon.vBox(),
-            'toolbar-1x2'
+            'toolbar-0x2'
           )
         }
         {
@@ -269,10 +310,10 @@ export default class FormatToolbar extends React.Component {
             uIcon.width(),
             uIcon.padding(),
             uIcon.vBox(),
-            'toolbar-1x3'
+            'toolbar-0x3'
           )
         }
-        <VertDivider className='toolbar-1x4'/>
+        <VertDivider className='toolbar-4x1'/>
         {
           this.renderMarkButton(
             cIcon.type(),
@@ -281,7 +322,7 @@ export default class FormatToolbar extends React.Component {
             cIcon.width(),
             cIcon.padding(),
             cIcon.vBox(),
-            'toolbar-1x5'
+            'toolbar-1x0'
           )
         }
         {
@@ -292,7 +333,7 @@ export default class FormatToolbar extends React.Component {
             qIcon.width(),
             qIcon.padding(),
             qIcon.vBox(),
-            'toolbar-1x6'
+            'toolbar-1x1'
           )
         }
         {
@@ -303,7 +344,7 @@ export default class FormatToolbar extends React.Component {
             ulIcon.width(),
             ulIcon.padding(),
             ulIcon.vBox(),
-            'toolbar-1x7'
+            'toolbar-1x2'
           )
         }
         {
@@ -314,10 +355,10 @@ export default class FormatToolbar extends React.Component {
             olIcon.width(),
             olIcon.padding(),
             olIcon.vBox(),
-            'toolbar-1x8'
+            'toolbar-1x3'
           )
         }
-        <VertDivider className='toolbar-1x9' />
+        <VertDivider className='toolbar-4x2' />
         {
           this.renderMarkButton(
             pIcon.type(),
@@ -326,7 +367,7 @@ export default class FormatToolbar extends React.Component {
             pIcon.width(),
             pIcon.padding(),
             pIcon.vBox(),
-            'toolbar-1x10'
+            'toolbar-2x0'
           )
         }
         {
@@ -337,10 +378,10 @@ export default class FormatToolbar extends React.Component {
             lIcon.width(),
             lIcon.padding(),
             lIcon.vBox(),
-            'toolbar-1x11'
+            'toolbar-2x1'
           )
         }
-        <VertDividerResponsive className='toolbar-2x1' />
+        <VertDivider className='toolbar-4x3' />
         {
           this.renderHistoryButton(
             unIcon.type(),
@@ -366,7 +407,6 @@ export default class FormatToolbar extends React.Component {
           )
       }
         { pluginManager.renderToolbar(editor)}
-        <VertDivider className='toolbar-2x4'/>
       </StyledToolbar>,
       root,
     );

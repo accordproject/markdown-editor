@@ -142,6 +142,7 @@ function Video() {
       key={plugin}
       name='youtube'
       aria-label='youtube'
+      className='toolbar-2x4'
       onMouseDown={event => onClickButton(editor, event)}
     />);
   }

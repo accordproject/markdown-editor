@@ -89,10 +89,6 @@ function MarkdownEditor(props) {
    */
   const editorRef = useRef(null);
 
-  /**
-   * Whether to show the Slate editor
-   */
-  const [showSlate, setShowSlate] = useState(true);
 
   /**
    * Current Slate Value, initialized by converting props.markdown
@@ -510,14 +506,6 @@ function MarkdownEditor(props) {
   };
 
   /**
-   * Toggle whether to show the Slate editor
-   * or the Markdown editor
-   */
-  const toggleShowSlate = () => {
-    setShowSlate(!showSlate);
-  };
-
-  /**
    * When in lockText mode prevent edits to non-variables
    * @param {*} event
    * @param {*} editor
@@ -549,65 +537,37 @@ function MarkdownEditor(props) {
     );
   }, []);
 
-  /**
-   * Render the component, based on showSlate
-   */
-  const card = showSlate
-    ? <Card fluid>
-  <Card.Content>
-  <EditorWrapper>
-              <
-// @ts-ignore
-              Editor
-              ref={editorRef}
-              className="doc-inner"
-              readOnly={props.markdownMode}
-              value={slateValue}
-              onChange={({ value }) => {
-                if (!props.markdownMode) {
-                  setSlateValue(value);
-                }
-              }}
-              schema={slateSchema}
-              plugins={props.plugins}
-              onBeforeInput={onBeforeInput}
-              onKeyDown={onKeyDown}
-              onPaste={onPaste}
-              renderBlock={renderBlock}
-              renderInline={renderInline}
-              renderMark={renderMark}
-              renderAnnotation={renderAnnotation}
-              renderEditor={renderEditor}/>
-    </EditorWrapper>
-  </Card.Content>
-</Card>
-    : <Card fluid>
-  <Card.Content>
-  <TextareaAutosize
-                className={'textarea'}
-                width={'100%'}
-                placeholder={props.markdown}
-                readOnly={!props.markdownMode}
-                value={markdown}
-                // eslint-disable-next-line no-unused-vars
-                onChange={(evt, data) => {
-                  if (props.markdownMode) {
-                    setMarkdown(evt.target.value);
-                  }
-                }}
-              />
-  </Card.Content>
-</Card>;
-
   return (
     <div>
-      <ToolbarWrapper id="toolbarwrapperid">
-        { props.showEditButton
-          ? <Checkbox toggle label='Markdown' className='toolbarCheckbox' onChange={toggleShowSlate} checked={props.markdownMode ? showSlate : !showSlate} />
-          : null }
-      </ToolbarWrapper>
-      <Card.Group>
-        {card}
+      <ToolbarWrapper id="toolbarwrapperid" />
+        <Card.Group>
+          <Card fluid>
+            <Card.Content>
+              <EditorWrapper>
+                <Editor
+                  ref={editorRef}
+                  className="doc-inner"
+                  readOnly={props.markdownMode}
+                  value={slateValue}
+                  onChange={({ value }) => {
+                    if (!props.markdownMode) {
+                      setSlateValue(value);
+                    }
+                  }}
+                  schema={slateSchema}
+                  plugins={props.plugins}
+                  onBeforeInput={onBeforeInput}
+                  onKeyDown={onKeyDown}
+                  onPaste={onPaste}
+                  renderBlock={renderBlock}
+                  renderInline={renderInline}
+                  renderMark={renderMark}
+                  renderAnnotation={renderAnnotation}
+                  renderEditor={renderEditor}
+                />
+            </EditorWrapper>
+          </Card.Content>
+        </Card>
       </Card.Group>
     </div>
   );
@@ -641,11 +601,6 @@ MarkdownEditor.propTypes = {
   lockText: PropTypes.bool.isRequired,
 
   /**
-   * If true then show the edit button.
-   */
-  showEditButton: PropTypes.bool,
-
-  /**
    * An array of plugins to extend the functionality of the editor
    */
   plugins: PropTypes.arrayOf(PropTypes.shape({
@@ -662,12 +617,6 @@ MarkdownEditor.propTypes = {
     markdownTags: PropTypes.arrayOf(PropTypes.string).isRequired,
     schema: PropTypes.object.isRequired,
   })),
-};
-/**
- * The default property values for this component
- */
-MarkdownEditor.defaultProps = {
-  showEditButton: true,
 };
 
 export default MarkdownEditor;

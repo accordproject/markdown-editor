@@ -525,40 +525,35 @@ function SlateAsInputEditor(props) {
     );
   }, []);
 
-  /**
-   * Render the component
-   */
-  const card = <Card fluid>
-  <Card.Content>
-  <EditorWrapper>
-    <Editor
-      ref={editorRef}
-      className="doc-inner"
-      value={slateValue}
-      readOnly={props.readOnly}
-      onChange={({ value }) => {
-        setSlateValue(value);
-      }}
-      schema={slateSchema}
-      plugins={props.plugins}
-      onBeforeInput={onBeforeInput}
-      onKeyDown={onKeyDown}
-      onPaste={onPaste}
-      renderBlock={renderBlock}
-      renderInline={renderInline}
-      renderMark={renderMark}
-      renderAnnotation={renderAnnotation}
-      renderEditor={renderEditor}
-    />
-    </EditorWrapper>
-  </Card.Content>
-</Card>;
-
   return (
     <div>
       <ToolbarWrapper id="toolbarwrapperid" />
       <Card.Group>
-        {card}
+        <Card fluid>
+          <Card.Content>
+            <EditorWrapper>
+              <Editor
+                ref={editorRef}
+                className="doc-inner"
+                value={slateValue}
+                readOnly={props.readOnly}
+                onChange={({ value }) => {
+                  setSlateValue(value);
+                }}
+                schema={slateSchema}
+                plugins={props.plugins}
+                onBeforeInput={onBeforeInput}
+                onKeyDown={onKeyDown}
+                onPaste={onPaste}
+                renderBlock={renderBlock}
+                renderInline={renderInline}
+                renderMark={renderMark}
+                renderAnnotation={renderAnnotation}
+                renderEditor={renderEditor}
+              />
+            </EditorWrapper>
+          </Card.Content>
+        </Card>
       </Card.Group>
     </div>
   );
