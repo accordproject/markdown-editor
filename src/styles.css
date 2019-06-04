@@ -31,31 +31,18 @@ body {
     background-color: #ffeeba;
 }
 
-.toolbarCheckbox {
-  display: grid;
-  justify-self: start;
-  align-self: center;
-  grid-column-start: 17;
-}
-
 #toolbarwrapperid {
     display: grid;
     grid-template-columns:
-        3% auto auto auto 
-        auto auto auto auto 
-        auto auto auto auto 
-        auto auto auto auto 
-        auto 130px 3%;
+        3% auto auto auto
+        auto auto auto auto
+        auto auto auto auto
+        auto auto auto auto
+        auto auto auto 3%;
     grid-template-rows: 100%;
 }
 
 @media (max-width: 1340px) {
-    .toolbarCheckbox {
-        grid-row-start: 2;
-        grid-column-start: 4;
-        justify-self: start;
-    }
-
     #toolbarwrapperid {
         height: 72px;
         grid-template-columns: 3% 23.5% 23.5% 23.5% 23.5% 3%;
@@ -64,12 +51,6 @@ body {
 }
 
 @media (max-width: 1050px) {
-    .toolbarCheckbox {
-        grid-row-start: 4;
-        grid-column: 2 / 5;
-        justify-self: center;
-    }
-
     #toolbarwrapperid {
         height: 140px;
         grid-template-columns: 30% 10% 10% 10% 10% 30%;
