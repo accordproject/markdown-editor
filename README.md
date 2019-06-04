@@ -4,7 +4,7 @@
 
 This repo contains two React-based editors:
 1. A WYSIWYG  [Slate](https://docs.slatejs.org/)-based editor that edits rich text and calls an `onChange`
-   callback with the modified Slate DOM and the [CommonMark](https://commonmark.org markdown serilization.
+   callback with the modified Slate DOM and the [CommonMark](https://commonmark.org) markdown serilization.
 2. A TextArea-based markdown editor that edits markdown text and calls an `onChange`
    callback with the equivalent Slate DOM and the modified markdown text.
 
@@ -37,8 +37,6 @@ function storeLocal(slateValue, markdown) {
   // console.log(markdown);
   localStorage.setItem('markdown-editor', markdown);
 }
-
-const defaultMarkdown = '# Hello World.';
 
 ReactDOM.render(<SlateAsInputEditor plugins={plugins} lockText={false} onChange={storeLocal}/>
 , document.getElementById('root'));
