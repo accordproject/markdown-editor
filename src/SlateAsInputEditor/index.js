@@ -193,7 +193,7 @@ function SlateAsInputEditor(props) {
         }
       });
     }
-  }, [slateValue, lockText]);
+  }, [lockText]);
 
   /**
    * When the Slate Value changes changes update the variable annotations.
