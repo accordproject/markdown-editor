@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { Dropdown } from 'semantic-ui-react';
 
 import * as action from './toolbarMethods';
 
@@ -71,6 +72,27 @@ const VertDividerResponsive = styled.div`
     display: none;
   }
 `;
+
+const DropdownHeader1 = {
+  fontSize: '25px',
+  lineHeight: '23px',
+  fontWeight: 'bold',
+  color: '#122330',
+};
+
+const DropdownHeader2 = {
+  fontSize: '20px',
+  lineHeight: '20px',
+  fontWeight: 'bold',
+  color: '#122330',
+};
+
+const DropdownHeader3 = {
+  fontSize: '16px',
+  lineHeight: '16px',
+  fontWeight: 'bold',
+  color: '#122330',
+};
 
 export default class FormatToolbar extends React.Component {
   /**
@@ -239,6 +261,15 @@ export default class FormatToolbar extends React.Component {
 
     return ReactDOM.createPortal(
       <StyledToolbar className="format-toolbar">
+        <Dropdown text='Style' className='toolbar-0x1'>
+          <Dropdown.Menu>
+            <Dropdown.Item text='Normal' />
+            <Dropdown.Item text='Header 1' style={ DropdownHeader1 } />
+            <Dropdown.Item text='Header 2' style={ DropdownHeader2 } />
+            <Dropdown.Item text='Header 3' style={ DropdownHeader3 } />
+          </Dropdown.Menu>
+        </Dropdown>
+        <VertDivider className='toolbar-0x2'/>
         {
           this.renderMarkButton(
             bIcon.type(),
