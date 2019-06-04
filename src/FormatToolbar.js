@@ -261,12 +261,32 @@ export default class FormatToolbar extends React.Component {
 
     return ReactDOM.createPortal(
       <StyledToolbar className="format-toolbar">
-        <Dropdown text='Style' className='toolbar-0x1'>
+        <Dropdown
+          text='Style'
+          className='toolbar-0x1'
+          openOnFocus
+          simple
+        >
           <Dropdown.Menu>
-            <Dropdown.Item text='Normal' />
-            <Dropdown.Item text='Header 1' style={ DropdownHeader1 } />
-            <Dropdown.Item text='Header 2' style={ DropdownHeader2 } />
-            <Dropdown.Item text='Header 3' style={ DropdownHeader3 } />
+            <Dropdown.Item
+              text='Normal'
+              onClick={event => this.onClickBlock(event, 'paragraph')}
+            />
+            <Dropdown.Item
+              text='Header 1'
+              style={ DropdownHeader1 }
+              onClick={event => this.onClickBlock(event, 'heading_one')}
+            />
+            <Dropdown.Item
+              text='Header 2'
+              style={ DropdownHeader2 }
+              onClick={event => this.onClickBlock(event, 'heading_two')}
+            />
+            <Dropdown.Item
+              text='Header 3'
+              style={ DropdownHeader3 }
+              onClick={event => this.onClickBlock(event, 'heading_three')}
+            />
           </Dropdown.Menu>
         </Dropdown>
         <VertDivider className='toolbar-0x2'/>
