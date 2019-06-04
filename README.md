@@ -4,7 +4,7 @@
 
 This repo contains two React-based editors:
 1. A WYSIWYG  [Slate](https://docs.slatejs.org/)-based editor that edits rich text and calls an `onChange`
-   callback with the modified Slate DOM and the [CommonMark](https://commonmark.org) markdown serilization.
+   callback with the modified Slate DOM and the [CommonMark](https://commonmark.org) markdown serialization.
 2. A TextArea-based markdown editor that edits markdown text and calls an `onChange`
    callback with the equivalent Slate DOM and the modified markdown text.
 
