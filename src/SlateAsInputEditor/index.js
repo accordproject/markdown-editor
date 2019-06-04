@@ -101,7 +101,7 @@ function SlateAsInputEditor(props) {
    * Destructure props for efficiency
    */
   const {
-    onChange, plugins, lockText
+    onChange, plugins, value, lockText
   } = props;
 
   /**
@@ -162,8 +162,8 @@ function SlateAsInputEditor(props) {
    * Updates the Slate value in state when props.value changes
    */
   useEffect(() => {
-    setSlateValue(props.value ? Value.fromJSON(props.value) : defaultValue);
-  }, [props.value]);
+    setSlateValue(value ? Value.fromJSON(value) : defaultValue);
+  }, [value]);
 
   /**
    * Set a lockText annotation on the editor equal to props.lockText
@@ -193,7 +193,7 @@ function SlateAsInputEditor(props) {
         }
       });
     }
-  }, [lockText]);
+  }, [slateValue, lockText]);
 
   /**
    * When the Slate Value changes changes update the variable annotations.

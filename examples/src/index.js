@@ -90,7 +90,7 @@ function Demo() {
       </Grid.Column>
 
       <Grid.Column>
-        <SlateAsInputEditor readOnly={false} lockText={false} plugins={plugins} value={slateValue} onChange={onSlateValueChange}/>
+        <SlateAsInputEditor readOnly={false} lockText={true} plugins={plugins} value={slateValue} onChange={onSlateValueChange}/>
       </Grid.Column>
     </Grid>
     <Divider vertical>Preview</Divider>
