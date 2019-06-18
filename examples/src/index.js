@@ -7,6 +7,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import MarkdownAsInputEditor from '../../src/MarkdownAsInputEditor';
 import SlateAsInputEditor from '../../src/SlateAsInputEditor';
+import PluginManager from '../../src/PluginManager';
+import FromMarkdown from '../../src/markdown/fromMarkdown';
 
 import * as serviceWorker from './serviceWorker';
 import 'semantic-ui-css/semantic.min.css';
@@ -62,7 +64,10 @@ function Demo() {
   /**
    * Current Slate Value
    */
-  const [slateValue, setSlateValue] = useState();
+  const pluginManager = new PluginManager(plugins);
+  const fromMarkdown = new FromMarkdown(pluginManager);
+  const [slateValue, setSlateValue] = useState(fromMarkdown.convert(defaultMarkdown));
+  const [markdown, setMarkdown] = useState(defaultMarkdown);
 
   /**
    * Called when the markdown changes
@@ -71,6 +76,7 @@ function Demo() {
     localStorage.setItem('markdown-editor', markdown);
     console.log('onMarkdownChange', markdown);
     setSlateValue(slateValue);
+    setMarkdown(markdown);
   }, []);
 
   /**
@@ -86,7 +92,7 @@ function Demo() {
       <Segment>
     <Grid columns={2}>
       <Grid.Column>
-        <MarkdownAsInputEditor plugins={plugins} markdown={defaultMarkdown} onChange={onMarkdownChange}/>
+        <MarkdownAsInputEditor plugins={plugins} markdown={markdown} onChange={onMarkdownChange}/>
       </Grid.Column>
 
       <Grid.Column>
