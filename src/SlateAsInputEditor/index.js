@@ -506,7 +506,7 @@ function SlateAsInputEditor(props) {
               <Editor
                 ref={editorRef}
                 className="doc-inner"
-                value={value}
+                value={Value.fromJSON(value)}
                 readOnly={props.readOnly}
                 onChange={({ value }) => {
                   const pluginManager = new PluginManager(plugins);
