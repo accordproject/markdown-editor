@@ -14,7 +14,6 @@
 
 import React, {
   useEffect,
-  useState,
 }
   from 'react';
 import { Card } from 'semantic-ui-react';
@@ -34,11 +33,6 @@ import '../styles.css';
  */
 function MarkdownAsInputEditor(props) {
   /**
-   * Current Markdown text
-   */
-  const [markdown, setMarkdown] = useState(props.markdown);
-
-  /**
    * Destructure props for efficiency
    */
   const {
@@ -46,30 +40,23 @@ function MarkdownAsInputEditor(props) {
   } = props;
 
   /**
-   * Call onChange with the Slate Value when the markdown or the plugins change
-   */
-  useEffect(() => {
-    const pluginManager = new PluginManager(plugins);
-    const fromMarkdown = new FromMarkdown(pluginManager);
-    const newSlateValue = fromMarkdown.convert(markdown);
-    onChange(newSlateValue, markdown);
-  }, [markdown, onChange, plugins]);
-
-  /**
    * Render the component, based on showSlate
    */
   const card = <Card fluid>
   <Card.Content>
   <TextareaAutosize
-                className={'textarea'}
-                width={'100%'}
-                placeholder={props.markdown}
-                value={markdown}
-                // eslint-disable-next-line no-unused-vars
-                onChange={(evt, data) => {
-                  setMarkdown(evt.target.value);
-                }}
-              />
+    className={'textarea'}
+    width={'100%'}
+    placeholder={props.markdown}
+    value={props.markdown}
+    // eslint-disable-next-line no-unused-vars
+    onChange={(evt, data) => {
+      const pluginManager = new PluginManager(plugins);
+      const fromMarkdown = new FromMarkdown(pluginManager);
+      const newSlateValue = fromMarkdown.convert(evt.target.value);
+      onChange(newSlateValue, evt.target.value);
+    }}
+  />
   </Card.Content>
 </Card>;
 
@@ -114,6 +101,13 @@ MarkdownAsInputEditor.propTypes = {
     markdownTags: PropTypes.arrayOf(PropTypes.string).isRequired,
     schema: PropTypes.object.isRequired,
   })),
+};
+
+/**
+ * The default property values for this component
+ */
+MarkdownAsInputEditor.defaultProps = {
+  value: 'Welcome! Edit this text to begin.'
 };
 
 export default MarkdownAsInputEditor;
