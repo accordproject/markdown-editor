@@ -39,6 +39,13 @@ function MarkdownAsInputEditor(props) {
     onChange, plugins
   } = props;
 
+  const onChangeHandler = (evt) => {
+    const pluginManager = new PluginManager(plugins);
+    const fromMarkdown = new FromMarkdown(pluginManager);
+    const newSlateValue = fromMarkdown.convert(evt.target.value);
+    onChange(newSlateValue, evt.target.value);
+  };
+
   /**
    * Render the component, based on showSlate
    */
@@ -50,12 +57,7 @@ function MarkdownAsInputEditor(props) {
     placeholder={props.markdown}
     value={props.markdown}
     // eslint-disable-next-line no-unused-vars
-    onChange={(evt, data) => {
-      const pluginManager = new PluginManager(plugins);
-      const fromMarkdown = new FromMarkdown(pluginManager);
-      const newSlateValue = fromMarkdown.convert(evt.target.value);
-      onChange(newSlateValue, evt.target.value);
-    }}
+    onChange={onChangeHandler}
   />
   </Card.Content>
 </Card>;

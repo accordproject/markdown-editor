@@ -496,6 +496,13 @@ function SlateAsInputEditor(props) {
     );
   }, []);
 
+  const onChangeHandler = ({ value }) => {
+    const pluginManager = new PluginManager(plugins);
+    const toMarkdown = new ToMarkdown(pluginManager);
+    const newMarkdown = toMarkdown.convert(value);
+    onChange(value, newMarkdown);
+  };
+
   return (
     <div>
       <ToolbarWrapper id="toolbarwrapperid" />
@@ -508,12 +515,7 @@ function SlateAsInputEditor(props) {
                 className="doc-inner"
                 value={Value.fromJSON(value)}
                 readOnly={props.readOnly}
-                onChange={({ value }) => {
-                  const pluginManager = new PluginManager(plugins);
-                  const toMarkdown = new ToMarkdown(pluginManager);
-                  const newMarkdown = toMarkdown.convert(value);
-                  onChange(value, newMarkdown);
-                }}
+                onChange={onChangeHandler}
                 schema={slateSchema}
                 plugins={props.plugins}
                 onBeforeInput={onBeforeInput}
