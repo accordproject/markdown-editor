@@ -63,9 +63,6 @@ const ToolbarWrapper = styled.div`
   margin-bottom: 1px;
 `;
 
-// @ts-ignore
-const defaultValue = Value.fromJSON(initialValue);
-
 /**
  * a utility function to generate a random node id for annotations
  */
@@ -110,14 +107,6 @@ function SlateAsInputEditor(props) {
   const editorRef = useRef(null);
 
   /**
-   * Current Slate Value
-   */
-  const [
-    slateValue,
-    setSlateValue
-  ] = useState(props.value ? Value.fromJSON(props.value) : defaultValue);
-
-  /**
    * Slate Schema augmented by plugins
    */
   const [slateSchema, setSlateSchema] = useState(null);
@@ -148,24 +137,6 @@ function SlateAsInputEditor(props) {
   }, [plugins]);
 
   /**
-   * Calls onChange with the modified markdown when the
-   * Slate Value or the plugins change
-   */
-  useEffect(() => {
-    const pluginManager = new PluginManager(plugins);
-    const toMarkdown = new ToMarkdown(pluginManager);
-    const newMarkdown = toMarkdown.convert(slateValue);
-    onChange(slateValue, newMarkdown);
-  }, [onChange, plugins, slateValue]);
-
-  /**
-   * Updates the Slate value in state when props.value changes
-   */
-  useEffect(() => {
-    setSlateValue(value ? Value.fromJSON(value) : defaultValue);
-  }, [value]);
-
-  /**
    * Set a lockText annotation on the editor equal to props.lockText
    */
   useEffect(() => {
@@ -193,7 +164,7 @@ function SlateAsInputEditor(props) {
         }
       });
     }
-  }, [slateValue.document, lockText]);
+  }, [value.document, lockText]);
 
   /**
    * When the Slate Value changes changes update the variable annotations.
@@ -248,7 +219,7 @@ function SlateAsInputEditor(props) {
       }
     }
   // @ts-ignore
-  }, [editorRef, isEditorLockText, lockText, slateValue.document]);
+  }, [editorRef, isEditorLockText, lockText, value.document]);
 
   /**
    * Render a Slate inline.
@@ -535,10 +506,13 @@ function SlateAsInputEditor(props) {
               <Editor
                 ref={editorRef}
                 className="doc-inner"
-                value={slateValue}
+                value={value}
                 readOnly={props.readOnly}
                 onChange={({ value }) => {
-                  setSlateValue(value);
+                  const pluginManager = new PluginManager(plugins);
+                  const toMarkdown = new ToMarkdown(pluginManager);
+                  const newMarkdown = toMarkdown.convert(value);
+                  onChange(value, newMarkdown);
                 }}
                 schema={slateSchema}
                 plugins={props.plugins}
@@ -602,10 +576,28 @@ SlateAsInputEditor.propTypes = {
     schema: PropTypes.object.isRequired,
   })),
 };
+
 /**
  * The default property values for this component
  */
 SlateAsInputEditor.defaultProps = {
+  value: Value.fromJSON({
+    object: 'value',
+    document: {
+      object: 'document',
+      data: {},
+      nodes: [{
+        object: 'block',
+        type: 'paragraph',
+        data: {},
+        nodes: [{
+          object: 'text',
+          text: 'Welcome! Edit this text to get started.',
+          marks: []
+        }],
+      }]
+    }
+  })
 };
 
 export default SlateAsInputEditor;
