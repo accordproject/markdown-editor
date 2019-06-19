@@ -1,6 +1,6 @@
 {
   "name": "@accordproject/markdown-editor",
-  "version": "0.4.15",
+  "version": "0.4.16",
   "description": "A rich text editor that can read and write markdown text. Based on Slate.js.",
   "main": "dist/index.js",
   "repository": {
@@ -67,9 +67,9 @@
     "moment-mini": "2.22.1",
     "react-scripts": "^3.0.1",
     "semver": "6.1.1",
-    "webpack": "^4.32.2",
-    "webpack-cli": "^3.3.2",
-    "webpack-dev-server": "^3.4.1"
+    "webpack": "^4.34.0",
+    "webpack-cli": "^3.3.4",
+    "webpack-dev-server": "^3.7.2"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -82,7 +82,7 @@
   ],
   "dependencies": {
     "commonmark": "^0.29.0",
-    "css-loader": "^2.1.1",
+    "css-loader": "^3.0.0",
     "immutable": "^3.8.2",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
@@ -91,12 +91,12 @@
     "react-immutable-proptypes": "^2.1.0",
     "react-textarea-autosize": "^7.1.0",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.87.1",
-    "slate": "^0.47.3",
-    "slate-html-serializer": "^0.8.5",
-    "slate-plain-serializer": "^0.7.5",
-    "slate-react": "^0.22.3",
+    "semantic-ui-react": "^0.87.2",
+    "slate": "^0.47.4",
+    "slate-html-serializer": "^0.8.6",
+    "slate-plain-serializer": "^0.7.6",
+    "slate-react": "^0.22.4",
     "style-loader": "^0.23.1",
-    "styled-components": "^4.2.1"
+    "styled-components": "^4.3.1"
   }
 }

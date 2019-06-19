@@ -1,11 +1,12 @@
 import PluginManager from '../PluginManager';
 import FromMarkdown from './fromMarkdown';
 import List from '../plugins/list';
+import Video from '../plugins/video';
 
 let fromMarkdown = null;
 
 beforeAll(() => {
-  const plugins = [List()];
+  const plugins = [List(), Video()];
   const pluginManager = new PluginManager(plugins);
   fromMarkdown = new FromMarkdown(pluginManager);
 });
@@ -156,3 +157,15 @@ test('can convert a code block', () => {
   expect(value.toJSON()).toMatchSnapshot();
 });
 
+test('can convert a custom code block', () => {
+  const markdownText = `\`\`\` <video src="https://www.youtube.com/embed/dQw4w9WgXcQ"/>
+  this is a multiline
+  code
+
+  containing a newline
+
+  which should be handled by the video plugin.
+  \`\`\``;
+  const value = fromMarkdown.convert(markdownText);
+  expect(value.toJSON()).toMatchSnapshot();
+});

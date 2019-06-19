@@ -74,13 +74,13 @@ export default class FromMarkdown extends Markdown {
    *
    * @param {*} node
    * @param {*} event
-   * @param {*} tag
+   * @param {*} tagInfo
    */
-  dispatchToPlugin(node, event, tag = null) {
-    const plugin = this.pluginManager.findPluginByMarkdownTag(tag ? tag.tag : node.type);
+  dispatchToPlugin(node, event, tagInfo = null) {
+    const plugin = this.pluginManager.findPluginByMarkdownTag(tagInfo ? tagInfo.tag : node.type);
 
     if (plugin && typeof plugin.fromMarkdown === 'function') {
-      return plugin.fromMarkdown(this.stack, event, tag);
+      return plugin.fromMarkdown(this.stack, event, tagInfo);
     }
 
     return false;
@@ -293,29 +293,35 @@ export default class FromMarkdown extends Markdown {
    * @param {*} node the AST node
    */
   codeBlock(node) {
-    const block = {
-      object: 'block',
-      type: 'code_block',
-      data: {},
-      nodes: [],
-    };
+    const tagInfo = FromMarkdown.parseHtmlBlock(node.info);
 
-    const para = {
-      object: 'block',
-      type: 'paragraph',
-      data: {},
-      nodes: [],
-    };
+    if (tagInfo && this.dispatchToPlugin(node, null, tagInfo)) {
+      // console.log('Custom html tag:', tag, "\n", 'Node:', node);
+    } else {
+      const block = {
+        object: 'block',
+        type: 'code_block',
+        data: {},
+        nodes: [],
+      };
 
-    this.stack.push(block);
-    this.stack.push(para);
-    this.stack.addTextLeaf({
-      object: 'leaf',
-      text: node.literal,
-      marks: [],
-    });
-    this.stack.pop();
-    this.stack.pop();
+      const para = {
+        object: 'block',
+        type: 'paragraph',
+        data: {},
+        nodes: [],
+      };
+
+      this.stack.push(block);
+      this.stack.push(para);
+      this.stack.addTextLeaf({
+        object: 'leaf',
+        text: node.literal,
+        marks: [],
+      });
+      this.stack.pop();
+      this.stack.pop();
+    }
   }
 
   /**
@@ -387,9 +393,9 @@ export default class FromMarkdown extends Markdown {
    * Stack.
    */
   htmlBlock(node, event) {
-    const tag = FromMarkdown.parseHtmlBlock(node.literal);
+    const tagInfo = FromMarkdown.parseHtmlBlock(node.literal);
 
-    if (tag && this.dispatchToPlugin(node, event, tag)) {
+    if (tagInfo && this.dispatchToPlugin(node, event, tagInfo)) {
     // console.log('Custom html tag:', tag, "\n", 'Node:', node);
     } else {
       const block = {
