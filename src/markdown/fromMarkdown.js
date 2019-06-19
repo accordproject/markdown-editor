@@ -80,7 +80,7 @@ export default class FromMarkdown extends Markdown {
     const plugin = this.pluginManager.findPluginByMarkdownTag(tagInfo ? tagInfo.tag : node.type);
 
     if (plugin && typeof plugin.fromMarkdown === 'function') {
-      return plugin.fromMarkdown(this.stack, event, tagInfo);
+      return plugin.fromMarkdown(this.stack, event, tagInfo, node);
     }
 
     return false;
