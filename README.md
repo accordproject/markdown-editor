@@ -77,7 +77,7 @@ Your app is ready to be deployed!
 ---
 
 <a href="https://docs.accordproject.org/">
-	<img src="public/APLogo.png" alt="Accord Project Logo" />
+	<img src="public/APLogo.png" alt="Accord Project Logo" width="880" />
 </a>
 
 Accord Project is an open source, non-profit, initiative working to transform contract management and contract automation by digitizing contracts.
