@@ -50,7 +50,7 @@ function Demo() {
    */
   const onSlateValueChange = useCallback((newSlateValue, markdown) => {
     localStorage.setItem('slate-editor-value', newSlateValue);
-    console.log('onSlateValueChange', newSlateValue.toJSON());
+    console.log(JSON.stringify(newSlateValue.toJSON(), null, 4));
   }, []);
 
   return (
