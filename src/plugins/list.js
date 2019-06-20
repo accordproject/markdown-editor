@@ -1,11 +1,29 @@
 import React from 'react';
 
 /**
-   */
+ * This is a plugin into the markdown editor to handle lists
+ */
 function List() {
-  const plugin = 'List';
-  const tags = ['ul', 'ol', 'li'];
-  const markdownTags = ['list', 'item'];
+  const name = 'List';
+
+  const tags = [
+    {
+      html: 'ul',
+      slate: 'ul_list',
+      md: node => node.listType === 'bullet'
+    },
+    {
+      html: 'ol',
+      slate: 'ol_list',
+      md: node => node.listType === 'ordered'
+    },
+    {
+      html: 'li',
+      slate: 'list_item',
+      md: node => node.type === 'item'
+    }
+  ];
+
   const schema = {
     blocks: {
       ol_list: {
@@ -49,6 +67,7 @@ function List() {
    * @param {Function} next
    */
   const renderBlock = (props, editor, next) => {
+    console.log('list - renderBlock');
     const { node, attributes, children } = props;
 
     switch (node.type) {
@@ -72,7 +91,7 @@ function List() {
     let markdown = '';
     const listStyleType = (value.type === 'ol_list') ? '1. ' : '* ';
     let indent = '';
-    for (let i = 0; i < depth - 1; i++) {
+    for (let i = 0; i < depth - 1; i += 1) {
       indent += '   ';
     }
     value.nodes.forEach((li) => {
@@ -140,9 +159,8 @@ function List() {
   };
 
   return {
-    plugin,
+    name,
     tags,
-    markdownTags,
     schema,
     onKeyDown,
     renderBlock,

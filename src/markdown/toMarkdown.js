@@ -63,11 +63,7 @@ export default class ToMarkdown extends Markdown {
 
     nodes.forEach((node, index) => {
       this.stack.push(node);
-      if (index === 0) {
-        this.setFirst(true);
-      } else {
-        this.setFirst(false);
-      }
+      this.setFirst(index === 0);
 
       switch (node.object) {
         case 'text':
@@ -80,14 +76,13 @@ export default class ToMarkdown extends Markdown {
           if (typeof this[method] === 'function') {
             markdown += this[method](node);
           } else {
-            const pluginType = (node.type === 'video') ? 'video' : 'list';
-            const plugin = this.pluginManager.findPluginByMarkdownTag(pluginType);
+            const plugin = this.pluginManager.findPlugin('slate', node.type);
 
             if (plugin && typeof plugin.toMarkdown === 'function') {
               try {
                 markdown += plugin.toMarkdown(this, node, this.stack.length);
               } catch (err) {
-                console.log(`Exception from ${plugin.plugin}: ${err.message}`);
+                console.log(`Exception from ${plugin.name}: ${err.message}`);
               }
             } else {
               throw new Error(`Cannot find a handler for ${method} with ${node}`);

@@ -27,8 +27,8 @@ const MARK_TAGS = {
  * Converts from HTML
  */
 export class FromHTML {
-  constructor(findPluginByHtmlTag) {
-    this.findPluginByHtmlTag = findPluginByHtmlTag;
+  constructor(pluginManager) {
+    this.pluginManager = pluginManager;
   }
 
   convert(editor, html) {
@@ -69,7 +69,7 @@ export class FromHTML {
     }
 
     /* Serializing from plugin if defined */
-    const plugin = this.findPluginByHtmlTag(tag);
+    const plugin = this.pluginManager.findPlugin('html', tag);
 
     if (plugin && typeof plugin.fromHTML === 'function') {
       return plugin.fromHTML(this.editor, el, next);

@@ -16,42 +16,10 @@ import List from '../../src/plugins/list';
 import Video from '../../src/plugins/video';
 
 const plugins = [List(), Video()];
+const pluginManager = new PluginManager(plugins);
+const fromMarkdown = new FromMarkdown(pluginManager);
 
 const defaultMarkdown = `# Heading One
-This is text. This is *italic* text. This is **bold** text. This is a [link](https://clause.io). This is \`inline code\`.
-
-This is ***bold and italic*** text
-
-<variable src="baz">
-this is some content
-</variable>
-
-This is a <variable src="foo"/> sentence that ***contains*** <variable src="bar">a variable</variable> within it. And here is {{another}} with some text after.
-And here is more {{variables}}% with newlines and {{punctuation}} and text.
-
-> This is a quote.
-## Heading Two
-This is more text.
-
-Ordered lists:
-
-1. one
-1. two
-1. three
-
-Or:
-
-* apples
-* pears
-* peaches
-
-### Sub heading
-
-Video:
-
-<video/>
-
-Another video:
 
 <video src="https://www.youtube.com/embed/cmmq-JBMbbQ"/>`;
 
@@ -64,27 +32,25 @@ function Demo() {
   /**
    * Current Slate Value
    */
-  const pluginManager = new PluginManager(plugins);
-  const fromMarkdown = new FromMarkdown(pluginManager);
   const [slateValue, setSlateValue] = useState(fromMarkdown.convert(defaultMarkdown));
   const [markdown, setMarkdown] = useState(defaultMarkdown);
 
   /**
    * Called when the markdown changes
    */
-  const onMarkdownChange = useCallback((slateValue, markdown) => {
+  const onMarkdownChange = useCallback((newSlateValue, markdown) => {
     localStorage.setItem('markdown-editor', markdown);
-    console.log('onMarkdownChange', markdown);
-    setSlateValue(slateValue);
+    setSlateValue(newSlateValue);
+    console.log('onMarkdownChange', newSlateValue.toJSON());
     setMarkdown(markdown);
   }, []);
 
   /**
    * Called when the Slate Value changes
    */
-  const onSlateValueChange = useCallback((slateValue, markdown) => {
-    localStorage.setItem('slate-editor-value', slateValue);
-    console.log('onSlateValueChange', markdown);
+  const onSlateValueChange = useCallback((newSlateValue, markdown) => {
+    localStorage.setItem('slate-editor-value', newSlateValue);
+    console.log('onSlateValueChange', newSlateValue.toJSON());
   }, []);
 
   return (

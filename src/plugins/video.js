@@ -20,12 +20,19 @@ const StyledIcon = styled(Icon)`
  * A sample plugin that renders a Youtube video using an iframe
  */
 function Video() {
-  const plugin = 'Video';
-  const tags = ['video'];
-  const markdownTags = ['video'];
+  const name = 'video';
+
+  const tags = [
+    {
+      html: 'video',
+      slate: 'video',
+      md: 'video'
+    }
+  ];
+
   const schema = {
     blocks: {
-      Video: {
+      video: {
         nodes: [],
       },
     },
@@ -36,30 +43,29 @@ function Video() {
      * @param {Editor} editor
      * @param {Function} next
      */
-  function onEnter(event, editor, next) {
-    return next();
-  }
+  const onEnter = (event, editor, next) => next();
 
   /**
      * @param {Event} event
      * @param {Editor} editor
      * @param {Function} next
      */
-  function onKeyDown(event, editor, next) {
+  const onKeyDown = (event, editor, next) => {
     switch (event.key) {
       case 'Enter':
         return onEnter(event, editor, next);
       default:
         return next();
     }
-  }
+  };
 
   /**
      * @param {Object} props
      * @param {Editor} editor
      * @param {Function} next
      */
-  function renderBlock(props, editor, next) {
+  const renderBlock = (props, editor, next) => {
+    console.log('video - renderBlock');
     const { node, attributes, children } = props;
 
     switch (node.type) {
@@ -70,6 +76,7 @@ function Video() {
           src = 'https://www.youtube.com/embed/dQw4w9WgXcQ';
         }
 
+        console.log('   iframe!');
         return (<iframe
         {...attributes}
         src={src}
@@ -82,43 +89,48 @@ function Video() {
       default:
         return next();
     }
-  }
+  };
 
   /**
      * @param {ToMarkdown} parent
      * @param {Node} value
      * @param {Integer} depth
      */
-  function toMarkdown(parent, value, depth) {
+  const toMarkdown = (parent, value, depth) => {
+    console.log('video toMarkdown');
     return `<video ${value.data.get('attributeString')}/>\n\n`;
-  }
+  };
 
   /**
      * @param {fromMarkdown} parent
      */
-  function fromMarkdown(stack, event, tag) {
+  const fromMarkdown = (stack, event, tag) => {
     const block = {
       object: 'block',
       type: 'video',
       data: Object.assign(tag),
     };
 
+    console.log('video:fromMarkdown', block);
+
     stack.push(block);
     stack.pop();
     return true;
-  }
+  };
 
   /**
      * @param {fromHTML} parent
      */
-  function fromHTML(editor, el, next) {
+  const fromHTML = (editor, el, next) => {
+    console.log('video fromHTML');
+
     return {
       object: 'block',
       type: 'video',
       data: {},
       nodes: next(el.childNodes),
     };
-  }
+  };
 
   /**
    * When then button is clicked
@@ -126,10 +138,10 @@ function Video() {
    * @param {Editor} editor
    * @param {Event} event
    */
-  function onClickButton(editor, event) {
+  const onClickButton = (editor, event) => {
     event.preventDefault();
     alert('Video plugin button clicked!');
-  }
+  };
 
   /**
    * Render a video toolbar button.
@@ -137,20 +149,17 @@ function Video() {
    * @param {Editor} editor
    * @return {Element}
    */
-  function renderToolbar(editor) {
-    return (<StyledIcon
-      key={plugin}
+  const renderToolbar = editor => (<StyledIcon
+      key={name}
       name='youtube'
       aria-label='youtube'
       className='toolbar-2x4'
       onMouseDown={event => onClickButton(editor, event)}
     />);
-  }
 
   return {
-    plugin,
+    name,
     tags,
-    markdownTags,
     schema,
     onKeyDown,
     renderBlock,

@@ -93,15 +93,11 @@ MarkdownAsInputEditor.propTypes = {
     onEnter: PropTypes.func,
     onKeyDown: PropTypes.func,
     onBeforeInput: PropTypes.func,
-    renderBlock: PropTypes.func.isRequired,
-    renderInline: PropTypes.func,
     toMarkdown: PropTypes.func.isRequired,
     fromMarkdown: PropTypes.func.isRequired,
     fromHTML: PropTypes.func.isRequired,
-    plugin: PropTypes.string.isRequired,
-    tags: PropTypes.arrayOf(PropTypes.string).isRequired,
-    markdownTags: PropTypes.arrayOf(PropTypes.string).isRequired,
-    schema: PropTypes.object.isRequired,
+    name: PropTypes.string.isRequired,
+    tags: PropTypes.arrayOf(PropTypes.object).isRequired,
   })),
 };
 

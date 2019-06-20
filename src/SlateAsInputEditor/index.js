@@ -29,7 +29,6 @@ import ToMarkdown from '../markdown/toMarkdown';
 import PluginManager from '../PluginManager';
 import { FromHTML } from '../html/fromHTML';
 import FormatToolbar from '../FormatToolbar';
-import initialValue from './default';
 
 import '../styles.css';
 
@@ -130,9 +129,10 @@ function SlateAsInputEditor(props) {
     const schema = JSON.parse(JSON.stringify(baseSchema));
     plugins.forEach((plugin) => {
       plugin.tags.forEach((tag) => {
-        schema.document.nodes[0].match.push({ type: tag });
+        schema.document.nodes[0].match.push({ type: tag.slate });
       });
     });
+    console.log('SlateAsInputEditor.schema', schema);
     setSlateSchema(schema);
   }, [plugins]);
 
@@ -497,7 +497,7 @@ function SlateAsInputEditor(props) {
   }, []);
 
   const onChangeHandler = ({ value }) => {
-    const pluginManager = new PluginManager(plugins);
+    const pluginManager = new PluginManager(props.plugins);
     const toMarkdown = new ToMarkdown(pluginManager);
     const newMarkdown = toMarkdown.convert(value);
     onChange(value, newMarkdown);
@@ -567,14 +567,13 @@ SlateAsInputEditor.propTypes = {
     onEnter: PropTypes.func,
     onKeyDown: PropTypes.func,
     onBeforeInput: PropTypes.func,
-    renderBlock: PropTypes.func.isRequired,
+    renderBlock: PropTypes.func,
     renderInline: PropTypes.func,
     toMarkdown: PropTypes.func.isRequired,
     fromMarkdown: PropTypes.func.isRequired,
     fromHTML: PropTypes.func.isRequired,
-    plugin: PropTypes.string.isRequired,
-    tags: PropTypes.arrayOf(PropTypes.string).isRequired,
-    markdownTags: PropTypes.arrayOf(PropTypes.string).isRequired,
+    name: PropTypes.string.isRequired,
+    tags: PropTypes.arrayOf(PropTypes.object).isRequired,
     schema: PropTypes.object.isRequired,
   })),
 };

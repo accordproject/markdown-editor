@@ -169,3 +169,13 @@ test('can convert a custom code block', () => {
   const value = fromMarkdown.convert(markdownText);
   expect(value.toJSON()).toMatchSnapshot();
 });
+
+test('can convert a video block', () => {
+  const markdownText = `
+  # Heading One
+  
+  <video src="https://www.youtube.com/embed/dQw4w9WgXcQ"/>
+  `;
+  const value = fromMarkdown.convert(markdownText);
+  expect(value.toJSON()).toMatchSnapshot();
+});
