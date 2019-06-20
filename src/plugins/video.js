@@ -33,7 +33,7 @@ function Video() {
   const schema = {
     blocks: {
       video: {
-        nodes: [],
+        isVoid: true,
       },
     },
   };
@@ -65,7 +65,6 @@ function Video() {
      * @param {Function} next
      */
   const renderBlock = (props, editor, next) => {
-    console.log('video - renderBlock');
     const { node, attributes, children } = props;
 
     switch (node.type) {
@@ -76,7 +75,6 @@ function Video() {
           src = 'https://www.youtube.com/embed/dQw4w9WgXcQ';
         }
 
-        console.log('   iframe!');
         return (<iframe
         {...attributes}
         src={src}
@@ -96,10 +94,7 @@ function Video() {
      * @param {Node} value
      * @param {Integer} depth
      */
-  const toMarkdown = (parent, value, depth) => {
-    console.log('video toMarkdown');
-    return `<video ${value.data.get('attributeString')}/>\n\n`;
-  };
+  const toMarkdown = (parent, value, depth) => `<video ${value.data.get('attributeString')}/>\n\n`;
 
   /**
      * @param {fromMarkdown} parent
@@ -111,8 +106,6 @@ function Video() {
       data: Object.assign(tag),
     };
 
-    console.log('video:fromMarkdown', block);
-
     stack.push(block);
     stack.pop();
     return true;
@@ -121,16 +114,12 @@ function Video() {
   /**
      * @param {fromHTML} parent
      */
-  const fromHTML = (editor, el, next) => {
-    console.log('video fromHTML');
-
-    return {
-      object: 'block',
-      type: 'video',
-      data: {},
-      nodes: next(el.childNodes),
-    };
-  };
+  const fromHTML = (editor, el, next) => ({
+    object: 'block',
+    type: 'video',
+    data: {},
+    nodes: next(el.childNodes),
+  });
 
   /**
    * When then button is clicked

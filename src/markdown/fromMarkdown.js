@@ -64,7 +64,6 @@ export default class FromMarkdown extends Markdown {
     }
 
     // VariableMarker.markVariables(this.root);
-    console.log('FromMarkdown.convert', this.root);
     return Value.fromJSON(this.root);
   }
 

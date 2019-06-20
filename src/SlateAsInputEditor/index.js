@@ -132,7 +132,6 @@ function SlateAsInputEditor(props) {
         schema.document.nodes[0].match.push({ type: tag.slate });
       });
     });
-    console.log('SlateAsInputEditor.schema', schema);
     setSlateSchema(schema);
   }, [plugins]);
 

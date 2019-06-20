@@ -67,7 +67,6 @@ function List() {
    * @param {Function} next
    */
   const renderBlock = (props, editor, next) => {
-    console.log('list - renderBlock');
     const { node, attributes, children } = props;
 
     switch (node.type) {

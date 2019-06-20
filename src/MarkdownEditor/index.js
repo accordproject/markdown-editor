@@ -138,7 +138,6 @@ function MarkdownEditor(props) {
         schema.document.nodes[0].match.push({ type: tag });
       });
     });
-    console.log('schema', schema);
     setSlateSchema(schema);
   }, [plugins]);
 
