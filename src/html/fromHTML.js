@@ -10,9 +10,6 @@ const BLOCK_TAGS = {
   h4: 'heading_four',
   h5: 'heading_five',
   h6: 'heading_six',
-  li: 'list_item',
-  ol: 'ol_list',
-  ul: 'ul_list',
 };
 
 const MARK_TAGS = {
@@ -27,8 +24,8 @@ const MARK_TAGS = {
  * Converts from HTML
  */
 export class FromHTML {
-  constructor(findPluginByHtmlTag) {
-    this.findPluginByHtmlTag = findPluginByHtmlTag;
+  constructor(pluginManager) {
+    this.pluginManager = pluginManager;
   }
 
   convert(editor, html) {
@@ -69,7 +66,7 @@ export class FromHTML {
     }
 
     /* Serializing from plugin if defined */
-    const plugin = this.findPluginByHtmlTag(tag);
+    const plugin = this.pluginManager.findPlugin('html', tag);
 
     if (plugin && typeof plugin.fromHTML === 'function') {
       return plugin.fromHTML(this.editor, el, next);

@@ -13,7 +13,6 @@
  */
 import commonmark from 'commonmark';
 import { Value } from 'slate';
-import escape from 'escape-html';
 import Stack from './Stack';
 import Markdown from './Markdown';
 
@@ -77,9 +76,10 @@ export default class FromMarkdown extends Markdown {
    * @param {*} tagInfo
    */
   dispatchToPlugin(node, event, tagInfo = null) {
-    const plugin = this.pluginManager.findPluginByMarkdownTag(tagInfo ? tagInfo.tag : node.type);
+    const plugin = this.pluginManager.findPlugin('md', tagInfo ? tagInfo.tag : node);
 
     if (plugin && typeof plugin.fromMarkdown === 'function') {
+      // console.log(`found plugin for ${tagInfo ? tagInfo.tag : node}`);
       return plugin.fromMarkdown(this.stack, event, tagInfo, node);
     }
 
@@ -396,7 +396,7 @@ export default class FromMarkdown extends Markdown {
     const tagInfo = FromMarkdown.parseHtmlBlock(node.literal);
 
     if (tagInfo && this.dispatchToPlugin(node, event, tagInfo)) {
-    // console.log('Custom html tag:', tag, "\n", 'Node:', node);
+      // console.log('Custom html tag:', tagInfo.tag, '\n', 'Node:', node);
     } else {
       const block = {
         object: 'block',

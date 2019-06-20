@@ -284,6 +284,44 @@ Object {
 }
 `;
 
+exports[`can convert a video block 1`] = `
+Object {
+  "document": Object {
+    "data": Object {},
+    "nodes": Array [
+      Object {
+        "data": Object {},
+        "nodes": Array [
+          Object {
+            "marks": Array [],
+            "object": "text",
+            "text": "Heading One",
+          },
+        ],
+        "object": "block",
+        "type": "heading_one",
+      },
+      Object {
+        "data": Object {
+          "attributeString": "src = \\"https://www.youtube.com/embed/dQw4w9WgXcQ\\"",
+          "attributes": Object {
+            "src": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          },
+          "closed": true,
+          "content": "",
+          "tag": "video",
+        },
+        "nodes": Array [],
+        "object": "block",
+        "type": "video",
+      },
+    ],
+    "object": "document",
+  },
+  "object": "value",
+}
+`;
+
 exports[`can convert an ordered list 1`] = `
 Object {
   "document": Object {

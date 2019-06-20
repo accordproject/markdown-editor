@@ -6,8 +6,7 @@ import React, {
 }
   from 'react';
 import { Editor, getEventTransfer } from 'slate-react';
-import { Card, Checkbox } from 'semantic-ui-react';
-import TextareaAutosize from 'react-textarea-autosize';
+import { Card } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import baseSchema from '../schema';

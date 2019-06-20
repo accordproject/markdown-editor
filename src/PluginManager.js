@@ -22,34 +22,34 @@ export default class PluginManager {
   }
 
   /**
-   * Returns the first plugin that can handle an HTML tag, or null
-   * @param {string} tag - the HTML tag to search for
+   * Returns the first plugin that can handle a tag or null
+   * @param {string} tagName - the name of the tag
+   * @param {*} search - the value to search for
    * @return {Plugin} - the plugin or null
    */
-  findPluginByHtmlTag(tag) {
+  findPlugin(tagName, search) {
     for (let n = 0; n < this.plugins.length; n += 1) {
       const plugin = this.plugins[n];
-      if (plugin.tags.includes(tag)) {
-        return plugin;
+
+      for (let i = 0; i < plugin.tags.length; i += 1) {
+        const tag = plugin.tags[i];
+        const tagValue = tag[tagName];
+
+        if (tagValue) {
+          let result = false;
+          if (typeof tagValue === 'function') {
+            result = tagValue(search);
+          } else {
+            result = tagValue === search;
+          }
+          if (result) {
+            return plugin;
+          }
+        }
       }
     }
 
-    return null;
-  }
-
-  /**
-   * Returns the first plugin that can handle a Markdown tag, or null
-   * @param {string} tag - the Markdown tag to search for
-   * @return {Plugin} - the plugin or null
-   */
-  findPluginByMarkdownTag(tag) {
-    for (let n = 0; n < this.plugins.length; n += 1) {
-      const plugin = this.plugins[n];
-      if (plugin.markdownTags.includes(tag)) {
-        return plugin;
-      }
-    }
-
+    console.log(`Failed to find plugin ${tagName}:${search}`);
     return null;
   }
 

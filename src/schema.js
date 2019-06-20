@@ -20,9 +20,6 @@ const schema = {
           { type: 'heading_five' },
           { type: 'heading_six' },
           { type: 'block_quote' },
-          { type: 'list_item' },
-          { type: 'ul_list' },
-          { type: 'ol_list' },
           { type: 'code_block' },
           { type: 'html_block' },
           { type: 'html_inline' },
@@ -49,17 +46,6 @@ const schema = {
     horizontal_rule: {
       isVoid: true,
     },
-    ol_list: {
-      nodes: [{ match: { type: 'list_item' } }],
-    },
-    ul_list: {
-      nodes: [{ match: { type: 'list_item' } }],
-    },
-    list_item: {
-      parent: [{ type: 'ol_list' }, { type: 'ul_list' }],
-      nodes: [{ match: [{ object: 'text' }, { type: 'link' }] }],
-      marks: [{ type: 'bold' }, { type: 'italic' }, { type: 'code' }],
-    }
   },
 };
 

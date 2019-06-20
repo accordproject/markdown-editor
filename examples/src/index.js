@@ -16,6 +16,8 @@ import List from '../../src/plugins/list';
 import Video from '../../src/plugins/video';
 
 const plugins = [List(), Video()];
+const pluginManager = new PluginManager(plugins);
+const fromMarkdown = new FromMarkdown(pluginManager);
 
 const defaultMarkdown = `# Heading One
 This is text. This is *italic* text. This is **bold** text. This is a [link](https://clause.io). This is \`inline code\`.
@@ -55,7 +57,6 @@ Another video:
 
 <video src="https://www.youtube.com/embed/cmmq-JBMbbQ"/>`;
 
-
 /**
  * Simple demo component that tracks whether to lockText
  * and whether to use markdown mode.
@@ -64,8 +65,6 @@ function Demo() {
   /**
    * Current Slate Value
    */
-  const pluginManager = new PluginManager(plugins);
-  const fromMarkdown = new FromMarkdown(pluginManager);
   const [slateValue, setSlateValue] = useState(fromMarkdown.convert(defaultMarkdown));
   const [markdown, setMarkdown] = useState(defaultMarkdown);
 
@@ -74,7 +73,6 @@ function Demo() {
    */
   const onMarkdownChange = useCallback((slateValue, markdown) => {
     localStorage.setItem('markdown-editor', markdown);
-    console.log('onMarkdownChange', markdown);
     setSlateValue(slateValue);
     setMarkdown(markdown);
   }, []);
@@ -83,8 +81,7 @@ function Demo() {
    * Called when the Slate Value changes
    */
   const onSlateValueChange = useCallback((slateValue, markdown) => {
-    localStorage.setItem('slate-editor-value', slateValue);
-    console.log('onSlateValueChange', markdown);
+    localStorage.setItem('slate-editor-value', slateValue.toJSON());
   }, []);
 
   return (
