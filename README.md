@@ -118,10 +118,6 @@ Accord Project documentation files are made available under the [Creative Common
 [CommonMark]: https://commonmark.org
 [slate]: https://docs.slatejs.org/
 
-[techspec]: https://docs.google.com/document/d/1UacA_r2KGcBA2D4voDgGE8jqid-Uh4Dt09AE-shBKR0
-[aphome]: https://accordproject.org
-[ctlguide]: https://docs.accordproject.org/docs/cicero-tutorial.html#creating-a-new-template
-
 [linuxfound]: https://www.linuxfoundation.org
 [apmain]: https://accordproject.org/ 
 [apworkgroup]: https://calendar.google.com/calendar/event?action=TEMPLATE&tmeid=MjZvYzIzZHVrYnI1aDVzbjZnMHJqYmtwaGlfMjAxNzExMTVUMjEwMDAwWiBkYW5AY2xhdXNlLmlv&tmsrc=dan%40clause.io
