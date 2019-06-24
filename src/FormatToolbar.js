@@ -360,17 +360,6 @@ export default class FormatToolbar extends React.Component {
         }
         <VertDivider className='toolbar-4x2' />
         {
-          this.renderMarkButton(
-            pIcon.type(),
-            pIcon.icon,
-            pIcon.height(),
-            pIcon.width(),
-            pIcon.padding(),
-            pIcon.vBox(),
-            'toolbar-2x0'
-          )
-        }
-        {
           this.renderLinkButton(
             lIcon.type(),
             lIcon.icon,
