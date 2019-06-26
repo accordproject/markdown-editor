@@ -13,7 +13,6 @@ import * as cIcon from './icons/code';
 import * as qIcon from './icons/open-quote';
 import * as olIcon from './icons/OL';
 import * as ulIcon from './icons/UL';
-import * as pIcon from './icons/param';
 import * as lIcon from './icons/hyperlink';
 import * as unIcon from './icons/navigation-left';
 import * as reIcon from './icons/navigation-right';
