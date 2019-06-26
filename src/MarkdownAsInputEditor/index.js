@@ -58,6 +58,7 @@ function MarkdownAsInputEditor(props) {
     value={props.markdown}
     // eslint-disable-next-line no-unused-vars
     onChange={onChangeHandler}
+    readOnly={props.readOnly}
   />
   </Card.Content>
 </Card>;
@@ -99,13 +100,19 @@ MarkdownAsInputEditor.propTypes = {
     name: PropTypes.string.isRequired,
     tags: PropTypes.arrayOf(PropTypes.object).isRequired,
   })),
+
+  /**
+   * Boolean to make editor read-only (uneditable) or not (editable)
+   */
+  readOnly: PropTypes.boolean,
 };
 
 /**
  * The default property values for this component
  */
 MarkdownAsInputEditor.defaultProps = {
-  value: 'Welcome! Edit this text to begin.'
+  value: 'Welcome! Edit this text to begin.',
+  readOnly: false,
 };
 
 export default MarkdownAsInputEditor;
