@@ -55,6 +55,9 @@ const EditorWrapper = styled.div`
 `;
 
 const ToolbarWrapper = styled.div`
+  position: sticky;
+  z-index: 1;
+  top: 0;
   height: 36px;
   border: 1px solid #414F58;
   background: #FFFFFF;
