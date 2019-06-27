@@ -13,14 +13,13 @@ import * as cIcon from './icons/code';
 import * as qIcon from './icons/open-quote';
 import * as olIcon from './icons/OL';
 import * as ulIcon from './icons/UL';
-import * as pIcon from './icons/param';
 import * as lIcon from './icons/hyperlink';
 import * as unIcon from './icons/navigation-left';
 import * as reIcon from './icons/navigation-right';
 
 import './toolbar.css';
 
-const whiteColor = '#FFFFFF';
+const whiteColor = '#1E2D53';
 const lightGrey = '#F0F0F0';
 const mediumGrey = '#949CA2';
 const darkGrey = '#414F58';
@@ -32,7 +31,7 @@ const StyledToolbar = styled.div`
   position: relative;
   justify-self: center;
   width: 450px;
-  background-color: #FFFFFF !important;
+  background-color: #1E2D53 !important;
 `;
 
 const ToolbarIcon = styled.svg`
@@ -45,7 +44,7 @@ const ToolbarIcon = styled.svg`
   padding: ${props => props.padding};
   border-radius: 5px;
   &:hover {
-    background-color: #F0F0F0;
+    background-color: #141F3C;
   }
 `;
 
@@ -60,6 +59,7 @@ const VertDivider = styled.div`
 
 const DropdownStyle = {
   alignSelf: 'center',
+  color: 'white',
 };
 
 const DropdownHeader1 = {
