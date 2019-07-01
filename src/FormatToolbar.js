@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Dropdown } from 'semantic-ui-react';
+import { Dropdown, Popup } from 'semantic-ui-react';
 
 import * as action from './toolbarMethods';
 
@@ -19,11 +19,29 @@ import * as reIcon from './icons/navigation-right';
 
 import './toolbar.css';
 
-const whiteColor = '#1E2D53';
-const lightGrey = '#F0F0F0';
-const mediumGrey = '#949CA2';
-const darkGrey = '#414F58';
 const linkColor = '#2587DA';
+const btnBgInactiveFn = input => input || '#FFFFFF';
+const btnBgActiveFn = input => input || '#F0F0F0';
+const btnSymbolInactiveFn = input => input || '#949CA2';
+const btnSymbolActiveFn = input => input || '#414F58';
+const tooltipBg = input => input || '#FFFFFF';
+// const styleColor = input => input || '#FFFFFF';
+
+const capitalizeFirst = word => word.toString().charAt(0).toUpperCase();
+const sliceWord = word => word.toString().slice(1);
+
+const capitalizeWord = type => capitalizeFirst(type) + sliceWord(type);
+
+const firstTwoLetters = word => word.toString().slice(0, 2);
+
+
+const identifyBlock = (block) => {
+  const typeBeginning = firstTwoLetters(block);
+  if (typeBeginning === 'bl') return 'Quote';
+  if (typeBeginning === 'ul') return 'Bulleted List';
+  if (typeBeginning === 'ol') return 'Numbered List';
+  return null;
+};
 
 const DEFAULT_NODE = 'paragraph';
 
@@ -31,8 +49,10 @@ const StyledToolbar = styled.div`
   position: relative;
   justify-self: center;
   width: 450px;
-  background-color: #1E2D53 !important;
+  background-color: ${props => props.background || '#FFF'} !important;
 `;
+
+// 1E2D53
 
 const ToolbarIcon = styled.svg`
   width: ${props => props.width};
@@ -44,9 +64,11 @@ const ToolbarIcon = styled.svg`
   padding: ${props => props.padding};
   border-radius: 5px;
   &:hover {
-    background-color: #141F3C;
+    background-color: ${props => btnBgActiveFn(props.hoverColor)};
   }
 `;
+// Light: #F0F0F0
+// Dark: #141F3C #364C77
 
 const VertDivider = styled.div`
   box-sizing: border-box;
@@ -57,10 +79,15 @@ const VertDivider = styled.div`
   place-self: center;
 `;
 
-const DropdownStyle = {
-  alignSelf: 'center',
-  color: 'white',
-};
+/**
+ * Object constructor for dropdown styling
+ * @param {*} input
+ * @return {*} a new object
+ */
+function DropdownStyle(input) {
+  this.color = btnSymbolActiveFn(input);
+  this.alignSelf = 'center';
+}
 
 const DropdownHeader1 = {
   fontSize: '25px',
@@ -155,23 +182,55 @@ export default class FormatToolbar extends React.Component {
    * Render a mark-toggling toolbar button.
    */
   renderMarkButton(type, icon, hi, wi, pa, vBox, classInput) {
-    const { editor } = this.props;
+    const {
+      editor,
+      editorProps,
+    } = this.props;
+    const {
+      BUTTON_BACKGROUND_INACTIVE,
+      BUTTON_BACKGROUND_ACTIVE,
+      BUTTON_SYMBOL_INACTIVE,
+      BUTTON_SYMBOL_ACTIVE,
+      BUTTON_BACKGROUND_HOVER,
+    } = editorProps;
+
     const isActive = action.hasMark(editor, type);
-    const fillActivity = isActive ? darkGrey : mediumGrey;
-    const bgActivity = isActive ? lightGrey : whiteColor;
+
+    const fillActivity = isActive
+      ? btnSymbolActiveFn(BUTTON_SYMBOL_ACTIVE)
+      : btnSymbolInactiveFn(BUTTON_SYMBOL_INACTIVE);
+
+    const bgActivity = isActive
+      ? btnBgActiveFn(BUTTON_BACKGROUND_ACTIVE)
+      : btnBgInactiveFn(BUTTON_BACKGROUND_INACTIVE);
+
+    const style = {
+      borderRadius: '5px',
+      backgroundColor: tooltipBg('#19C6C7'),
+      color: '#182444',
+      // #19C6C7
+    };
 
     return (
-      <ToolbarIcon
-        viewBox={vBox}
-        aria-label={type}
-        background={bgActivity}
-        width={wi}
-        height={hi}
-        padding={pa}
-        className={classInput}
-        onPointerDown={event => this.onClickMark(event, type)}>
-          {icon(fillActivity)}
-      </ ToolbarIcon>
+      <Popup
+       trigger={
+        <ToolbarIcon
+          viewBox={vBox}
+          aria-label={type}
+          background={bgActivity}
+          width={wi}
+          height={hi}
+          padding={pa}
+          className={classInput}
+          hoverColor={BUTTON_BACKGROUND_HOVER}
+          onPointerDown={event => this.onClickMark(event, type)}>
+            {icon(fillActivity)}
+        </ ToolbarIcon>
+      }
+      content={capitalizeWord(type)}
+      style={style}
+      position='bottom center'
+      />
     );
   }
 
@@ -179,12 +238,34 @@ export default class FormatToolbar extends React.Component {
    * Render a block modifying button
    */
   renderBlockButton(type, icon, hi, wi, pa, vBox, classInput, props) {
-    const { editor } = this.props;
+    const { editor, editorProps } = this.props;
+    const {
+      BUTTON_BACKGROUND_ACTIVE,
+      BUTTON_BACKGROUND_INACTIVE,
+      BUTTON_SYMBOL_INACTIVE,
+      BUTTON_SYMBOL_ACTIVE
+    } = editorProps;
+
     const isActive = action.hasBlock(editor, type);
-    const fillActivity = isActive ? darkGrey : mediumGrey;
-    const bgActivity = isActive ? lightGrey : whiteColor;
+
+    const fillActivity = isActive
+      ? btnSymbolActiveFn(BUTTON_SYMBOL_ACTIVE)
+      : btnSymbolInactiveFn(BUTTON_SYMBOL_INACTIVE);
+
+    const bgActivity = isActive
+      ? btnBgActiveFn(BUTTON_BACKGROUND_ACTIVE)
+      : btnBgInactiveFn(BUTTON_BACKGROUND_INACTIVE);
+
+    const style = {
+      borderRadius: '5px',
+      backgroundColor: tooltipBg('#19C6C7'),
+      color: '#182444',
+      // #19C6C7
+    };
 
     return (
+      <Popup
+       trigger={
       <ToolbarIcon
         viewBox={vBox}
         aria-label={type}
@@ -197,6 +278,13 @@ export default class FormatToolbar extends React.Component {
         onPointerDown={event => this.onClickBlock(event, type, props)}>
           {icon(fillActivity)}
       </ ToolbarIcon>
+      }
+      content={identifyBlock(type)}
+      style={style}
+      position='bottom center'
+      />
+
+
     );
   }
 
@@ -204,10 +292,22 @@ export default class FormatToolbar extends React.Component {
    * Render a link-toggling toolbar button.
    */
   renderLinkButton(type, icon, hi, wi, pa, vBox, classInput) {
-    const { editor } = this.props;
+    const { editor, editorProps } = this.props;
+    const {
+      BUTTON_BACKGROUND_ACTIVE,
+      BUTTON_BACKGROUND_INACTIVE,
+      BUTTON_SYMBOL_INACTIVE
+    } = editorProps;
+
     const isActive = action.hasLinks(editor);
-    const fillActivity = isActive ? linkColor : mediumGrey;
-    const bgActivity = isActive ? lightGrey : whiteColor;
+
+    const fillActivity = isActive
+      ? linkColor
+      : btnSymbolInactiveFn(BUTTON_SYMBOL_INACTIVE);
+
+    const bgActivity = isActive
+      ? btnBgActiveFn(BUTTON_BACKGROUND_ACTIVE)
+      : btnBgInactiveFn(BUTTON_BACKGROUND_INACTIVE);
 
     return (
       <ToolbarIcon
@@ -228,34 +328,38 @@ export default class FormatToolbar extends React.Component {
    * Render a history-toggling toolbar button.
    */
   renderHistoryButton(type, icon, hi, wi, pa, vBox, action, classInput) {
+    const { editor, editorProps } = this.props;
+    const { BUTTON_BACKGROUND_INACTIVE, BUTTON_SYMBOL_INACTIVE } = editorProps;
+
     return (
       <ToolbarIcon
         aria-label={type}
-        background={whiteColor}
+        background={btnBgInactiveFn(BUTTON_BACKGROUND_INACTIVE)}
         width={wi}
         height={hi}
         padding={pa}
         viewBox={vBox}
         className={classInput}
-        onPointerDown={event => this.onClickHistory(event, action, this.props.editor)}>
-          {icon(mediumGrey)}
+        onPointerDown={event => this.onClickHistory(event, action, editor)}>
+          {icon(btnSymbolInactiveFn(BUTTON_SYMBOL_INACTIVE))}
       </ ToolbarIcon>
     );
   }
 
   render() {
-    const { pluginManager, editor } = this.props;
+    const { pluginManager, editor, editorProps } = this.props;
+    const { TOOLBAR_BACKGROUND } = editorProps;
     const root = window.document.getElementById('root').querySelector('#toolbarwrapperid');
     if (!root) { return null; }
 
     return ReactDOM.createPortal(
-      <StyledToolbar className="format-toolbar">
+      <StyledToolbar background={TOOLBAR_BACKGROUND} className="format-toolbar">
         <Dropdown
           text='Style'
           className='toolbar-0x0'
           openOnFocus
           simple
-          style={ DropdownStyle }
+          style={ new DropdownStyle(editorProps.dropdown_color) }
         >
           <Dropdown.Menu>
             <Dropdown.Item
@@ -405,4 +509,15 @@ export default class FormatToolbar extends React.Component {
 FormatToolbar.propTypes = {
   editor: PropTypes.object.isRequired,
   pluginManager: PropTypes.object,
+  editorProps: PropTypes.shape({
+    TOOLBAR_BACKGROUND: PropTypes.string,
+    BUTTON_BACKGROUND_INACTIVE: PropTypes.string,
+    BUTTON_BACKGROUND_ACTIVE: PropTypes.string,
+    BUTTON_BACKGROUND_HOVER: PropTypes.string,
+    BUTTON_SYMBOL_INACTIVE: PropTypes.string,
+    BUTTON_SYMBOL_ACTIVE: PropTypes.string,
+    TOOLTIP_BACKGROUND: PropTypes.string,
+    TOOLTIP: PropTypes.string,
+    DROPDOWN_COLOR: PropTypes.string,
+  }),
 };
