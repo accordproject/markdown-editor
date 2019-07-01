@@ -39,7 +39,7 @@ const regex = /{{(.*?)}}/gm;
 const EditorWrapper = styled.div`
   background: #fff;
   min-height: 750px;
-  max-width: 600px;
+  max-width: ${props => props.WIDTH || null};
 
   border: 1px solid #979797;
   border-radius: 10px;
@@ -63,9 +63,10 @@ const ToolbarWrapper = styled.div`
   z-index: 1;
   top: 0;
   height: 36px;
-  background: #1E2D53;
-  box-shadow: 0 2px 20px 0 rgba(20,31,60,0.65);
+  background: ${props => props.TOOLBAR_BACKGROUND || '#FFF'}; 
+  box-shadow: ${props => props.boxShadow || null};
 `;
+// 1E2D53
 
 /**
  * a utility function to generate a random node id for annotations
@@ -102,7 +103,7 @@ function SlateAsInputEditor(props) {
    * Destructure props for efficiency
    */
   const {
-    onChange, plugins, value, lockText
+    onChange, plugins, value, lockText, editorProps
   } = props;
 
   /**
@@ -494,6 +495,7 @@ function SlateAsInputEditor(props) {
         <FormatToolbar
           editor={editor}
           pluginManager={pluginManager}
+          editorProps={props.editorProps}
         />
         {children}
       </div>
@@ -509,8 +511,8 @@ function SlateAsInputEditor(props) {
 
   return (
     <div>
-      <ToolbarWrapper id="toolbarwrapperid" />
-      <EditorWrapper>
+      <ToolbarWrapper {...editorProps} id="toolbarwrapperid" />
+      <EditorWrapper {...editorProps}>
         <Editor
           ref={editorRef}
           className="doc-inner"
@@ -526,6 +528,7 @@ function SlateAsInputEditor(props) {
           renderInline={renderInline}
           renderMark={renderMark}
           renderAnnotation={renderAnnotation}
+          editorProps={editorProps}
           renderEditor={renderEditor}
         />
       </EditorWrapper>
@@ -541,6 +544,23 @@ SlateAsInputEditor.propTypes = {
    * Initial contents for the editor (slate value)
    */
   value: PropTypes.object,
+
+  /**
+   * asdfiosadoifjsoaijdfijo
+   */
+  editorProps: PropTypes.shape({
+    boxShadow: PropTypes.string,
+    width: PropTypes.string,
+
+    TOOLBAR_BACKGROUND: PropTypes.string,
+    BUTTON_BACKGROUND_INACTIVE: PropTypes.string,
+    BUTTON_BACKGROUND_ACTIVE: PropTypes.string,
+    BUTTON_SYMBOL_INACTIVE: PropTypes.string,
+    BUTTON_SYMBOL_ACTIVE: PropTypes.string,
+    TOOLTIP_BACKGROUND: PropTypes.string,
+    TOOLTIP: PropTypes.string,
+    DROPDOWN_COLOR: PropTypes.string,
+  }),
 
   /**
    * A callback that receives the Slate Value object and
@@ -574,6 +594,15 @@ SlateAsInputEditor.propTypes = {
     tags: PropTypes.arrayOf(PropTypes.object).isRequired,
     schema: PropTypes.object.isRequired,
   })),
+
+  // TOOLBAR_BACKGROUND: PropTypes.string,
+  // BUTTON_BACKGROUND_INACTIVE: PropTypes.string,
+  // BUTTON_BACKGROUND_ACTIVE: PropTypes.string,
+  // BUTTON_SYMBOL_INACTIVE: PropTypes.string,
+  // BUTTON_SYMBOL_ACTIVE: PropTypes.string,
+  // TOOLTIP_BACKGROUND: PropTypes.string,
+  // TOOLTIP: PropTypes.string,
+  // DROPDOWN_COLOR: PropTypes.string,
 };
 
 /**
