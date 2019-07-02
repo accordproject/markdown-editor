@@ -57,6 +57,10 @@ Another video:
 
 <video src="https://www.youtube.com/embed/cmmq-JBMbbQ"/>`;
 
+const propsObj = {
+  WIDTH: '600px',
+};
+
 /**
  * Simple demo component that tracks whether to lockText
  * and whether to use markdown mode.
@@ -93,7 +97,7 @@ function Demo() {
       </Grid.Column>
 
       <Grid.Column>
-        <SlateAsInputEditor readOnly={false} lockText={true} plugins={plugins} value={slateValue} onChange={onSlateValueChange}/>
+        <SlateAsInputEditor readOnly={false} lockText={true} plugins={plugins} value={slateValue} onChange={onSlateValueChange} editorProps={propsObj} />
       </Grid.Column>
     </Grid>
     <Divider vertical>Preview</Divider>
