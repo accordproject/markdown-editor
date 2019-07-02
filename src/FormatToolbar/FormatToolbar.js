@@ -156,34 +156,23 @@ export default class FormatToolbar extends React.Component {
    * Render a mark-toggling toolbar button.
    */
   renderMarkButton(type, icon, hi, wi, pa, vBox, classInput) {
-    const {
-      editor,
-      editorProps,
-    } = this.props;
-    const {
-      BUTTON_BACKGROUND_INACTIVE,
-      BUTTON_BACKGROUND_ACTIVE,
-      BUTTON_SYMBOL_INACTIVE,
-      BUTTON_SYMBOL_ACTIVE,
-      BUTTON_BACKGROUND_HOVER,
-      TOOLTIP_BACKGROUND,
-      TOOLTIP
-    } = editorProps;
+    const { editor } = this.props;
+    const editorProps = this.props.editorProps || Object.create(null);
 
     const isActive = action.hasMark(editor, type);
 
     const fillActivity = isActive
-      ? styles.buttonSymbolActive(BUTTON_SYMBOL_ACTIVE)
-      : styles.buttonSymbolInactive(BUTTON_SYMBOL_INACTIVE);
+      ? styles.buttonSymbolActive(editorProps.BUTTON_SYMBOL_ACTIVE)
+      : styles.buttonSymbolInactive(editorProps.BUTTON_SYMBOL_INACTIVE);
 
     const bgActivity = isActive
-      ? styles.buttonBgActive(BUTTON_BACKGROUND_ACTIVE)
-      : styles.buttonBgInactiveInactive(BUTTON_BACKGROUND_INACTIVE);
+      ? styles.buttonBgActive(editorProps.BUTTON_BACKGROUND_ACTIVE)
+      : styles.buttonBgInactiveInactive(editorProps.BUTTON_BACKGROUND_INACTIVE);
 
     const style = {
       borderRadius: '5px',
-      backgroundColor: styles.tooltipBg(TOOLTIP_BACKGROUND),
-      color: styles.tooltipColor(TOOLTIP),
+      backgroundColor: styles.tooltipBg(editorProps.TOOLTIP_BACKGROUND),
+      color: styles.tooltipColor(editorProps.TOOLTIP),
     };
 
     return (
@@ -200,7 +189,7 @@ export default class FormatToolbar extends React.Component {
             height={hi}
             padding={pa}
             className={classInput}
-            hoverColor={BUTTON_BACKGROUND_HOVER}
+            hoverColor={editorProps.BUTTON_BACKGROUND_HOVER}
             onPointerDown={event => this.onClickMark(event, type)}>
               {icon(fillActivity)}
           </ ToolbarIcon>
@@ -213,30 +202,23 @@ export default class FormatToolbar extends React.Component {
    * Render a block modifying button
    */
   renderBlockButton(type, icon, hi, wi, pa, vBox, classInput, props) {
-    const { editor, editorProps } = this.props;
-    const {
-      BUTTON_BACKGROUND_ACTIVE,
-      BUTTON_BACKGROUND_INACTIVE,
-      BUTTON_SYMBOL_INACTIVE,
-      BUTTON_SYMBOL_ACTIVE,
-      TOOLTIP_BACKGROUND,
-      TOOLTIP
-    } = editorProps;
+    const { editor } = this.props;
+    const editorProps = this.props.editorProps || Object.create(null);
 
     const isActive = action.hasBlock(editor, type);
 
     const fillActivity = isActive
-      ? styles.buttonSymbolActive(BUTTON_SYMBOL_ACTIVE)
-      : styles.buttonSymbolInactive(BUTTON_SYMBOL_INACTIVE);
+      ? styles.buttonSymbolActive(editorProps.BUTTON_SYMBOL_ACTIVE)
+      : styles.buttonSymbolInactive(editorProps.BUTTON_SYMBOL_INACTIVE);
 
     const bgActivity = isActive
-      ? styles.buttonBgActive(BUTTON_BACKGROUND_ACTIVE)
-      : styles.buttonBgInactiveInactive(BUTTON_BACKGROUND_INACTIVE);
+      ? styles.buttonBgActive(editorProps.BUTTON_BACKGROUND_ACTIVE)
+      : styles.buttonBgInactiveInactive(editorProps.BUTTON_BACKGROUND_INACTIVE);
 
     const style = {
       borderRadius: '5px',
-      backgroundColor: styles.tooltipBg(TOOLTIP_BACKGROUND),
-      color: styles.tooltipColor(TOOLTIP),
+      backgroundColor: styles.tooltipBg(editorProps.TOOLTIP_BACKGROUND),
+      color: styles.tooltipColor(editorProps.TOOLTIP),
     };
 
     return (
@@ -266,29 +248,23 @@ export default class FormatToolbar extends React.Component {
    * Render a link-toggling toolbar button.
    */
   renderLinkButton(type, icon, hi, wi, pa, vBox, classInput) {
-    const { editor, editorProps } = this.props;
-    const {
-      BUTTON_BACKGROUND_ACTIVE,
-      BUTTON_BACKGROUND_INACTIVE,
-      BUTTON_SYMBOL_INACTIVE,
-      TOOLTIP_BACKGROUND,
-      TOOLTIP
-    } = editorProps;
+    const { editor } = this.props;
+    const editorProps = this.props.editorProps || Object.create(null);
 
     const isActive = action.getSelectedListBlock(editor);
 
     const fillActivity = isActive
       ? '#2587DA'
-      : styles.buttonSymbolInactive(BUTTON_SYMBOL_INACTIVE);
+      : styles.buttonSymbolInactive(editorProps.BUTTON_SYMBOL_INACTIVE);
 
     const bgActivity = isActive
-      ? styles.buttonBgActive(BUTTON_BACKGROUND_ACTIVE)
-      : styles.buttonBgInactiveInactive(BUTTON_BACKGROUND_INACTIVE);
+      ? styles.buttonBgActive(editorProps.BUTTON_BACKGROUND_ACTIVE)
+      : styles.buttonBgInactiveInactive(editorProps.BUTTON_BACKGROUND_INACTIVE);
 
     const style = {
       borderRadius: '5px',
-      backgroundColor: styles.tooltipBg(TOOLTIP_BACKGROUND),
-      color: styles.tooltipColor(TOOLTIP),
+      backgroundColor: styles.tooltipBg(editorProps.TOOLTIP_BACKGROUND),
+      color: styles.tooltipColor(editorProps.TOOLTIP),
     };
 
     return (
@@ -317,18 +293,13 @@ export default class FormatToolbar extends React.Component {
    * Render a history-toggling toolbar button.
    */
   renderHistoryButton(type, icon, hi, wi, pa, vBox, action, classInput) {
-    const { editor, editorProps } = this.props;
-    const {
-      BUTTON_BACKGROUND_INACTIVE,
-      BUTTON_SYMBOL_INACTIVE,
-      TOOLTIP_BACKGROUND,
-      TOOLTIP
-    } = editorProps;
+    const { editor } = this.props;
+    const editorProps = this.props.editorProps || Object.create(null);
 
     const style = {
       borderRadius: '5px',
-      backgroundColor: styles.tooltipBg(TOOLTIP_BACKGROUND),
-      color: styles.tooltipColor(TOOLTIP),
+      backgroundColor: styles.tooltipBg(editorProps.TOOLTIP_BACKGROUND),
+      color: styles.tooltipColor(editorProps.TOOLTIP),
     };
 
     return (
@@ -339,14 +310,14 @@ export default class FormatToolbar extends React.Component {
         trigger={
           <ToolbarIcon
             aria-label={type}
-            background={styles.buttonBgInactiveInactive(BUTTON_BACKGROUND_INACTIVE)}
+            background={styles.buttonBgInactiveInactive(editorProps.BUTTON_BACKGROUND_INACTIVE)}
             width={wi}
             height={hi}
             padding={pa}
             viewBox={vBox}
             className={classInput}
             onPointerDown={event => this.onClickHistory(event, action, editor)}>
-              {icon(styles.buttonSymbolInactive(BUTTON_SYMBOL_INACTIVE))}
+              {icon(styles.buttonSymbolInactive(editorProps.BUTTON_SYMBOL_INACTIVE))}
           </ ToolbarIcon>
         }
       />
@@ -354,19 +325,19 @@ export default class FormatToolbar extends React.Component {
   }
 
   render() {
-    const { pluginManager, editor, editorProps } = this.props;
-    const { DROPDOWN_COLOR, TOOLBAR_BACKGROUND, DIVIDER } = editorProps;
+    const { pluginManager, editor } = this.props;
+    const editorProps = this.props.editorProps || Object.create(null);
     const root = window.document.getElementById('root').querySelector('#toolbarwrapperid');
     if (!root) { return null; }
 
     return ReactDOM.createPortal(
-      <StyledToolbar background={TOOLBAR_BACKGROUND} className="format-toolbar">
+      <StyledToolbar background={editorProps.TOOLBAR_BACKGROUND} className="format-toolbar">
         <Dropdown
           text='Style'
           className='toolbar-0x0'
           openOnFocus
           simple
-          style={ new DropdownStyle(DROPDOWN_COLOR) }
+          style={ new DropdownStyle(editorProps.DROPDOWN_COLOR) }
         >
           <Dropdown.Menu>
             <Dropdown.Item
@@ -390,7 +361,7 @@ export default class FormatToolbar extends React.Component {
             />
           </Dropdown.Menu>
         </Dropdown>
-        <VertDivider color={DIVIDER} className='toolbar-4x0'/>
+        <VertDivider color={editorProps.DIVIDER} className='toolbar-4x0'/>
         {
           this.renderMarkButton(
             boldIcon.type(),
@@ -424,7 +395,7 @@ export default class FormatToolbar extends React.Component {
             'toolbar-0x3'
           )
         }
-        <VertDivider color={DIVIDER} className='toolbar-4x1'/>
+        <VertDivider color={editorProps.DIVIDER} className='toolbar-4x1'/>
         {
           this.renderMarkButton(
             codeIcon.type(),
@@ -469,7 +440,7 @@ export default class FormatToolbar extends React.Component {
             'toolbar-1x3'
           )
         }
-        <VertDivider color={DIVIDER} className='toolbar-4x2' />
+        <VertDivider color={editorProps.DIVIDER} className='toolbar-4x2' />
         {
           this.renderLinkButton(
             hyperlinkIcon.type(),
@@ -481,7 +452,7 @@ export default class FormatToolbar extends React.Component {
             'toolbar-2x1'
           )
         }
-        <VertDivider color={DIVIDER} className='toolbar-4x3' />
+        <VertDivider color={editorProps.DIVIDER} className='toolbar-4x3' />
         {
           this.renderHistoryButton(
             undoIcon.type(),
