@@ -27,7 +27,7 @@ import baseSchema from '../schema';
 import ToMarkdown from '../markdown/toMarkdown';
 import PluginManager from '../PluginManager';
 import { FromHTML } from '../html/fromHTML';
-import FormatToolbar from '../FormatToolbar';
+import FormatToolbar from '../FormatToolbar/FormatToolbar';
 
 import '../styles.css';
 
@@ -39,8 +39,7 @@ const regex = /{{(.*?)}}/gm;
 const EditorWrapper = styled.div`
   background: #fff;
   min-height: 750px;
-  max-width: ${props => props.WIDTH || null};
-
+  max-width: ${props => props.width || null};
   border: 1px solid #979797;
   border-radius: 10px;
   margin: 50px auto;
@@ -64,9 +63,8 @@ const ToolbarWrapper = styled.div`
   top: 0;
   height: 36px;
   background: ${props => props.TOOLBAR_BACKGROUND || '#FFF'}; 
-  box-shadow: ${props => props.boxShadow || null};
+  box-shadow: ${props => props.TOOLBAR_SHADOW || null};
 `;
-// 1E2D53
 
 /**
  * a utility function to generate a random node id for annotations
@@ -512,7 +510,7 @@ function SlateAsInputEditor(props) {
   return (
     <div>
       <ToolbarWrapper {...editorProps} id="toolbarwrapperid" />
-      <EditorWrapper {...editorProps}>
+      <EditorWrapper width={editorProps.WIDTH}>
         <Editor
           ref={editorRef}
           className="doc-inner"
@@ -546,20 +544,19 @@ SlateAsInputEditor.propTypes = {
   value: PropTypes.object,
 
   /**
-   * asdfiosadoifjsoaijdfijo
+   * Optional styling props for this editor and toolbar
    */
   editorProps: PropTypes.shape({
-    boxShadow: PropTypes.string,
-    width: PropTypes.string,
-
-    TOOLBAR_BACKGROUND: PropTypes.string,
     BUTTON_BACKGROUND_INACTIVE: PropTypes.string,
     BUTTON_BACKGROUND_ACTIVE: PropTypes.string,
     BUTTON_SYMBOL_INACTIVE: PropTypes.string,
     BUTTON_SYMBOL_ACTIVE: PropTypes.string,
+    DROPDOWN_COLOR: PropTypes.string,
+    TOOLBAR_BACKGROUND: PropTypes.string,
     TOOLTIP_BACKGROUND: PropTypes.string,
     TOOLTIP: PropTypes.string,
-    DROPDOWN_COLOR: PropTypes.string,
+    TOOLBAR_SHADOW: PropTypes.string,
+    WIDTH: PropTypes.string,
   }),
 
   /**
@@ -594,15 +591,6 @@ SlateAsInputEditor.propTypes = {
     tags: PropTypes.arrayOf(PropTypes.object).isRequired,
     schema: PropTypes.object.isRequired,
   })),
-
-  // TOOLBAR_BACKGROUND: PropTypes.string,
-  // BUTTON_BACKGROUND_INACTIVE: PropTypes.string,
-  // BUTTON_BACKGROUND_ACTIVE: PropTypes.string,
-  // BUTTON_SYMBOL_INACTIVE: PropTypes.string,
-  // BUTTON_SYMBOL_ACTIVE: PropTypes.string,
-  // TOOLTIP_BACKGROUND: PropTypes.string,
-  // TOOLTIP: PropTypes.string,
-  // DROPDOWN_COLOR: PropTypes.string,
 };
 
 /**
