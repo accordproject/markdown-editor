@@ -39,7 +39,7 @@ const regex = /{{(.*?)}}/gm;
 const EditorWrapper = styled.div`
   background: #fff;
   min-height: 750px;
-  max-width: ${props => props.width || null};
+  max-width: ${props => props.width || 'none'};
   border: 1px solid #979797;
   border-radius: 10px;
   margin: 50px auto;
@@ -63,7 +63,7 @@ const ToolbarWrapper = styled.div`
   top: 0;
   height: 36px;
   background: ${props => props.TOOLBAR_BACKGROUND || '#FFF'}; 
-  box-shadow: ${props => props.TOOLBAR_SHADOW || null};
+  box-shadow: ${props => props.TOOLBAR_SHADOW || 'none'};
 `;
 
 /**
