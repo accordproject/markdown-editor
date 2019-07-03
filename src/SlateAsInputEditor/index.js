@@ -27,7 +27,7 @@ import baseSchema from '../schema';
 import ToMarkdown from '../markdown/toMarkdown';
 import PluginManager from '../PluginManager';
 import { FromHTML } from '../html/fromHTML';
-import FormatToolbar from '../FormatToolbar/FormatToolbar';
+import FormatToolbar from '../FormatToolbar';
 
 import '../styles.css';
 
