@@ -74,6 +74,24 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.<br>
 Your app is ready to be deployed!
 
+## Styling
+
+You can style the toolbar of this components, as well as the width of the editor:
+
+#### `editorProps`
+
+This is an object with the following possible css inputs as strings:
+- `BUTTON_BACKGROUND_INACTIVE`
+- `BUTTON_BACKGROUND_ACTIVE`
+- `BUTTON_SYMBOL_INACTIVE`
+- `BUTTON_SYMBOL_ACTIVE`
+- `DROPDOWN_COLOR`
+- `TOOLBAR_BACKGROUND`
+- `TOOLTIP_BACKGROUND`
+- `TOOLTIP`
+- `TOOLBAR_SHADOW`
+- `WIDTH`
+
 ---
 
 <a href="https://www.accordproject.org/">

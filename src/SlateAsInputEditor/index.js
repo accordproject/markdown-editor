@@ -21,7 +21,6 @@ import React, {
   from 'react';
 import { Editor, getEventTransfer } from 'slate-react';
 import { Value } from 'slate';
-import { Card } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import baseSchema from '../schema';
@@ -39,7 +38,11 @@ const regex = /{{(.*?)}}/gm;
 
 const EditorWrapper = styled.div`
   background: #fff;
-  margin: 50px;
+  min-height: 750px;
+  max-width: ${props => props.width || 'none'};
+  border: 1px solid #979797;
+  border-radius: 10px;
+  margin: 50px auto;
   padding: 25px;
   font-family: serif;
   font-style: normal;
@@ -55,11 +58,12 @@ const EditorWrapper = styled.div`
 `;
 
 const ToolbarWrapper = styled.div`
+  position: sticky;
+  z-index: 1;
+  top: 0;
   height: 36px;
-  border: 1px solid #414F58;
-  background: #FFFFFF;
-  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.1);
-  margin-bottom: 1px;
+  background: ${props => props.TOOLBAR_BACKGROUND || '#FFF'}; 
+  box-shadow: ${props => props.TOOLBAR_SHADOW || 'none'};
 `;
 
 /**
@@ -97,7 +101,7 @@ function SlateAsInputEditor(props) {
    * Destructure props for efficiency
    */
   const {
-    onChange, plugins, value, lockText
+    onChange, plugins, value, lockText, editorProps
   } = props;
 
   /**
@@ -489,6 +493,7 @@ function SlateAsInputEditor(props) {
         <FormatToolbar
           editor={editor}
           pluginManager={pluginManager}
+          editorProps={props.editorProps}
         />
         {children}
       </div>
@@ -504,32 +509,27 @@ function SlateAsInputEditor(props) {
 
   return (
     <div>
-      <ToolbarWrapper id="toolbarwrapperid" />
-      <Card.Group>
-        <Card fluid>
-          <Card.Content>
-            <EditorWrapper>
-              <Editor
-                ref={editorRef}
-                className="doc-inner"
-                value={Value.fromJSON(value)}
-                readOnly={props.readOnly}
-                onChange={onChangeHandler}
-                schema={slateSchema}
-                plugins={props.plugins}
-                onBeforeInput={onBeforeInput}
-                onKeyDown={onKeyDown}
-                onPaste={onPaste}
-                renderBlock={renderBlock}
-                renderInline={renderInline}
-                renderMark={renderMark}
-                renderAnnotation={renderAnnotation}
-                renderEditor={renderEditor}
-              />
-            </EditorWrapper>
-          </Card.Content>
-        </Card>
-      </Card.Group>
+      <ToolbarWrapper {...editorProps} id="toolbarwrapperid" />
+      <EditorWrapper width={editorProps.WIDTH}>
+        <Editor
+          ref={editorRef}
+          className="doc-inner"
+          value={Value.fromJSON(value)}
+          readOnly={props.readOnly}
+          onChange={onChangeHandler}
+          schema={slateSchema}
+          plugins={props.plugins}
+          onBeforeInput={onBeforeInput}
+          onKeyDown={onKeyDown}
+          onPaste={onPaste}
+          renderBlock={renderBlock}
+          renderInline={renderInline}
+          renderMark={renderMark}
+          renderAnnotation={renderAnnotation}
+          editorProps={editorProps}
+          renderEditor={renderEditor}
+        />
+      </EditorWrapper>
     </div>
   );
 }
@@ -542,6 +542,22 @@ SlateAsInputEditor.propTypes = {
    * Initial contents for the editor (slate value)
    */
   value: PropTypes.object,
+
+  /**
+   * Optional styling props for this editor and toolbar
+   */
+  editorProps: PropTypes.shape({
+    BUTTON_BACKGROUND_INACTIVE: PropTypes.string,
+    BUTTON_BACKGROUND_ACTIVE: PropTypes.string,
+    BUTTON_SYMBOL_INACTIVE: PropTypes.string,
+    BUTTON_SYMBOL_ACTIVE: PropTypes.string,
+    DROPDOWN_COLOR: PropTypes.string,
+    TOOLBAR_BACKGROUND: PropTypes.string,
+    TOOLTIP_BACKGROUND: PropTypes.string,
+    TOOLTIP: PropTypes.string,
+    TOOLBAR_SHADOW: PropTypes.string,
+    WIDTH: PropTypes.string,
+  }),
 
   /**
    * A callback that receives the Slate Value object and

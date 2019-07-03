@@ -1,7 +1,40 @@
 /**
+ *************** INTERNAL METHODS ***************
+ */
+
+/**
+   * A change helper to standardize unwrapping links.
+   */
+const unwrapLink = (editor) => {
+  editor.unwrapInline('link');
+};
+
+/**
+  * Return type of given selected parent.
+  */
+const getParentBlockType = block => (block ? block.type : block);
+
+/**
+  * Return selected block of given type.
+  */
+const getSelectedBlock = (editor, type) => {
+  const { value } = editor;
+  return value.blocks.find(node => node.type === type);
+};
+
+/**
+  * Return parent block of given selection.
+  */
+const getParentBlock = (editor, type, item) => {
+  const { value } = editor;
+  const { document } = value;
+  return document.getClosest(item.key, parent => parent.type === type);
+};
+
+/**
  * A change helper to standardize wrapping links.
  */
-export const wrapLink = (editor, href) => {
+const wrapLink = (editor, href) => {
   editor.wrapInline({
     type: 'link',
     data: { href },
@@ -10,11 +43,8 @@ export const wrapLink = (editor, href) => {
 };
 
 /**
-   * A change helper to standardize unwrapping links.
-   */
-export const unwrapLink = (editor) => {
-  editor.unwrapInline('link');
-};
+ *************** EXPORT METHODS ***************
+ */
 
 /**
    * Check if the current selection has a mark with `type` in it.
@@ -33,30 +63,11 @@ export const hasLinks = (editor) => {
 };
 
 /**
-  * Return selected block of given type.
-  */
-export const getSelectedBlock = (editor, type) => {
-  const { value } = editor;
-  return value.blocks.find(node => node.type === type);
-};
-
-/**
   * Return selected block of 'list_item' type.
   */
-const getSelectedListBlock = (editor) => {
+export const getSelectedListBlock = (editor) => {
   const { value } = editor;
   return value.blocks.find(node => node.type === 'list_item');
-};
-
-/**
-  * Return whether current selection is a list.
-  */
-export const getListBool = (editor, type) => {
-  const { value } = editor;
-  const selectedBlockHere = getSelectedListBlock(editor);
-  return selectedBlockHere
-    ? (selectedBlockHere.type === 'list_item')
-    : (value.blocks.some(node => node.type === type));
 };
 
 /**
@@ -70,18 +81,15 @@ export const getTypeBool = (editor, type) => {
 };
 
 /**
-  * Return parent block of given selection.
+  * Return whether current selection is a list.
   */
-const getParentBlock = (editor, type, item) => {
+export const getListBool = (editor, type) => {
   const { value } = editor;
-  const { document } = value;
-  return document.getClosest(item.key, parent => parent.type === type);
+  const selectedBlockHere = getSelectedListBlock(editor);
+  return selectedBlockHere
+    ? (selectedBlockHere.type === 'list_item')
+    : (value.blocks.some(node => node.type === type));
 };
-
-/**
-  * Return type of given selected parent.
-  */
-const getParentBlockType = block => (block ? block.type : block);
 
 /**
   * Check if the any of the currently selected blocks are of `type`.
