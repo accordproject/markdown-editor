@@ -54,6 +54,24 @@ export default class PluginManager {
   }
 
   /**
+   * All plugins must return true for the plugin manager
+   * to be editable.
+   *
+   * @param {Value} value the Slate value
+   * @param {string} code the type of edit requested
+   */
+  isEditable(value, code) {
+    for (let n = 0; n < this.plugins.length; n += 1) {
+      const plugin = this.plugins[n];
+      if (plugin.isEditable && !plugin.isEditable(value, code)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
    * Render the toolbar buttons for all plugins
    *
    * @param {Editor} editor

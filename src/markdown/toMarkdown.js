@@ -13,7 +13,6 @@ const text = (node) => {
   const isItalic = node.marks.some(mark => mark.type === 'italic');
   const isUnderline = node.marks.some(mark => mark.type === 'underline');
   const isCode = node.marks.some(mark => mark.type === 'code');
-  const isVariable = node.marks.some(mark => mark.type === 'variable');
   let openMark = '';
   let closeMark = '';
 
@@ -30,11 +29,6 @@ const text = (node) => {
   if (isUnderline) {
     openMark += '__';
     closeMark += '__';
-  }
-
-  if (isVariable) {
-    openMark += '{{';
-    closeMark += '}}';
   }
 
   if (isCode) {

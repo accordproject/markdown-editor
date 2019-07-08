@@ -38,7 +38,7 @@ export default class FromMarkdown extends Markdown {
    * @return {Object} the Slate.js Value object
    */
   convert(markdownText) {
-    this.marks = ['code', 'strong', 'emph', 'under', 'variable'];
+    this.marks = ['code', 'strong', 'emph', 'under'];
 
     const reader = new commonmark.Parser();
     const parsed = reader.parse(markdownText);

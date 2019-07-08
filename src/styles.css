@@ -27,10 +27,6 @@ body {
     color: rgb(0, 60, 255);
 }
 
-.variable {
-    background-color: #ffeeba;
-}
-
 #toolbarwrapperid {
     display: grid;
     grid-template-columns: 3% auto 3%;

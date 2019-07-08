@@ -14,8 +14,9 @@ import * as serviceWorker from './serviceWorker';
 import 'semantic-ui-css/semantic.min.css';
 import List from '../../src/plugins/list';
 import Video from '../../src/plugins/video';
+import NoEdit from '../../src/plugins/noedit';
 
-const plugins = [List(), Video()];
+const plugins = [List(), Video(), NoEdit()];
 const pluginManager = new PluginManager(plugins);
 const fromMarkdown = new FromMarkdown(pluginManager);
 
@@ -23,13 +24,6 @@ const defaultMarkdown = `# Heading One
 This is text. This is *italic* text. This is **bold** text. This is a [link](https://clause.io). This is \`inline code\`.
 
 This is ***bold and italic*** text
-
-<variable src="baz">
-this is some content
-</variable>
-
-This is a <variable src="foo"/> sentence that ***contains*** <variable src="bar">a variable</variable> within it. And here is {{another}} with some text after.
-And here is more {{variables}}% with newlines and {{punctuation}} and text.
 
 > This is a quote.
 ## Heading Two
@@ -77,8 +71,8 @@ function Demo() {
    */
   const onMarkdownChange = useCallback((slateValue, markdown) => {
     localStorage.setItem('markdown-editor', markdown);
-    setSlateValue(slateValue);
-    setMarkdown(markdown);
+    // setSlateValue(slateValue);
+    // setMarkdown(markdown);
   }, []);
 
   /**
@@ -86,6 +80,8 @@ function Demo() {
    */
   const onSlateValueChange = useCallback((slateValue, markdown) => {
     localStorage.setItem('slate-editor-value', slateValue.toJSON());
+    setSlateValue(slateValue);
+    setMarkdown(markdown);
   }, []);
 
   return (
@@ -93,7 +89,7 @@ function Demo() {
       <Segment>
     <Grid columns={2}>
       <Grid.Column>
-        <MarkdownAsInputEditor plugins={plugins} markdown={markdown} onChange={onMarkdownChange}/>
+        <MarkdownAsInputEditor readOnly={true} plugins={plugins} markdown={markdown} onChange={onMarkdownChange}/>
       </Grid.Column>
 
       <Grid.Column>
