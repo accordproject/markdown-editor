@@ -155,7 +155,7 @@ function Video() {
     toMarkdown,
     fromMarkdown,
     fromHTML,
-    renderToolbar,
+    renderToolbar
   };
 }
 

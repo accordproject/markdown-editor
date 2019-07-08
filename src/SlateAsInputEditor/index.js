@@ -31,11 +31,6 @@ import FormatToolbar from '../FormatToolbar';
 
 import '../styles.css';
 
-/**
- * Regex used to identify variables
- */
-const regex = /{{(.*?)}}/gm;
-
 const EditorWrapper = styled.div`
   background: #fff;
   min-height: 750px;
@@ -122,6 +117,9 @@ function SlateAsInputEditor(props) {
    */
   const isEditorLockText = useCallback((editor) => {
     const { value } = editor;
+    if (!value.annotations) {
+      return false;
+    }
     const result = value.annotations.filter(ann => (ann.type === 'lockText'));
     return result.size > 0;
   }, []);
@@ -168,61 +166,6 @@ function SlateAsInputEditor(props) {
       });
     }
   }, [value.document, lockText]);
-
-  /**
-   * When the Slate Value changes changes update the variable annotations.
-   */
-  useEffect(() => {
-    if (editorRef && editorRef.current) {
-      const editor = editorRef.current;
-
-      if (isEditorLockText(editor)) {
-        const { document, annotations } = editor.value;
-
-        // Make the change to annotations without saving it into the undo history,
-        // so that there isn't a confusing behavior when undoing.
-        editor.withoutSaving(() => {
-          annotations.forEach((ann) => {
-            if (ann.type === 'variable') {
-              editor.removeAnnotation(ann);
-            }
-          });
-
-          // eslint-disable-next-line no-restricted-syntax
-          for (const [node, path] of document.texts()) {
-            const { key, text } = node;
-            let m = regex.exec(text);
-
-            while (m) {
-              // This is necessary to avoid infinite loops with zero-width matches
-              if (m.index === regex.lastIndex) {
-                regex.lastIndex += 1;
-              }
-
-              for (let groupIndex = 0; groupIndex < m.length; groupIndex += 1) {
-                const match = m[groupIndex];
-
-                if (groupIndex === 1) {
-                  const focus = regex.lastIndex - match.length - 2;
-                  const anchor = regex.lastIndex - 2;
-
-                  const annotation = {
-                    key: `variable-${uuidv4()}`,
-                    type: 'variable',
-                    anchor: { path, key, offset: focus - 1 },
-                    focus: { path, key, offset: anchor },
-                  };
-                  editor.addAnnotation(annotation);
-                }
-              }
-              m = regex.exec(text);
-            }
-          }
-        });
-      }
-    }
-  // @ts-ignore
-  }, [editorRef, isEditorLockText, lockText, value.document]);
 
   /**
    * Render a Slate inline.
@@ -307,57 +250,21 @@ function SlateAsInputEditor(props) {
   }, []);
 
   /**
-   * Render Slate annotations.
-   */
-  // @ts-ignore
-  const renderAnnotation = useCallback((props, editor, next) => {
-    const { children, annotation, attributes } = props;
-
-    switch (annotation.type) {
-      case 'variable':
-        return (
-          <span {...attributes} className='variable'>
-            {children}
-          </span>
-        );
-      default:
-        return next();
-    }
-  }, []);
-
-  /**
-  * Returns true if the anchor is inside a variable
-  * @param {*} value the Slate editor value
-  * @param {*} anchor the anchor point
-  */
-  const isInVariableEx = useCallback(((value, anchor) => {
-    const result = value.annotations.filter(ann => (ann.type === 'variable' && anchor.isInRange(ann)));
-    return result.size > 0;
-  }), []);
-
-  /**
-  * Returns true if the selection is inside a variable
-  * @param {*} value the Slate editor value
-  */
-  const isInVariable = useCallback(value => isInVariableEx(value, value.selection.anchor), [isInVariableEx]);
-
-
-  /**
   * Returns true if the editor should allow an edit. Edits are allowed for all
   * text unless the lockText parameter is set in the state of the editor, in which
-  * case only variables are editable.
+  * case the decision is delegated to the PluginManager.
   * @param {Editor} editor the Slate Editor
+  * @param {string} code the type of edit requested
   */
-  const isEditable = useCallback((editor) => {
+  const isEditable = useCallback((editor, code) => {
     if (isEditorLockText(editor)) {
       const { value } = editor;
-      // prevent removing the variable by protecting the first character
-      const newAnchor = value.selection.anchor.moveBackward(1).normalize(value.document);
-      return isInVariableEx(value, newAnchor) && isInVariable(value);
+      const pluginManager = new PluginManager(props.plugins);
+      return pluginManager.isEditable(value, code);
     }
 
     return true;
-  }, [isEditorLockText, isInVariable, isInVariableEx]);
+  }, [isEditorLockText, props.plugins]);
 
   /**
   * On backspace, if at the start of a non-paragraph, convert it back into a
@@ -371,11 +278,8 @@ function SlateAsInputEditor(props) {
     const { value } = editor;
     const { selection } = value;
 
-    // protect characters to prevent removal of variables
-    const newAnchor = value.selection.anchor.moveBackward(2).normalize(value.document);
-
     if (isEditorLockText(editor)
-      && !(isInVariableEx(value, newAnchor) && isInVariable(value))) {
+      && !(isEditable(editor, 'backspace'))) {
       event.preventDefault(); // prevent editing non-editable text
       return undefined;
     }
@@ -405,7 +309,7 @@ function SlateAsInputEditor(props) {
     const { selection } = value;
     const { end, isExpanded } = selection;
 
-    if (!isEditable(editor) || isInVariable(value)) {
+    if (!isEditable(editor, 'enter')) {
       event.preventDefault(); // prevent adding newlines in variables
       return false;
     }
@@ -452,7 +356,7 @@ function SlateAsInputEditor(props) {
   * @return {*} the react component
   */
   const onPaste = (event, editor, next) => {
-    if (isEditable(editor)) {
+    if (isEditable(editor, 'paste')) {
       const transfer = getEventTransfer(event);
       if (transfer.type !== 'html') return next();
       const pluginManager = new PluginManager(props.plugins);
@@ -473,7 +377,7 @@ function SlateAsInputEditor(props) {
    * @param {*} next
    */
   const onBeforeInput = ((event, editor, next) => {
-    if (isEditable(editor)) {
+    if (isEditable(editor, 'input')) {
       return next();
     }
 
@@ -525,7 +429,6 @@ function SlateAsInputEditor(props) {
           renderBlock={renderBlock}
           renderInline={renderInline}
           renderMark={renderMark}
-          renderAnnotation={renderAnnotation}
           editorProps={editorProps}
           renderEditor={renderEditor}
         />
@@ -584,12 +487,12 @@ SlateAsInputEditor.propTypes = {
     onBeforeInput: PropTypes.func,
     renderBlock: PropTypes.func,
     renderInline: PropTypes.func,
-    toMarkdown: PropTypes.func.isRequired,
-    fromMarkdown: PropTypes.func.isRequired,
-    fromHTML: PropTypes.func.isRequired,
+    toMarkdown: PropTypes.func,
+    fromMarkdown: PropTypes.func,
+    fromHTML: PropTypes.func,
     name: PropTypes.string.isRequired,
     tags: PropTypes.arrayOf(PropTypes.object).isRequired,
-    schema: PropTypes.object.isRequired,
+    schema: PropTypes.object,
   })),
 };
 

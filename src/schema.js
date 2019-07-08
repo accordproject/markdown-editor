@@ -1,9 +1,4 @@
 const schema = {
-  annotations: {
-    variable: {
-      isAtomic: true,
-    }
-  },
   document: {
     nodes: [
       {

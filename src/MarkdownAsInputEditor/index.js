@@ -94,9 +94,9 @@ MarkdownAsInputEditor.propTypes = {
     onEnter: PropTypes.func,
     onKeyDown: PropTypes.func,
     onBeforeInput: PropTypes.func,
-    toMarkdown: PropTypes.func.isRequired,
-    fromMarkdown: PropTypes.func.isRequired,
-    fromHTML: PropTypes.func.isRequired,
+    toMarkdown: PropTypes.func,
+    fromMarkdown: PropTypes.func,
+    fromHTML: PropTypes.func,
     name: PropTypes.string.isRequired,
     tags: PropTypes.arrayOf(PropTypes.object).isRequired,
   })),
@@ -104,7 +104,7 @@ MarkdownAsInputEditor.propTypes = {
   /**
    * Boolean to make editor read-only (uneditable) or not (editable)
    */
-  readOnly: PropTypes.boolean,
+  readOnly: PropTypes.bool,
 };
 
 /**
