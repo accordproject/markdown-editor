@@ -96,8 +96,10 @@ function SlateAsInputEditor(props) {
    * Destructure props for efficiency
    */
   const {
-    onChange, plugins, value, lockText, editorProps
+    onChange, plugins, value, lockText
   } = props;
+
+  const editorProps = props.editorProps || Object.create(null);
 
   /**
    * A reference to the Slate Editor.
@@ -151,7 +153,6 @@ function SlateAsInputEditor(props) {
         }
       }
     });
-    console.log(schema);
     setSlateSchema(schema);
   }, [plugins]);
 
@@ -415,12 +416,12 @@ function SlateAsInputEditor(props) {
         <FormatToolbar
           editor={editor}
           pluginManager={pluginManager}
-          editorProps={props.editorProps}
+          editorProps={editorProps}
         />
         {children}
       </div>
     );
-  }, []);
+  }, [editorProps]);
 
   const onChangeHandler = ({ value }) => {
     const pluginManager = new PluginManager(props.plugins);
@@ -431,7 +432,7 @@ function SlateAsInputEditor(props) {
 
   return (
     <div>
-      <ToolbarWrapper {...editorProps} id="toolbarwrapperid" />
+      <ToolbarWrapper {...editorProps} id="slate-toolbar-wrapper-id" />
       <EditorWrapper width={editorProps.WIDTH}>
         <Editor
           ref={editorRef}
