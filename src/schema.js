@@ -22,6 +22,9 @@ const schema = {
       },
     ],
   },
+  inlines: {
+  },
+  rules: [],
   blocks: {
     paragraph: {
       nodes: [
