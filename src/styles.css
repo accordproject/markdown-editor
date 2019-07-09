@@ -27,14 +27,14 @@ body {
     color: rgb(0, 60, 255);
 }
 
-#toolbarwrapperid {
+#slate-toolbar-wrapper-id {
     display: grid;
     grid-template-columns: 3% auto 3%;
     grid-template-rows: 100%;
 }
 
 @media (max-width: 1150px) {
-    #toolbarwrapperid {
+    #slate-toolbar-wrapper-id {
         height: 72px;
     }
 }

@@ -156,8 +156,7 @@ export default class FormatToolbar extends React.Component {
    * Render a mark-toggling toolbar button.
    */
   renderMarkButton(type, icon, hi, wi, pa, vBox, classInput) {
-    const { editor } = this.props;
-    const editorProps = this.props.editorProps || Object.create(null);
+    const { editor, editorProps } = this.props;
 
     const isActive = action.hasMark(editor, type);
 
@@ -202,8 +201,7 @@ export default class FormatToolbar extends React.Component {
    * Render a block modifying button
    */
   renderBlockButton(type, icon, hi, wi, pa, vBox, classInput, props) {
-    const { editor } = this.props;
-    const editorProps = this.props.editorProps || Object.create(null);
+    const { editor, editorProps } = this.props;
 
     const isActive = action.hasBlock(editor, type);
 
@@ -248,8 +246,7 @@ export default class FormatToolbar extends React.Component {
    * Render a link-toggling toolbar button.
    */
   renderLinkButton(type, icon, hi, wi, pa, vBox, classInput) {
-    const { editor } = this.props;
-    const editorProps = this.props.editorProps || Object.create(null);
+    const { editor, editorProps } = this.props;
 
     const isActive = action.getSelectedListBlock(editor);
 
@@ -293,8 +290,7 @@ export default class FormatToolbar extends React.Component {
    * Render a history-toggling toolbar button.
    */
   renderHistoryButton(type, icon, hi, wi, pa, vBox, action, classInput) {
-    const { editor } = this.props;
-    const editorProps = this.props.editorProps || Object.create(null);
+    const { editor, editorProps } = this.props;
 
     const style = {
       borderRadius: '5px',
@@ -325,9 +321,8 @@ export default class FormatToolbar extends React.Component {
   }
 
   render() {
-    const { pluginManager, editor } = this.props;
-    const editorProps = this.props.editorProps || Object.create(null);
-    const root = window.document.getElementById('root').querySelector('#toolbarwrapperid');
+    const { pluginManager, editor, editorProps } = this.props;
+    const root = window.document.querySelector('#slate-toolbar-wrapper-id');
     if (!root) { return null; }
 
     return ReactDOM.createPortal(
