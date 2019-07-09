@@ -130,10 +130,28 @@ function SlateAsInputEditor(props) {
   useEffect(() => {
     const schema = JSON.parse(JSON.stringify(baseSchema));
     plugins.forEach((plugin) => {
+      // add all markdown tags to the root of the document
       plugin.tags.forEach((tag) => {
         schema.document.nodes[0].match.push({ type: tag.slate });
       });
+
+      // merge the rest of the elements into the schema
+      const pluginSchema = plugin.schema;
+      if (pluginSchema) {
+        if (pluginSchema.blocks) {
+          schema.blocks = { ...schema.blocks, ...pluginSchema.blocks };
+        }
+
+        if (pluginSchema.inlines) {
+          schema.inlines = { ...schema.inlines, ...pluginSchema.inlines };
+        }
+
+        if (pluginSchema.rules) {
+          schema.rules = schema.rules.concat(pluginSchema.rules);
+        }
+      }
     });
+    console.log(schema);
     setSlateSchema(schema);
   }, [plugins]);
 
