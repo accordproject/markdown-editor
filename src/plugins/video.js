@@ -30,13 +30,24 @@ function Video() {
     }
   ];
 
-  const schema = {
-    blocks: {
-      video: {
-        isVoid: true,
+  /**
+   * Augment the base schema with the video type
+   * @param {*} schema
+   */
+  const augmentSchema = ((schema) => {
+    const additions = {
+      blocks: {
+        video: {
+          isVoid: true,
+        },
       },
-    },
-  };
+    };
+
+    const newSchema = JSON.parse(JSON.stringify(schema));
+    newSchema.blocks = { ...newSchema.blocks, ...additions.blocks };
+    newSchema.document.nodes[0].match.push({ type: tags[0].slate });
+    return newSchema;
+  });
 
   /**
      * @param {Event} event
@@ -149,7 +160,7 @@ function Video() {
   return {
     name,
     tags,
-    schema,
+    augmentSchema,
     onKeyDown,
     renderBlock,
     toMarkdown,

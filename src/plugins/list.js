@@ -24,21 +24,33 @@ function List() {
     }
   ];
 
-  const schema = {
-    blocks: {
-      ol_list: {
-        nodes: [{ match: { type: 'list_item' } }],
+  /**
+   * Augment the base schema with the list types
+   * @param {*} schema
+   */
+  const augmentSchema = ((schema) => {
+    const additions = {
+      blocks: {
+        ol_list: {
+          nodes: [{ match: { type: 'list_item' } }],
+        },
+        ul_list: {
+          nodes: [{ match: { type: 'list_item' } }],
+        },
+        list_item: {
+          parent: [{ type: 'ol_list' }, { type: 'ul_list' }],
+          nodes: [{ match: [{ object: 'text' }, { type: 'link' }] }],
+          marks: [{ type: 'bold' }, { type: 'italic' }, { type: 'code' }],
+        },
       },
-      ul_list: {
-        nodes: [{ match: { type: 'list_item' } }],
-      },
-      list_item: {
-        parent: [{ type: 'ol_list' }, { type: 'ul_list' }],
-        nodes: [{ match: [{ object: 'text' }, { type: 'link' }] }],
-        marks: [{ type: 'bold' }, { type: 'italic' }, { type: 'code' }],
-      },
-    },
-  };
+    };
+
+    const newSchema = JSON.parse(JSON.stringify(schema));
+    newSchema.blocks = { ...schema.blocks, ...additions.blocks };
+    newSchema.document.nodes[0].match.push({ type: 'ol_list' });
+    newSchema.document.nodes[0].match.push({ type: 'ul_list' });
+    return newSchema;
+  });
 
   /**
    * @param {Event} event
@@ -160,7 +172,7 @@ function List() {
   return {
     name,
     tags,
-    schema,
+    augmentSchema,
     onKeyDown,
     renderBlock,
     toMarkdown,
