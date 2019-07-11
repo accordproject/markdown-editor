@@ -28,7 +28,7 @@ const schema = {
   blocks: {
     paragraph: {
       nodes: [
-        { match: [{ object: 'text' }, { object: 'paragraph' }, { type: 'html_inline' }, { type: 'link' }] },
+        { match: [{ object: 'text' }, { type: 'paragraph' }, { type: 'html_inline' }, { type: 'link' }] },
       ],
     },
     html_block: {
