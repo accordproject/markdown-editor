@@ -68,6 +68,17 @@ export default class FromMarkdown extends Markdown {
   }
 
   /**
+   * Converts markdown text to a Slate.js Value object using
+   * a new instance of FromMarkdown.
+   * @param {*} markdownText
+   * @return {Object} the Slate.js Value object
+   */
+  parseNestedMarkdown(markdownText) {
+    const newParser = new FromMarkdown(this.pluginManager);
+    return newParser.convert(markdownText);
+  }
+
+  /**
    * Any nodes that are not processed by this class are dispatched to the
    * PluginManager.
    *
@@ -80,7 +91,7 @@ export default class FromMarkdown extends Markdown {
 
     if (plugin && typeof plugin.fromMarkdown === 'function') {
       // console.log(`found plugin for ${tagInfo ? tagInfo.tag : node}`);
-      return plugin.fromMarkdown(this.stack, event, tagInfo, node);
+      return plugin.fromMarkdown(this.stack, event, tagInfo, node, this.parseNestedMarkdown);
     }
 
     return false;
