@@ -189,7 +189,7 @@ export default class FormatToolbar extends React.Component {
             padding={pa}
             className={classInput}
             hoverColor={editorProps.BUTTON_BACKGROUND_HOVER}
-            onPointerDown={event => this.onClickMark(event, type)}>
+            onClick={event => this.onClickMark(event, type)}>
               {icon(fillActivity)}
           </ ToolbarIcon>
         }
@@ -234,7 +234,7 @@ export default class FormatToolbar extends React.Component {
             padding={pa}
             className={classInput}
             {...props}
-            onPointerDown={event => this.onClickBlock(event, type, props)}>
+            onClick={event => this.onClickBlock(event, type, props)}>
               {icon(fillActivity)}
           </ ToolbarIcon>
         }
@@ -278,7 +278,7 @@ export default class FormatToolbar extends React.Component {
             padding={pa}
             viewBox={vBox}
             className={classInput}
-            onPointerDown={event => action.onClickLink(event, this.props.editor)}>
+            onClick={event => action.onClickLink(event, this.props.editor)}>
               {icon(fillActivity)}
           </ ToolbarIcon>
         }
@@ -312,7 +312,7 @@ export default class FormatToolbar extends React.Component {
             padding={pa}
             viewBox={vBox}
             className={classInput}
-            onPointerDown={event => this.onClickHistory(event, action, editor)}>
+            onClick={event => this.onClickHistory(event, action, editor)}>
               {icon(styles.buttonSymbolInactive(editorProps.BUTTON_SYMBOL_INACTIVE))}
           </ ToolbarIcon>
         }
