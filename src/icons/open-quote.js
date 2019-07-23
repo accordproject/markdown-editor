@@ -2,9 +2,9 @@ import React from 'react';
 
 export const type = () => 'block_quote';
 
-export const height = () => '23px';
+export const height = () => '25px';
 
-export const width = () => '24px';
+export const width = () => '25px';
 
 export const padding = () => '5px 3px';
 
