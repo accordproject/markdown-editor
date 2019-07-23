@@ -2,9 +2,9 @@ import React from 'react';
 
 export const type = () => 'code';
 
-export const height = () => '24px';
+export const height = () => '25px';
 
-export const width = () => '24px';
+export const width = () => '25px';
 
 export const padding = () => '4px 2px';
 

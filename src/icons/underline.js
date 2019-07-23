@@ -2,7 +2,7 @@ import React from 'react';
 
 export const type = () => 'underline';
 
-export const height = () => '23px';
+export const height = () => '25px';
 
 export const width = () => '25px';
 

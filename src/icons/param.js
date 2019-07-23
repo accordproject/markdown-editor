@@ -2,7 +2,7 @@ import React from 'react';
 
 export const type = () => 'variable';
 
-export const height = () => '24px';
+export const height = () => '25px';
 
 export const width = () => '25px';
 
