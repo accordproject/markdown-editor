@@ -15,6 +15,7 @@
 import React, {
   useEffect,
   useState,
+  useRef,
   useCallback
 }
   from 'react';
@@ -91,7 +92,7 @@ function uuidv4() {
  * for details.
  */
 // eslint-disable-next-line react/display-name
-const SlateAsInputEditor = React.forwardRef((props, editorRef) => {
+const SlateAsInputEditor = React.forwardRef((props, ref) => {
   /**
    * Destructure props for efficiency
    */
@@ -100,6 +101,11 @@ const SlateAsInputEditor = React.forwardRef((props, editorRef) => {
   } = props;
 
   const editorProps = props.editorProps || Object.create(null);
+
+  /**
+   * A reference to the Slate Editor.
+   */
+  const editorRef = ref || useRef(null);
 
   /**
    * Slate Schema augmented by plugins
