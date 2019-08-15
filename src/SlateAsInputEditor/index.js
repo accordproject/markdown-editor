@@ -15,7 +15,6 @@
 import React, {
   useEffect,
   useState,
-  useRef,
   useCallback
 }
   from 'react';
@@ -91,7 +90,8 @@ function uuidv4() {
  * @param {*} props the props for the component. See the declared PropTypes
  * for details.
  */
-function SlateAsInputEditor(props) {
+// eslint-disable-next-line react/display-name
+const SlateAsInputEditor = React.forwardRef((props, editorRef) => {
   /**
    * Destructure props for efficiency
    */
@@ -100,11 +100,6 @@ function SlateAsInputEditor(props) {
   } = props;
 
   const editorProps = props.editorProps || Object.create(null);
-
-  /**
-   * A reference to the Slate Editor.
-   */
-  const editorRef = useRef(null);
 
   /**
    * Slate Schema augmented by plugins
@@ -141,7 +136,6 @@ function SlateAsInputEditor(props) {
         augmentedSchema = plugin.augmentSchema(augmentedSchema);
       }
     });
-    console.log('Slate schema', augmentedSchema);
     setSlateSchema(augmentedSchema);
   }, [plugins]);
 
@@ -173,7 +167,7 @@ function SlateAsInputEditor(props) {
         }
       });
     }
-  }, [value.document, lockText]);
+  }, [value.document, lockText, editorRef]);
 
   /**
    * Render a Slate inline.
@@ -443,7 +437,7 @@ function SlateAsInputEditor(props) {
       </EditorWrapper>
     </div>
   );
-}
+});
 
 /**
  * The property types for this component
