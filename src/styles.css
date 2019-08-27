@@ -32,9 +32,3 @@ body {
     grid-template-columns: 3% auto 3%;
     grid-template-rows: 100%;
 }
-
-@media (max-width: 1150px) {
-    #slate-toolbar-wrapper-id {
-        height: 72px;
-    }
-}
