@@ -1,6 +1,6 @@
 {
   "name": "@accordproject/markdown-editor",
-  "version": "0.5.11",
+  "version": "0.5.12",
   "description": "A rich text editor that can read and write markdown text. Based on Slate.js.",
   "main": "dist/index.js",
   "repository": {
