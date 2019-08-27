@@ -35,14 +35,15 @@ const EditorWrapper = styled.div`
   background: #fff;
   min-height: 750px;
   max-width: ${props => props.width || 'none'};
+  min-width: ${props => props.width || 'none'};
   border: 1px solid #979797;
   border-radius: 10px;
   margin: 50px auto;
-  padding: 25px;
+  padding: 15px;
   font-family: serif;
   font-style: normal;
   font-weight: normal;
-  font-size: medium;
+  font-size: 0.88em;
   line-height: 100%;
   word-spacing: normal;
   letter-spacing: normal;
