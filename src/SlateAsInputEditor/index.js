@@ -39,7 +39,7 @@ const EditorWrapper = styled.div`
   border: 1px solid #979797;
   border-radius: 10px;
   margin: 50px auto;
-  padding: 15px;
+  padding: 20px;
   font-family: serif;
   font-style: normal;
   font-weight: normal;
