@@ -8,6 +8,13 @@ const htmlWebpackPlugin = new HtmlWebpackPlugin({
 });
 module.exports = {
   entry: path.join(__dirname, 'examples/src/index.js'),
+  externals: {
+    'styled-components': {
+      commonjs: 'styled-components',
+      commonjs2: 'styled-components',
+      amd: 'styled-components',
+    },
+  },
   output: {
     path: path.join(__dirname, 'examples/dist'),
     filename: 'bundle.js',
