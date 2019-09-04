@@ -367,39 +367,16 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   const onPaste = (event, editor, next) => {
     if (isEditable(editor, 'paste')) {
       const transfer = getEventTransfer(event);
-      const mutableFragment = transfer.fragment.asMutable();
-      const mutableNodes = mutableFragment.nodes.asMutable();
-
-      const isHeadingClause = node => node.type === 'clause';
-      mutableNodes.map((node) => {
-        if (isHeadingClause(node)) {
-          const mutableNode = node.asMutable();
-          const mutableDataMap = mutableNode.data.asMutable();
-          const mutableAttributesMap = mutableDataMap.get('attributes');
-
-          mutableAttributesMap.clauseid = uuidv4(); // unique identifier for a clause instance
-
-          mutableDataMap.set('attributes', mutableAttributesMap);
-          mutableNode.data = mutableDataMap.asImmutable();
-          return mutableNode;
-        }
-        return node;
-      });
-      mutableFragment.nodes = mutableNodes.asImmutable();
-      transfer.fragment = mutableFragment.asImmutable();
-      editor.insertFragment(transfer.fragment);
-
-      if (transfer.type !== 'html') return undefined;
-
-      const pluginManager = new PluginManager(props.plugins);
-      const fromHtml = new FromHTML(pluginManager);
-      // @ts-ignore
-      const { document } = fromHtml.convert(editor, transfer.html);
-      editor.insertFragment(document);
-      return undefined;
+      if (transfer.type === 'html') {
+        const pluginManager = new PluginManager(props.plugins);
+        const fromHtml = new FromHTML(pluginManager);
+        // @ts-ignore
+        const { document } = fromHtml.convert(editor, transfer.html);
+        editor.insertFragment(document);
+        return;
+      }
     }
-
-    return false;
+    return next();
   };
 
   /**
