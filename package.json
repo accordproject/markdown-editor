@@ -9,7 +9,6 @@
   },
   "scripts": {
     "test": "jest",
-    "start": "webpack-dev-server --mode development --config webpack.config.prod.js",
     "dev": "webpack-dev-server --mode development --config webpack.config.js",
     "transpile": "babel src -d dist --copy-files",
     "prepublishOnly": "npm run transpile",
