@@ -53,13 +53,13 @@ https://github.com/accordproject/markdown-editor/blob/master/src/plugins/video.j
 
 ![overview image](overview.png)
 
-Run `npm start` and then navigate to: http://localhost:3001/examples
+In order to run an isolated local development example, run `npm run dev` and then navigate to: http://localhost:3001/examples
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-#### `npm start`
+#### `npm run dev`
 
 Runs the app in the development mode.<br>
 Open [http://localhost:3001/examples](http://localhost:3001/examples) to view it in the browser.
