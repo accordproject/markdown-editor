@@ -1,6 +1,8 @@
 # Markdown Editor
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/952fdc5d-a2bb-4895-a375-25ea1c6f30d8/deploy-status)](https://app.netlify.com/sites/accordproject-markdown-editor/deploys) [![npm version](https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor.svg)](https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/952fdc5d-a2bb-4895-a375-25ea1c6f30d8/deploy-status)](https://app.netlify.com/sites/accordproject-markdown-editor/deploys) 
+[![downloads](https://img.shields.io/npm/dm/@accordproject/markdown-editor)](https://www.npmjs.com/package/@accordproject/markdown-editor) 
+[![npm version](https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor.svg)](https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor)
 
 This repo contains two React-based editors:
 1. A WYSIWYG  [Slate][slate]-based editor that edits rich text and calls an `onChange`
