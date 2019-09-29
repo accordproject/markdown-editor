@@ -68,6 +68,7 @@ const DropdownHeader1 = {
   lineHeight: '23px',
   fontWeight: 'bold',
   color: '#122330',
+  fontFamily: 'serif',
 };
 
 const DropdownHeader2 = {
@@ -75,6 +76,7 @@ const DropdownHeader2 = {
   lineHeight: '20px',
   fontWeight: 'bold',
   color: '#122330',
+  fontFamily: 'serif',
 };
 
 const DropdownHeader3 = {
@@ -82,6 +84,7 @@ const DropdownHeader3 = {
   lineHeight: '16px',
   fontWeight: 'bold',
   color: '#122330',
+  fontFamily: 'serif',
 };
 
 export default class FormatToolbar extends React.Component {
