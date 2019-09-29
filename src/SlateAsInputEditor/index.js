@@ -58,9 +58,22 @@ const ToolbarWrapper = styled.div`
   z-index: 1;
   top: 0;
   height: 36px;
-  background: ${props => props.TOOLBAR_BACKGROUND || '#FFF'}; 
+  background: ${props => props.TOOLBAR_BACKGROUND || '#FFF'};
   box-shadow: ${props => props.TOOLBAR_SHADOW || 'none'};
 `;
+
+const Heading = ({ type, children }) =>
+  createElement(
+    styled(type)`
+      font-family: 'serif';
+    `,
+    {},
+    children,
+  );
+
+Heading.propTypes = {
+  type: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
+};
 
 /**
  * a utility function to generate a random node id for annotations
@@ -206,17 +219,17 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       case 'paragraph':
         return <p {...attributes}>{children}</p>;
       case 'heading_one':
-        return <h1 {...attributes}>{children}</h1>;
+        return <Heading type="h1" children={children} {...attributes} />;
       case 'heading_two':
-        return <h2 {...attributes}>{children}</h2>;
+        return <Heading type="h2" children={children} {...attributes} />;
       case 'heading_three':
-        return <h3 {...attributes}>{children}</h3>;
+        return <Heading type="h3" children={children} {...attributes} />;
       case 'heading_four':
-        return <h4 {...attributes}>{children}</h4>;
+        return <Heading type="h4" children={children} {...attributes} />;
       case 'heading_five':
-        return <h5 {...attributes}>{children}</h5>;
+        return <Heading type="h5" children={children} {...attributes} />;
       case 'heading_six':
-        return <h6 {...attributes}>{children}</h6>;
+        return <Heading type="h6" children={children} {...attributes} />;
       case 'horizontal_rule':
         return <hr {...attributes} />;
       case 'block_quote':
