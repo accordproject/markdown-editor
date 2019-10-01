@@ -17,7 +17,7 @@ import React, {
   useState,
   useRef,
   useCallback, 
-  createElement
+  createElement 
 }
   from 'react';
 import { Editor, getEventTransfer } from 'slate-react';
