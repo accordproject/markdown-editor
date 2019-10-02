@@ -248,7 +248,7 @@ export default class FormatToolbar extends React.Component {
   renderLinkButton(type, icon, hi, wi, pa, vBox, classInput) {
     const { editor, editorProps } = this.props;
 
-    const isActive = action.getSelectedListBlock(editor);
+    const isActive = action.hasLinks(editor);
 
     const fillActivity = isActive
       ? '#2587DA'
