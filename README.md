@@ -1,8 +1,16 @@
-# Markdown Editor
+<h1 align="center"> Markdown Editor</h1>
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/952fdc5d-a2bb-4895-a375-25ea1c6f30d8/deploy-status)](https://app.netlify.com/sites/accordproject-markdown-editor/deploys) 
-[![downloads](https://img.shields.io/npm/dm/@accordproject/markdown-editor)](https://www.npmjs.com/package/@accordproject/markdown-editor) 
-[![npm version](https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor.svg)](https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor)
+<p align="center">
+   <a href="https://app.netlify.com/sites/accordproject-markdown-editor/deploys">
+      <img src="https://api.netlify.com/api/v1/badges/952fdc5d-a2bb-4895-a375-25ea1c6f30d8/deploy-status" alt="Netlify Status" />
+   </a>
+   <a href="https://www.npmjs.com/package/@accordproject/markdown-editor">
+      <img src="https://img.shields.io/npm/dm/@accordproject/markdown-editor" alt="npm version" />
+   </a> 
+   <a href="https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor">
+      <img src="https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor.svg" alt="downloads" />
+   </a> 
+</p>   
 
 This repo contains two React-based editors:
 1. A WYSIWYG  [Slate][slate]-based editor that edits rich text and calls an `onChange`
@@ -51,6 +59,7 @@ For an example React App see the `./examples/` folder.
 A `TextArea` containing [CommonMark][CommonMark] synchronized with a `MarkdownEditor` component, rendered using [Slate][slate].
 
 The code for the sample `video` plugin used in the demo is here:
+<br>
 https://github.com/accordproject/markdown-editor/blob/master/src/plugins/video.js
 
 ![overview image](overview.png)
@@ -63,10 +72,12 @@ In the project directory, you can run:
 
 #### `npm run dev`
 
-Runs the app in the development mode.<br>
+Runs the app in the development mode.
+<br>
 Open [http://localhost:3001/examples](http://localhost:3001/examples) to view it in the browser.
-
-The page will reload if you make edits.<br>
+<br>
+(The page will reload if you make edits.)
+<br>
 
 #### `npm run build`
 
