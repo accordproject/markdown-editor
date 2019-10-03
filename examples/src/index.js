@@ -18,9 +18,7 @@ import List from '../../src/plugins/list';
 const plugins = [NoEdit(), List()];
 const slateTransformer = new SlateTransformer();
 
-const defaultMarkdown = `Heading 
-One
-====
+const defaultMarkdown = `# My Heading
 
 This is text. This is *italic* text. This is **bold** text. This is a [link](https://clause.io). This is \`inline code\`.
 

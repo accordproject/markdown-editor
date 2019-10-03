@@ -84,7 +84,7 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@accordproject/markdown-slate": "^0.4.0",
+    "@accordproject/markdown-slate": "^0.4.1",
     "commonmark": "^0.29.0",
     "css-loader": "^3.2.0",
     "immutable": "^3.8.2",
