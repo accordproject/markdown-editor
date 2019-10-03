@@ -4,17 +4,18 @@
 
 This repo contains two React-based editors:
 1. A WYSIWYG  [Slate][slate]-based editor that edits rich text and calls an `onChange`
-   callback with the modified Slate DOM and the [CommonMark][CommonMark] markdown serialization.
+   callback with the modified Slate DOM.
 2. A TextArea-based markdown editor that edits markdown text and calls an `onChange`
-   callback with the equivalent Slate DOM and the modified markdown text.
+   callback with the modified markdown text.
+
+The demo editor uses the `markdown-transform` package to transform Slate DOM 
+to/from markdown text.
 
 Using these editors you could allow people to either edit rich formatted text using
 markdown (and provide a WYSIWYG preview), or allow them to edit using a WYSIWYG
 editor and use markdown for persistence.
 
-The editor is plugin-based and includes a formatting toolbar. Plugins are used to
-extend the core editor with support with new formatting functionality and/or new
-types of blocks.
+The editor includes a formatting toolbar.
 
 This component is Apache-2 licensed Open Source. Contributors welcome!
 
@@ -30,11 +31,13 @@ npm install @accordproject/markdown-editor
 import { SlateAsInputEditor } from '@accordproject/markdown-editor';
 import List from '@accordproject/markdown-editor/dist/plugins/list';
 import Video from '@accordproject/markdown-editor/dist/plugins/video';
+import { SlateTransformer } from '@accordproject/markdown-slate';
 
-const plugins = [List(), Video()];
+const plugins = [List()];
+const slateTransformer = new SlateTransformer();
 
-function storeLocal(slateValue, markdown) {
-  // console.log(markdown);
+function storeLocal(slateValue) {
+  const markdown = slateTransformer.toMarkdown(slateValue);
   localStorage.setItem('markdown-editor', markdown);
 }
 
@@ -47,9 +50,6 @@ ReactDOM.render(<SlateAsInputEditor plugins={plugins} lockText={false} onChange=
 For an example React App see the `./examples/` folder.
 
 A `TextArea` containing [CommonMark][CommonMark] synchronized with a `MarkdownEditor` component, rendered using [Slate][slate].
-
-The code for the sample `video` plugin used in the demo is here:
-https://github.com/accordproject/markdown-editor/blob/master/src/plugins/video.js
 
 ![overview image](overview.png)
 
