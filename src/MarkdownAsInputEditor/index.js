@@ -12,15 +12,11 @@
  * limitations under the License.
  */
 
-import React, {
-  useEffect,
-}
-  from 'react';
+import React from 'react';
 import { Card } from 'semantic-ui-react';
+
 import TextareaAutosize from 'react-textarea-autosize';
 import PropTypes from 'prop-types';
-import FromMarkdown from '../markdown/fromMarkdown';
-import PluginManager from '../PluginManager';
 
 import '../styles.css';
 
@@ -36,14 +32,11 @@ function MarkdownAsInputEditor(props) {
    * Destructure props for efficiency
    */
   const {
-    onChange, plugins
+    onChange
   } = props;
 
   const onChangeHandler = (evt) => {
-    const pluginManager = new PluginManager(plugins);
-    const fromMarkdown = new FromMarkdown(pluginManager);
-    const newSlateValue = fromMarkdown.convert(evt.target.value);
-    onChange(newSlateValue, evt.target.value);
+    onChange(evt.target.value);
   };
 
   /**
@@ -82,24 +75,9 @@ MarkdownAsInputEditor.propTypes = {
   markdown: PropTypes.string,
 
   /**
-   * A callback that receives the Slate Value object and
-   * the corresponding markdown text
+   * A callback that receives the markdown text
    */
   onChange: PropTypes.func.isRequired,
-
-  /**
-   * An array of plugins to extend the functionality of the editor
-   */
-  plugins: PropTypes.arrayOf(PropTypes.shape({
-    onEnter: PropTypes.func,
-    onKeyDown: PropTypes.func,
-    onBeforeInput: PropTypes.func,
-    toMarkdown: PropTypes.func,
-    fromMarkdown: PropTypes.func,
-    fromHTML: PropTypes.func,
-    name: PropTypes.string.isRequired,
-    tags: PropTypes.arrayOf(PropTypes.object).isRequired,
-  })),
 
   /**
    * Boolean to make editor read-only (uneditable) or not (editable)
