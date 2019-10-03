@@ -24,7 +24,6 @@ import { Value } from 'slate';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import baseSchema from '../schema';
-import ToMarkdown from '../markdown/toMarkdown';
 import PluginManager from '../PluginManager';
 import { FromHTML } from '../html/fromHTML';
 import FormatToolbar from '../FormattingToolbar';
@@ -79,11 +78,7 @@ function uuidv4() {
  * The default slate value to be edited is passed in props 'value'
  * while the plugins are passed in the 'plugins' property.
  *
- * Plugins are responsible for serialization to/from markdown and HTML,
- * rendering and schema definition.
- *
- * The rich text editor is editable and the markdown text is generated from
- * the contents of the Slate editor and both are passed to the props.onChange
+ * The rich text editor is editable is passed to the props.onChange
  * callback.
  *
  * When props.lockText is true the editor will lock all text against edits
@@ -414,10 +409,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   }, [editorProps]);
 
   const onChangeHandler = ({ value }) => {
-    const pluginManager = new PluginManager(props.plugins);
-    const toMarkdown = new ToMarkdown(pluginManager);
-    const newMarkdown = toMarkdown.convert(value);
-    onChange(value, newMarkdown);
+    onChange(value);
   };
 
   return (
@@ -496,12 +488,7 @@ SlateAsInputEditor.propTypes = {
     onBeforeInput: PropTypes.func,
     renderBlock: PropTypes.func,
     renderInline: PropTypes.func,
-    toMarkdown: PropTypes.func,
-    fromMarkdown: PropTypes.func,
-    fromHTML: PropTypes.func,
     name: PropTypes.string.isRequired,
-    tags: PropTypes.arrayOf(PropTypes.object).isRequired,
-    schema: PropTypes.object,
   })),
 };
 

@@ -4,23 +4,22 @@ import {
 } from 'semantic-ui-react';
 
 import ReactDOM from 'react-dom';
+import { SlateTransformer } from '@accordproject/markdown-slate';
+
 import './index.css';
 import MarkdownAsInputEditor from '../../src/MarkdownAsInputEditor';
 import SlateAsInputEditor from '../../src/SlateAsInputEditor';
-import PluginManager from '../../src/PluginManager';
-import FromMarkdown from '../../src/markdown/fromMarkdown';
 
 import * as serviceWorker from './serviceWorker';
 import 'semantic-ui-css/semantic.min.css';
-import List from '../../src/plugins/list';
-import Video from '../../src/plugins/video';
 import NoEdit from '../../src/plugins/noedit';
+import List from '../../src/plugins/list';
 
-const plugins = [List(), Video(), NoEdit()];
-const pluginManager = new PluginManager(plugins);
-const fromMarkdown = new FromMarkdown(pluginManager);
+const plugins = [NoEdit(), List()];
+const slateTransformer = new SlateTransformer();
 
-const defaultMarkdown = `# Heading One
+const defaultMarkdown = `# My Heading
+
 This is text. This is *italic* text. This is **bold** text. This is a [link](https://clause.io). This is \`inline code\`.
 
 This is ***bold and italic*** text
@@ -43,13 +42,10 @@ Or:
 
 ### Sub heading
 
-Video:
+This is more text.
 
-<video/>
-
-Another video:
-
-<video src="https://www.youtube.com/embed/cmmq-JBMbbQ"/>`;
+Fin.
+`;
 
 const propsObj = {
   WIDTH: '600px',
@@ -63,23 +59,22 @@ function Demo() {
   /**
    * Current Slate Value
    */
-  const [slateValue, setSlateValue] = useState(fromMarkdown.convert(defaultMarkdown));
+  const [slateValue, setSlateValue] = useState(slateTransformer.fromMarkdown(defaultMarkdown));
   const [markdown, setMarkdown] = useState(defaultMarkdown);
 
   /**
    * Called when the markdown changes
    */
-  const onMarkdownChange = useCallback((slateValue, markdown) => {
+  const onMarkdownChange = useCallback((markdown) => {
     localStorage.setItem('markdown-editor', markdown);
-    // setSlateValue(slateValue);
-    // setMarkdown(markdown);
   }, []);
 
   /**
    * Called when the Slate Value changes
    */
-  const onSlateValueChange = useCallback((slateValue, markdown) => {
+  const onSlateValueChange = useCallback((slateValue) => {
     localStorage.setItem('slate-editor-value', slateValue.toJSON());
+    const markdown = slateTransformer.toMarkdown(slateValue);
     setSlateValue(slateValue);
     setMarkdown(markdown);
   }, []);
