@@ -13,13 +13,14 @@ This repo contains two React-based editors:
 The demo editor uses the `markdown-transform` package to transform Slate DOM 
 to/from markdown text.
 
-Using these editors you could allow people to either edit rich formatted text using
+Using these editors, you could allow people to either edit rich formatted text using
 markdown (and provide a WYSIWYG preview), or allow them to edit using a WYSIWYG
 editor and use markdown for persistence.
 
 The editor includes a formatting toolbar.
 
-This component is Apache-2 licensed Open Source. Contributors welcome!
+This component is Apache-2 licensed Open Source.
+Contributions to this repository are welcome!
 
 ### [Demo](https://accordproject-markdown-editor.netlify.com/examples/)
 
@@ -49,7 +50,7 @@ ReactDOM.render(<SlateAsInputEditor plugins={plugins} lockText={false} onChange=
 
 ### Example
 
-For an example React App see the `./examples/` folder.
+For an example React App, see the `./examples/` folder.
 
 A `TextArea` containing [CommonMark][CommonMark] synchronized with a `MarkdownEditor` component, rendered using [Slate][slate].
 
@@ -63,22 +64,22 @@ In the project directory, you can run:
 
 #### `npm run dev`
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3001/examples](http://localhost:3001/examples) to view it in the browser.
+   Runs the app in the development mode.<br>
+   Open [http://localhost:3001/examples](http://localhost:3001/examples) to view it in the browser.
 
 The page will reload if you make edits.<br>
 
 #### `npm run build`
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   Builds the app for production to the `build` folder.<br>
+   It correctly bundles React in production mode and optimizes the build for the best performance.
 
 The build is minified and the filenames include the hashes.<br>
 Your app is ready to be deployed!
 
 ## Styling
 
-You can style the toolbar of this components, as well as the width of the editor:
+You can style the toolbar of this component, as well as the width of the editor:
 
 #### `editorProps`
 
