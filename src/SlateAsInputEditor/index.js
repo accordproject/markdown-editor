@@ -255,8 +255,8 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
         return <strong {...attributes}>{children}</strong>;
       case 'italic':
         return <em {...attributes}>{children}</em>;
-      case 'underline':
-        return <u {...{ attributes }}>{children}</u>;
+      // case 'underline':
+      //   return <u {...{ attributes }}>{children}</u>;
       case 'html':
       case 'code':
         return <code {...attributes}>{children}</code>;

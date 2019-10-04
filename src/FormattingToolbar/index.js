@@ -10,7 +10,7 @@ import * as tips from './toolbarTooltip';
 
 import * as boldIcon from '../icons/bold';
 import * as italicIcon from '../icons/italic';
-import * as underlineIcon from '../icons/underline';
+// import * as underlineIcon from '../icons/underline';
 import * as codeIcon from '../icons/code';
 import * as quoteIcon from '../icons/open-quote';
 import * as oListIcon from '../icons/OL';
@@ -382,7 +382,7 @@ export default class FormatToolbar extends React.Component {
             'toolbar-0x2'
           )
         }
-        {
+        {/* {
           this.renderMarkButton(
             underlineIcon.type(),
             underlineIcon.icon,
@@ -392,7 +392,7 @@ export default class FormatToolbar extends React.Component {
             underlineIcon.vBox(),
             'toolbar-0x3'
           )
-        }
+        } */}
         <VertDivider color={editorProps.DIVIDER} className='toolbar-4x1'/>
         {
           this.renderMarkButton(
