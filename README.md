@@ -80,7 +80,7 @@ Your app is ready to be deployed!
 
 ## Styling
 
-You can style the toolbar of this components, as well as the width of the editor:
+You can style the toolbar of this component, as well as the width of the editor:
 
 #### `editorProps`
 
