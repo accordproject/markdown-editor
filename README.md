@@ -1,8 +1,10 @@
 # Markdown Editor
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/952fdc5d-a2bb-4895-a375-25ea1c6f30d8/deploy-status)](https://app.netlify.com/sites/accordproject-markdown-editor/deploys) 
-[![downloads](https://img.shields.io/npm/dm/@accordproject/markdown-editor)](https://www.npmjs.com/package/@accordproject/markdown-editor) 
+[![downloads](https://img.shields.io/npm/dm/@accordproject/markdown-editor)](https://www.npmjs.com/package/@accordproject/markdown-editor)
+[![GitHub license](https://img.shields.io/github/license/accordproject/markdown-editor?color=bright-green)](https://github.com/accordproject/markdown-editor/blob/master/LICENSE)
 [![npm version](https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor.svg)](https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor)
+[![join slack](https://img.shields.io/badge/Slack-Join%20Slack-blue)](https://accord-project-slack-signup.herokuapp.com/)
 
 This repo contains two React-based editors:
 1. A WYSIWYG  [Slate][slate]-based editor that edits rich text and calls an `onChange`
@@ -96,9 +98,11 @@ This is an object with the following possible css inputs as strings:
 
 ---
 
-<a href="https://www.accordproject.org/">
-  <img src="assets/APLogo.png" alt="Accord Project Logo" width="400" />
-</a>
+<p align="center">
+  <a href="https://www.accordproject.org/">
+    <img src="assets/APLogo.png" alt="Accord Project Logo" width="400" />
+  </a>
+</p>
 
 Accord Project is an open source, non-profit, initiative working to transform contract management and contract automation by digitizing contracts. Accord Project operates under the umbrella of the [Linux Foundation][linuxfound]. The technical charter for the Accord Project can be found [here][charter].
 
