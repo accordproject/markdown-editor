@@ -15,7 +15,7 @@ const BLOCK_TAGS = {
 const MARK_TAGS = {
   strong: 'bold',
   em: 'italic',
-  u: 'underline',
+  // u: 'underline',
   s: 'strikethrough',
   code: 'code',
 };
