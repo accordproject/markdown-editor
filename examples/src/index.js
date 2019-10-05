@@ -51,6 +51,10 @@ const propsObj = {
   WIDTH: '600px',
 };
 
+const codeStyle = {
+  backgroundColor: "lavender"
+}
+
 /**
  * Simple demo component that tracks whether to lockText
  * and whether to use markdown mode.
@@ -88,7 +92,7 @@ function Demo() {
       </Grid.Column>
 
       <Grid.Column>
-        <SlateAsInputEditor readOnly={false} lockText={true} plugins={plugins} value={slateValue} onChange={onSlateValueChange} editorProps={propsObj} />
+        <SlateAsInputEditor readOnly={false} lockText={true} plugins={plugins} value={slateValue} onChange={onSlateValueChange} editorProps={propsObj} codeStyle={codeStyle} />
       </Grid.Column>
     </Grid>
     <Divider vertical>Preview</Divider>

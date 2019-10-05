@@ -75,6 +75,18 @@ Heading.propTypes = {
   type: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
 };
 
+const Code = ({ customCssObject, children }) => 
+  createElement(
+    styled("code")({
+      ...customCssObject
+    }),
+    {},
+    children,
+  );
+
+Code.PropTypes = {
+  customCssObject: PropTypes.object // Fix Me
+};
 /**
  * a utility function to generate a random node id for annotations
  */
@@ -111,6 +123,8 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   } = props;
 
   const editorProps = props.editorProps || Object.create(null);
+
+  const codeStyle = props.codeStyle || Object.create(null);
 
   /**
    * A reference to the Slate Editor.
@@ -259,7 +273,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
         return <u {...{ attributes }}>{children}</u>;
       case 'html':
       case 'code':
-        return <code {...attributes}>{children}</code>;
+        return <Code customCssObject={codeStyle} children={children} {...attributes} />;
       case 'error':
         return <span className='error'{...attributes}>{children}</span>;
       default:
@@ -476,6 +490,12 @@ SlateAsInputEditor.propTypes = {
     TOOLBAR_SHADOW: PropTypes.string,
     WIDTH: PropTypes.string,
   }),
+
+  /**
+   * Optional styling props for codeblock
+   * currently too vague as it will accept a style object
+   */
+  codeStyle: PropTypes.object 
 
   /**
    * A callback that receives the Slate Value object and
