@@ -495,7 +495,7 @@ SlateAsInputEditor.propTypes = {
    * Optional styling props for codeblock
    * currently too vague as it will accept a style object
    */
-  codeStyle: PropTypes.object 
+  codeStyle: PropTypes.object,
 
   /**
    * A callback that receives the Slate Value object and
