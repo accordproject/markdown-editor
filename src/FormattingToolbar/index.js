@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Dropdown, Popup } from 'semantic-ui-react';
+import { Dropdown, Popup, Form, Button} from 'semantic-ui-react';
 
 import * as action from './toolbarMethods';
 import * as styles from './toolbarStyles';
@@ -88,6 +88,17 @@ const DropdownHeader3 = {
 };
 
 export default class FormatToolbar extends React.Component {
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      linkText: '',
+      linkURL: '',
+    }
+  }
+
+
   /**
    * When a mark button is clicked, toggle undo or redo.
    */
@@ -329,7 +340,7 @@ export default class FormatToolbar extends React.Component {
     if (!root) { return null; }
 
     return ReactDOM.createPortal(
-      <StyledToolbar background={editorProps.TOOLBAR_BACKGROUND} className="format-toolbar">
+      <StyledToolbar background={editorProps.TOOLBAR_BACKGROUND} className='format-toolbar'>
         <Dropdown
           text='Style'
           className='toolbar-0x0'
@@ -439,17 +450,93 @@ export default class FormatToolbar extends React.Component {
           )
         }
         <VertDivider color={editorProps.DIVIDER} className='toolbar-4x2' />
-        {
-          this.renderLinkButton(
-            hyperlinkIcon.type(),
-            hyperlinkIcon.icon,
-            hyperlinkIcon.height(),
-            hyperlinkIcon.width(),
-            hyperlinkIcon.padding(),
-            hyperlinkIcon.vBox(),
-            'toolbar-2x1'
-          )
-        }
+        <Dropdown
+          icon={
+            <ToolbarIcon
+              aria-label={hyperlinkIcon.type()}
+              background={
+                action.hasMark(this.props.editor, hyperlinkIcon.type())
+                  ? styles.buttonBgActive(editorProps.BUTTON_BACKGROUND_ACTIVE)
+                  : styles.buttonBgInactiveInactive(
+                      editorProps.BUTTON_BACKGROUND_INACTIVE
+                    )
+              }
+              width={hyperlinkIcon.width()}
+              height={hyperlinkIcon.height()}
+              padding={hyperlinkIcon.padding()}
+              viewBox={hyperlinkIcon.vBox()}
+              className={'toolbar-2x1'}
+            >
+              {hyperlinkIcon.icon(
+                action.hasMark(this.props.editor, hyperlinkIcon.type())
+                  ? styles.buttonSymbolActive(editorProps.BUTTON_SYMBOL_ACTIVE)
+                  : styles.buttonSymbolInactive(
+                      editorProps.BUTTON_SYMBOL_INACTIVE
+                    )
+              )}
+            </ToolbarIcon>
+          }
+          className='toolbar-2x1'
+          openOnFocus
+          simple
+          style={new DropdownStyle(editorProps.DROPDOWN_COLOR)}
+        >
+          <Dropdown.Menu>
+            <Dropdown.Item>
+              <Form>
+                {!editor.value.selection.isExpanded ? (
+                  <Form.Field>
+                    <label>Enter the text for the link:</label>
+                    <input
+                      placeholder='text'
+                      value={this.state.linkText}
+                      onChange={e =>
+                        this.setState({
+                          ...this.state,
+                          linkText: e.target.value
+                        })
+                      }
+                    />
+                  </Form.Field>
+                ) : null}
+                <Form.Field>
+                  <label>Enter the URL of the link:</label>
+                  <input
+                    placeholder='URL'
+                    value={this.state.linkURL}
+                    onChange={e =>
+                      this.setState({ ...this.state, linkURL: e.target.value })
+                    }
+                  />
+                </Form.Field>
+                <Button
+                  primary
+                  type='submit'
+                  onClick={event => {
+                    action.onClickLink(
+                      event,
+                      this.props.editor,
+                      this.state.linkText,
+                      this.state.linkURL
+                    );
+                    this.setState({ linkURL: '', linkText: '' });
+                  }}
+                >
+                  Save
+                </Button>
+                <Button
+                  secondary
+                  type='reset'
+                  onClick={() => {
+                    this.setState({ linkURL: '', linkText: '' });
+                  }}
+                >
+                  Clear
+                </Button>
+              </Form>
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
         <VertDivider color={editorProps.DIVIDER} className='toolbar-4x3' />
         {
           this.renderHistoryButton(
