@@ -75,18 +75,24 @@ Heading.propTypes = {
   type: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
 };
 
-const Code = ({ customCssObject, children }) => 
-  createElement(
-    styled("code")({
-      ...customCssObject
-    }),
-    {},
-    children,
-  );
+const Code = styled.code(({ customCssObject }) => ({ ...customCssObject }))
 
-Code.PropTypes = {
-  customCssObject: PropTypes.object // Fix Me
+Code.propTypes = {
+  customCssObject: PropTypes.objectOf( PropTypes.string ),
 };
+
+const Pre = styled.pre(({ customCssObject }) => ({ ...customCssObject }))
+
+Pre.propTypes = {
+  customCssObject: PropTypes.objectOf( PropTypes.string ),
+};
+
+const Blockquote = styled.blockquote(({ customCssObject }) => ({ ...customCssObject }))
+
+Blockquote.propTypes = {
+  customCssObject: PropTypes.objectOf( PropTypes.string ),
+};
+
 /**
  * a utility function to generate a random node id for annotations
  */
@@ -247,11 +253,11 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       case 'horizontal_rule':
         return <hr {...attributes} />;
       case 'block_quote':
-        return <blockquote {...attributes}>{children}</blockquote>;
+        return <Blockquote customCssObject={codeStyle} {...attributes}>{children}</Blockquote>;
       case 'code_block':
-        return <pre {...attributes}>{children}</pre>;
+        return <Pre customCssObject={codeStyle} {...attributes}>{children}</Pre>;
       case 'html_block':
-        return <pre {...attributes}>{children}</pre>;
+        return <Pre customCssObject={codeStyle} {...attributes}>{children}</Pre>;
       default:
         return next();
     }
@@ -273,7 +279,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       //   return <u {...{ attributes }}>{children}</u>;
       case 'html':
       case 'code':
-        return <Code customCssObject={codeStyle} children={children} {...attributes} />;
+        return <Code customCssObject={codeStyle} {...attributes}>{children}</Code>;
       case 'error':
         return <span className='error'{...attributes}>{children}</span>;
       default:
@@ -495,7 +501,7 @@ SlateAsInputEditor.propTypes = {
    * Optional styling props for codeblock
    * currently too vague as it will accept a style object
    */
-  codeStyle: PropTypes.object,
+  codeStyle: PropTypes.objectOf( PropTypes.string ),
 
   /**
    * A callback that receives the Slate Value object and
