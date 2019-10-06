@@ -114,30 +114,23 @@ export const hasBlock = (editor, type) => {
    * When clicking a link, if the selection has a link in it, remove the link.
    * Otherwise, add a new link with an href and text.
    */
-export const onClickLink = (event, editor) => {
+export const onClickLink = (event, editor, text, href) => {
   event.preventDefault();
-
   const { value } = editor;
   const hasLinksBool = hasLinks(editor);
-
   if (hasLinksBool) {
     editor.command(unwrapLink);
-  } else if (value.selection.isExpanded) {
-    const href = window.prompt('Enter the URL of the link:');
-
+  }
+  if (value.selection.isExpanded) {
     if (href === null) {
       return;
     }
 
     editor.command(wrapLink, href);
   } else {
-    const href = window.prompt('Enter the URL of the link:');
-
     if (href === null) {
       return;
     }
-
-    const text = window.prompt('Enter the text for the link:');
 
     if (text === null) {
       return;
