@@ -86,11 +86,20 @@ Pre.propTypes = {
   customCssObject: PropTypes.objectOf( PropTypes.string ),
 };
 
-const Blockquote = styled.blockquote(({ customCssObject }) => ({ ...customCssObject }))
-
-Blockquote.propTypes = {
-  customCssObject: PropTypes.objectOf( PropTypes.string ),
-};
+const Blockquote = ({ children, attributes, blockQuoteStyle }) => createElement(
+  styled.blockquote`
+    font-size: ${blockQuoteStyle && blockQuoteStyle.FONT_SIZE ? blockQuoteStyle.FONT_SIZE : '1em' };
+    font-family: ${blockQuoteStyle && blockQuoteStyle.FONT_FAMILY ? blockQuoteStyle.FONT_FAMILY : 'Open Sans' };
+    font-style: ${blockQuoteStyle && blockQuoteStyle.FONT_STYLE ? blockQuoteStyle.FONT_STYLE : 'italic !important' };
+    font-weight: ${blockQuoteStyle && blockQuoteStyle.FONT_WEIGHT ? blockQuoteStyle.FONT_WEIGHT : '400' };
+    color: ${blockQuoteStyle && blockQuoteStyle.FONT_COLOR ? blockQuoteStyle.FONT_COLOR : '#333333' };
+    ::before {
+      color: ${blockQuoteStyle && blockQuoteStyle.QUOTE_COLOR ? blockQuoteStyle.QUOTE_COLOR : '#484848' };
+    }
+  `,
+  attributes,
+  children,
+);
 
 /**
  * a utility function to generate a random node id for annotations
@@ -233,6 +242,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   // @ts-ignore
   const renderBlock = useCallback((props, editor, next) => {
     const { node, attributes, children } = props;
+    const { editorProps } = editor.props;
 
     switch (node.type) {
       case 'paragraph':
@@ -252,7 +262,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       case 'horizontal_rule':
         return <hr {...attributes} />;
       case 'block_quote':
-        return <Blockquote customCssObject={codeStyle} {...attributes}>{children}</Blockquote>;
+        return <Blockquote children={children} attributes={attributes} blockQuoteStyle={editorProps.BLOCKQUOTE} />;
       case 'code_block':
         return <Pre customCssObject={codeStyle} {...attributes}>{children}</Pre>;
       case 'html_block':
@@ -495,6 +505,14 @@ SlateAsInputEditor.propTypes = {
     TOOLTIP: PropTypes.string,
     TOOLBAR_SHADOW: PropTypes.string,
     WIDTH: PropTypes.string,
+    BLOCKQUOTE: PropTypes.shape({
+      FONT_FAMILY: PropTypes.string,
+      FONT_COLOR: PropTypes.string,
+      FONT_SIZE: PropTypes.string,
+      FONT_STYLE: PropTypes.string,
+      FONT_WEIGHT: PropTypes.string,
+      QUOTE_COLOR: PropTypes.string,
+    })
   }),
 
   /**
