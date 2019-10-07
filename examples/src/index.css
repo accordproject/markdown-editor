@@ -35,16 +35,12 @@ html {
 }
 
 blockquote {
-	font-size: 1em;
 	width: 80%;
 	margin: 10px auto;
-	font-family: Open Sans;
-	font-style: italic;
 	padding: 1.0em 10px 1.2em 15px;
 	border-left: 5px solid #484848;
 	line-height: 1;
 	position: relative;
-	font-style: italic !important;
 }
 
 a {
@@ -54,7 +50,6 @@ a {
 blockquote::before {
 	font-family: Arial;
 	content: '\201C';
-	color: #484848;
 	font-size: 1em;
 	position: absolute;
 	left: 5px;
@@ -66,10 +61,6 @@ blockquote::after {
 }
 
 blockquote span {
-	display: block;
-	color: #333333;
-	font-style: normal;
-	font-weight: bold;
 	margin-top: 1em;
 }
 
