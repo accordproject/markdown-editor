@@ -95,6 +95,13 @@ This is an object with the following possible css inputs as strings:
 - `TOOLTIP`
 - `TOOLBAR_SHADOW`
 - `WIDTH`
+- `BLOCKQUOTE`
+  - `FONT_FAMILY`
+  - `FONT_COLOR`
+  - `FONT_STYLE`
+  - `FONT_WEIGHT`
+  - `QUOTE_COLOR`
+  - `FONT_SIZE`
 
 ---
 
