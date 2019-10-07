@@ -141,36 +141,6 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   }, [plugins]);
 
   /**
-   * Set a lockText annotation on the editor equal to props.lockText
-   */
-  useEffect(() => {
-    if (editorRef && editorRef.current) {
-      const editor = editorRef.current;
-      const { annotations, selection } = editor.value;
-
-      editor.withoutSaving(() => {
-        annotations.forEach((ann) => {
-          if (ann.type === 'lockText') {
-            editor.removeAnnotation(ann);
-          }
-        });
-
-        if (lockText) {
-          // it doesn't matter where we put the annotation
-          // so we use the current selection
-          const annotation = {
-            key: `lockText-${uuidv4()}`,
-            type: 'lockText',
-            anchor: selection.anchor,
-            focus: selection.focus,
-          };
-          editor.addAnnotation(annotation);
-        }
-      });
-    }
-  }, [value.document, lockText, editorRef]);
-
-  /**
    * Render a Slate inline.
    */
   // @ts-ignore
