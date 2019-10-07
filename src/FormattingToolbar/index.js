@@ -486,9 +486,9 @@ export default class FormatToolbar extends React.Component {
               <Form>
                 {!editor.value.selection.isExpanded ? (
                   <Form.Field>
-                    <label>Enter the text for the link:</label>
+                    <label>Link Text:</label>
                     <input
-                      placeholder='text'
+                      placeholder='Text'
                       value={this.state.linkText}
                       onChange={e =>
                         this.setState({
@@ -500,9 +500,9 @@ export default class FormatToolbar extends React.Component {
                   </Form.Field>
                 ) : null}
                 <Form.Field>
-                  <label>Enter the URL of the link:</label>
+                  <label>Link URL:</label>
                   <input
-                    placeholder='URL'
+                    placeholder='https://example.com'
                     value={this.state.linkURL}
                     onChange={e =>
                       this.setState({ ...this.state, linkURL: e.target.value })
