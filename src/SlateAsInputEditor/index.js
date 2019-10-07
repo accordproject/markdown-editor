@@ -428,7 +428,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
 
   return (
     <div>
-      <ToolbarWrapper {...editorProps} id="slate-toolbar-wrapper-id" />
+      <ToolbarWrapper {...editorProps} id="slate-toolbar-wrapper-id" className={(props.readOnlyToolbar ? 'toolbar-readonly' : '')} />
       <EditorWrapper width={editorProps.WIDTH}>
         <Editor
           ref={editorRef}
@@ -492,6 +492,12 @@ SlateAsInputEditor.propTypes = {
    * When set to the true the contents of the editor are read-only
    */
   readOnly: PropTypes.bool,
+
+  /**
+   * When set to the true the contents of the toolbar are read-only
+   */
+  readOnlyToolbar: PropTypes.bool,
+
 
   /**
    * An array of plugins to extend the functionality of the editor

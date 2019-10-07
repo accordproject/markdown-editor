@@ -32,3 +32,7 @@ body {
     grid-template-columns: 3% auto 3%;
     grid-template-rows: 100%;
 }
+
+.toolbar-readonly {
+    pointer-events: none;
+}
