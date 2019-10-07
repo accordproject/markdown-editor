@@ -16,7 +16,7 @@ import React, {
   useEffect,
   useState,
   useRef,
-  useCallback, 
+  useCallback,
   createElement
 }
   from 'react';
@@ -62,17 +62,17 @@ const ToolbarWrapper = styled.div`
   box-shadow: ${props => props.TOOLBAR_SHADOW || 'none'};
 `;
 
-const Heading = ({ type, children }) =>
-  createElement(
-    styled(type)`
+const Heading = ({ type, children }) => createElement(
+  styled(type)`
       font-family: 'serif';
     `,
-    {},
-    children,
-  );
+  {},
+  children,
+);
 
 Heading.propTypes = {
   type: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
+  children: PropTypes.any,
 };
 
 /**
@@ -121,21 +121,6 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
    * Slate Schema augmented by plugins
    */
   const [slateSchema, setSlateSchema] = useState(null);
-
-  /**
-   * Returns true if the editor is in lockText mode
-   * Note that we have to use an annotation for lockText
-   * (synced with props.lockText) because Slate doesn't update
-   * the Editor component when callbacks (like onBeforeInput) change.
-   */
-  const isEditorLockText = useCallback((editor) => {
-    const { value } = editor;
-    if (!value.annotations) {
-      return false;
-    }
-    const result = value.annotations.filter(ann => (ann.type === 'lockText'));
-    return result.size > 0;
-  }, []);
 
   /**
    * Updates the Slate Schema when the plugins change
@@ -219,17 +204,17 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       case 'paragraph':
         return <p {...attributes}>{children}</p>;
       case 'heading_one':
-        return <Heading type="h1" children={children} {...attributes} />;
+        return <Heading type="h1" {...attributes}>{children}</Heading>;
       case 'heading_two':
-        return <Heading type="h2" children={children} {...attributes} />;
+        return <Heading type="h2" {...attributes}>{children}</Heading>;
       case 'heading_three':
-        return <Heading type="h3" children={children} {...attributes} />;
+        return <Heading type="h3" {...attributes}>{children}</Heading>;
       case 'heading_four':
-        return <Heading type="h4" children={children} {...attributes} />;
+        return <Heading type="h4" {...attributes}>{children}</Heading>;
       case 'heading_five':
-        return <Heading type="h5" children={children} {...attributes} />;
+        return <Heading type="h5" {...attributes}>{children}</Heading>;
       case 'heading_six':
-        return <Heading type="h6" children={children} {...attributes} />;
+        return <Heading type="h6" {...attributes}>{children}</Heading>;
       case 'horizontal_rule':
         return <hr {...attributes} />;
       case 'block_quote':
@@ -275,14 +260,14 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   * @param {string} code the type of edit requested
   */
   const isEditable = useCallback((editor, code) => {
-    if (isEditorLockText(editor)) {
+    if (lockText) {
       const { value } = editor;
       const pluginManager = new PluginManager(props.plugins);
       return pluginManager.isEditable(value, code);
     }
 
     return true;
-  }, [isEditorLockText, props.plugins]);
+  }, [lockText, props.plugins]);
 
   /**
   * On backspace, if at the start of a non-paragraph, convert it back into a
@@ -296,7 +281,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     const { value } = editor;
     const { selection } = value;
 
-    if (isEditorLockText(editor)
+    if (lockText
       && !(isEditable(editor, 'backspace'))) {
       event.preventDefault(); // prevent editing non-editable text
       return undefined;
