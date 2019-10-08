@@ -16,7 +16,7 @@ import React, {
   useEffect,
   useState,
   useRef,
-  useCallback, 
+  useCallback,
   createElement
 }
   from 'react';
@@ -62,14 +62,13 @@ const ToolbarWrapper = styled.div`
   box-shadow: ${props => props.TOOLBAR_SHADOW || 'none'};
 `;
 
-const Heading = ({ type, children }) =>
-  createElement(
-    styled(type)`
+const Heading = ({ type, children }) => createElement(
+  styled(type)`
       font-family: 'serif';
     `,
-    {},
-    children,
-  );
+  {},
+  children,
+);
 
 Heading.propTypes = {
   type: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
@@ -466,6 +465,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
           renderMark={renderMark}
           editorProps={editorProps}
           renderEditor={renderEditor}
+          clausePluginProps={props.clausePluginProps}
         />
       </EditorWrapper>
     </div>
@@ -495,6 +495,21 @@ SlateAsInputEditor.propTypes = {
     TOOLTIP: PropTypes.string,
     TOOLBAR_SHADOW: PropTypes.string,
     WIDTH: PropTypes.string,
+  }),
+
+  clausePluginProps: PropTypes.shape({
+    loadTemplateObject: PropTypes.func,
+    parseClause: PropTypes.func,
+    pasteToContract: PropTypes.func,
+    clauseProps: PropTypes.shape({
+      BODY_FONT: PropTypes.string,
+      CLAUSE_BACKGROUND: PropTypes.string,
+      CLAUSE_BORDER: PropTypes.string,
+      CLAUSE_DELETE: PropTypes.string,
+      CLAUSE_DELETE_FUNCTION: PropTypes.func,
+      HEADER_FONT: PropTypes.string,
+      HEADER_TITLE: PropTypes.string,
+    })
   }),
 
   /**
