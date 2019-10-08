@@ -141,6 +141,51 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   }, [plugins]);
 
   /**
+   * Returns true if the editor is in lockText mode
+   * Note that we have to use an annotation for lockText
+   * (synced with props.lockText) because Slate doesn't update
+   * the Editor component when callbacks (like onBeforeInput) change.
+   */
+  const isEditorLockText = useCallback((editor) => {
+    const { value } = editor;
+    if (!value.annotations) {
+      return false;
+    }
+    const result = value.annotations.filter(ann => (ann.type === 'lockText'));
+    return result.size > 0;
+  }, []);
+
+  /**
+   * Set a lockText annotation on the editor equal to props.lockText
+   */
+  useEffect(() => {
+    if (editorRef && editorRef.current) {
+      const editor = editorRef.current;
+      const { annotations, selection } = editor.value;
+
+      editor.withoutSaving(() => {
+        annotations.forEach((ann) => {
+          if (ann.type === 'lockText') {
+            editor.removeAnnotation(ann);
+          }
+        });
+
+        if (lockText) {
+          // it doesn't matter where we put the annotation
+          // so we use the current selection
+          const annotation = {
+            key: `lockText-${uuidv4()}`,
+            type: 'lockText',
+            anchor: selection.anchor,
+            focus: selection.focus,
+          };
+          editor.addAnnotation(annotation);
+        }
+      });
+    }
+  }, [value.document, lockText, editorRef]);
+
+  /**
    * Render a Slate inline.
    */
   // @ts-ignore
@@ -154,14 +199,14 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
         return <a {...attributes} href={href}>{children}</a>;
       }
       case 'html_inline': {
-        return <span className='html_inline' {...attributes}>{children}</span>;
+        return <span contentEditable={!lockText} className='html_inline' {...attributes}>{children}</span>;
       }
 
       default: {
         return next();
       }
     }
-  }, []);
+  }, [lockText]);
 
   /**
    * Renders a block
@@ -190,13 +235,13 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       case 'block_quote':
         return <blockquote {...attributes}>{children}</blockquote>;
       case 'code_block':
-        return <pre {...attributes}>{children}</pre>;
+        return <pre contentEditable={!lockText} {...attributes}>{children}</pre>;
       case 'html_block':
-        return <pre {...attributes}>{children}</pre>;
+        return <pre contentEditable={!lockText} {...attributes}>{children}</pre>;
       default:
         return next();
     }
-  }, []);
+  }, [lockText]);
 
   /**
    * Render a Slate mark.
@@ -214,13 +259,13 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       //   return <u {...{ attributes }}>{children}</u>;
       case 'html':
       case 'code':
-        return <code {...attributes}>{children}</code>;
+        return <code contentEditable={!lockText} {...attributes}>{children}</code>;
       case 'error':
-        return <span className='error'{...attributes}>{children}</span>;
+        return <span contentEditable={!lockText} className='error'{...attributes}>{children}</span>;
       default:
         return next();
     }
-  }, []);
+  }, [lockText]);
 
   /**
   * Returns true if the editor should allow an edit. Edits are allowed for all
@@ -230,14 +275,14 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   * @param {string} code the type of edit requested
   */
   const isEditable = useCallback((editor, code) => {
-    if (lockText) {
+    if (isEditorLockText(editor)) {
       const { value } = editor;
       const pluginManager = new PluginManager(props.plugins);
       return pluginManager.isEditable(value, code);
     }
 
     return true;
-  }, [lockText, props.plugins]);
+  }, [isEditorLockText, props.plugins]);
 
   /**
   * On backspace, if at the start of a non-paragraph, convert it back into a
@@ -251,7 +296,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     const { value } = editor;
     const { selection } = value;
 
-    if (lockText
+    if (isEditorLockText(editor)
       && !(isEditable(editor, 'backspace'))) {
       event.preventDefault(); // prevent editing non-editable text
       return undefined;
