@@ -27,7 +27,9 @@ function Video() {
      * @param {Function} next
      */
   function onEnter(event, editor, next) {
-    return next();
+    if(editor.value.focusBlock.type !== 'video') {
+      return next();
+    }
   }
 
   /**
