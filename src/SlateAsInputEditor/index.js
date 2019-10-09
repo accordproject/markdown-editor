@@ -430,6 +430,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       <ToolbarWrapper {...editorProps} id="slate-toolbar-wrapper-id" />
       <EditorWrapper width={editorProps.WIDTH}>
         <Editor
+          {...props}
           ref={editorRef}
           className="doc-inner"
           value={Value.fromJSON(value)}
@@ -445,7 +446,6 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
           renderMark={renderMark}
           editorProps={editorProps}
           renderEditor={renderEditor}
-          clausePluginProps={props.clausePluginProps}
         />
       </EditorWrapper>
     </div>
@@ -475,21 +475,6 @@ SlateAsInputEditor.propTypes = {
     TOOLTIP: PropTypes.string,
     TOOLBAR_SHADOW: PropTypes.string,
     WIDTH: PropTypes.string,
-  }),
-
-  clausePluginProps: PropTypes.shape({
-    loadTemplateObject: PropTypes.func,
-    parseClause: PropTypes.func,
-    pasteToContract: PropTypes.func,
-    clauseProps: PropTypes.shape({
-      BODY_FONT: PropTypes.string,
-      CLAUSE_BACKGROUND: PropTypes.string,
-      CLAUSE_BORDER: PropTypes.string,
-      CLAUSE_DELETE: PropTypes.string,
-      CLAUSE_DELETE_FUNCTION: PropTypes.func,
-      HEADER_FONT: PropTypes.string,
-      HEADER_TITLE: PropTypes.string,
-    })
   }),
 
   /**
