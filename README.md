@@ -11,14 +11,14 @@
    <a href="https://www.npmjs.com/package/@accordproject/markdown-editor">
       <img src="https://img.shields.io/npm/dm/@accordproject/markdown-editor" alt="npm version" />
    </a>
- 
-   <a href="https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor">
-      <img src="https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor.svg" alt="downloads" />
-   </a>
 
   <a href="https://accord-project-slack-signup.herokuapp.com/">
     <img src="https://img.shields.io/badge/Accord%20Project-Join%20Slack-blue" alt="Join the Accord Project Slack" />
   </a>
+
+  <a href="https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor">
+      <img src="https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor.svg" alt="downloads" />
+   </a>
  
 </p>
 
