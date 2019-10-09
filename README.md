@@ -1,10 +1,26 @@
-# Markdown Editor
+<h1 align="center">
+  Markdown Editor
+</h1>
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/952fdc5d-a2bb-4895-a375-25ea1c6f30d8/deploy-status)](https://app.netlify.com/sites/accordproject-markdown-editor/deploys) 
-[![downloads](https://img.shields.io/npm/dm/@accordproject/markdown-editor)](https://www.npmjs.com/package/@accordproject/markdown-editor)
-[![GitHub license](https://img.shields.io/github/license/accordproject/markdown-editor?color=bright-green)](https://github.com/accordproject/markdown-editor/blob/master/LICENSE)
-[![npm version](https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor.svg)](https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor)
-[![join slack](https://img.shields.io/badge/Slack-Join%20Slack-blue)](https://accord-project-slack-signup.herokuapp.com/)
+<p align="center">
+
+   <a href="https://accordproject-markdown-editor.netlify.com/examples/">
+      <img src="https://api.netlify.com/api/v1/badges/952fdc5d-a2bb-4895-a375-25ea1c6f30d8/deploy-status" alt="Netlify Status" />
+   </a>
+
+   <a href="https://www.npmjs.com/package/@accordproject/markdown-editor">
+      <img src="https://img.shields.io/npm/dm/@accordproject/markdown-editor" alt="npm version" />
+   </a>
+ 
+   <a href="https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor">
+      <img src="https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor.svg" alt="downloads" />
+   </a>
+
+  <a href="https://accord-project-slack-signup.herokuapp.com/">
+    <img src="https://img.shields.io/badge/Accord%20Project-Join%20Slack-blue" alt="Join the Accord Project Slack" />
+  </a>
+ 
+</p>
 
 This repo contains two React-based editors:
 1. A WYSIWYG  [Slate][slate]-based editor that edits rich text and calls an `onChange`
