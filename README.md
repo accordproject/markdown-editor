@@ -7,6 +7,9 @@
    <a href="https://accordproject-markdown-editor.netlify.com/examples/">
       <img src="https://api.netlify.com/api/v1/badges/952fdc5d-a2bb-4895-a375-25ea1c6f30d8/deploy-status" alt="Netlify Status" />
    </a>
+   <a href="https://travis-ci.org/accordproject/markdown-editor">
+      <img src="https://travis-ci.org/accordproject/markdown-editor.svg?branch=master" alt="Build Status">
+   </a>
 
    <a href="https://www.npmjs.com/package/@accordproject/markdown-editor">
       <img src="https://img.shields.io/npm/dm/@accordproject/markdown-editor" alt="npm version" />
