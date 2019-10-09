@@ -15,6 +15,10 @@
    <a href="https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor">
       <img src="https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor.svg" alt="downloads" />
    </a>
+   
+   <a href="https://github.com/accordproject/markdown-editor/blob/master/LICENSE">
+      <img src="https://img.shields.io/github/license/accordproject/markdown-editor" alt="GitHub license">
+   </a>
 
   <a href="https://accord-project-slack-signup.herokuapp.com/">
     <img src="https://img.shields.io/badge/Accord%20Project-Join%20Slack-blue" alt="Join the Accord Project Slack" />
