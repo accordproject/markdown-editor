@@ -428,7 +428,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
 
   return (
     <div>
-      { props.readOnly ? '' : <ToolbarWrapper {...editorProps} id="slate-toolbar-wrapper-id" /> }
+      { !props.readOnly && <ToolbarWrapper {...editorProps} id="slate-toolbar-wrapper-id" /> }
       <EditorWrapper width={editorProps.WIDTH}>
         <Editor
           ref={editorRef}
