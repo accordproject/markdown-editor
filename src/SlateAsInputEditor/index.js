@@ -218,17 +218,17 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       case 'paragraph':
         return <p {...attributes}>{children}</p>;
       case 'heading_one':
-        return <Heading type="h1" children={children} {...attributes} />;
+        return <Heading type="h1" {...attributes}>{children}</Heading>;
       case 'heading_two':
-        return <Heading type="h2" children={children} {...attributes} />;
+        return <Heading type="h2" {...attributes}>{children}</Heading>;
       case 'heading_three':
-        return <Heading type="h3" children={children} {...attributes} />;
+        return <Heading type="h3" {...attributes}>{children}</Heading>;
       case 'heading_four':
-        return <Heading type="h4" children={children} {...attributes} />;
+        return <Heading type="h4" {...attributes}>{children}</Heading>;
       case 'heading_five':
-        return <Heading type="h5" children={children} {...attributes} />;
+        return <Heading type="h5" {...attributes}>{children}</Heading>;
       case 'heading_six':
-        return <Heading type="h6" children={children} {...attributes} />;
+        return <Heading type="h6" {...attributes}>{children}</Heading>;
       case 'horizontal_rule':
         return <hr {...attributes} />;
       case 'block_quote':
