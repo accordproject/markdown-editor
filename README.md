@@ -29,7 +29,7 @@
  
 </p>
 
-This repo contains two React-based editors:
+This repository contains two React-based editors:
 1. A WYSIWYG  [Slate][slate]-based editor that edits rich text and calls an `onChange`
    callback with the modified Slate DOM.
 2. A TextArea-based markdown editor that edits markdown text and calls an `onChange`
@@ -74,7 +74,7 @@ ReactDOM.render(<SlateAsInputEditor plugins={plugins} lockText={false} onChange=
 
 ### Example
 
-For an example React App see the `./examples/` folder.
+For example React App see the `./examples/` folder.
 
 A `TextArea` containing [CommonMark][CommonMark] synchronized with a `MarkdownEditor` component, rendered using [Slate][slate].
 
