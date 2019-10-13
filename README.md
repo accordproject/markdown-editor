@@ -80,7 +80,7 @@ A `TextArea` containing [CommonMark][CommonMark] synchronized with a `MarkdownEd
 
 ![overview image](overview.png)
 
-In order to run an isolated local development example, run `npm run dev` and then navigate to: http://localhost:3001/examples
+In order to run an isolated local development example, run `npm run dev` and then navigate to http://localhost:3001/examples
 
 ## Available Scripts
 
@@ -127,7 +127,7 @@ This is an object with the following possible css inputs as strings:
   </a>
 </p>
 
-Accord Project is an open source, non-profit, initiative working to transform contract management and contract automation by digitizing contracts. Accord Project operates under the umbrella of the [Linux Foundation][linuxfound]. The technical charter for the Accord Project can be found [here][charter].
+Accord Project is an open-source, a non-profit, initiative working to transform contract management and contract automation by digitizing contracts. Accord Project operates under the umbrella of the [Linux Foundation][linuxfound]. The technical charter for the Accord Project can be found [here][charter].
 
 ## Learn More About Accord Project
 
@@ -149,7 +149,7 @@ Accord Project is an open source, non-profit, initiative working to transform co
 
 ## Contributing
 
-The Accord Project technology is being developed as open source. All the software packages are being actively maintained on GitHub and we encourage organizations and individuals to contribute requirements, documentation, issues, new templates, and code.
+The Accord Project technology is being developed as open-source. All the software packages are being actively maintained on GitHub and we encourage organizations and individuals to contribute requirements, documentation, issues, new templates, and code.
 
 Find out what’s coming on our [blog][apblog].
 
