@@ -37,7 +37,7 @@ const EditorWrapper = styled.div`
   max-width: ${props => props.width || 'none'};
   min-width: ${props => props.width || 'none'};
   border: 1px solid #979797;
-  border-radius: 10px;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
   margin: 50px auto;
   padding: 20px;
   font-family: serif;
