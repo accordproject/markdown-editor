@@ -47,11 +47,11 @@
     "styled-components": ">= 4"
   },
   "devDependencies": {
-    "@babel/cli": "^7.6.2",
-    "@babel/core": "^7.6.2",
+    "@babel/cli": "^7.6.4",
+    "@babel/core": "^7.6.4",
     "@babel/plugin-transform-modules-commonjs": "^7.6.0",
-    "@babel/preset-env": "^7.6.2",
-    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.6.3",
     "@babel/register": "^7.6.2",
     "@clausehq/eslint-config": "^0.1.8",
     "babel-jest": "^24.9.0",
@@ -60,7 +60,7 @@
     "eslint-config-airbnb": "^17.1.1",
     "eslint-config-loopback": "^13.1.0",
     "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jest": "^22.17.0",
+    "eslint-plugin-jest": "^22.19.0",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^1.7.0",
@@ -70,7 +70,7 @@
     "react-scripts": "^3.2.0",
     "semver": "6.1.1",
     "styled-components": "^4.4.0",
-    "webpack": "^4.41.0",
+    "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9",
     "webpack-dev-server": "^3.8.2"
   },
@@ -84,8 +84,7 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@accordproject/markdown-slate": "^0.4.5",
-    "commonmark": "^0.29.0",
+    "@accordproject/markdown-slate": "^0.4.8",
     "css-loader": "^3.2.0",
     "immutable": "^3.8.2",
     "prop-types": "^15.7.2",
