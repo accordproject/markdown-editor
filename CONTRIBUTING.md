@@ -1,8 +1,8 @@
-# Contributing to Markdown Editor
+# Contributing to Markdown-Editor
 
 > Thanks to the AngularJS team for the bulk of this text!
 
-We'd love for you to contribute to our source code and to make Markdown Editor even better than it is today! Here are the guidelines we'd like you to follow:
+We'd love for you to contribute to our source code and to make Markdown-Editor even better than it is today! Here are the guidelines we'd like you to follow:
 
 * [Code of Conduct][contribute.coc]
 * [Questions and Problems][contribute.question]
@@ -15,7 +15,7 @@ We'd love for you to contribute to our source code and to make Markdown Editor e
 
 ## <a name="coc"></a> Code of Conduct
 
-Help us keep Markdown Editor open and inclusive. Please read and follow our [Code of Conduct][coc].
+Help us keep Markdown-Editor open and inclusive. Please read and follow our [Code of Conduct][coc].
 
 ## <a name="requests"></a> Questions, Bugs, Features
 
@@ -43,7 +43,7 @@ If you would like to implement a new feature then consider what kind of change i
 
   as a Pull Request. See the section about [Pull Request Submission Guidelines][contribute.submitpr], and
 
-  for detailed information the [core development documentation][developers].
+  for detailed information read the [core development documentation][developers].
 
 ### <a name="docs"></a> Want a Doc Fix?
 
