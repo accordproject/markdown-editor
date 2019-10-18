@@ -1,6 +1,6 @@
 # Contributing to Markdown Editor
 
-> Thanks to the angularJS team for the bulk of this text!
+> Thanks to the AngularJS team for the bulk of this text!
 
 We'd love for you to contribute to our source code and to make Markdown Editor even better than it is today! Here are the guidelines we'd like you to follow:
 
@@ -25,13 +25,13 @@ Do not open issues for general support questions as we want to keep GitHub issue
 
 ### <a name="issue"></a> Found an Issue or Bug?
 
-If you find a bug in the source code, you can help us by submitting an issue to our [GitHub Repository][github-issues]. Even better, you can submit a Pull Request with a fix.
+If you find a bug in the source code, you can help us by [submitting an issue][github-issues] to our GitHub Repository. Even better, you can submit a Pull Request with a fix.
 
 **Please see the **[**Submission Guidelines**][contribute.submit]** below.**
 
 ### <a name="feature"></a> Missing a Feature?
 
-You can request a new feature by submitting an issue to our [GitHub Repository][github-issues].
+You can request a new feature by submitting an issue to our [GitHub Repository][github].
 
 If you would like to implement a new feature then consider what kind of change it is:
 
@@ -70,7 +70,7 @@ The "[new issue][github-new-issue]" form contains a number of prompts that you s
 Before you submit your pull request consider the following guidelines:
 
 * Ensure there is an open [Issue][github-issues] for what you will be working on. If there is not, open one up by going through [these guidelines][contribute.submit].
-* Search [GitHub][pulls] for an open or closed Pull Request that relates to your submission. You don't want to duplicate effort.
+* Search for an open or closed [Pull Request][pulls] that relates to your submission. You don't want to duplicate effort.
 * Create the [development environment][developers.setup]
 * Make your changes in a new git branch:
 
@@ -88,7 +88,7 @@ Before you submit your pull request consider the following guidelines:
 * Follow our [Coding Rules][developers.rules].
 * Ensure you provide a DCO sign-off for your commits using the -s option of git commit. For more information see [how this works][dcohow].
 * If the changes affect public APIs, change or add relevant [documentation][developers.documentation].
-* Run the [unit][developers.unit-tests] test suite, and ensure that all tests pass.
+* Run the [unit test suite][developers.unit-tests], and ensure that all tests pass.
 
 * Commit your changes using a descriptive commit message that follows our [commit message conventions][developers.commits]. Adherence to the [commit message conventions][developers.commits] is required, because release notes are automatically generated from these messages.
 
