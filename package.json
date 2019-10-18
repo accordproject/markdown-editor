@@ -8,7 +8,7 @@
     "url": "https://github.com/accordproject/markdown-editor.git"
   },
   "scripts": {
-    "test": "jest --passWithNoTests",
+    "test": "jest",
     "dev": "webpack-dev-server --mode development --config webpack.config.js",
     "transpile": "babel src -d dist --copy-files",
     "prepublishOnly": "npm run transpile",
@@ -27,7 +27,15 @@
   "jest": {
     "transform": {
       "^.+\\.jsx?$": "babel-jest"
-    }
+    },
+    "moduleNameMapper": {
+      "\\.(css|less)$": "identity-obj-proxy"
+    },
+    "collectCoverageFrom": [
+      "src/SlateAsInputEditor/*.js",
+      "!**/node_modules/**",
+      "!**/travis/**"
+    ]
   },
   "keywords": [
     "accord",
@@ -56,6 +64,8 @@
     "@clausehq/eslint-config": "^0.1.8",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.15.1",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.1",
     "eslint-config-loopback": "^13.1.0",
