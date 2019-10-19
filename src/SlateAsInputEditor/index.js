@@ -62,11 +62,13 @@ const ToolbarWrapper = styled.div`
   box-shadow: ${props => props.TOOLBAR_SHADOW || 'none'};
 `;
 
-const Heading = ({ type, children }) => createElement(
+const Heading = ({ type, children, attributes}) => createElement(
   styled(type)`
       font-family: 'serif';
     `,
-  {},
+  {
+    "data-key": attributes["data-key"]
+  },
   children,
 );
 
@@ -234,17 +236,17 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       case 'paragraph':
         return <p {...attributes}>{children}</p>;
       case 'heading_one':
-        return <Heading type="h1" {...attributes}>{children}</Heading>;
+        return <Heading type="h1" attributes={attributes}>{children}</Heading>;
       case 'heading_two':
-        return <Heading type="h2" {...attributes}>{children}</Heading>;
+        return <Heading type="h2" attributes={attributes}>{children}</Heading>;
       case 'heading_three':
-        return <Heading type="h3" {...attributes}>{children}</Heading>;
+        return <Heading type="h3" attributes={attributes}>{children}</Heading>;
       case 'heading_four':
-        return <Heading type="h4" {...attributes}>{children}</Heading>;
+        return <Heading type="h4" attributes={attributes}>{children}</Heading>;
       case 'heading_five':
-        return <Heading type="h5" {...attributes}>{children}</Heading>;
+        return <Heading type="h5" attributes={attributes}>{children}</Heading>;
       case 'heading_six':
-        return <Heading type="h6" {...attributes}>{children}</Heading>;
+        return <Heading type="h6" attributes={attributes}>{children}</Heading>;
       case 'horizontal_rule':
         return <hr {...attributes} />;
       case 'block_quote':
