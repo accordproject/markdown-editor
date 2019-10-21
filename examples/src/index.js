@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import {
-  Divider, Grid, Segment
+  Button, Divider, Grid, Segment
 } from 'semantic-ui-react';
 
 import ReactDOM from 'react-dom';
@@ -61,6 +61,7 @@ function Demo() {
    */
   const [slateValue, setSlateValue] = useState(slateTransformer.fromMarkdown(defaultMarkdown));
   const [markdown, setMarkdown] = useState(defaultMarkdown);
+  const [display, setDisplay] = useState(false);
 
   /**
    * Called when the markdown changes
@@ -81,6 +82,7 @@ function Demo() {
 
   return (
     <div>
+      
       <Segment>
     <Grid columns={2}>
       <Grid.Column>
@@ -88,7 +90,8 @@ function Demo() {
       </Grid.Column>
 
       <Grid.Column>
-      <SlateAsInputEditor readOnly={false} lockText={true} plugins={plugins} value={slateValue} onChange={onSlateValueChange} editorProps={propsObj} />
+        <Button onClick={() => setDisplay(!display)}>TOGGLE READONLY</Button>
+        <SlateAsInputEditor key={display} readOnly={display} lockText={true} plugins={plugins} value={slateValue} onChange={onSlateValueChange} editorProps={propsObj} />
       </Grid.Column>
     </Grid>
     <Divider vertical>Preview</Divider>
