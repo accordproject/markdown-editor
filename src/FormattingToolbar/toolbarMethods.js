@@ -111,41 +111,22 @@ export const hasBlock = (editor, type) => {
 };
 
 /**
-   * When clicking a link, if the selection has a link in it, remove the link.
-   * Otherwise, add a new link with an href and text.
+   * When clicking apply, update the link with the specified text and href.
    */
-export const onClickLink = (event, editor) => {
+export const applyLinkUpdate = (event, editor) => {
   event.preventDefault();
+  const { url: { value: href }, text: { value: text } } = event.target;
 
-  const { value } = editor;
-  const hasLinksBool = hasLinks(editor);
-
-  if (hasLinksBool) {
-    editor.command(unwrapLink);
-  } else if (value.selection.isExpanded) {
-    const href = window.prompt('Enter the URL of the link:');
-
-    if (href === null) {
-      return;
-    }
-
-    editor.command(wrapLink, href);
-  } else {
-    const href = window.prompt('Enter the URL of the link:');
-
-    if (href === null) {
-      return;
-    }
-
-    const text = window.prompt('Enter the text for the link:');
-
-    if (text === null) {
-      return;
-    }
-
-    editor
-      .insertText(text)
-      .moveFocusBackward(text.length)
-      .command(wrapLink, href);
+  if (href === null) {
+    return;
   }
+
+  if (text === null) {
+    return;
+  }
+
+  editor
+    .insertText(text)
+    .moveFocusBackward(text.length)
+    .command(wrapLink, href);
 };

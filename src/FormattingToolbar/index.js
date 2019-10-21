@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Dropdown, Popup } from 'semantic-ui-react';
+import {
+  Button, Dropdown, Form, Input, Popup
+} from 'semantic-ui-react';
 
 import * as action from './toolbarMethods';
 import * as styles from './toolbarStyles';
@@ -88,6 +90,13 @@ const DropdownHeader3 = {
 };
 
 export default class FormatToolbar extends React.Component {
+  constructor() {
+    super();
+    this.state = { openSetLink: false };
+    this.linkButtonRef = createRef();
+    this.setLinkFormRef = createRef();
+  }
+
   /**
    * When a mark button is clicked, toggle undo or redo.
    */
@@ -104,6 +113,21 @@ export default class FormatToolbar extends React.Component {
     const { editor } = this.props;
     event.preventDefault();
     editor.toggleMark(type);
+  }
+
+  /**
+   * When a link button is clicked, if the selection has a link in it, remove the link.
+   * Otherwise, show the set link form.
+   */
+  onClickLinkButton() {
+    const hasLinksBool = action.hasLinks(this.props.editor);
+
+    if (hasLinksBool) {
+      this.props.editor.unwrapInline('link');
+      return;
+    }
+
+    this.toggleSetLinkForm();
   }
 
   /**
@@ -153,6 +177,13 @@ export default class FormatToolbar extends React.Component {
         });
       }
     }
+  }
+
+  /**
+   * Toggle the state of set link form.
+   */
+  toggleSetLinkForm() {
+    this.setState({ openSetLink: !this.state.openSetLink });
   }
 
   /**
@@ -246,9 +277,43 @@ export default class FormatToolbar extends React.Component {
   }
 
   /**
+   * Render form in popup to set the link.
+   */
+  renderLinkSetForm() {
+    return (
+      <Popup
+        ref={this.setLinkFormRef}
+        context={this.linkButtonRef}
+        content={
+          <Form onSubmit={(event) => {
+            action.applyLinkUpdate(event, this.props.editor);
+            this.toggleSetLinkForm();
+          }}>
+            <Form.Field>
+              <label>Link Text</label>
+              <Input placeholder='Text' name='text' defaultValue={this.props.editor.value.fragment.text}/>
+            </Form.Field>
+            <Form.Field>
+              <label>Link URL</label>
+              <Input placeholder='http://example.com' name='url' />
+            </Form.Field>
+            <Form.Field>
+              <Button primary floated='right' type='submit'>Apply</Button>
+            </Form.Field>
+          </Form>
+        }
+        onClose={() => this.toggleSetLinkForm()}
+        on='click'
+        open={this.state.openSetLink}
+        position='bottom center'
+      />
+    );
+  }
+
+  /**
    * Render a link-toggling toolbar button.
    */
-  renderLinkButton(type, icon, hi, wi, pa, vBox, classInput) {
+  renderLinkButtonNew(type, icon, hi, wi, pa, vBox, classInput) {
     const { editor, editorProps } = this.props;
 
     const isActive = action.hasLinks(editor);
@@ -274,6 +339,7 @@ export default class FormatToolbar extends React.Component {
         position='bottom center'
         trigger={
           <ToolbarIcon
+            ref={this.linkButtonRef}
             aria-label={type}
             background={bgActivity}
             width={wi}
@@ -281,8 +347,8 @@ export default class FormatToolbar extends React.Component {
             padding={pa}
             viewBox={vBox}
             className={classInput}
-            onClick={event => action.onClickLink(event, this.props.editor)}>
-              {icon(fillActivity)}
+            onClick={() => this.onClickLinkButton()}>
+            {icon(fillActivity)}
           </ ToolbarIcon>
         }
       />
@@ -440,7 +506,10 @@ export default class FormatToolbar extends React.Component {
         }
         <VertDivider color={editorProps.DIVIDER} className='toolbar-4x2' />
         {
-          this.renderLinkButton(
+          this.renderLinkSetForm()
+        }
+        {
+          this.renderLinkButtonNew(
             hyperlinkIcon.type(),
             hyperlinkIcon.icon,
             hyperlinkIcon.height(),
