@@ -52,11 +52,14 @@ const onSlateValueChange = () => {
 describe("SlateAsInputEditor component", () => {
     test("component mount", () => {
         let slateValue = slateTransformer.fromMarkdown(defaultValue);
-        const markdown = slateTransformer.toMarkdown(slateValue);
-
-        expect(markdown).toEqual(defaultValue);
-
         const wrapper = shallow(<SlateAsInputEditor readOnly={false} lockText={true} plugins={plugins} value={slateValue} onChange={onSlateValueChange} editorProps={propsObj} />);
         expect(wrapper.find('.doc-inner').length).toBe(1);
+    });
+
+    test("successful roundtrip", () => {
+        let slateValue = slateTransformer.fromMarkdown(defaultValue);
+        const markdown = slateTransformer.toMarkdown(slateValue);
+    
+        expect(markdown).toEqual(defaultValue);
     });
 })
