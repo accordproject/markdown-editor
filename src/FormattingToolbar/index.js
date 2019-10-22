@@ -18,6 +18,7 @@ import * as codeIcon from '../icons/code';
 import * as quoteIcon from '../icons/open-quote';
 import * as oListIcon from '../icons/OL';
 import * as uListIcon from '../icons/UL';
+import * as horizontalRuleIcon from '../icons/horizontalRule';
 import * as hyperlinkIcon from '../icons/hyperlink';
 import * as undoIcon from '../icons/navigation-left';
 import * as redoIcon from '../icons/navigation-right';
@@ -649,6 +650,17 @@ export default class FormatToolbar extends React.Component {
             oListIcon.padding(),
             oListIcon.vBox(),
             'toolbar-1x3'
+          )
+        }
+        {
+          this.renderBlockButton(
+            horizontalRuleIcon.type(),
+            horizontalRuleIcon.icon,
+            horizontalRuleIcon.height(),
+            horizontalRuleIcon.width(),
+            horizontalRuleIcon.padding(),
+            horizontalRuleIcon.vBox(),
+            'toolbar-1x4'
           )
         }
         <VertDivider color={editorProps.DIVIDER} className='toolbar-4x2' />

@@ -44,6 +44,16 @@ Or:
 
 This is more text.
 
+# Horizontal Rules
+Hyphens:
+---
+
+Asterisks:
+***
+
+Underscores:
+___
+
 Fin.
 `;
 

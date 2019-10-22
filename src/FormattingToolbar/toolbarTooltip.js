@@ -28,5 +28,6 @@ export const identifyBlock = (block) => {
   if (typeBeginning === 'bl') return 'Quote';
   if (typeBeginning === 'ul') return 'Bulleted List';
   if (typeBeginning === 'ol') return 'Numbered List';
+  if (block === 'horizontal_rule') return 'Horizontal Rule';
   return null;
 };
