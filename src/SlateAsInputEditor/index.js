@@ -501,7 +501,7 @@ SlateAsInputEditor.propTypes = {
       FONT_STYLE: PropTypes.string,
       FONT_WEIGHT: PropTypes.string,
       QUOTE_COLOR: PropTypes.string,
-      INDENT: PropTypes.string,
+      QUOTE_INDENT: PropTypes.string,
     })
   }),
 
