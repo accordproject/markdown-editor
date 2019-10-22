@@ -8,16 +8,11 @@ export const width = () => '25px';
 
 export const padding = () => '5px 3px';
 
-export const vBox = () => '0 0 20 17';
+export const vBox = () => '0 0 24 24';
 
 export const icon = fillColor => (
-  <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-    <g transform="translate(-615.000000, -48.000000)" fill={fillColor}>
-      <text>
-        <tspan x="620" y="61">
-          —
-        </tspan>
-      </text>
-    </g>
-  </g>
+  <path
+    d="M1.5,13.5h21l-6.55671e-08,-1.77636e-15c0.828427,3.62117e-08 1.5,-0.671573 1.5,-1.5c3.62117e-08,-0.828427 -0.671573,-1.5 -1.5,-1.5h-21l-6.55671e-08,1.77636e-15c-0.828427,3.62117e-08 -1.5,0.671573 -1.5,1.5c3.62117e-08,0.828427 0.671573,1.5 1.5,1.5Z"
+    fill={fillColor}
+  ></path>
 );
