@@ -83,7 +83,7 @@ const Blockquote = ({ children, attributes, blockQuoteStyle }) => createElement(
     font-style: ${blockQuoteStyle && blockQuoteStyle.FONT_STYLE ? blockQuoteStyle.FONT_STYLE : 'italic !important' };
     font-weight: ${blockQuoteStyle && blockQuoteStyle.FONT_WEIGHT ? blockQuoteStyle.FONT_WEIGHT : '400' };
     color: ${blockQuoteStyle && blockQuoteStyle.FONT_COLOR ? blockQuoteStyle.FONT_COLOR : '#333333' };
-    margin-left: ${blockQuoteStyle && blockQuoteStyle.INDENT ? blockQuoteStyle.INDENT : 'auto' };
+    margin-left: ${blockQuoteStyle && blockQuoteStyle.QUOTE_INDENT ? blockQuoteStyle.QUOTE_INDENT : 'auto' };
     ::before {
       color: ${blockQuoteStyle && blockQuoteStyle.QUOTE_COLOR ? blockQuoteStyle.QUOTE_COLOR : '#484848' };
     }
