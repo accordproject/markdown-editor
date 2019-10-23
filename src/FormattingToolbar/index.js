@@ -220,6 +220,10 @@ export default class FormatToolbar extends React.Component {
       // Click quote on a paragraph or quote.
       } else {
         editor.setBlocks(isActive ? DEFAULT_NODE : type);
+
+        if (type === horizontalRuleIcon.type()) {
+          editor.focus();
+        }
       }
     // Handle the extra wrapping required for list buttons.
     } else {
@@ -344,7 +348,7 @@ export default class FormatToolbar extends React.Component {
             padding={pa}
             className={classInput}
             {...props}
-            onClick={event => this.onClickBlock(event, type, props)}>
+            onClick={event => this.onClickBlock(event, type)}>
               {icon(fillActivity)}
           </ ToolbarIcon>
         }
