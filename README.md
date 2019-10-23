@@ -126,6 +126,16 @@ This is an object with the following possible css inputs as strings:
   - `FONT_WEIGHT`
   - `QUOTE_COLOR`
   - `QUOTE_INDENT`
+  
+#### `codeStyle`
+
+This prop accepts a style object that allows custom styling of the code, pre, and blockquote elements.
+
+The shape is of a standard React style object:
+
+```
+<SlateAsInputEditor codeStyle={{ backgroundColor: "lavender", color: "darkblue" }} />
+```
 
 ---
 
@@ -295,7 +305,8 @@ Accord Project is an open source, non-profit, initiative working to transform co
     <tr>
       <td headers>Markdown Editor</td>
       <td headers><a href="https://github.com/accordproject/markdown-editor">markdown-editor</a></td>
-      <td headers><img src="https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor.svg" alt="npm version"></a></td>
+      <td headers> <a href="https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor">
+      <img src="https://badge.fury.io/js/%40accordproject%2Fmarkdown-editor.svg" alt="npm version"></a></td>
       <td headers>WYSIWYG rich text web editor that persists text as markdown. Based on Slate.js</td>
     </tr>
      <tr>
