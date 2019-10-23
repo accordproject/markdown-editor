@@ -122,9 +122,10 @@ This is an object with the following possible css inputs as strings:
   - `FONT_FAMILY`
   - `FONT_COLOR`
   - `FONT_STYLE`
+  - `FONT_SIZE`
   - `FONT_WEIGHT`
   - `QUOTE_COLOR`
-  - `FONT_SIZE`
+  - `QUOTE_INDENT`
   
 #### `codeStyle`
 
