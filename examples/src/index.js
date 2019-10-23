@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import {
-  Divider, Grid, Segment
+  Button, Divider, Grid, Segment
 } from 'semantic-ui-react';
 
 import ReactDOM from 'react-dom';
@@ -61,6 +61,7 @@ function Demo() {
    */
   const [slateValue, setSlateValue] = useState(slateTransformer.fromMarkdown(defaultMarkdown));
   const [markdown, setMarkdown] = useState(defaultMarkdown);
+  const [displayMarkdownPane, setDisplayMarkdownPane] = useState(true);
 
   /**
    * Called when the markdown changes
@@ -80,20 +81,33 @@ function Demo() {
   }, []);
 
   return (
-    <div>
+    <>
+      <Button onClick={() => setDisplayMarkdownPane(!displayMarkdownPane)}>TOGGLE MD DISPLAY</Button>
       <Segment>
-    <Grid columns={2}>
-      <Grid.Column>
-        <MarkdownAsInputEditor readOnly={true} plugins={plugins} markdown={markdown} onChange={onMarkdownChange}/>
-      </Grid.Column>
-
-      <Grid.Column>
-        <SlateAsInputEditor readOnly={false} lockText={true} plugins={plugins} value={slateValue} onChange={onSlateValueChange} editorProps={propsObj} />
-      </Grid.Column>
-    </Grid>
-    <Divider vertical>Preview</Divider>
-  </Segment>
-    </div>
+        <Grid columns={2}>
+          <Grid.Column>
+            <MarkdownAsInputEditor
+              readOnly={true}
+              plugins={plugins}
+              markdown={markdown}
+              onChange={onMarkdownChange}
+              display={displayMarkdownPane}
+            />
+          </Grid.Column>
+          <Grid.Column>
+            <SlateAsInputEditor
+              readOnly={false}
+              lockText={true}
+              plugins={plugins}
+              value={slateValue}
+              onChange={onSlateValueChange}
+              editorProps={propsObj}
+            />
+          </Grid.Column>
+        </Grid>
+        <Divider vertical>Preview</Divider>
+      </Segment>
+    </>
   );
 }
 
