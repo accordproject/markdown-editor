@@ -76,6 +76,7 @@ Heading.propTypes = {
   type: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
 };
 
+<<<<<<< HEAD
 const Code = styled.code(({ customCssObject }) => ({ ...customCssObject }))
 
 Code.propTypes = {
@@ -88,6 +89,8 @@ Pre.propTypes = {
   customCssObject: PropTypes.objectOf( PropTypes.string ),
 };
 
+=======
+>>>>>>> 2d28978... feat: inital commit for blockquote styling
 const Blockquote = ({ children, attributes, blockQuoteStyle }) => createElement(
   styled.blockquote`
     font-size: ${blockQuoteStyle && blockQuoteStyle.FONT_SIZE ? blockQuoteStyle.FONT_SIZE : '1em' };
