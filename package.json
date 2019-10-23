@@ -1,6 +1,10 @@
 {
   "name": "@accordproject/markdown-editor",
+<<<<<<< HEAD
   "version": "0.6.2",
+=======
+  "version": "0.6.1",
+>>>>>>> 8c17752... Automatic version bump to 0.6.1
   "description": "A rich text editor that can read and write markdown text. Based on Slate.js.",
   "main": "dist/index.js",
   "repository": {
