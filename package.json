@@ -95,7 +95,6 @@
   ],
   "dependencies": {
     "@accordproject/markdown-slate": "^0.4.8",
-    "commonmark": "^0.29.0",
     "css-loader": "^3.2.0",
     "immutable": "^3.8.2",
     "prop-types": "^15.7.2",
