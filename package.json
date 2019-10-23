@@ -1,10 +1,6 @@
 {
   "name": "@accordproject/markdown-editor",
-<<<<<<< HEAD
   "version": "0.6.2",
-=======
-  "version": "0.6.1",
->>>>>>> 8c17752... Automatic version bump to 0.6.1
   "description": "A rich text editor that can read and write markdown text. Based on Slate.js.",
   "main": "dist/index.js",
   "repository": {
@@ -98,12 +94,8 @@
     "not op_mini all"
   ],
   "dependencies": {
-<<<<<<< HEAD
     "@accordproject/markdown-slate": "^0.4.8",
-=======
-    "@accordproject/markdown-slate": "^0.4.5",
     "commonmark": "^0.29.0",
->>>>>>> 95f5086... (chore) update to latest markdown-transform
     "css-loader": "^3.2.0",
     "immutable": "^3.8.2",
     "prop-types": "^15.7.2",
