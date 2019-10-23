@@ -125,8 +125,7 @@ This is an object with the following possible css inputs as strings:
   - `FONT_WEIGHT`
   - `QUOTE_COLOR`
   - `FONT_SIZE`
-<<<<<<< HEAD
-
+  
 #### `codeStyle`
 
 This prop accepts a style object that allows custom styling of the code, pre, and blockquote elements.
@@ -136,9 +135,6 @@ The shape is of a standard React style object:
 ```
 <SlateAsInputEditor codeStyle={{ backgroundColor: "lavender", color: "darkblue" }} />
 ```
-
-=======
->>>>>>> 2d28978... feat: inital commit for blockquote styling
 
 ---
 
