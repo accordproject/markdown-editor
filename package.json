@@ -94,7 +94,12 @@
     "not op_mini all"
   ],
   "dependencies": {
+<<<<<<< HEAD
     "@accordproject/markdown-slate": "^0.4.8",
+=======
+    "@accordproject/markdown-slate": "^0.4.5",
+    "commonmark": "^0.29.0",
+>>>>>>> 95f5086... (chore) update to latest markdown-transform
     "css-loader": "^3.2.0",
     "immutable": "^3.8.2",
     "prop-types": "^15.7.2",
