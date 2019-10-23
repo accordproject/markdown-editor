@@ -478,6 +478,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
           renderMark={renderMark}
           editorProps={editorProps}
           renderEditor={renderEditor}
+          clausePluginProps={props.clausePluginProps}
         />
       </EditorWrapper>
     </div>
@@ -514,6 +515,21 @@ SlateAsInputEditor.propTypes = {
       FONT_STYLE: PropTypes.string,
       FONT_WEIGHT: PropTypes.string,
       QUOTE_COLOR: PropTypes.string,
+    })
+  }),
+
+  clausePluginProps: PropTypes.shape({
+    loadTemplateObject: PropTypes.func,
+    parseClause: PropTypes.func,
+    pasteToContract: PropTypes.func,
+    clauseProps: PropTypes.shape({
+      BODY_FONT: PropTypes.string,
+      CLAUSE_BACKGROUND: PropTypes.string,
+      CLAUSE_BORDER: PropTypes.string,
+      CLAUSE_DELETE: PropTypes.string,
+      CLAUSE_DELETE_FUNCTION: PropTypes.func,
+      HEADER_FONT: PropTypes.string,
+      HEADER_TITLE: PropTypes.string,
     })
   }),
 
