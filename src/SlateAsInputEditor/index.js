@@ -458,6 +458,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
           editor={editor}
           pluginManager={pluginManager}
           editorProps={editorProps}
+          lockText={props.lockText}
         />
         {children}
       </div>
