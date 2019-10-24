@@ -110,9 +110,13 @@ export default class FormatToolbar extends React.Component {
    * When a mark button is clicked, toggle the current mark.
    */
   onClickMark(event, type) {
-    const { editor } = this.props;
-    event.preventDefault();
-    editor.toggleMark(type);
+    const { editor, pluginManager } = this.props;
+    const { value } = editor;
+
+    if(pluginManager.isEditable(editor.value,type)) {
+      event.preventDefault();
+      editor.toggleMark(type);      
+    }
   }
 
   /**
