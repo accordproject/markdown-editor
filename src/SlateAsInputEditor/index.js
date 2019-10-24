@@ -369,9 +369,19 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     const { startBlock } = value;
     if (end.offset !== startBlock.text.length) return next();
 
+    // Hitting enter on a blank list item will break out of the enclosing list
+    if (startBlock.type === 'list_item' && startBlock.text.length === 0) {
+      editor.withoutNormalizing(() => {
+        event.preventDefault();
+        editor
+          .setBlocks('paragraph')
+          .unwrapBlock('ol_list')
+          .unwrapBlock('ul_list');
+      });
+      return false;
     // if you hit enter inside anything that is not a heading
     // we use the default behavior
-    if (!startBlock.type.startsWith('heading')) {
+    } else if (!startBlock.type.startsWith('heading')) {
       return next();
     }
 
