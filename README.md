@@ -114,6 +114,8 @@ This is an object with the following possible css inputs as strings:
 - `BUTTON_SYMBOL_ACTIVE`
 - `DROPDOWN_COLOR`
 - `TOOLBAR_BACKGROUND`
+- `EDITOR_SHADOW`
+- `EDITOR_BORDER`
 - `TOOLTIP_BACKGROUND`
 - `TOOLTIP`
 - `TOOLBAR_SHADOW`
