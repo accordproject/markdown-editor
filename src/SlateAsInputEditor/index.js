@@ -36,6 +36,7 @@ const EditorWrapper = styled.div`
   min-height: 750px;
   max-width: ${props => props.width || 'none'};
   min-width: ${props => props.width || 'none'};
+  border-radius: ${props => props.EDITOR_BORDER-RADIUS || ' 10px'};
   border: ${props => props.EDITOR_BORDER || ' 1px solid #979797'};
   box-shadow: ${props => props.EDITOR_SHADOW || ' 1px 2px 4px rgba(0, 0, 0, .5)'};
   margin: 50px auto;
@@ -471,6 +472,7 @@ SlateAsInputEditor.propTypes = {
     BUTTON_SYMBOL_ACTIVE: PropTypes.string,
     DROPDOWN_COLOR: PropTypes.string,
     EDITOR_BORDER:PropTypes.string,
+    EDITOR_BORDER_RADIUS:PropTypes.string,
     EDITOR_SHADOW:PropTypes.string,
     TOOLBAR_BACKGROUND: PropTypes.string,
     TOOLTIP_BACKGROUND: PropTypes.string,
