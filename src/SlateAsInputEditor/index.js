@@ -264,7 +264,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       //   return <u {...{ attributes }}>{children}</u>;
       case 'html':
       case 'code':
-        return <pre {...attributes}>{children}</pre>;
+        return <code {...attributes}>{children}</code>;
       case 'error':
         return <span className='error' {...attributes}>{children}</span>;
       default:
