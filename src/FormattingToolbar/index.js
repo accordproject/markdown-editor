@@ -1,5 +1,5 @@
 import React, { createRef } from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM, { findDOMNode, createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {
@@ -95,6 +95,61 @@ export default class FormatToolbar extends React.Component {
     this.state = { openSetLink: false };
     this.linkButtonRef = createRef();
     this.setLinkFormRef = createRef();
+    this.onMouseDown = this.onMouseDown.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener('mousedown', this.onMouseDown);
+  }
+
+  componentDidUpdate() {
+    // Save link popup rect as soon as it is avaialble
+    // (Reason for saving the element's dimension here is because
+    // we cannot use `findDOMNode` in render function)
+    if (!this.popupRect) {
+      const popupNode = findDOMNode(this.setLinkFormRef.current);
+      if (popupNode) {
+        this.popupRect = popupNode.getBoundingClientRect();
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.onMouseDown);
+  }
+
+  /**
+   * Hides link popup conditionally
+   */
+  onMouseDown(e) {
+    /*
+      We check if the link popup is currently open
+      AND the click is occured somewhere other than the link popup,
+      then, we close the popup.
+      If we do not do that, the link popup remains opened while the user
+      drags the mouse to select the text and gets closed once the selection
+      finishes (i.e onmouseup) which is quite snappy.
+      (Google docs link popup also works this way)
+    */
+
+    const isLinkPopupOpened = this.state.openSetLink;
+    if (isLinkPopupOpened) {
+      // Find the link popup DOM element
+      const popup = findDOMNode(this.setLinkFormRef.current);
+      const linkFormToggleBtn = findDOMNode(this.linkButtonRef.current);
+      if (!popup || !linkFormToggleBtn) return;
+
+      // Make sure the clicked element is not the popup AND
+      // the clicked element in not a child of popup
+      const clickedOutsideLinkPopup = e.target !== popup && !popup.contains(e.target);
+      const clickedOnLinkToggleBtn =
+        e.target === linkFormToggleBtn || linkFormToggleBtn.contains(e.target);
+
+      if (clickedOutsideLinkPopup && !clickedOnLinkToggleBtn) {
+        // Close the link
+        this.setState({ openSetLink: false });
+      }
+    }
   }
 
   /**
@@ -115,7 +170,7 @@ export default class FormatToolbar extends React.Component {
 
     if (!lockText || pluginManager.isEditable(value, type)) {
       event.preventDefault();
-      editor.toggleMark(type);      
+      editor.toggleMark(type);
     }
   }
 
@@ -281,9 +336,73 @@ export default class FormatToolbar extends React.Component {
   }
 
   /**
+   * Calculates the link popup position and styles, if any
+   */
+  calculateLinkPopupPosition() {
+    // Constant values 2 and 20 (px) has been
+    // manually observed through devtools and what looked best.
+
+    let top;
+    let left;
+    let popupPosition = 'bottom center';
+
+    // No need to calculate position of the popup is it is not even opened!
+    const isLinkPopupOpened = this.state.openSetLink;
+    if (!isLinkPopupOpened) return {
+      popupPosition,
+      // Hide the popup by setting negative zIndex
+      popupStyle: { zIndex: -1 }
+    }
+
+    // extracted the class from `SlateAsInputEditor/index.js`
+    const EDITOR_CSS_CLASS = 'doc-inner';
+
+    const selection = window.getSelection();
+    const selectionMadeInEditor = selection.focusNode &&
+      selection.focusNode.parentElement.closest(`.${EDITOR_CSS_CLASS}`);
+
+    // Default position if there is the current selection is not in the editor
+    if (!selectionMadeInEditor) return { popupPosition }
+
+    popupPosition = 'bottom left';
+
+    const { body, documentElement } = document
+    const pageWidth = Math.max(body.scrollWidth, body.offsetWidth,
+      documentElement.clientWidth, documentElement.scrollWidth, documentElement.offsetWidth);
+
+    // Find the selected text position in DOM to place the popup relative to it
+    const rect = selection.getRangeAt(0).getBoundingClientRect();
+
+    // distance from top of the document + the height of the element ...
+    // ... -2px to account for semantic-ui popup caret position
+    const CARET_TOP_OFFSET = 2;
+    top = rect.top + rect.height + window.scrollY - CARET_TOP_OFFSET;
+
+    // distance from the left of the document and ...
+    // ... subtracting 18px to account for the semantic-ui popup caret position
+    const CARET_LEFT_OFFSET = 20;
+    left = rect.left - CARET_LEFT_OFFSET;
+
+    const { popupRect } = this;
+
+    // Check if there is enough space on right, otherwise flip the popup horizontally
+    if (pageWidth - rect.left < popupRect.width) {
+      popupPosition = 'bottom right';
+      left = rect.left - popupRect.width + CARET_LEFT_OFFSET;
+    }
+
+    return {
+      popupStyle: { top, left, transform: 'none' },
+      popupPosition,
+    }
+  }
+
+  /**
    * Render form in popup to set the link.
    */
   renderLinkSetForm() {
+    const { popupPosition, popupStyle }  = this.calculateLinkPopupPosition()
+
     return (
       <Popup
         ref={this.setLinkFormRef}
@@ -306,10 +425,11 @@ export default class FormatToolbar extends React.Component {
             </Form.Field>
           </Form>
         }
-        onClose={() => this.toggleSetLinkForm()}
+        onClose={() => this.setState({ openSetLink: false })}
         on='click'
-        open={this.state.openSetLink}
-        position='bottom center'
+        open // Keep it open always. We toggle only visibility so we can calculate its rect
+        position={popupPosition}
+        style={popupStyle}
       />
     );
   }
@@ -398,7 +518,7 @@ export default class FormatToolbar extends React.Component {
     const root = window.document.querySelector('#slate-toolbar-wrapper-id');
     if (!root) { return null; }
 
-    return ReactDOM.createPortal(
+    return createPortal(
       <StyledToolbar background={editorProps.TOOLBAR_BACKGROUND} className="format-toolbar">
         <Dropdown
           text='Style'
@@ -568,5 +688,6 @@ FormatToolbar.propTypes = {
     TOOLBAR_BACKGROUND: PropTypes.string,
     TOOLTIP_BACKGROUND: PropTypes.string,
     TOOLTIP: PropTypes.string,
+    DIVIDER: PropTypes.string,
   }),
 };

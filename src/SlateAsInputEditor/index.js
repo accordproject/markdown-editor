@@ -16,8 +16,7 @@ import React, {
   useEffect,
   useState,
   useRef,
-  useCallback,
-  createElement
+  useCallback
 }
   from 'react';
 import { Editor, getEventTransfer } from 'slate-react';
@@ -63,15 +62,9 @@ const ToolbarWrapper = styled.div`
   box-shadow: ${props => props.TOOLBAR_SHADOW || 'none'};
 `;
 
-const Heading = ({ type, children, attributes}) => createElement(
-  styled(type)`
-      font-family: 'serif';
-    `,
-  {
-    "data-key": attributes["data-key"]
-  },
-  children,
-);
+const Heading = styled.div`
+  font-family: serif;
+`
 
 Heading.propTypes = {
   type: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
@@ -89,21 +82,24 @@ Pre.propTypes = {
   customCssObject: PropTypes.objectOf( PropTypes.string ),
 };
 
-const Blockquote = ({ children, attributes, blockQuoteStyle }) => createElement(
-  styled.blockquote`
-    font-size: ${blockQuoteStyle && blockQuoteStyle.FONT_SIZE ? blockQuoteStyle.FONT_SIZE : '1em' };
-    font-family: ${blockQuoteStyle && blockQuoteStyle.FONT_FAMILY ? blockQuoteStyle.FONT_FAMILY : 'Open Sans' };
-    font-style: ${blockQuoteStyle && blockQuoteStyle.FONT_STYLE ? blockQuoteStyle.FONT_STYLE : 'italic !important' };
-    font-weight: ${blockQuoteStyle && blockQuoteStyle.FONT_WEIGHT ? blockQuoteStyle.FONT_WEIGHT : '400' };
-    color: ${blockQuoteStyle && blockQuoteStyle.FONT_COLOR ? blockQuoteStyle.FONT_COLOR : '#333333' };
-    margin-left: ${blockQuoteStyle && blockQuoteStyle.QUOTE_INDENT ? blockQuoteStyle.QUOTE_INDENT : 'auto' };
-    ::before {
-      color: ${blockQuoteStyle && blockQuoteStyle.QUOTE_COLOR ? blockQuoteStyle.QUOTE_COLOR : '#484848' };
-    }
-  `,
-  attributes,
-  children,
-);
+const Blockquote = styled.blockquote`
+  font-size: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.FONT_SIZE ?
+    blockQuoteStyle.FONT_SIZE : '1em' };
+  font-family: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.FONT_FAMILY ?
+    blockQuoteStyle.FONT_FAMILY : 'Open Sans' };
+  font-style: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.FONT_STYLE ?
+    blockQuoteStyle.FONT_STYLE : 'italic !important' };
+  font-weight: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.FONT_WEIGHT ?
+    blockQuoteStyle.FONT_WEIGHT : '400' };
+  color: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.FONT_COLOR ?
+    blockQuoteStyle.FONT_COLOR : '#333333' };
+  margin-left: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.QUOTE_INDENT ?
+    blockQuoteStyle.QUOTE_INDENT : 'auto' };
+  ::before {
+    color: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.QUOTE_COLOR ?
+      blockQuoteStyle.QUOTE_COLOR : '#484848' };
+  }
+`;
 
 /**
  * a utility function to generate a random node id for annotations
@@ -252,21 +248,21 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       case 'paragraph':
         return <p {...attributes}>{children}</p>;
       case 'heading_one':
-        return <Heading type="h1" attributes={attributes}>{children}</Heading>;
+        return <Heading as="h1" {...attributes}>{children}</Heading>;
       case 'heading_two':
-        return <Heading type="h2" attributes={attributes}>{children}</Heading>;
+        return <Heading as="h2" {...attributes}>{children}</Heading>;
       case 'heading_three':
-        return <Heading type="h3" attributes={attributes}>{children}</Heading>;
+        return <Heading as="h3" {...attributes}>{children}</Heading>;
       case 'heading_four':
-        return <Heading type="h4" attributes={attributes}>{children}</Heading>;
+        return <Heading as="h4" {...attributes}>{children}</Heading>;
       case 'heading_five':
-        return <Heading type="h5" attributes={attributes}>{children}</Heading>;
+        return <Heading as="h5" {...attributes}>{children}</Heading>;
       case 'heading_six':
-        return <Heading type="h6" attributes={attributes}>{children}</Heading>;
+        return <Heading as="h6" {...attributes}>{children}</Heading>;
       case 'horizontal_rule':
         return <hr {...attributes} />;
       case 'block_quote':
-        return <Blockquote children={children} attributes={attributes} blockQuoteStyle={editorProps.BLOCKQUOTE} />;
+        return <Blockquote children={children} {...attributes} blockQuoteStyle={editorProps.BLOCKQUOTE} />;
       case 'code_block':
         return <Pre customCssObject={codeStyle} {...attributes}>{children}</Pre>;
       case 'html_block':
