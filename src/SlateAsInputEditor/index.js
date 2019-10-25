@@ -34,8 +34,8 @@ import '../styles.css';
 const EditorWrapper = styled.div`
   background: #fff;
   min-height: 750px;
-  max-width: ${props => props.width || 'none'};
-  min-width: ${props => props.width || 'none'};
+  max-width: ${props => props.WIDTH || 'none'};
+  min-width: ${props => props.WIDTH || 'none'};
   border-radius: ${props => props.EDITOR_BORDER_RADIUS || ' 10px'};
   border: ${props => props.EDITOR_BORDER || ' 1px solid #979797'};
   box-shadow: ${props => props.EDITOR_SHADOW || ' 1px 2px 4px rgba(0, 0, 0, .5)'};
@@ -445,7 +445,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   return (
     <div>
       <ToolbarWrapper {...editorProps} id="slate-toolbar-wrapper-id" />
-      <EditorWrapper width={editorProps.WIDTH}>
+      <EditorWrapper {...editorProps} >
         <Editor
           {...props}
           ref={editorRef}
