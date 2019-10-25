@@ -16,8 +16,7 @@ import React, {
   useEffect,
   useState,
   useRef,
-  useCallback,
-  createElement
+  useCallback
 }
   from 'react';
 import { Editor, getEventTransfer } from 'slate-react';
@@ -63,19 +62,44 @@ const ToolbarWrapper = styled.div`
   box-shadow: ${props => props.TOOLBAR_SHADOW || 'none'};
 `;
 
-const Heading = ({ type, children, attributes }) => createElement(
-  styled(type)`
-      font-family: 'serif';
-    `,
-  {
-    'data-key': attributes['data-key']
-  },
-  children,
-);
+const Heading = styled.div`
+  font-family: serif;
+`
 
 Heading.propTypes = {
   type: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
 };
+
+const Code = styled.code(({ customCssObject }) => ({ ...customCssObject }))
+
+Code.propTypes = {
+  customCssObject: PropTypes.objectOf( PropTypes.string ),
+};
+
+const Pre = styled.pre(({ customCssObject }) => ({ ...customCssObject }))
+
+Pre.propTypes = {
+  customCssObject: PropTypes.objectOf( PropTypes.string ),
+};
+
+const Blockquote = styled.blockquote`
+  font-size: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.FONT_SIZE ?
+    blockQuoteStyle.FONT_SIZE : '1em' };
+  font-family: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.FONT_FAMILY ?
+    blockQuoteStyle.FONT_FAMILY : 'Open Sans' };
+  font-style: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.FONT_STYLE ?
+    blockQuoteStyle.FONT_STYLE : 'italic !important' };
+  font-weight: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.FONT_WEIGHT ?
+    blockQuoteStyle.FONT_WEIGHT : '400' };
+  color: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.FONT_COLOR ?
+    blockQuoteStyle.FONT_COLOR : '#333333' };
+  margin-left: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.QUOTE_INDENT ?
+    blockQuoteStyle.QUOTE_INDENT : 'auto' };
+  ::before {
+    color: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.QUOTE_COLOR ?
+      blockQuoteStyle.QUOTE_COLOR : '#484848' };
+  }
+`;
 
 /**
  * a utility function to generate a random node id for annotations
@@ -224,25 +248,25 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       case 'paragraph':
         return <p {...attributes}>{children}</p>;
       case 'heading_one':
-        return <Heading type="h1" attributes={attributes}>{children}</Heading>;
+        return <Heading as="h1" {...attributes}>{children}</Heading>;
       case 'heading_two':
-        return <Heading type="h2" attributes={attributes}>{children}</Heading>;
+        return <Heading as="h2" {...attributes}>{children}</Heading>;
       case 'heading_three':
-        return <Heading type="h3" attributes={attributes}>{children}</Heading>;
+        return <Heading as="h3" {...attributes}>{children}</Heading>;
       case 'heading_four':
-        return <Heading type="h4" attributes={attributes}>{children}</Heading>;
+        return <Heading as="h4" {...attributes}>{children}</Heading>;
       case 'heading_five':
-        return <Heading type="h5" attributes={attributes}>{children}</Heading>;
+        return <Heading as="h5" {...attributes}>{children}</Heading>;
       case 'heading_six':
-        return <Heading type="h6" attributes={attributes}>{children}</Heading>;
+        return <Heading as="h6" {...attributes}>{children}</Heading>;
       case 'horizontal_rule':
         return <hr {...attributes} />;
       case 'block_quote':
-        return <blockquote {...attributes}>{children}</blockquote>;
+        return <Blockquote children={children} {...attributes} blockQuoteStyle={editorProps.BLOCKQUOTE} />;
       case 'code_block':
-        return <pre {...attributes}>{children}</pre>;
+        return <Pre customCssObject={codeStyle} {...attributes}>{children}</Pre>;
       case 'html_block':
-        return <pre {...attributes}>{children}</pre>;
+        return <Pre customCssObject={codeStyle} {...attributes}>{children}</Pre>;
       default:
         return next();
     }
@@ -264,9 +288,9 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       //   return <u {...{ attributes }}>{children}</u>;
       case 'html':
       case 'code':
-        return <code {...attributes}>{children}</code>;
+        return <Code customCssObject={codeStyle} {...attributes}>{children}</Code>;
       case 'error':
-        return <span className='error' {...attributes}>{children}</span>;
+        return <span className='error'{...attributes}>{children}</span>;
       default:
         return next();
     }
@@ -354,7 +378,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       return false;
     // if you hit enter inside anything that is not a heading
     // we use the default behavior
-    } if (!startBlock.type.startsWith('heading')) {
+    } else if (!startBlock.type.startsWith('heading')) {
       return next();
     }
 
@@ -487,15 +511,30 @@ SlateAsInputEditor.propTypes = {
     BUTTON_SYMBOL_INACTIVE: PropTypes.string,
     BUTTON_SYMBOL_ACTIVE: PropTypes.string,
     DROPDOWN_COLOR: PropTypes.string,
-    EDITOR_BORDER: PropTypes.string,
-    EDITOR_BORDER_RADIUS: PropTypes.string,
-    EDITOR_SHADOW: PropTypes.string,
+    EDITOR_BORDER:PropTypes.string,
+    EDITOR_BORDER_RADIUS:PropTypes.string,
+    EDITOR_SHADOW:PropTypes.string,
     TOOLBAR_BACKGROUND: PropTypes.string,
     TOOLTIP_BACKGROUND: PropTypes.string,
     TOOLTIP: PropTypes.string,
     TOOLBAR_SHADOW: PropTypes.string,
     WIDTH: PropTypes.string,
+    BLOCKQUOTE: PropTypes.shape({
+      FONT_FAMILY: PropTypes.string,
+      FONT_COLOR: PropTypes.string,
+      FONT_SIZE: PropTypes.string,
+      FONT_STYLE: PropTypes.string,
+      FONT_WEIGHT: PropTypes.string,
+      QUOTE_COLOR: PropTypes.string,
+      QUOTE_INDENT: PropTypes.string,
+    })
   }),
+
+  /**
+   * Optional styling props for codeblock
+   * currently too vague as it will accept a style object
+   */
+  codeStyle: PropTypes.objectOf( PropTypes.string ),
 
   /**
    * A callback that receives the Slate Value object and
