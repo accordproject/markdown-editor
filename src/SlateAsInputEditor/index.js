@@ -30,6 +30,8 @@ import FormatToolbar from '../FormattingToolbar';
 
 import '../styles.css';
 
+const noop = () => {};
+
 const EditorWrapper = styled.div`
   background: #fff;
   min-height: 750px;
@@ -79,37 +81,6 @@ const Heading = styled.div`
 Heading.propTypes = {
   type: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
 };
-
-const Code = styled.code(({ customCssObject }) => ({ ...customCssObject }))
-
-Code.propTypes = {
-  customCssObject: PropTypes.objectOf( PropTypes.string ),
-};
-
-const Pre = styled.pre(({ customCssObject }) => ({ ...customCssObject }))
-
-Pre.propTypes = {
-  customCssObject: PropTypes.objectOf( PropTypes.string ),
-};
-
-const Blockquote = styled.blockquote`
-  font-size: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.FONT_SIZE ?
-    blockQuoteStyle.FONT_SIZE : '1em' };
-  font-family: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.FONT_FAMILY ?
-    blockQuoteStyle.FONT_FAMILY : 'Open Sans' };
-  font-style: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.FONT_STYLE ?
-    blockQuoteStyle.FONT_STYLE : 'italic !important' };
-  font-weight: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.FONT_WEIGHT ?
-    blockQuoteStyle.FONT_WEIGHT : '400' };
-  color: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.FONT_COLOR ?
-    blockQuoteStyle.FONT_COLOR : '#333333' };
-  margin-left: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.QUOTE_INDENT ?
-    blockQuoteStyle.QUOTE_INDENT : 'auto' };
-  ::before {
-    color: ${({ blockQuoteStyle = {} }) => blockQuoteStyle.QUOTE_COLOR ?
-      blockQuoteStyle.QUOTE_COLOR : '#484848' };
-  }
-`;
 
 /**
  * a utility function to generate a random node id for annotations
@@ -272,11 +243,11 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       case 'horizontal_rule':
         return <hr {...attributes} />;
       case 'block_quote':
-        return <Blockquote children={children} {...attributes} blockQuoteStyle={editorProps.BLOCKQUOTE} />;
+        return <blockquote {...attributes}>{children}</blockquote>;
       case 'code_block':
-        return <Pre customCssObject={codeStyle} {...attributes}>{children}</Pre>;
+        return <pre {...attributes}>{children}</pre>;
       case 'html_block':
-        return <Pre customCssObject={codeStyle} {...attributes}>{children}</Pre>;
+        return <pre {...attributes}>{children}</pre>;
       default:
         return next();
     }
@@ -298,9 +269,9 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       //   return <u {...{ attributes }}>{children}</u>;
       case 'html':
       case 'code':
-        return <Code customCssObject={codeStyle} {...attributes}>{children}</Code>;
+        return <code {...attributes}>{children}</code>;
       case 'error':
-        return <span className='error'{...attributes}>{children}</span>;
+        return <span className='error' {...attributes}>{children}</span>;
       default:
         return next();
     }
@@ -497,6 +468,9 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
           renderMark={renderMark}
           editorProps={editorProps}
           renderEditor={renderEditor}
+          // onFocus to prevent resetting scroll position
+          // after the editor gets refocused
+          onFocus={noop}
         />
       </EditorWrapper>
     </div>
@@ -521,30 +495,12 @@ SlateAsInputEditor.propTypes = {
     BUTTON_SYMBOL_INACTIVE: PropTypes.string,
     BUTTON_SYMBOL_ACTIVE: PropTypes.string,
     DROPDOWN_COLOR: PropTypes.string,
-    EDITOR_BORDER:PropTypes.string,
-    EDITOR_BORDER_RADIUS:PropTypes.string,
-    EDITOR_SHADOW:PropTypes.string,
     TOOLBAR_BACKGROUND: PropTypes.string,
     TOOLTIP_BACKGROUND: PropTypes.string,
     TOOLTIP: PropTypes.string,
     TOOLBAR_SHADOW: PropTypes.string,
     WIDTH: PropTypes.string,
-    BLOCKQUOTE: PropTypes.shape({
-      FONT_FAMILY: PropTypes.string,
-      FONT_COLOR: PropTypes.string,
-      FONT_SIZE: PropTypes.string,
-      FONT_STYLE: PropTypes.string,
-      FONT_WEIGHT: PropTypes.string,
-      QUOTE_COLOR: PropTypes.string,
-      QUOTE_INDENT: PropTypes.string,
-    })
   }),
-
-  /**
-   * Optional styling props for codeblock
-   * currently too vague as it will accept a style object
-   */
-  codeStyle: PropTypes.objectOf( PropTypes.string ),
 
   /**
    * A callback that receives the Slate Value object and
