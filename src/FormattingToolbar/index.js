@@ -1,10 +1,11 @@
 import React, { createRef } from 'react';
-import ReactDOM, { findDOMNode, createPortal } from 'react-dom';
+import { findDOMNode, createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {
   Button, Dropdown, Form, Input, Popup
 } from 'semantic-ui-react';
+import { findDOMRange } from 'slate-react';
 
 import * as action from './toolbarMethods';
 import * as styles from './toolbarStyles';
@@ -89,12 +90,16 @@ const DropdownHeader3 = {
   fontFamily: 'serif',
 };
 
+/* eslint-disable react/no-find-dom-node */
+
 export default class FormatToolbar extends React.Component {
   constructor() {
     super();
     this.state = { openSetLink: false };
     this.linkButtonRef = createRef();
     this.setLinkFormRef = createRef();
+    this.hyperlinkFormRef = createRef();
+    this.hyperlinkInputRef = createRef();
     this.onMouseDown = this.onMouseDown.bind(this);
   }
 
@@ -102,7 +107,7 @@ export default class FormatToolbar extends React.Component {
     document.addEventListener('mousedown', this.onMouseDown);
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
     // Save link popup rect as soon as it is avaialble
     // (Reason for saving the element's dimension here is because
     // we cannot use `findDOMNode` in render function)
@@ -111,6 +116,22 @@ export default class FormatToolbar extends React.Component {
       if (popupNode) {
         this.popupRect = popupNode.getBoundingClientRect();
       }
+    }
+
+    // If the form is just opened, focus the Url input field
+    if (!prevState.openSetLink && this.state.openSetLink) {
+      this.hyperlinkInputRef.current.focus();
+    }
+
+    // If the form is just closed, reset the values
+    // We are not using controlled form as it will make things
+    // more complex, thats why using DOM api
+    if (prevState.openSetLink && !this.state.openSetLink) {
+      const formNode = findDOMNode(this.hyperlinkFormRef.current);
+      if (formNode) formNode.reset();
+
+      // Focus back the editor
+      this.props.editor.focus();
     }
   }
 
@@ -142,8 +163,8 @@ export default class FormatToolbar extends React.Component {
       // Make sure the clicked element is not the popup AND
       // the clicked element in not a child of popup
       const clickedOutsideLinkPopup = e.target !== popup && !popup.contains(e.target);
-      const clickedOnLinkToggleBtn =
-        e.target === linkFormToggleBtn || linkFormToggleBtn.contains(e.target);
+      const clickedOnLinkToggleBtn = e.target === linkFormToggleBtn
+        || linkFormToggleBtn.contains(e.target);
 
       if (clickedOutsideLinkPopup && !clickedOnLinkToggleBtn) {
         // Close the link
@@ -342,36 +363,31 @@ export default class FormatToolbar extends React.Component {
     // Constant values 2 and 20 (px) has been
     // manually observed through devtools and what looked best.
 
-    let top;
-    let left;
+    let top = null;
+    let left = null;
     let popupPosition = 'bottom center';
 
     // No need to calculate position of the popup is it is not even opened!
     const isLinkPopupOpened = this.state.openSetLink;
-    if (!isLinkPopupOpened) return {
-      popupPosition,
-      // Hide the popup by setting negative zIndex
-      popupStyle: { zIndex: -1 }
+    if (!isLinkPopupOpened) {
+      return {
+        popupPosition,
+        // Hide the popup by setting negative zIndex
+        popupStyle: { zIndex: -1 }
+      };
     }
 
-    // extracted the class from `SlateAsInputEditor/index.js`
-    const EDITOR_CSS_CLASS = 'doc-inner';
-
-    const selection = window.getSelection();
-    const selectionMadeInEditor = selection.focusNode &&
-      selection.focusNode.parentElement.closest(`.${EDITOR_CSS_CLASS}`);
-
-    // Default position if there is the current selection is not in the editor
-    if (!selectionMadeInEditor) return { popupPosition }
+    // Get selection node from slate
+    const selection = findDOMRange(this.props.editor.value.selection);
 
     popupPosition = 'bottom left';
 
-    const { body, documentElement } = document
+    const { body, documentElement } = document;
     const pageWidth = Math.max(body.scrollWidth, body.offsetWidth,
       documentElement.clientWidth, documentElement.scrollWidth, documentElement.offsetWidth);
 
     // Find the selected text position in DOM to place the popup relative to it
-    const rect = selection.getRangeAt(0).getBoundingClientRect();
+    const rect = selection.getBoundingClientRect();
 
     // distance from top of the document + the height of the element ...
     // ... -2px to account for semantic-ui popup caret position
@@ -388,27 +404,31 @@ export default class FormatToolbar extends React.Component {
     // Check if there is enough space on right, otherwise flip the popup horizontally
     if (pageWidth - rect.left < popupRect.width) {
       popupPosition = 'bottom right';
-      left = rect.left - popupRect.width + CARET_LEFT_OFFSET;
+      left = rect.left - popupRect.width + (CARET_LEFT_OFFSET * 2);
     }
 
     return {
+      // Disable semantic ui popup placement by overriding `transform`
+      // and use our computed `top` and `left` values
       popupStyle: { top, left, transform: 'none' },
       popupPosition,
-    }
+    };
   }
 
   /**
    * Render form in popup to set the link.
    */
   renderLinkSetForm() {
-    const { popupPosition, popupStyle }  = this.calculateLinkPopupPosition()
+    const { popupPosition, popupStyle } = this.calculateLinkPopupPosition();
 
     return (
       <Popup
         ref={this.setLinkFormRef}
         context={this.linkButtonRef}
         content={
-          <Form onSubmit={(event) => {
+          <Form
+          ref={this.hyperlinkFormRef}
+          onSubmit={(event) => {
             action.applyLinkUpdate(event, this.props.editor);
             this.toggleSetLinkForm();
           }}>
@@ -418,7 +438,7 @@ export default class FormatToolbar extends React.Component {
             </Form.Field>
             <Form.Field>
               <label>Link URL</label>
-              <Input placeholder='http://example.com' name='url' />
+              <Input ref={this.hyperlinkInputRef} placeholder='http://example.com' name='url' />
             </Form.Field>
             <Form.Field>
               <Button primary floated='right' type='submit'>Apply</Button>
@@ -677,6 +697,7 @@ export default class FormatToolbar extends React.Component {
 
 FormatToolbar.propTypes = {
   editor: PropTypes.object.isRequired,
+  lockText: PropTypes.bool.isRequired,
   pluginManager: PropTypes.object,
   editorProps: PropTypes.shape({
     BUTTON_BACKGROUND_INACTIVE: PropTypes.string,
