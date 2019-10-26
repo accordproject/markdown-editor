@@ -40,7 +40,6 @@ const EditorWrapper = styled.div`
   border: ${props => props.EDITOR_BORDER || ' 1px solid #979797'};
   box-shadow: ${props => props.EDITOR_SHADOW || ' 1px 2px 4px rgba(0, 0, 0, .5)'};
   margin: 50px auto;
-  padding: 20px;
   font-family: serif;
   font-style: normal;
   font-weight: normal;
@@ -52,6 +51,17 @@ const EditorWrapper = styled.div`
   text-transform: none;
   text-align: left;
   text-indent: 0ex;
+  display:flex;
+
+  > div {
+    width: 100%;
+  }
+
+  .doc-inner {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+  }
 `;
 
 const ToolbarWrapper = styled.div`
