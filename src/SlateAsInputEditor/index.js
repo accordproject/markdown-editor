@@ -442,6 +442,11 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     onChange(value);
   };
 
+  const onFocusHandler = (_event, editor, _next) => {
+    // see https://github.com/accordproject/markdown-editor/issues/162
+    setTimeout(editor.focus, 0);
+  };
+
   return (
     <div>
       <ToolbarWrapper {...editorProps} id="slate-toolbar-wrapper-id" />
@@ -453,6 +458,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
           value={Value.fromJSON(value)}
           readOnly={props.readOnly}
           onChange={onChangeHandler}
+          onFocus={onFocusHandler}
           schema={slateSchema}
           plugins={props.plugins}
           onBeforeInput={onBeforeInput}
