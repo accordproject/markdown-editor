@@ -30,8 +30,6 @@ import FormatToolbar from '../FormattingToolbar';
 
 import '../styles.css';
 
-const noop = () => {};
-
 const EditorWrapper = styled.div`
   background: #fff;
   min-height: 750px;
@@ -458,9 +456,6 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
           renderMark={renderMark}
           editorProps={editorProps}
           renderEditor={renderEditor}
-          // onFocus to prevent resetting scroll position
-          // after the editor gets refocused
-          onFocus={noop}
         />
       </EditorWrapper>
     </div>
