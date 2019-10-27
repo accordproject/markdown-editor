@@ -157,16 +157,13 @@ export default class FormatToolbar extends React.Component {
     if (isLinkPopupOpened) {
       // Find the link popup DOM element
       const popup = findDOMNode(this.setLinkFormRef.current);
-      const linkFormToggleBtn = findDOMNode(this.linkButtonRef.current);
-      if (!popup || !linkFormToggleBtn) return;
+      if (!popup) return;
 
-      // Make sure the clicked element is not the popup AND
-      // the clicked element in not a child of popup
+      // Make sure the clicked element is not the popup or the
+      // child of the popup
       const clickedOutsideLinkPopup = e.target !== popup && !popup.contains(e.target);
-      const clickedOnLinkToggleBtn = e.target === linkFormToggleBtn
-        || linkFormToggleBtn.contains(e.target);
 
-      if (clickedOutsideLinkPopup && !clickedOnLinkToggleBtn) {
+      if (clickedOutsideLinkPopup) {
         // Close the link
         this.setState({ openSetLink: false });
       }
@@ -389,20 +386,22 @@ export default class FormatToolbar extends React.Component {
     // Find the selected text position in DOM to place the popup relative to it
     const rect = selection.getBoundingClientRect();
 
-    // distance from top of the document + the height of the element ...
+    // distance from top of the document + the height of the element + scroll offet ...
     // ... -2px to account for semantic-ui popup caret position
     const CARET_TOP_OFFSET = 2;
     top = rect.top + rect.height + window.scrollY - CARET_TOP_OFFSET;
 
     // distance from the left of the document and ...
-    // ... subtracting 18px to account for the semantic-ui popup caret position
+    // ... subtracting 20px to account for the semantic-ui popup caret position
     const CARET_LEFT_OFFSET = 20;
     left = rect.left - CARET_LEFT_OFFSET;
 
     const { popupRect } = this;
 
     // Check if there is enough space on right, otherwise flip the popup horizontally
-    if (pageWidth - rect.left < popupRect.width) {
+    // and adjust the popup position accordingly
+    const spaceOnRight = pageWidth - rect.left;
+    if (spaceOnRight < popupRect.width) {
       popupPosition = 'bottom right';
       left = rect.left - popupRect.width + (CARET_LEFT_OFFSET * 2);
     }
