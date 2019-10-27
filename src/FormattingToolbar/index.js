@@ -165,7 +165,7 @@ export default class FormatToolbar extends React.Component {
 
       if (clickedOutsideLinkPopup) {
         // Close the link
-        this.setState({ openSetLink: false });
+        this.closeSetLinkForm();
       }
     }
   }
@@ -261,6 +261,13 @@ export default class FormatToolbar extends React.Component {
    */
   toggleSetLinkForm() {
     this.setState({ openSetLink: !this.state.openSetLink });
+  }
+
+  /**
+   * Close set link form.
+   */
+  closeSetLinkForm() {
+    this.setState({ openSetLink: false });
   }
 
   /**
@@ -444,7 +451,7 @@ export default class FormatToolbar extends React.Component {
             </Form.Field>
           </Form>
         }
-        onClose={() => this.setState({ openSetLink: false })}
+        onClose={this.closeSetLinkForm}
         on='click'
         open // Keep it open always. We toggle only visibility so we can calculate its rect
         position={popupPosition}
