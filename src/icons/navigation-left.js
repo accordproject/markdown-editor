@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const type = () => 'bold';
+export const type = () => 'undo';
 
 export const height = () => '25px';
 
