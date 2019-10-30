@@ -99,6 +99,9 @@ export default class FormatToolbar extends React.Component {
     this.linkButtonRef = createRef();
     this.hyperlinkInputRef = createRef();
     this.onMouseDown = this.onMouseDown.bind(this);
+    this.closeSetLinkForm = this.closeSetLinkForm.bind(this);
+    this.renderLinkSetForm = this.renderLinkSetForm.bind(this);
+    this.calculateLinkPopupPosition = this.calculateLinkPopupPosition.bind(this);
   }
 
   componentDidMount() {
