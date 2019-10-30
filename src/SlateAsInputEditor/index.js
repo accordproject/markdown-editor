@@ -442,6 +442,13 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     onChange(value);
   };
 
+  /**
+   * Render the annotations which are added/updated for the editor
+   */
+  const renderAnnotation = useCallback((props, editor, next) => {
+    return next();
+  });
+
   return (
     <div>
       <ToolbarWrapper {...editorProps} id="slate-toolbar-wrapper-id" />
@@ -459,6 +466,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
           onKeyDown={onKeyDown}
           onPaste={onPaste}
           renderBlock={renderBlock}
+          renderAnnotation={renderAnnotation}
           renderInline={renderInline}
           renderMark={renderMark}
           editorProps={editorProps}
