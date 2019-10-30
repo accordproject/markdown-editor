@@ -1,9 +1,9 @@
 import React, { createRef } from 'react';
-import { findDOMNode, createPortal } from 'react-dom';
+import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {
-  Button, Dropdown, Form, Input, Popup
+  Button, Dropdown, Form, Input, Popup, Ref
 } from 'semantic-ui-react';
 import { findDOMRange } from 'slate-react';
 
@@ -97,8 +97,6 @@ export default class FormatToolbar extends React.Component {
     super();
     this.state = { openSetLink: false };
     this.linkButtonRef = createRef();
-    this.setLinkFormRef = createRef();
-    this.hyperlinkFormRef = createRef();
     this.hyperlinkInputRef = createRef();
     this.onMouseDown = this.onMouseDown.bind(this);
   }
@@ -108,16 +106,6 @@ export default class FormatToolbar extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // Save link popup rect as soon as it is avaialble
-    // (Reason for saving the element's dimension here is because
-    // we cannot use `findDOMNode` in render function)
-    if (!this.popupRect) {
-      const popupNode = findDOMNode(this.setLinkFormRef.current);
-      if (popupNode) {
-        this.popupRect = popupNode.getBoundingClientRect();
-      }
-    }
-
     // If the form is just opened, focus the Url input field
     if (!prevState.openSetLink && this.state.openSetLink) {
       this.hyperlinkInputRef.current.focus();
@@ -127,7 +115,7 @@ export default class FormatToolbar extends React.Component {
     // We are not using controlled form as it will make things
     // more complex, thats why using DOM api
     if (prevState.openSetLink && !this.state.openSetLink) {
-      const formNode = findDOMNode(this.hyperlinkFormRef.current);
+      const formNode = this.setLinkForm;
       if (formNode) formNode.reset();
 
       // Focus back the editor
@@ -156,7 +144,7 @@ export default class FormatToolbar extends React.Component {
     const isLinkPopupOpened = this.state.openSetLink;
     if (isLinkPopupOpened) {
       // Find the link popup DOM element
-      const popup = findDOMNode(this.setLinkFormRef.current);
+      const popup = this.setLinkFormPopup;
       if (!popup) return;
 
       // Make sure the clicked element is not the popup or the
@@ -403,14 +391,14 @@ export default class FormatToolbar extends React.Component {
     const CARET_LEFT_OFFSET = 20;
     left = rect.left - CARET_LEFT_OFFSET;
 
-    const { popupRect } = this;
+    const popupRect = this.setLinkFormPopup.getBoundingClientRect();
 
     // Check if there is enough space on right, otherwise flip the popup horizontally
     // and adjust the popup position accordingly
     const spaceOnRight = pageWidth - rect.left;
     if (spaceOnRight < popupRect.width) {
       popupPosition = 'bottom right';
-      left = rect.left - popupRect.width + (CARET_LEFT_OFFSET * 2);
+      left = rect.left - popupRect.width + CARET_LEFT_OFFSET;
     }
 
     return {
@@ -428,35 +416,41 @@ export default class FormatToolbar extends React.Component {
     const { popupPosition, popupStyle } = this.calculateLinkPopupPosition();
 
     return (
+      <Ref innerRef={(node) => {
+        this.setLinkFormPopup = node;
+      }}>
       <Popup
-        ref={this.setLinkFormRef}
         context={this.linkButtonRef}
         content={
-          <Form
-          ref={this.hyperlinkFormRef}
-          onSubmit={(event) => {
-            action.applyLinkUpdate(event, this.props.editor);
-            this.toggleSetLinkForm();
+          <Ref innerRef={(node) => {
+            this.setLinkForm = node;
           }}>
-            <Form.Field>
-              <label>Link Text</label>
-              <Input placeholder='Text' name='text' defaultValue={this.props.editor.value.fragment.text}/>
-            </Form.Field>
-            <Form.Field>
-              <label>Link URL</label>
-              <Input ref={this.hyperlinkInputRef} placeholder='http://example.com' name='url' />
-            </Form.Field>
-            <Form.Field>
-              <Button primary floated='right' type='submit'>Apply</Button>
-            </Form.Field>
-          </Form>
-        }
-        onClose={this.closeSetLinkForm}
-        on='click'
-        open // Keep it open always. We toggle only visibility so we can calculate its rect
-        position={popupPosition}
-        style={popupStyle}
-      />
+            <Form
+            onSubmit={(event) => {
+              action.applyLinkUpdate(event, this.props.editor);
+              this.toggleSetLinkForm();
+            }}>
+              <Form.Field>
+                <label>Link Text</label>
+                <Input placeholder='Text' name='text' defaultValue={this.props.editor.value.fragment.text}/>
+              </Form.Field>
+              <Form.Field>
+                <label>Link URL</label>
+                <Input ref={this.hyperlinkInputRef} placeholder='http://example.com' name='url' />
+              </Form.Field>
+              <Form.Field>
+                <Button primary floated='right' type='submit'>Apply</Button>
+              </Form.Field>
+            </Form>
+            </Ref>
+          }
+          onClose={this.closeSetLinkForm}
+          on='click'
+          open // Keep it open always. We toggle only visibility so we can calculate its rect
+          position={popupPosition}
+          style={popupStyle}
+        />
+        </Ref>
     );
   }
 
