@@ -241,7 +241,7 @@ export default class FormatToolbar extends React.Component {
       // Selection is not a list.
       } else {
         editor.withoutNormalizing(() => {
-          editor.setBlocks('list_item').wrapBlock(type);
+          editor.setBlocks('list_item').wrapBlock({ type, data: { tight: true } });
         });
       }
     }

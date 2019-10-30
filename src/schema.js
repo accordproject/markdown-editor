@@ -47,9 +47,15 @@ const schema = {
       isVoid: true,
     },
     ol_list: {
+      data: {
+        tight: v => v,
+      },
       nodes: [{ match: { type: 'list_item' } }],
     },
     ul_list: {
+      data: {
+        tight: v => v,
+      },
       nodes: [{ match: { type: 'list_item' } }],
     },
     list_item: {
