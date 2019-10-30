@@ -74,7 +74,7 @@ const ToolbarWrapper = styled.div`
 
 const Heading = styled.div`
   font-family: serif;
-`
+`;
 
 Heading.propTypes = {
   type: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
@@ -116,8 +116,6 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   } = props;
 
   const editorProps = props.editorProps || Object.create(null);
-
-  const codeStyle = props.codeStyle || Object.create(null);
 
   /**
    * A reference to the Slate Editor.
@@ -221,7 +219,6 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   // @ts-ignore
   const renderBlock = useCallback((props, editor, next) => {
     const { node, attributes, children } = props;
-    const { editorProps } = editor.props;
 
     switch (node.type) {
       case 'paragraph':
@@ -355,9 +352,10 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
           .unwrapBlock('ul_list');
       });
       return false;
+    }
     // if you hit enter inside anything that is not a heading
     // we use the default behavior
-    } else if (!startBlock.type.startsWith('heading')) {
+    if (!startBlock.type.startsWith('heading')) {
       return next();
     }
 

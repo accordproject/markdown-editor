@@ -51,9 +51,6 @@ const propsObj = {
   WIDTH: '600px',
 };
 
-const codeStyle = {
-  backgroundColor: "lavender"
-}
 
 /**
  * Simple demo component that tracks whether to lockText
@@ -86,17 +83,29 @@ function Demo() {
   return (
     <div>
       <Segment>
-    <Grid columns={2}>
-      <Grid.Column>
-        <MarkdownAsInputEditor readOnly={true} plugins={plugins} markdown={markdown} onChange={onMarkdownChange}/>
-      </Grid.Column>
+        <Grid columns={2}>
+          <Grid.Column>
+            <MarkdownAsInputEditor
+              readOnly={true}
+              plugins={plugins}
+              markdown={markdown}
+              onChange={onMarkdownChange}
+            />
+          </Grid.Column>
 
-      <Grid.Column>
-        <SlateAsInputEditor readOnly={false} lockText={true} plugins={plugins} value={slateValue} onChange={onSlateValueChange} editorProps={propsObj} codeStyle={codeStyle} />
-      </Grid.Column>
-    </Grid>
-    <Divider vertical>Preview</Divider>
-  </Segment>
+          <Grid.Column>
+            <SlateAsInputEditor
+              readOnly={false}
+              lockText={true}
+              plugins={plugins}
+              value={slateValue}
+              onChange={onSlateValueChange}
+              editorProps={propsObj}
+            />
+          </Grid.Column>
+        </Grid>
+        <Divider vertical>Preview</Divider>
+      </Segment>
     </div>
   );
 }
