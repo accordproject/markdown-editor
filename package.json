@@ -100,7 +100,6 @@
     "prop-types": "^15.7.2",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
-    "react-flipcard": "^0.2.1",
     "react-immutable-proptypes": "^2.1.0",
     "react-textarea-autosize": "^7.1.0",
     "semantic-ui-css": "^2.4.1",
