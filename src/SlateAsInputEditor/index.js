@@ -32,7 +32,7 @@ import '../styles.css';
 
 const EditorWrapper = styled.div`
   background: #fff;
-  min-height: 750px;
+  height: 750px;
   max-width: ${props => props.WIDTH || 'none'};
   min-width: ${props => props.WIDTH || 'none'};
   border-radius: ${props => props.EDITOR_BORDER_RADIUS || ' 10px'};
@@ -51,6 +51,7 @@ const EditorWrapper = styled.div`
   text-align: left;
   text-indent: 0ex;
   display:flex;
+  overflow-y: scroll;
 
   > div {
     width: 100%;
