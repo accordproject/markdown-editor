@@ -18,41 +18,40 @@ import List from '../../src/plugins/list';
 const plugins = [NoEdit(), List()];
 const slateTransformer = new SlateTransformer();
 
-const defaultMarkdown = `# My Heading
+const defaultMarkdown = `My Heading
+====
 
 This is text. This is *italic* text. This is **bold** text. This is a [link](https://clause.io). This is \`inline code\`.
 
 This is ***bold and italic*** text
 
 > This is a quote.
-## Heading Two
+
+Heading Two
+----
+
 This is more text.
 
 Ordered lists:
 
 1. one
-1. two
-1. three
+2. two
+3. three
 
 Or:
 
-* apples
-* pears
-* peaches
+- apples
+- pears
+- peaches
 
 ### Sub heading
 
 This is more text.
 
-# Horizontal Rules
-Hyphens:
+Horizontal Rule
+====
+
 ---
-
-Asterisks:
-***
-
-Underscores:
-___
 
 Fin.
 `;
