@@ -13,6 +13,7 @@ Enzyme.configure({adapter: new Adapter()});
 
 // Default markdown value
 let defaultValue = `My Heading
+====
 
 This is text. This is *italic* text. This is **bold** text. This is a [link](https://clause.io). This is \`inline code\`.
 
@@ -21,6 +22,7 @@ This is ***bold and italic*** text
 > This is a quote.
 
 Heading Two
+----
 
 This is more text.
 
@@ -39,6 +41,11 @@ Or:
 ### Sub heading
 
 This is more text.
+
+Horizontal Rule
+====
+
+---
 
 Fin.`;
 
