@@ -50,7 +50,7 @@ const EditorWrapper = styled.div`
   text-transform: none;
   text-align: left;
   text-indent: 0ex;
-  display:flex;
+  display: flex;
 
   > div {
     width: 100%;

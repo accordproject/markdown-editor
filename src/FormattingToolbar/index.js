@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import {
   Button, Dropdown, Form, Input, Popup, Ref
 } from 'semantic-ui-react';
-import { findDOMRange } from 'slate-react';
 
 import * as action from './toolbarMethods';
 import * as styles from './toolbarStyles';
@@ -373,7 +372,7 @@ export default class FormatToolbar extends React.Component {
     }
 
     // Get selection node from slate
-    const selection = findDOMRange(this.props.editor.value.selection);
+    const selection = this.props.editor.findDOMRange(this.props.editor.value.selection);
 
     popupPosition = 'bottom left';
 
