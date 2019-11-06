@@ -34,6 +34,8 @@ const schema = {
       ],
     },
     html_block: {
+      next: { type: 'paragraph' },
+      previous: { type: 'paragraph' },
       nodes: [
         { match: { type: 'paragraph' } },
       ]
