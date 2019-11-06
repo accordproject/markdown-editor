@@ -55,12 +55,12 @@
     "styled-components": ">= 4"
   },
   "devDependencies": {
-    "@babel/cli": "^7.6.4",
-    "@babel/core": "^7.6.4",
-    "@babel/plugin-transform-modules-commonjs": "^7.6.0",
-    "@babel/preset-env": "^7.6.3",
-    "@babel/preset-react": "^7.6.3",
-    "@babel/register": "^7.6.2",
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.7.0",
+    "@babel/preset-env": "^7.7.1",
+    "@babel/preset-react": "^7.7.0",
+    "@babel/register": "^7.7.0",
     "@clausehq/eslint-config": "^0.1.8",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
@@ -81,7 +81,7 @@
     "semver": "6.1.1",
     "styled-components": "^4.4.0",
     "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.9",
+    "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.8.2"
   },
   "eslintConfig": {
