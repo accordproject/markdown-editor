@@ -27,6 +27,8 @@ import baseSchema from '../schema';
 import PluginManager from '../PluginManager';
 import { FromHTML } from '../html/fromHTML';
 import FormatToolbar from '../FormattingToolbar';
+import NoEditPlugin from '../plugins/noedit';
+import ListPlugin from '../plugins/list';
 
 import '../styles.css';
 
@@ -448,6 +450,12 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     setTimeout(editor.focus, 0);
   };
 
+  const allPlugins = React.useMemo(() => (props.plugins
+    ? props.plugins.concat(
+      [ListPlugin(), NoEditPlugin()]
+    )
+    : [ListPlugin(), NoEditPlugin()]), [props.plugins]);
+
   return (
     <div>
       <ToolbarWrapper {...editorProps} id="slate-toolbar-wrapper-id" />
@@ -461,7 +469,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
           onChange={onChangeHandler}
           onFocus={onFocusHandler}
           schema={slateSchema}
-          plugins={props.plugins}
+          plugins={allPlugins}
           onBeforeInput={onBeforeInput}
           onKeyDown={onKeyDown}
           onPaste={onPaste}
