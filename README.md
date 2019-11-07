@@ -54,6 +54,11 @@ This component is Apache-2 licensed Open Source. Contributors welcome!
 npm install @accordproject/markdown-editor
 ```
 
+You'll also need to be sure to install this package's peer dependencies:
+```
+npm install react react-dom slate slate-react styled-components
+```
+
 ```
 import { SlateAsInputEditor } from '@accordproject/markdown-editor';
 import List from '@accordproject/markdown-editor/dist/plugins/list';
