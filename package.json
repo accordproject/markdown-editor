@@ -50,8 +50,10 @@
   },
   "homepage": "https://github.com/accordproject/markdown-editor",
   "peerDependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": ">= 16.6.0",
+    "react-dom": ">= 16.6.0",
+    "slate": "0.47.x",
+    "slate-react": "0.22.x",
     "styled-components": ">= 4"
   },
   "devDependencies": {
@@ -77,8 +79,12 @@
     "html-webpack-plugin": "^3.2.0",
     "jest": "^24.9.0",
     "moment-mini": "2.22.1",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
     "react-scripts": "^3.2.0",
     "semver": "6.1.1",
+    "slate": "^0.47.8",
+    "slate-react": "^0.22.9",
     "styled-components": "^4.4.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
@@ -94,20 +100,16 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@accordproject/markdown-slate": "^0.7.3",
+    "@accordproject/markdown-slate": "^0.7.4",
     "css-loader": "^3.2.0",
     "immutable": "^3.8.2",
     "prop-types": "^15.7.2",
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
     "react-immutable-proptypes": "^2.1.0",
     "react-textarea-autosize": "^7.1.0",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.87.3",
-    "slate": "^0.47.8",
     "slate-html-serializer": "^0.8.10",
     "slate-plain-serializer": "^0.7.10",
-    "slate-react": "^0.22.9",
     "style-loader": "^0.23.1"
   }
 }
