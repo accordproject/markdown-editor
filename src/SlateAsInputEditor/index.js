@@ -200,27 +200,18 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     const { attributes, children, node } = props;
 
     switch (node.type) {
-      case 'link': {
-        const { data } = node;
-        const href = data.get('href');
-        return <a {...attributes} href={href}>{children}</a>;
-      }
-      case 'image': {
-          console.log('***** image');
-          return <img {...attributes} alt={node.data.get('title')} src={node.data.get('href')}/>;
-      }
-      case 'html_inline': {
+      case 'link':
+        return <a {...attributes} href={node.data.get('href')}>{children}</a>;
+      case 'image':
+        return <img {...attributes} alt={node.data.get('title')} src={node.data.get('href')}/>;
+      case 'html_inline':
         return <span className='html_inline' {...attributes}>{children}</span>;
-      }
-      case 'softbreak': {
+      case 'softbreak':
         return ' ';
-      }
-      case 'linebreak': {
+      case 'linebreak':
         return <br className='linebreak' {...attributes}/>;
-      }
-      default: {
+      default:
         return next();
-      }
     }
   }, []);
 
