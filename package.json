@@ -72,7 +72,7 @@
     "eslint-config-airbnb": "^17.1.1",
     "eslint-config-loopback": "^13.1.0",
     "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jest": "^22.19.0",
+    "eslint-plugin-jest": "^22.21.0",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^1.7.0",
@@ -85,10 +85,10 @@
     "semver": "6.1.1",
     "slate": "^0.47.8",
     "slate-react": "^0.22.9",
-    "styled-components": "^4.4.0",
+    "styled-components": "^4.4.1",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.8.2"
+    "webpack-dev-server": "^3.9.0"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -105,7 +105,7 @@
     "immutable": "^3.8.2",
     "prop-types": "^15.7.2",
     "react-immutable-proptypes": "^2.1.0",
-    "react-textarea-autosize": "^7.1.0",
+    "react-textarea-autosize": "^7.1.2",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.87.3",
     "slate-html-serializer": "^0.8.10",

@@ -18,6 +18,8 @@ const schema = {
           { type: 'code_block' },
           { type: 'html_block' },
           { type: 'html_inline' },
+          { type: 'softbreak' },
+          { type: 'linebreak' },
           { type: 'ol_list' },
           { type: 'ul_list' }
         ],
@@ -25,12 +27,29 @@ const schema = {
     ],
   },
   inlines: {
+    linebreak: {
+      isVoid: true,
+    },
+    softbreak: {
+      isVoid: true,
+    },
+    html_inline: {
+    }
   },
   rules: [],
   blocks: {
     paragraph: {
       nodes: [
-        { match: [{ object: 'text' }, { type: 'paragraph' }, { type: 'html_inline' }, { type: 'link' }] },
+        {
+          match: [
+            { object: 'text' },
+            { type: 'paragraph' },
+            { type: 'softbreak' },
+            { type: 'linebreak' },
+            { type: 'html_inline' },
+            { type: 'link' }
+          ]
+        },
       ],
     },
     html_block: {

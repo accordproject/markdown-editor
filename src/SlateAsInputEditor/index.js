@@ -208,7 +208,12 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       case 'html_inline': {
         return <span className='html_inline' {...attributes}>{children}</span>;
       }
-
+      case 'softbreak': {
+        return ' ';
+      }
+      case 'linebreak': {
+        return <br className='linebreak' {...attributes}/>;
+      }
       default: {
         return next();
       }
