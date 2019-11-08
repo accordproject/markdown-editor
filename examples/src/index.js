@@ -30,6 +30,8 @@ softbreak.
 This is a  
 linebreak.
 
+![ap_logo](https://docs.accordproject.org/docs/assets/020/template.png "AP triangle")
+
 > This is a quote.
 ## Heading Two
 This is more text.
@@ -80,7 +82,7 @@ function Demo() {
    * Called when the Slate Value changes
    */
   const onSlateValueChange = useCallback((slateValue) => {
-    localStorage.setItem('slate-editor-value', slateValue.toJSON());
+    localStorage.setItem('slate-editor-value', JSON.stringify(slateValue.toJSON()));
     const markdown = slateTransformer.toMarkdown(slateValue);
     setSlateValue(slateValue);
     setMarkdown(markdown);

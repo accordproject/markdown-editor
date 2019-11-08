@@ -21,7 +21,8 @@ const schema = {
           { type: 'softbreak' },
           { type: 'linebreak' },
           { type: 'ol_list' },
-          { type: 'ul_list' }
+          { type: 'ul_list' },
+          { type: 'image' },
         ],
       },
     ],
@@ -34,7 +35,10 @@ const schema = {
       isVoid: true,
     },
     html_inline: {
-    }
+    },
+    image: {
+      isVoid: true,
+    },
   },
   rules: [],
   blocks: {
@@ -47,7 +51,8 @@ const schema = {
             { type: 'softbreak' },
             { type: 'linebreak' },
             { type: 'html_inline' },
-            { type: 'link' }
+            { type: 'link' },
+            { type: 'image' }
           ]
         },
       ],
