@@ -4,10 +4,9 @@ import Adapter from 'enzyme-adapter-react-16';
 import { SlateTransformer } from '@accordproject/markdown-slate';
 import SlateAsInputEditor from './index';
 
-import NoEdit from '../plugins/noedit';
 import List from '../plugins/list';
 
-const plugins = [NoEdit(), List()];
+const plugins = [List()];
 
 Enzyme.configure({ adapter: new Adapter() });
 

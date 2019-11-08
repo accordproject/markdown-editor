@@ -27,7 +27,6 @@ import baseSchema from '../schema';
 import PluginManager from '../PluginManager';
 import { FromHTML } from '../html/fromHTML';
 import FormatToolbar from '../FormattingToolbar';
-import NoEditPlugin from '../plugins/noedit';
 import ListPlugin from '../plugins/list';
 
 import '../styles.css';
@@ -114,10 +113,16 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
    * Destructure props for efficiency
    */
   const {
-    onChange, plugins, value, lockText
+    onChange, value, lockText
   } = props;
 
   const editorProps = props.editorProps || Object.create(null);
+
+  const plugins = React.useMemo(() => (props.plugins
+    ? props.plugins.concat(
+      [ListPlugin()]
+    )
+    : [ListPlugin()]), [props.plugins]);
 
   /**
    * A reference to the Slate Editor.
@@ -284,12 +289,12 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   const isEditable = useCallback((editor, code) => {
     if (isEditorLockText(editor)) {
       const { value } = editor;
-      const pluginManager = new PluginManager(props.plugins);
+      const pluginManager = new PluginManager(plugins);
       return pluginManager.isEditable(value, code);
     }
 
     return true;
-  }, [isEditorLockText, props.plugins]);
+  }, [isEditorLockText, plugins]);
 
   /**
   * On backspace, if at the start of a non-paragraph, convert it back into a
@@ -395,7 +400,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     if (isEditable(editor, 'paste')) {
       const transfer = getEventTransfer(event);
       if (transfer.type === 'html') {
-        const pluginManager = new PluginManager(props.plugins);
+        const pluginManager = new PluginManager(plugins);
         const fromHtml = new FromHTML(pluginManager);
         // @ts-ignore
         const { document } = fromHtml.convert(editor, transfer.html);
@@ -426,7 +431,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
    */
   const renderEditor = useCallback((props, editor, next) => {
     const children = next();
-    const pluginManager = new PluginManager(props.plugins);
+    const pluginManager = new PluginManager(plugins);
 
     return (
       <div>
@@ -439,7 +444,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
         {children}
       </div>
     );
-  }, [editorProps]);
+  }, [editorProps, plugins]);
 
   const onChangeHandler = ({ value }) => {
     onChange(value);
@@ -449,12 +454,6 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     // see https://github.com/accordproject/markdown-editor/issues/162
     setTimeout(editor.focus, 0);
   };
-
-  const allPlugins = React.useMemo(() => (props.plugins
-    ? props.plugins.concat(
-      [ListPlugin(), NoEditPlugin()]
-    )
-    : [ListPlugin(), NoEditPlugin()]), [props.plugins]);
 
   return (
     <div>
@@ -469,7 +468,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
           onChange={onChangeHandler}
           onFocus={onFocusHandler}
           schema={slateSchema}
-          plugins={allPlugins}
+          plugins={plugins}
           onBeforeInput={onBeforeInput}
           onKeyDown={onKeyDown}
           onPaste={onPaste}
