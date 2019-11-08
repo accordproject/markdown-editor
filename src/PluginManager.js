@@ -61,11 +61,11 @@ export default class PluginManager {
    * @param {string} code the type of edit requested
    */
   isEditable(value, code) {
+    // if no plugins have an `isEditable` method, return true
+    if (!this.plugins.filter(plugin => plugin.isEditable).length) return true;
+
     for (let n = 0; n < this.plugins.length; n += 1) {
       const plugin = this.plugins[n];
-      if (!plugin.isEditable) {
-        return true;
-      }
       if (plugin.isEditable && plugin.isEditable(value, code)) {
         return true;
       }
