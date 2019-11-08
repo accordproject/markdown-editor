@@ -12,10 +12,7 @@ import SlateAsInputEditor from '../../src/SlateAsInputEditor';
 
 import * as serviceWorker from './serviceWorker';
 import 'semantic-ui-css/semantic.min.css';
-import NoEdit from '../../src/plugins/noedit';
-import List from '../../src/plugins/list';
 
-const plugins = [NoEdit(), List()];
 const slateTransformer = new SlateTransformer();
 
 const defaultMarkdown = `# My Heading
@@ -95,7 +92,6 @@ function Demo() {
           <Grid.Column>
             <MarkdownAsInputEditor
               readOnly={true}
-              plugins={plugins}
               markdown={markdown}
               onChange={onMarkdownChange}
             />
@@ -105,7 +101,6 @@ function Demo() {
             <SlateAsInputEditor
               readOnly={false}
               lockText={true}
-              plugins={plugins}
               value={slateValue}
               onChange={onSlateValueChange}
               editorProps={propsObj}

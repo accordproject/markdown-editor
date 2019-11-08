@@ -63,6 +63,9 @@ export default class PluginManager {
   isEditable(value, code) {
     for (let n = 0; n < this.plugins.length; n += 1) {
       const plugin = this.plugins[n];
+      if (!plugin.isEditable) {
+        return true;
+      }
       if (plugin.isEditable && plugin.isEditable(value, code)) {
         return true;
       }
