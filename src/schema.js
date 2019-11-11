@@ -86,8 +86,21 @@ const schema = {
     },
     list_item: {
       parent: [{ type: 'ol_list' }, { type: 'ul_list' }],
-      nodes: [{ match: [{ object: 'text' }, { type: 'link' }] }],
-      marks: [{ type: 'bold' }, { type: 'italic' }, { type: 'code' }],
+      nodes: [
+        {
+          match: [
+            { object: 'text' },
+            { type: 'link' },
+            { type: 'paragraph' },
+            { type: 'softbreak' }
+          ]
+        }
+      ],
+      marks: [
+        { type: 'bold' },
+        { type: 'italic' },
+        { type: 'code' }
+      ],
     },
   },
 };
