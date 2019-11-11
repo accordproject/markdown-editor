@@ -190,10 +190,10 @@ export default class FormatToolbar extends React.Component {
     const { editor, pluginManager, lockText } = this.props;
     const { value } = editor;
     if (!lockText || pluginManager.isEditable(value)) {
-      const hasLinksBool = action.hasLinks(this.props.editor);
+      const hasLinksBool = action.hasLinks(editor);
 
       if (hasLinksBool) {
-        this.props.editor.unwrapInline('link');
+        editor.unwrapInline('link');
         return;
       }
 
@@ -209,7 +209,6 @@ export default class FormatToolbar extends React.Component {
     const { value } = editor;
     if (!lockText || pluginManager.isEditable(value, type)) {
       event.preventDefault();
-      const { editor } = this.props;
       const oppType = (type === 'ol_list' ? 'ul_list' : 'ol_list');
       // Handle everything but list buttons, such as quotes.
       if (type !== 'ol_list' && type !== 'ul_list') {
