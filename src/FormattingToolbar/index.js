@@ -187,61 +187,68 @@ export default class FormatToolbar extends React.Component {
    * Otherwise, show the set link form.
    */
   onClickLinkButton() {
-    const hasLinksBool = action.hasLinks(this.props.editor);
+    const { editor, pluginManager, lockText } = this.props;
+    const { value } = editor;
+    if (!lockText || pluginManager.isEditable(value)) {
+      const hasLinksBool = action.hasLinks(editor);
 
-    if (hasLinksBool) {
-      this.props.editor.unwrapInline('link');
-      return;
+      if (hasLinksBool) {
+        editor.unwrapInline('link');
+        return;
+      }
+
+      this.toggleSetLinkForm();
     }
-
-    this.toggleSetLinkForm();
   }
 
   /**
    * When a block button is clicked, toggle the block type.
    */
   onClickBlock(event, type) {
-    event.preventDefault();
-    const { editor } = this.props;
-    const oppType = (type === 'ol_list' ? 'ul_list' : 'ol_list');
-    // Handle everything but list buttons, such as quotes.
-    if (type !== 'ol_list' && type !== 'ul_list') {
-      const isActive = action.hasBlock(editor, type);
-      const isList = action.hasBlock(editor, 'list_item');
-      // Click quote on a current list.
-      if (isList) {
-        editor.withoutNormalizing(() => {
-          editor
-            .setBlocks(isActive ? DEFAULT_NODE : type)
-            .unwrapBlock('list');
-        });
-      // Click quote on a paragraph or quote.
+    const { editor, pluginManager, lockText } = this.props;
+    const { value } = editor;
+    if (!lockText || pluginManager.isEditable(value, type)) {
+      event.preventDefault();
+      const oppType = (type === 'ol_list' ? 'ul_list' : 'ol_list');
+      // Handle everything but list buttons, such as quotes.
+      if (type !== 'ol_list' && type !== 'ul_list') {
+        const isActive = action.hasBlock(editor, type);
+        const isList = action.hasBlock(editor, 'list_item');
+        // Click quote on a current list.
+        if (isList) {
+          editor.withoutNormalizing(() => {
+            editor
+              .setBlocks(isActive ? DEFAULT_NODE : type)
+              .unwrapBlock('list');
+          });
+          // Click quote on a paragraph or quote.
+        } else {
+          editor.setBlocks(isActive ? DEFAULT_NODE : type);
+        }
+        // Handle the extra wrapping required for list buttons.
       } else {
-        editor.setBlocks(isActive ? DEFAULT_NODE : type);
-      }
-    // Handle the extra wrapping required for list buttons.
-    } else {
-      const isList = action.getListBool(editor, type);
-      const isType = action.getTypeBool(editor, type);
-      // Selection is a list of button type.
-      if (isList && isType) {
-        editor.withoutNormalizing(() => {
-          editor
-            .setBlocks(DEFAULT_NODE)
-            .unwrapBlock(type);
-        });
-      // Selection is a list but not of button type.
-      } else if (isList) {
-        editor.withoutNormalizing(() => {
-          editor
-            .unwrapBlock(oppType)
-            .wrapBlock(type);
-        });
-      // Selection is not a list.
-      } else {
-        editor.withoutNormalizing(() => {
-          editor.setBlocks('list_item').wrapBlock({ type, data: { tight: true } });
-        });
+        const isList = action.getListBool(editor, type);
+        const isType = action.getTypeBool(editor, type);
+        // Selection is a list of button type.
+        if (isList && isType) {
+          editor.withoutNormalizing(() => {
+            editor
+              .setBlocks(DEFAULT_NODE)
+              .unwrapBlock(type);
+          });
+          // Selection is a list but not of button type.
+        } else if (isList) {
+          editor.withoutNormalizing(() => {
+            editor
+              .unwrapBlock(oppType)
+              .wrapBlock(type);
+          });
+          // Selection is not a list.
+        } else {
+          editor.withoutNormalizing(() => {
+            editor.setBlocks('list_item').wrapBlock({ type, data: { tight: true } });
+          });
+        }
       }
     }
   }
