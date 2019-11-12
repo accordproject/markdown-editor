@@ -91,8 +91,7 @@ const schema = {
           match: [
             { object: 'text' },
             { type: 'link' },
-            { type: 'paragraph' },
-            { type: 'softbreak' }
+            { type: 'paragraph' }
           ]
         }
       ],
