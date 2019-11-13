@@ -327,6 +327,15 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   };
 
   /**
+   * Check if the current selection has a mark with `code` in it.
+   *
+   * @param {Object} value
+   * @return {Boolean}
+   */
+
+  const isCodespan = value => value.activeMarks.some(mark => mark.type === 'code');
+
+  /**
   * On return, if at the end of a node type that should not be extended,
   * create a new paragraph below it.
   *
@@ -348,6 +357,13 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
 
     const { startBlock } = value;
     if (end.offset !== startBlock.text.length) return next();
+
+    // Hitting enter while in a codespan will break out of the span
+    if (isCodespan(value)) {
+      event.preventDefault();
+      editor.toggleMark('code');
+      return next();
+    }
 
     // Hitting enter on a blank list item will break out of the enclosing list
     if (startBlock.type === 'list_item' && startBlock.text.length === 0) {
