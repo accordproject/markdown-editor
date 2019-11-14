@@ -361,8 +361,9 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     // Hitting enter while in a codespan will break out of the span
     if (isCodespan(value)) {
       event.preventDefault();
-      editor.toggleMark('code');
-      return next();
+      editor.removeMark('code');
+      editor.insertBlock('paragraph');
+      return false;
     }
 
     // Hitting enter on a blank list item will break out of the enclosing list
