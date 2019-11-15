@@ -1,3 +1,5 @@
+import * as CONST from '../constants';
+
 /**
  *************** INTERNAL METHODS ***************
  */
@@ -41,6 +43,15 @@ const wrapLink = (editor, href) => {
   });
   editor.moveToEnd();
 };
+
+const ancestors = value => value.document
+  .getAncestors(value.selection.anchor.path);
+
+const isSelectionOLList = value => ancestors(value)
+  .find(mark => mark.type === CONST.OL_LIST);
+
+const isSelectionULList = value => ancestors(value)
+  .find(mark => mark.type === CONST.UL_LIST);
 
 /**
  *************** EXPORT METHODS ***************
@@ -129,4 +140,56 @@ export const applyLinkUpdate = (event, editor) => {
     .insertText(text)
     .moveFocusBackward(text.length)
     .command(wrapLink, href);
+};
+
+export const isSelectionList = value => ancestors(value).reverse()
+  .some(mark => mark.type === CONST.LIST_ITEM);
+
+export const isClickBlockQuote = input => input === CONST.BLOCK_QUOTE;
+
+export const currentList = value => isSelectionOLList(value) || isSelectionULList(value);
+
+export const transformListToBlockQuote = (editor, type, value) => {
+  editor.withoutNormalizing(() => {
+    editor
+      .setBlocks(type)
+      .unwrapBlock(CONST.LIST_ITEM)
+      .unwrapBlock(currentList(value).type);
+  });
+};
+
+export const transformParagraphToBlockQuote = (editor, type) => {
+  editor.setBlocks(hasBlock(editor, type) ? CONST.PARAGRAPH : type);
+};
+
+export const transformListToParagraph = (editor, type) => {
+  editor.withoutNormalizing(() => {
+    editor
+      .setBlocks(CONST.PARAGRAPH)
+      .unwrapBlock(CONST.LIST_ITEM)
+      .unwrapBlock(type);
+  });
+};
+
+export const transformListSwap = (editor, type, value) => {
+  editor.withoutNormalizing(() => {
+    editor
+      .unwrapBlock(CONST.LIST_ITEM)
+      .unwrapBlock(currentList(value).type)
+      .wrapBlock({ type, data: { tight: true } })
+      .wrapBlock(CONST.LIST_ITEM);
+  });
+};
+
+export const transformBlockQuoteToList = (editor, type) => {
+  editor
+    .setBlocks(CONST.PARAGRAPH)
+    .wrapBlock(CONST.LIST_ITEM)
+    .wrapBlock({ type, data: { tight: true } });
+};
+
+export const transformParagraphToList = (editor, type) => {
+  editor.withoutNormalizing(() => {
+    editor.wrapBlock({ type, data: { tight: true } }).wrapBlock(CONST.LIST_ITEM);
+  });
 };
