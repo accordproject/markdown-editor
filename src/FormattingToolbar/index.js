@@ -203,6 +203,7 @@ export default class FormatToolbar extends React.Component {
   /**
    * When a block button is clicked, toggle the block type.
    */
+  /* eslint no-unused-expressions: 0 */
   onClickBlock(event, type) {
     const { editor, pluginManager, lockText } = this.props;
     const { value } = editor;
@@ -210,17 +211,13 @@ export default class FormatToolbar extends React.Component {
     if (!lockText || pluginManager.isEditable(value, type)) {
       event.preventDefault();
       if (action.isClickBlockQuote(type)) {
-        if (action.isSelectionList(value)) {
-          action.transformListToBlockQuote(editor, type, value);
-        } else {
-          action.transformParagraphToBlockQuote(editor, type);
-        }
+        action.isSelectionList(value)
+          ? action.transformListToBlockQuote(editor, type, value)
+          : action.transformParagraphToBlockQuote(editor, type);
       } else if (action.isSelectionList(value)) {
-        if (action.currentList(value).type === type) {
-          action.transformListToParagraph(editor, type);
-        } else {
-          action.transformListSwap(editor, type, value);
-        }
+        action.currentList(value).type === type
+          ? action.transformListToParagraph(editor, type)
+          : action.transformListSwap(editor, type, value);
       } else if (action.hasBlock(editor, CONST.BLOCK_QUOTE)) {
         action.transformBlockQuoteToList(editor, type);
       } else {
