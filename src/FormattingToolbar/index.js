@@ -9,6 +9,7 @@ import {
 import * as action from './toolbarMethods';
 import * as styles from './toolbarStyles';
 import * as tips from './toolbarTooltip';
+import * as CONST from '../constants';
 
 import * as boldIcon from '../icons/bold';
 import * as italicIcon from '../icons/italic';
@@ -22,8 +23,6 @@ import * as undoIcon from '../icons/navigation-left';
 import * as redoIcon from '../icons/navigation-right';
 
 import './toolbar.css';
-
-const DEFAULT_NODE = 'paragraph';
 
 const StyledToolbar = styled.div`
   position: relative;
@@ -207,48 +206,35 @@ export default class FormatToolbar extends React.Component {
   onClickBlock(event, type) {
     const { editor, pluginManager, lockText } = this.props;
     const { value } = editor;
+
     if (!lockText || pluginManager.isEditable(value, type)) {
       event.preventDefault();
-      const oppType = (type === 'ol_list' ? 'ul_list' : 'ol_list');
-      // Handle everything but list buttons, such as quotes.
-      if (type !== 'ol_list' && type !== 'ul_list') {
-        const isActive = action.hasBlock(editor, type);
-        const isList = action.hasBlock(editor, 'list_item');
-        // Click quote on a current list.
-        if (isList) {
-          editor.withoutNormalizing(() => {
-            editor
-              .setBlocks(isActive ? DEFAULT_NODE : type)
-              .unwrapBlock('list');
-          });
-          // Click quote on a paragraph or quote.
+
+      if (action.isClickBlockQuote(type)) {
+        if (action.isSelectionList(value)) {
+          // unwrap from list
+          // setBlock to CONST.block_quote
+          action.transformListToBlockQuote(editor, type, value);
         } else {
-          editor.setBlocks(isActive ? DEFAULT_NODE : type);
+          // setBlock to quote or CONST.paragraph
+          action.transformParagraphToBlockQuote(editor, type);
         }
-        // Handle the extra wrapping required for list buttons.
+      } else if (action.isSelectionList(value)) {
+        // define current list
+        // swap list types
+        if (action.currentList(value).type === type) {
+          // lists are the same, unwrap
+          action.transformListToParagraph(editor, type);
+        } else {
+          // lists are not the same, swap
+          action.transformListSwap(editor, type, value);
+        }
+      } else if (action.hasBlock(editor, CONST.BLOCK_QUOTE)) {
+        // unwrap from block quote, wrap in lists
+        action.transformBlockQuoteToList(editor, type);
       } else {
-        const isList = action.getListBool(editor, type);
-        const isType = action.getTypeBool(editor, type);
-        // Selection is a list of button type.
-        if (isList && isType) {
-          editor.withoutNormalizing(() => {
-            editor
-              .setBlocks(DEFAULT_NODE)
-              .unwrapBlock(type);
-          });
-          // Selection is a list but not of button type.
-        } else if (isList) {
-          editor.withoutNormalizing(() => {
-            editor
-              .unwrapBlock(oppType)
-              .wrapBlock(type);
-          });
-          // Selection is not a list.
-        } else {
-          editor.withoutNormalizing(() => {
-            editor.setBlocks('list_item').wrapBlock({ type, data: { tight: true } });
-          });
-        }
+        // wrap in lists
+        action.transformParagraphToList(editor, type);
       }
     }
   }
@@ -559,7 +545,7 @@ export default class FormatToolbar extends React.Component {
           <Dropdown.Menu>
             <Dropdown.Item
               text='Normal'
-              onClick={event => this.onClickBlock(event, DEFAULT_NODE)}
+              onClick={event => this.onClickBlock(event, CONST.PARAGRAPH)}
             />
             <Dropdown.Item
               text='Header 1'
