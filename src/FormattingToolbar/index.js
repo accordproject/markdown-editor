@@ -290,6 +290,7 @@ export default class FormatToolbar extends React.Component {
             padding={pa}
             className={classInput}
             hoverColor={editorProps.BUTTON_BACKGROUND_HOVER}
+            onMouseDown={e => e.preventDefault()}
             onClick={event => this.onClickMark(event, type)}>
               {icon(fillActivity)}
           </ ToolbarIcon>
