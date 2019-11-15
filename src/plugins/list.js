@@ -1,4 +1,6 @@
 import React from 'react';
+import * as CONST from '../constants';
+import { isSelectionList } from '../FormattingToolbar/toolbarMethods';
 
 /**
  * This is a plugin into the markdown editor to handle lists
@@ -11,7 +13,35 @@ function List() {
    * @param {Editor} editor
    * @param {Function} next
    */
-  const onEnter = (event, editor, next) => next();
+  const onEnter = (event, editor, next) => {
+    const { value } = editor;
+    const { startBlock } = value;
+    event.preventDefault();
+
+    // Hitting enter on a blank list item will break out of the enclosing list
+    if (isSelectionList(value) && startBlock.text.length === 0) {
+      editor.withoutNormalizing(() => {
+        event.preventDefault();
+        editor
+          .setBlocks(CONST.PARAGRAPH)
+          .unwrapBlock(CONST.LIST_ITEM)
+          .unwrapBlock(CONST.OL_LIST)
+          .unwrapBlock(CONST.UL_LIST);
+      });
+      return false;
+    }
+
+    // Hitting enter on a non-empty list item will add a new list_item
+    if (isSelectionList(value) && startBlock.text.length !== 0) {
+      editor.withoutNormalizing(() => {
+        event.preventDefault();
+        editor.splitBlock().unwrapBlock(CONST.LIST_ITEM).wrapBlock(CONST.LIST_ITEM);
+      });
+      return true;
+    }
+
+    return next();
+  };
 
   /**
    * @param {Event} event
@@ -36,11 +66,11 @@ function List() {
     const { node, attributes, children } = props;
 
     switch (node.type) {
-      case 'ol_list':
+      case CONST.OL_LIST:
         return <ol {...attributes}>{children}</ol>;
-      case 'ul_list':
+      case CONST.UL_LIST:
         return <ul {...attributes}>{children}</ul>;
-      case 'list_item':
+      case CONST.LIST_ITEM:
         return <li {...attributes}>{children}</li>;
       default:
         return next();
