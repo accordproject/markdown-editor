@@ -89,8 +89,6 @@ const schema = {
       nodes: [
         {
           match: [
-            { object: 'text' },
-            { type: 'link' },
             { type: 'paragraph' }
           ]
         }
