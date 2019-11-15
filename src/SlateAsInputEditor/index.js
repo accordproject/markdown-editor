@@ -366,31 +366,6 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       return false;
     }
 
-    const ancestors = value.document.getAncestors(value.selection.anchor.path);
-    const hasListItem = ancestors.reverse().some(mark => mark.type === 'list_item');
-
-    // Hitting enter on a blank list item will break out of the enclosing list
-    if (hasListItem && startBlock.text.length === 0) {
-      editor.withoutNormalizing(() => {
-        event.preventDefault();
-        editor
-          .setBlocks('paragraph')
-          .unwrapBlock('list_item')
-          .unwrapBlock('ol_list')
-          .unwrapBlock('ul_list');
-      });
-      return false;
-    }
-
-    // Hitting enter on a blank list item will break out of the enclosing list
-    if (hasListItem && startBlock.text.length !== 0) {
-      editor.withoutNormalizing(() => {
-        event.preventDefault();
-        editor.splitBlock().unwrapBlock('list_item').wrapBlock('list_item')
-      });
-      return true;
-    }
-
     // if you hit enter inside anything that is not a heading
     // we use the default behavior
     if (!startBlock.type.startsWith('heading')) {
