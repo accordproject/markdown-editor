@@ -1,6 +1,6 @@
 import React from 'react';
 import * as CONST from '../constants';
-import { isSelectionInput } from '../FormattingToolbar/toolbarMethods';
+import { isSelectionInput, currentList } from '../FormattingToolbar/toolbarMethods';
 
 /**
  * This is a plugin into the markdown editor to handle lists
@@ -25,8 +25,7 @@ function List() {
         editor
           .setBlocks(CONST.PARAGRAPH)
           .unwrapBlock(CONST.LIST_ITEM)
-          .unwrapBlock(CONST.OL_LIST)
-          .unwrapBlock(CONST.UL_LIST);
+          .unwrapBlock(currentList(value).type);
       });
       return false;
     }

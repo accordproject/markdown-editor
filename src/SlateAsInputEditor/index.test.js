@@ -51,7 +51,13 @@ const onSlateValueChange = () => {
 describe('SlateAsInputEditor component', () => {
   test('component mount', () => {
     const slateValue = slateTransformer.fromMarkdown(defaultValue);
-    const wrapper = shallow(<SlateAsInputEditor readOnly={false} lockText={true} plugins={plugins} value={slateValue} onChange={onSlateValueChange} editorProps={propsObj} />);
+    const wrapper = shallow(<SlateAsInputEditor
+        readOnly={false}
+        lockText={true}
+        plugins={plugins}
+        value={slateValue}
+        onChange={onSlateValueChange}
+        editorProps={propsObj} />);
     expect(wrapper.find('.doc-inner').length).toBe(1);
   });
 
