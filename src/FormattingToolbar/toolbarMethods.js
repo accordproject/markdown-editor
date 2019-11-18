@@ -113,6 +113,13 @@ export const isSelectionInput = (val, input) => ancestors(val).reverse()
   .some(mark => mark.type === input);
 
 /**
+ * A helper to find boolean of if Slate ancestors includes list_item.
+ */
+
+export const isSelectionList = value => ancestors(value).reverse()
+  .some(mark => mark.type === CONST.LIST_ITEM);
+
+/**
  * A helper to find boolean of if input type is a block_quote.
  */
 export const isClickBlockQuote = input => input === CONST.BLOCK_QUOTE;
@@ -128,17 +135,20 @@ export const currentList = value => isSelectionOLList(value) || isSelectionULLis
 export const transformListToBlockQuote = (editor, type, value) => {
   editor.withoutNormalizing(() => {
     editor
-      .setBlocks(type)
       .unwrapBlock(CONST.LIST_ITEM)
-      .unwrapBlock(currentList(value).type);
+      .unwrapBlock(currentList(value).type)
+      .wrapBlock({ type, data: { tight: true } });
   });
 };
 
 /**
  * A trigger to the Slate editor to make a paragraph into a block_quote.
  */
-export const transformParagraphToBlockQuote = (editor, type) => {
-  editor.setBlocks(hasBlock(editor, type) ? CONST.PARAGRAPH : type);
+/* eslint no-unused-expressions: 0 */
+export const transformPtoBQSwap = (editor, type) => {
+  isSelectionInput(editor.value, CONST.BLOCK_QUOTE)
+    ? editor.unwrapBlock(CONST.BLOCK_QUOTE)
+    : editor.wrapBlock({ type, data: { tight: true } });
 };
 
 /**
@@ -170,10 +180,12 @@ export const transformListSwap = (editor, type, value) => {
  * A trigger to the Slate editor to make a block_quote into a list_item.
  */
 export const transformBlockQuoteToList = (editor, type) => {
-  editor
-    .setBlocks(CONST.PARAGRAPH)
-    .wrapBlock(CONST.LIST_ITEM)
-    .wrapBlock({ type, data: { tight: true } });
+  editor.withoutNormalizing(() => {
+    editor
+      .unwrapBlock(CONST.BLOCK_QUOTE)
+      .wrapBlock({ type, data: { tight: true } })
+      .wrapBlock(CONST.LIST_ITEM);
+  });
 };
 
 /**
