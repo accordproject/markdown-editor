@@ -211,10 +211,10 @@ export default class FormatToolbar extends React.Component {
     if (!lockText || pluginManager.isEditable(value, type)) {
       event.preventDefault();
       if (action.isClickBlockQuote(type)) {
-        action.isSelectionList(value)
+        action.isSelectionInput(value, type)
           ? action.transformListToBlockQuote(editor, type, value)
           : action.transformParagraphToBlockQuote(editor, type);
-      } else if (action.isSelectionList(value)) {
+      } else if (action.isSelectionInput(value, type)) {
         action.currentList(value).type === type
           ? action.transformListToParagraph(editor, type)
           : action.transformListSwap(editor, type, value);
@@ -291,8 +291,9 @@ export default class FormatToolbar extends React.Component {
    */
   renderBlockButton(type, icon, hi, wi, pa, vBox, classInput, props) {
     const { editor, editorProps } = this.props;
+    const { value } = editor;
 
-    const isActive = action.hasBlock(editor, type);
+    const isActive = action.isSelectionInput(value, type);
 
     const fillActivity = isActive
       ? styles.buttonSymbolActive(editorProps.BUTTON_SYMBOL_ACTIVE)

@@ -1,6 +1,6 @@
 import React from 'react';
 import * as CONST from '../constants';
-import { isSelectionList } from '../FormattingToolbar/toolbarMethods';
+import { isSelectionInput } from '../FormattingToolbar/toolbarMethods';
 
 /**
  * This is a plugin into the markdown editor to handle lists
@@ -19,7 +19,7 @@ function List() {
     event.preventDefault();
 
     // Hitting enter on a blank list item will break out of the enclosing list
-    if (isSelectionList(value) && startBlock.text.length === 0) {
+    if (isSelectionInput(value, CONST.LIST_ITEM) && startBlock.text.length === 0) {
       editor.withoutNormalizing(() => {
         event.preventDefault();
         editor
@@ -32,7 +32,7 @@ function List() {
     }
 
     // Hitting enter on a non-empty list item will add a new list_item
-    if (isSelectionList(value) && startBlock.text.length !== 0) {
+    if (isSelectionInput(value, CONST.LIST_ITEM) && startBlock.text.length !== 0) {
       editor.withoutNormalizing(() => {
         event.preventDefault();
         editor.splitBlock().unwrapBlock(CONST.LIST_ITEM).wrapBlock(CONST.LIST_ITEM);

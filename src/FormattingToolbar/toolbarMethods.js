@@ -5,28 +5,6 @@ import * as CONST from '../constants';
  */
 
 /**
-  * Return type of given selected parent.
-  */
-const getParentBlockType = block => (block ? block.type : block);
-
-/**
-  * Return selected block of given type.
-  */
-const getSelectedBlock = (editor, type) => {
-  const { value } = editor;
-  return value.blocks.find(node => node.type === type);
-};
-
-/**
-  * Return parent block of given selection.
-  */
-const getParentBlock = (editor, type, item) => {
-  const { value } = editor;
-  const { document } = value;
-  return document.getClosest(item.key, parent => parent.type === type);
-};
-
-/**
  * A change helper to standardize wrapping links.
  */
 const wrapLink = (editor, href) => {
@@ -104,21 +82,8 @@ export const getListBool = (editor, type) => {
 /**
   * Check if the any of the currently selected blocks are of `type`.
   */
-export const hasBlock = (editor, type) => {
-  const { value } = editor;
-  const { document } = value;
-  const selectListItem = getSelectedBlock(editor, 'list_item');
-  // If selection is a list, return the parent type.
-  if (selectListItem) {
-    const parentBlock = getParentBlock(editor, type, selectListItem);
-    const parentBlockType = getParentBlockType(parentBlock);
-    return value
-      .blocks.some(block => !!document
-        .getClosest(block.key, parent => parent.type === parentBlockType));
-  }
-  // If selection is a not a list, return the type.
-  return value.blocks.some(node => node.type === type);
-};
+export const hasBlock = (editor, type) => editor.value.blocks
+  .some(node => node.type === type);
 
 /**
  * When clicking apply, update the link with the specified text and href.
@@ -142,10 +107,10 @@ export const applyLinkUpdate = (event, editor) => {
 };
 
 /**
- * A helper to find boolean of if Slate ancestors includes list_item.
+ * A helper to find boolean of if Slate ancestors includes input block type.
  */
-export const isSelectionList = value => ancestors(value).reverse()
-  .some(mark => mark.type === CONST.LIST_ITEM);
+export const isSelectionInput = (val, input) => ancestors(val).reverse()
+  .some(mark => mark.type === input);
 
 /**
  * A helper to find boolean of if input type is a block_quote.
