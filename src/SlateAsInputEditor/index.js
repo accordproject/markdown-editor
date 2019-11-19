@@ -461,6 +461,14 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     setTimeout(editor.focus, 0);
   };
 
+  const onCutHandler = (event, editor, next) => {
+    if (!isEditable(editor, 'cut')) {
+      event.preventDefault();
+      return false;
+    }
+    return next();
+  };
+
   return (
     <div>
       <ToolbarWrapper {...editorProps} id="slate-toolbar-wrapper-id" />
@@ -472,6 +480,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
           value={Value.fromJSON(value)}
           readOnly={props.readOnly}
           onChange={onChangeHandler}
+          onCut={onCutHandler}
           onFocus={onFocusHandler}
           schema={slateSchema}
           plugins={plugins}
