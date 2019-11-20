@@ -403,6 +403,10 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   * @return {*} the react component
   */
   const onPaste = (event, editor, next) => {
+    if (!isEditable(editor, 'paste')) {
+      event.preventDefault();
+      return false;
+    }
     if (isEditable(editor, 'paste')) {
       const transfer = getEventTransfer(event);
       if (transfer.type === 'html') {
