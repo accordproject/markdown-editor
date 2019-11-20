@@ -13,6 +13,10 @@ body {
     text-indent: 0ex;
 }
 
+a {
+    cursor: pointer;
+}
+
 .textarea {
     height: 100%;
     width: 100%;

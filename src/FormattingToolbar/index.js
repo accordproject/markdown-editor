@@ -344,8 +344,10 @@ export default class FormatToolbar extends React.Component {
     let popupPosition = 'bottom center';
 
     // No need to calculate position of the popup is it is not even opened!
+    // Same for if the current selection is not a link
+    const isLinkBool = action.hasLinks(this.props.editor);
     const isLinkPopupOpened = this.state.openSetLink;
-    if (!isLinkPopupOpened) {
+    if (!isLinkPopupOpened && !isLinkBool) {
       return {
         popupPosition,
         // Hide the popup by setting negative zIndex
@@ -384,7 +386,6 @@ export default class FormatToolbar extends React.Component {
       popupPosition = 'bottom right';
       left = rect.left - popupRect.width + CARET_LEFT_OFFSET;
     }
-
     return {
       // Disable semantic ui popup placement by overriding `transform`
       // and use our computed `top` and `left` values
@@ -428,13 +429,13 @@ export default class FormatToolbar extends React.Component {
             </Form>
             </Ref>
           }
-          onClose={this.closeSetLinkForm}
-          on='click'
-          open // Keep it open always. We toggle only visibility so we can calculate its rect
-          position={popupPosition}
-          style={popupStyle}
-        />
-        </Ref>
+        onClose={this.closeSetLinkForm}
+        on='click'
+        open // Keep it open always. We toggle only visibility so we can calculate its rect
+        position={popupPosition}
+        style={popupStyle}
+      />
+      </Ref>
     );
   }
 
