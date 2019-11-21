@@ -354,6 +354,11 @@ export default class FormatToolbar extends React.Component {
         popupStyle: { zIndex: -1 }
       };
     }
+    if (isLinkBool) {
+      const linkInlineSelection = this.props.editor.value.inlines
+        .find(inline => inline.type === 'link');
+      this.props.editor.moveToRangeOfNode(linkInlineSelection);
+    }
 
     // Get selection node from slate
     const selection = this.props.editor.findDOMRange(this.props.editor.value.selection);
@@ -374,7 +379,8 @@ export default class FormatToolbar extends React.Component {
 
     // distance from the left of the document and ...
     // ... subtracting 20px to account for the semantic-ui popup caret position
-    const CARET_LEFT_OFFSET = 20;
+    const calcMiddleSelection = (selection.endOffset - selection.startOffset) * 2;
+    const CARET_LEFT_OFFSET = (20 - calcMiddleSelection);
     left = rect.left - CARET_LEFT_OFFSET;
 
     const popupRect = this.setLinkFormPopup.getBoundingClientRect();
@@ -399,6 +405,9 @@ export default class FormatToolbar extends React.Component {
    */
   renderLinkSetForm() {
     const { popupPosition, popupStyle } = this.calculateLinkPopupPosition();
+    const { value } = this.props.editor;
+    const { document, selection } = value;
+    const isLinkBool = action.hasLinks(this.props.editor);
 
     return (
       <Ref innerRef={(node) => {
@@ -412,16 +421,32 @@ export default class FormatToolbar extends React.Component {
           }}>
             <Form
             onSubmit={(event) => {
-              action.applyLinkUpdate(event, this.props.editor);
-              this.toggleSetLinkForm();
+              action.applyLinkUpdate(event, this.props.editor, isLinkBool);
+              this.closeSetLinkForm();
             }}>
               <Form.Field>
                 <label>Link Text</label>
-                <Input placeholder='Text' name='text' defaultValue={this.props.editor.value.fragment.text}/>
+                <Input
+                  placeholder='Text'
+                  name='text'
+                  defaultValue={
+                    isLinkBool
+                      ? this.props.editor.value.focusText.text
+                      : this.props.editor.value.fragment.text
+                  }
+                />
               </Form.Field>
               <Form.Field>
                 <label>Link URL</label>
-                <Input ref={this.hyperlinkInputRef} placeholder='http://example.com' name='url' />
+                <Input
+                  ref={this.hyperlinkInputRef}
+                  placeholder={'http://example.com'}
+                  defaultValue={isLinkBool
+                    ? document.getClosestInline(selection.anchor.path).data.get('href')
+                    : ''
+                  }
+                  name='url'
+                />
               </Form.Field>
               <Form.Field>
                 <Button primary floated='right' type='submit'>Apply</Button>
@@ -476,7 +501,10 @@ export default class FormatToolbar extends React.Component {
             padding={pa}
             viewBox={vBox}
             className={classInput}
-            onClick={() => this.onClickLinkButton()}>
+            onClick={(e) => {
+              e.preventDefault();
+              this.onClickLinkButton();
+            }}>
             {icon(fillActivity)}
           </ ToolbarIcon>
         }
