@@ -88,8 +88,10 @@ export const hasBlock = (editor, type) => editor.value.blocks
 /**
  * When clicking apply, update the link with the specified text and href.
  */
-export const applyLinkUpdate = (event, editor) => {
+export const applyLinkUpdate = (event, editor, isLink) => {
   event.preventDefault();
+  const { value } = editor;
+  const { selection } = value;
   const { url: { value: href }, text: { value: text } } = event.target;
 
   if (href === null) {
@@ -97,6 +99,19 @@ export const applyLinkUpdate = (event, editor) => {
   }
 
   if (text === null) {
+    return;
+  }
+
+  if (isLink) {
+    editor.withoutNormalizing(() => {
+      editor
+        .unwrapInline({ type: 'link' })
+        .delete()
+        .insertText(text)
+        .moveFocusBackward(text.length)
+        .command(wrapLink, href)
+        .moveToRangeOfNode(value.document.getNode(selection.start.path));
+    });
     return;
   }
 
