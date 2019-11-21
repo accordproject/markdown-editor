@@ -94,6 +94,11 @@ export const applyLinkUpdate = (event, editor, isLink) => {
   const { selection } = value;
   const { url: { value: href }, text: { value: text } } = event.target;
 
+  if (isLink && (!event.target.url.value)) {
+    editor.unwrapInline({ type: 'link' });
+    return;
+  }
+
   if (href === null) {
     return;
   }
