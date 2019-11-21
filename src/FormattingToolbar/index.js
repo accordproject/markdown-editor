@@ -88,6 +88,14 @@ const DropdownHeader3 = {
   fontFamily: 'serif',
 };
 
+const isOnlyLink = (editor) => {
+  const currentInline = editor.value.inlines.find(inline => inline.type === 'link');
+  if (!currentInline) return false;
+  const linkText = currentInline.text;
+  const selectedText = editor.value.document.getFragmentAtRange(editor.value.selection).text;
+  return linkText.includes(selectedText);
+};
+
 /* eslint-disable react/no-find-dom-node */
 
 export default class FormatToolbar extends React.Component {
@@ -346,15 +354,17 @@ export default class FormatToolbar extends React.Component {
     // No need to calculate position of the popup is it is not even opened!
     // Same for if the current selection is not a link
     const isLinkBool = action.hasLinks(this.props.editor);
+
     const isLinkPopupOpened = this.state.openSetLink;
-    if (!isLinkPopupOpened && !isLinkBool) {
+    if (!isLinkPopupOpened && !isOnlyLink(this.props.editor)) {
       return {
         popupPosition,
         // Hide the popup by setting negative zIndex
         popupStyle: { zIndex: -1 }
       };
     }
-    if (isLinkBool) {
+
+    if (isLinkBool && isOnlyLink(this.props.editor)) {
       const linkInlineSelection = this.props.editor.value.inlines
         .find(inline => inline.type === 'link');
       this.props.editor.moveToRangeOfNode(linkInlineSelection);
@@ -441,7 +451,7 @@ export default class FormatToolbar extends React.Component {
                 <Input
                   ref={this.hyperlinkInputRef}
                   placeholder={'http://example.com'}
-                  defaultValue={isLinkBool
+                  defaultValue={isLinkBool && isOnlyLink(this.props.editor)
                     ? document.getClosestInline(selection.anchor.path).data.get('href')
                     : ''
                   }
