@@ -8,11 +8,13 @@ import * as CONST from '../constants';
  * A change helper to standardize wrapping links.
  */
 const wrapLink = (editor, href) => {
-  editor.wrapInline({
-    type: 'link',
-    data: { href },
-  });
-  editor.moveToEnd();
+  editor
+    .wrapInline({
+      type: 'link',
+      data: { href },
+    })
+    .moveToEnd()
+    .focus();
 };
 
 /**
@@ -90,12 +92,12 @@ export const hasBlock = (editor, type) => editor.value.blocks
  */
 export const applyLinkUpdate = (event, editor, isLink) => {
   event.preventDefault();
-  const { value } = editor;
-  const { selection } = value;
   const { url: { value: href }, text: { value: text } } = event.target;
 
   if (isLink && (!event.target.url.value)) {
-    editor.unwrapInline({ type: 'link' });
+    editor
+      .unwrapInline({ type: 'link' })
+      .moveToEnd();
     return;
   }
 
@@ -114,8 +116,7 @@ export const applyLinkUpdate = (event, editor, isLink) => {
         .delete()
         .insertText(text)
         .moveFocusBackward(text.length)
-        .command(wrapLink, href)
-        .moveToRangeOfNode(value.document.getNode(selection.start.path));
+        .command(wrapLink, href);
     });
     return;
   }
