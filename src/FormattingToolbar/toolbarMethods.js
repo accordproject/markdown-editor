@@ -96,26 +96,38 @@ export const hasBlock = (editor, type) => editor.value.blocks
   .some(node => node.type === type);
 
 /**
- * When clicking apply, update the link with the specified text and href.
+ * When clicking remove, update the text by removing the link
+ */
+export const removeLink = (event, editor) => {
+  event.preventDefault();
+  editor
+    .unwrapInline({ type: 'link' })
+    .moveToEnd()
+    .focus();
+};
+
+/**
+ * When clicking apply, update the link with the specified text and href
  */
 export const applyLinkUpdate = (event, editor, isLink) => {
   event.preventDefault();
-  const { url: { value: href }, text: { value: text } } = event.target;
+  const href = isLink
+    ? editor.value.document.getClosestInline(editor.value.selection.anchor.path).data.get('href')
+    : event.target.url.value;
+  const text = isLink
+    ? editor.value.focusText.text
+    : event.target.text.value;
 
-  if (isLink && (!event.target.url.value)) {
+  if (!isLink && !href) return;
+
+  if (isLink && (!(event.target && event.target.url && event.target.url.value)) && !href) {
     editor
       .unwrapInline({ type: 'link' })
       .moveToEnd();
     return;
   }
 
-  if (href === null) {
-    return;
-  }
-
-  if (text === null) {
-    return;
-  }
+  if (!href || !text) return;
 
   if (isLink) {
     editor.withoutNormalizing(() => {
