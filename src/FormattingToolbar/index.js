@@ -98,6 +98,7 @@ export default class FormatToolbar extends React.Component {
     this.hyperlinkInputRef = createRef();
     this.onMouseDown = this.onMouseDown.bind(this);
     this.submitLinkForm = this.submitLinkForm.bind(this);
+    this.removeLinkForm = this.removeLinkForm.bind(this);
     this.closeSetLinkForm = this.closeSetLinkForm.bind(this);
     this.renderLinkSetForm = this.renderLinkSetForm.bind(this);
     this.calculateLinkPopupPosition = this.calculateLinkPopupPosition.bind(this);
@@ -249,6 +250,13 @@ export default class FormatToolbar extends React.Component {
     this.closeSetLinkForm();
     this.setLinkForm.reset();
     this.props.editor.focus();
+  }
+
+  /**
+   * Remove the link inline from the text
+   */
+  removeLinkForm(event) {
+    action.removeLink(event, this.props.editor);
   }
 
   /**
@@ -459,6 +467,11 @@ export default class FormatToolbar extends React.Component {
                 />
               </Form.Field>
               <Form.Field>
+                <Button
+                  secondary
+                  floated='left'
+                  disabled={!isLinkBool}
+                  onMouseDown={this.removeLinkForm}>Remove</Button>
                 <Button primary floated='right' type='submit'>Apply</Button>
               </Form.Field>
             </Form>
