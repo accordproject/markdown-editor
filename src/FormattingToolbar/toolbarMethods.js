@@ -130,9 +130,12 @@ export const applyLinkUpdate = (event, editor, isLink) => {
   if (!href || !text) return;
 
   if (isLink) {
+    const linkInlineSelection = editor.value.inlines
+      .find(inline => inline.type === 'link');
     editor.withoutNormalizing(() => {
       editor
         .unwrapInline({ type: 'link' })
+        .moveToRangeOfNode(linkInlineSelection)
         .delete()
         .insertText(text)
         .moveFocusBackward(text.length)
