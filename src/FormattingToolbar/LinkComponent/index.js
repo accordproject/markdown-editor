@@ -1,4 +1,4 @@
-import { hasLinks, isOnlyLink } from '../toolbarMethods';
+import { isOnlyLink } from '../toolbarMethods';
 
 /**
  * Calculates the link popup position and styles, if any
@@ -14,7 +14,6 @@ const calculateLinkPopupPosition = (editor, openSetLink, setLinkFormPopup) => {
 
   // No need to calculate position of the popup is it is not even opened!
   // Same for if the current selection is not a link
-  const isLinkBool = hasLinks(editor);
 
   const isLinkPopupOpened = openSetLink;
   if (!isLinkPopupOpened && !isOnlyLink(editor)) {
@@ -23,12 +22,6 @@ const calculateLinkPopupPosition = (editor, openSetLink, setLinkFormPopup) => {
       // Hide the popup by setting negative zIndex
       popupStyle: { zIndex: -1 }
     };
-  }
-
-  if (isLinkBool && isOnlyLink(editor)) {
-    const linkInlineSelection = editor.value.inlines
-      .find(inline => inline.type === 'link');
-    editor.moveToRangeOfNode(linkInlineSelection);
   }
 
   // Get selection node from slate
