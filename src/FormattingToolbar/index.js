@@ -357,7 +357,7 @@ export default class FormatToolbar extends React.Component {
   renderLinkSetForm() {
     const { popupPosition, popupStyle } = calculateLinkPopupPosition(
       this.props.editor,
-      this.openSetLink,
+      this.state.openSetLink,
       this.setLinkFormPopup
     );
     const { value } = this.props.editor;
