@@ -192,8 +192,10 @@ export default class FormatToolbar extends React.Component {
     const { value } = editor;
     if (!lockText || pluginManager.isEditable(value)) {
       const hasLinksBool = action.hasLinks(editor);
+      const isOnlyLinkBool = action.isOnlyLink(editor);
+      if (hasLinksBool && !isOnlyLinkBool) return;
 
-      if (hasLinksBool) {
+      if (hasLinksBool && isOnlyLinkBool) {
         editor.unwrapInline('link');
         return;
       }
