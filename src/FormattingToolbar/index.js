@@ -366,6 +366,8 @@ export default class FormatToolbar extends React.Component {
     const { document, selection } = value;
     const isLinkBool = action.hasLinks(this.props.editor);
     const selectedInlineHref = document.getClosestInline(selection.anchor.path);
+    const selectedText = this.props.editor.value.document
+      .getFragmentAtRange(this.props.editor.value.selection).text;
 
     return (
       <Ref innerRef={(node) => {
@@ -385,7 +387,7 @@ export default class FormatToolbar extends React.Component {
                   placeholder='Text'
                   name='text'
                   defaultValue={
-                    isLinkBool
+                    (isLinkBool && !selectedText)
                       ? this.props.editor.value.focusText.text
                       : this.props.editor.value.fragment.text
                   }
