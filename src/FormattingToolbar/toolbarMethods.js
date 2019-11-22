@@ -8,11 +8,13 @@ import * as CONST from '../constants';
  * A change helper to standardize wrapping links.
  */
 const wrapLink = (editor, href) => {
-  editor.wrapInline({
-    type: 'link',
-    data: { href },
-  });
-  editor.moveToEnd();
+  editor
+    .wrapInline({
+      type: 'link',
+      data: { href },
+    })
+    .moveToEnd()
+    .focus();
 };
 
 /**
@@ -48,6 +50,14 @@ export const hasMark = (editor, type) => {
 export const hasLinks = (editor) => {
   const { value } = editor;
   return value.inlines.some(inline => inline.type === 'link');
+};
+
+export const isOnlyLink = (editor) => {
+  const currentInline = editor.value.inlines.find(inline => inline.type === 'link');
+  if (!currentInline) return false;
+  const linkText = currentInline.text;
+  const selectedText = editor.value.document.getFragmentAtRange(editor.value.selection).text;
+  return linkText.includes(selectedText);
 };
 
 /**
@@ -86,17 +96,47 @@ export const hasBlock = (editor, type) => editor.value.blocks
   .some(node => node.type === type);
 
 /**
- * When clicking apply, update the link with the specified text and href.
+ * When clicking remove, update the text by removing the link
  */
-export const applyLinkUpdate = (event, editor) => {
+export const removeLink = (event, editor) => {
   event.preventDefault();
-  const { url: { value: href }, text: { value: text } } = event.target;
+  editor
+    .unwrapInline({ type: 'link' })
+    .moveToEnd()
+    .focus();
+};
 
-  if (href === null) {
+/**
+ * When clicking apply, update the link with the specified text and href
+ */
+export const applyLinkUpdate = (event, editor, isLink) => {
+  event.preventDefault();
+  const href = event.target.url.value;
+  const text = event.target.text.value;
+
+  if (!isLink && !href) return;
+
+  if (isLink && (!(event.target && event.target.url && event.target.url.value)) && !href) {
+    editor
+      .unwrapInline({ type: 'link' })
+      .moveToEnd();
     return;
   }
 
-  if (text === null) {
+  if (!href || !text) return;
+
+  if (isLink) {
+    const linkInlineSelection = editor.value.inlines
+      .find(inline => inline.type === 'link');
+    editor.withoutNormalizing(() => {
+      editor
+        .unwrapInline({ type: 'link' })
+        .moveToRangeOfNode(linkInlineSelection)
+        .delete()
+        .insertText(text)
+        .moveFocusBackward(text.length)
+        .command(wrapLink, href);
+    });
     return;
   }
 

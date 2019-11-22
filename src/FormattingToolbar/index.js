@@ -10,6 +10,7 @@ import * as action from './toolbarMethods';
 import * as styles from './toolbarStyles';
 import * as tips from './toolbarTooltip';
 import * as CONST from '../constants';
+import calculateLinkPopupPosition from './LinkComponent';
 
 import * as boldIcon from '../icons/bold';
 import * as italicIcon from '../icons/italic';
@@ -97,9 +98,10 @@ export default class FormatToolbar extends React.Component {
     this.linkButtonRef = createRef();
     this.hyperlinkInputRef = createRef();
     this.onMouseDown = this.onMouseDown.bind(this);
+    this.submitLinkForm = this.submitLinkForm.bind(this);
+    this.removeLinkForm = this.removeLinkForm.bind(this);
     this.closeSetLinkForm = this.closeSetLinkForm.bind(this);
     this.renderLinkSetForm = this.renderLinkSetForm.bind(this);
-    this.calculateLinkPopupPosition = this.calculateLinkPopupPosition.bind(this);
   }
 
   componentDidMount() {
@@ -190,8 +192,10 @@ export default class FormatToolbar extends React.Component {
     const { value } = editor;
     if (!lockText || pluginManager.isEditable(value)) {
       const hasLinksBool = action.hasLinks(editor);
+      const isOnlyLinkBool = action.isOnlyLink(editor);
+      if (hasLinksBool && !isOnlyLinkBool) return;
 
-      if (hasLinksBool) {
+      if (hasLinksBool && isOnlyLinkBool) {
         editor.unwrapInline('link');
         return;
       }
@@ -238,6 +242,23 @@ export default class FormatToolbar extends React.Component {
    */
   closeSetLinkForm() {
     this.setState({ openSetLink: false });
+  }
+
+  /**
+   * Apply the update to link and clear the link form.
+   */
+  submitLinkForm(event, isLink) {
+    action.applyLinkUpdate(event, this.props.editor, isLink);
+    this.closeSetLinkForm();
+    this.setLinkForm.reset();
+    this.props.editor.focus();
+  }
+
+  /**
+   * Remove the link inline from the text
+   */
+  removeLinkForm(event) {
+    action.removeLink(event, this.props.editor);
   }
 
   /**
@@ -333,71 +354,20 @@ export default class FormatToolbar extends React.Component {
   }
 
   /**
-   * Calculates the link popup position and styles, if any
-   */
-  calculateLinkPopupPosition() {
-    // Constant values 2 and 20 (px) has been
-    // manually observed through devtools and what looked best.
-
-    let top = null;
-    let left = null;
-    let popupPosition = 'bottom center';
-
-    // No need to calculate position of the popup is it is not even opened!
-    const isLinkPopupOpened = this.state.openSetLink;
-    if (!isLinkPopupOpened) {
-      return {
-        popupPosition,
-        // Hide the popup by setting negative zIndex
-        popupStyle: { zIndex: -1 }
-      };
-    }
-
-    // Get selection node from slate
-    const selection = this.props.editor.findDOMRange(this.props.editor.value.selection);
-
-    popupPosition = 'bottom left';
-
-    const { body, documentElement } = document;
-    const pageWidth = Math.max(body.scrollWidth, body.offsetWidth,
-      documentElement.clientWidth, documentElement.scrollWidth, documentElement.offsetWidth);
-
-    // Find the selected text position in DOM to place the popup relative to it
-    const rect = selection.getBoundingClientRect();
-
-    // distance from top of the document + the height of the element + scroll offet ...
-    // ... -2px to account for semantic-ui popup caret position
-    const CARET_TOP_OFFSET = 2;
-    top = rect.top + rect.height + window.scrollY - CARET_TOP_OFFSET;
-
-    // distance from the left of the document and ...
-    // ... subtracting 20px to account for the semantic-ui popup caret position
-    const CARET_LEFT_OFFSET = 20;
-    left = rect.left - CARET_LEFT_OFFSET;
-
-    const popupRect = this.setLinkFormPopup.getBoundingClientRect();
-
-    // Check if there is enough space on right, otherwise flip the popup horizontally
-    // and adjust the popup position accordingly
-    const spaceOnRight = pageWidth - rect.left;
-    if (spaceOnRight < popupRect.width) {
-      popupPosition = 'bottom right';
-      left = rect.left - popupRect.width + CARET_LEFT_OFFSET;
-    }
-
-    return {
-      // Disable semantic ui popup placement by overriding `transform`
-      // and use our computed `top` and `left` values
-      popupStyle: { top, left, transform: 'none' },
-      popupPosition,
-    };
-  }
-
-  /**
    * Render form in popup to set the link.
    */
   renderLinkSetForm() {
-    const { popupPosition, popupStyle } = this.calculateLinkPopupPosition();
+    const { popupPosition, popupStyle } = calculateLinkPopupPosition(
+      this.props.editor,
+      this.state.openSetLink,
+      this.setLinkFormPopup
+    );
+    const { value } = this.props.editor;
+    const { document, selection } = value;
+    const isLinkBool = action.hasLinks(this.props.editor);
+    const selectedInlineHref = document.getClosestInline(selection.anchor.path);
+    const selectedText = this.props.editor.value.document
+      .getFragmentAtRange(this.props.editor.value.selection).text;
 
     return (
       <Ref innerRef={(node) => {
@@ -410,31 +380,50 @@ export default class FormatToolbar extends React.Component {
             this.setLinkForm = node;
           }}>
             <Form
-            onSubmit={(event) => {
-              action.applyLinkUpdate(event, this.props.editor);
-              this.toggleSetLinkForm();
-            }}>
+            onSubmit={event => this.submitLinkForm(event, isLinkBool) }>
               <Form.Field>
                 <label>Link Text</label>
-                <Input placeholder='Text' name='text' defaultValue={this.props.editor.value.fragment.text}/>
+                <Input
+                  placeholder='Text'
+                  name='text'
+                  defaultValue={
+                    (isLinkBool && !selectedText)
+                      ? this.props.editor.value.focusText.text
+                      : this.props.editor.value.fragment.text
+                  }
+                />
               </Form.Field>
               <Form.Field>
                 <label>Link URL</label>
-                <Input ref={this.hyperlinkInputRef} placeholder='http://example.com' name='url' />
+                <Input
+                  ref={this.hyperlinkInputRef}
+                  placeholder={'http://example.com'}
+                  defaultValue={
+                    isLinkBool && action.isOnlyLink(this.props.editor) && selectedInlineHref
+                      ? selectedInlineHref.data.get('href')
+                      : ''
+                  }
+                  name='url'
+                />
               </Form.Field>
               <Form.Field>
+                <Button
+                  secondary
+                  floated='left'
+                  disabled={!isLinkBool}
+                  onMouseDown={this.removeLinkForm}>Remove</Button>
                 <Button primary floated='right' type='submit'>Apply</Button>
               </Form.Field>
             </Form>
             </Ref>
           }
-          onClose={this.closeSetLinkForm}
-          on='click'
-          open // Keep it open always. We toggle only visibility so we can calculate its rect
-          position={popupPosition}
-          style={popupStyle}
-        />
-        </Ref>
+        onClose={this.closeSetLinkForm}
+        on='click'
+        open // Keep it open always. We toggle only visibility so we can calculate its rect
+        position={popupPosition}
+        style={popupStyle}
+      />
+      </Ref>
     );
   }
 
@@ -475,7 +464,10 @@ export default class FormatToolbar extends React.Component {
             padding={pa}
             viewBox={vBox}
             className={classInput}
-            onClick={() => this.onClickLinkButton()}>
+            onClick={(e) => {
+              e.preventDefault();
+              this.onClickLinkButton();
+            }}>
             {icon(fillActivity)}
           </ ToolbarIcon>
         }
