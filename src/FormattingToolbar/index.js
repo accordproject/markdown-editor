@@ -365,6 +365,7 @@ export default class FormatToolbar extends React.Component {
     const { value } = this.props.editor;
     const { document, selection } = value;
     const isLinkBool = action.hasLinks(this.props.editor);
+    const selectedInlineHref = document.getClosestInline(selection.anchor.path);
 
     return (
       <Ref innerRef={(node) => {
@@ -395,9 +396,10 @@ export default class FormatToolbar extends React.Component {
                 <Input
                   ref={this.hyperlinkInputRef}
                   placeholder={'http://example.com'}
-                  defaultValue={isLinkBool && action.isOnlyLink(this.props.editor)
-                    ? document.getClosestInline(selection.anchor.path).data.get('href')
-                    : ''
+                  defaultValue={
+                    isLinkBool && action.isOnlyLink(this.props.editor) && selectedInlineHref
+                      ? selectedInlineHref.data.get('href')
+                      : ''
                   }
                   name='url'
                 />

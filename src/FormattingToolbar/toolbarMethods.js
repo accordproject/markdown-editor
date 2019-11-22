@@ -112,9 +112,7 @@ export const removeLink = (event, editor) => {
 export const applyLinkUpdate = (event, editor, isLink) => {
   event.preventDefault();
   const href = event.target.url.value;
-  const text = isLink
-    ? editor.value.focusText.text
-    : event.target.text.value;
+  const text = event.target.text.value;
 
   if (!isLink && !href) return;
 
