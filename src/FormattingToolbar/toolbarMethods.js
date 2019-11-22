@@ -52,6 +52,14 @@ export const hasLinks = (editor) => {
   return value.inlines.some(inline => inline.type === 'link');
 };
 
+export const isOnlyLink = (editor) => {
+  const currentInline = editor.value.inlines.find(inline => inline.type === 'link');
+  if (!currentInline) return false;
+  const linkText = currentInline.text;
+  const selectedText = editor.value.document.getFragmentAtRange(editor.value.selection).text;
+  return linkText.includes(selectedText);
+};
+
 /**
   * Return selected block of 'list_item' type.
   */

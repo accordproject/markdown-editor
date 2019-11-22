@@ -88,14 +88,6 @@ const DropdownHeader3 = {
   fontFamily: 'serif',
 };
 
-const isOnlyLink = (editor) => {
-  const currentInline = editor.value.inlines.find(inline => inline.type === 'link');
-  if (!currentInline) return false;
-  const linkText = currentInline.text;
-  const selectedText = editor.value.document.getFragmentAtRange(editor.value.selection).text;
-  return linkText.includes(selectedText);
-};
-
 /* eslint-disable react/no-find-dom-node */
 
 export default class FormatToolbar extends React.Component {
@@ -105,6 +97,7 @@ export default class FormatToolbar extends React.Component {
     this.linkButtonRef = createRef();
     this.hyperlinkInputRef = createRef();
     this.onMouseDown = this.onMouseDown.bind(this);
+    this.submitLinkForm = this.submitLinkForm.bind(this);
     this.closeSetLinkForm = this.closeSetLinkForm.bind(this);
     this.renderLinkSetForm = this.renderLinkSetForm.bind(this);
     this.calculateLinkPopupPosition = this.calculateLinkPopupPosition.bind(this);
@@ -249,6 +242,16 @@ export default class FormatToolbar extends React.Component {
   }
 
   /**
+   * Apply the update to link and clear the link form.
+   */
+  submitLinkForm(event, isLink) {
+    action.applyLinkUpdate(event, this.props.editor, isLink);
+    this.closeSetLinkForm();
+    this.setLinkForm.reset();
+    this.props.editor.focus();
+  }
+
+  /**
    * Render a mark-toggling toolbar button.
    */
   renderMarkButton(type, icon, hi, wi, pa, vBox, classInput) {
@@ -356,7 +359,7 @@ export default class FormatToolbar extends React.Component {
     const isLinkBool = action.hasLinks(this.props.editor);
 
     const isLinkPopupOpened = this.state.openSetLink;
-    if (!isLinkPopupOpened && !isOnlyLink(this.props.editor)) {
+    if (!isLinkPopupOpened && !action.isOnlyLink(this.props.editor)) {
       return {
         popupPosition,
         // Hide the popup by setting negative zIndex
@@ -364,7 +367,7 @@ export default class FormatToolbar extends React.Component {
       };
     }
 
-    if (isLinkBool && isOnlyLink(this.props.editor)) {
+    if (isLinkBool && action.isOnlyLink(this.props.editor)) {
       const linkInlineSelection = this.props.editor.value.inlines
         .find(inline => inline.type === 'link');
       this.props.editor.moveToRangeOfNode(linkInlineSelection);
@@ -430,10 +433,7 @@ export default class FormatToolbar extends React.Component {
             this.setLinkForm = node;
           }}>
             <Form
-            onSubmit={(event) => {
-              action.applyLinkUpdate(event, this.props.editor, isLinkBool);
-              this.closeSetLinkForm();
-            }}>
+            onSubmit={event => this.submitLinkForm(event, isLinkBool) }>
               <Form.Field>
                 <label>Link Text</label>
                 <Input
@@ -451,7 +451,7 @@ export default class FormatToolbar extends React.Component {
                 <Input
                   ref={this.hyperlinkInputRef}
                   placeholder={'http://example.com'}
-                  defaultValue={isLinkBool && isOnlyLink(this.props.editor)
+                  defaultValue={isLinkBool && action.isOnlyLink(this.props.editor)
                     ? document.getClosestInline(selection.anchor.path).data.get('href')
                     : ''
                   }
