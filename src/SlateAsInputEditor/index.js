@@ -28,6 +28,7 @@ import PluginManager from '../PluginManager';
 import { FromHTML } from '../html/fromHTML';
 import FormatToolbar from '../FormattingToolbar';
 import ListPlugin from '../plugins/list';
+import * as action from '../FormattingToolbar/toolbarMethods';
 
 import '../styles.css';
 
@@ -351,6 +352,12 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     if (!isEditable(editor, 'enter')) {
       event.preventDefault(); // prevent adding newlines in variables
       return false;
+    }
+
+    if (action.isOnlyLink(editor)) {
+      const isLinkBool = action.hasLinks(editor);
+      action.applyLinkUpdate(event, editor, isLinkBool);
+      return true;
     }
 
     if (isExpanded) return next();
