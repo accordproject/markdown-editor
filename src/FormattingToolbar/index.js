@@ -175,9 +175,8 @@ export default class FormatToolbar extends React.Component {
    */
   onClickMark(event, type) {
     const { editor, pluginManager, lockText } = this.props;
-    const { value } = editor;
 
-    if (!lockText || pluginManager.isEditable(value, type)) {
+    if (!lockText || pluginManager.isEditable(editor, type)) {
       event.preventDefault();
       editor.toggleMark(type);
     }
@@ -189,8 +188,7 @@ export default class FormatToolbar extends React.Component {
    */
   onClickLinkButton() {
     const { editor, pluginManager, lockText } = this.props;
-    const { value } = editor;
-    if (!lockText || pluginManager.isEditable(value)) {
+    if (!lockText || pluginManager.isEditable(editor)) {
       const hasLinksBool = action.hasLinks(editor);
       const isOnlyLinkBool = action.isOnlyLink(editor);
       if (hasLinksBool && !isOnlyLinkBool) return;
@@ -212,7 +210,7 @@ export default class FormatToolbar extends React.Component {
     const { editor, pluginManager, lockText } = this.props;
     const { value } = editor;
 
-    if (!lockText || pluginManager.isEditable(value, type)) {
+    if (!lockText || pluginManager.isEditable(editor, type)) {
       event.preventDefault();
       if (action.isClickBlockQuote(type)) {
         action.isSelectionList(value)
