@@ -232,9 +232,8 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   */
   const isEditable = useCallback((editor, code) => {
     if (editor.props.lockText) {
-      const { value } = editor;
       const pluginManager = new PluginManager(plugins);
-      return pluginManager.isEditable(value, code);
+      return pluginManager.isEditable(editor, code);
     }
 
     return true;
