@@ -83,18 +83,6 @@ Heading.propTypes = {
 };
 
 /**
- * a utility function to generate a random node id for annotations
- */
-function uuidv4() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    // eslint-disable-next-line no-bitwise
-    const r = Math.random() * 16 | 0;
-    // eslint-disable-next-line no-bitwise, no-mixed-operators
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}
-/**
  * A plugin based rich-text editor that uses Common Mark for serialization.
  * The default slate value to be edited is passed in props 'value'
  * while the plugins are passed in the 'plugins' property.
@@ -114,7 +102,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
    * Destructure props for efficiency
    */
   const {
-    onChange, value, lockText
+    onChange, value
   } = props;
 
   const editorProps = props.editorProps || Object.create(null);
@@ -136,21 +124,6 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   const [slateSchema, setSlateSchema] = useState(null);
 
   /**
-   * Returns true if the editor is in lockText mode
-   * Note that we have to use an annotation for lockText
-   * (synced with props.lockText) because Slate doesn't update
-   * the Editor component when callbacks (like onBeforeInput) change.
-   */
-  const isEditorLockText = useCallback((editor) => {
-    const { value } = editor;
-    if (!value.annotations) {
-      return false;
-    }
-    const result = value.annotations.filter(ann => (ann.type === 'lockText'));
-    return result.size > 0;
-  }, []);
-
-  /**
    * Updates the Slate Schema when the plugins change
    */
   useEffect(() => {
@@ -167,36 +140,6 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     });
     setSlateSchema(augmentedSchema);
   }, [plugins]);
-
-  /**
-   * Set a lockText annotation on the editor equal to props.lockText
-   */
-  useEffect(() => {
-    if (editorRef && editorRef.current) {
-      const editor = editorRef.current;
-      const { annotations, selection } = editor.value;
-
-      editor.withoutSaving(() => {
-        annotations.forEach((ann) => {
-          if (ann.type === 'lockText') {
-            editor.removeAnnotation(ann);
-          }
-        });
-
-        if (lockText) {
-          // it doesn't matter where we put the annotation
-          // so we use the current selection
-          const annotation = {
-            key: `lockText-${uuidv4()}`,
-            type: 'lockText',
-            anchor: selection.anchor,
-            focus: selection.focus,
-          };
-          editor.addAnnotation(annotation);
-        }
-      });
-    }
-  }, [value.document, lockText, editorRef]);
 
   /**
    * Render a Slate inline.
@@ -288,14 +231,14 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   * @param {string} code the type of edit requested
   */
   const isEditable = useCallback((editor, code) => {
-    if (isEditorLockText(editor)) {
+    if (editor.props.lockText) {
       const { value } = editor;
       const pluginManager = new PluginManager(plugins);
       return pluginManager.isEditable(value, code);
     }
 
     return true;
-  }, [isEditorLockText, plugins]);
+  }, [plugins]);
 
   /**
   * On backspace, if at the start of a non-paragraph, convert it back into a
@@ -309,7 +252,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     const { value } = editor;
     const { selection } = value;
 
-    if (isEditorLockText(editor)
+    if (editor.props.lockText
       && !(isEditable(editor, 'backspace'))) {
       event.preventDefault(); // prevent editing non-editable text
       return undefined;
