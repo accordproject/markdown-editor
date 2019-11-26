@@ -216,6 +216,10 @@ export default class FormatToolbar extends React.Component {
         action.isSelectionList(value)
           ? action.transformListToBlockQuote(editor, type, value)
           : action.transformPtoBQSwap(editor, type);
+      } else if (action.isClickHeading(type)) {
+        action.hasBlock(editor, type)
+          ? editor.setBlocks(CONST.PARAGRAPH)
+          : editor.setBlocks(type);
       } else if (action.isSelectionList(value)) {
         action.currentList(value).type === type
           ? action.transformListToParagraph(editor, type)

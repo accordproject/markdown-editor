@@ -165,6 +165,14 @@ export const isSelectionList = value => ancestors(value).reverse()
 export const isClickBlockQuote = input => input === CONST.BLOCK_QUOTE;
 
 /**
+ * A helper to find boolean of if input type is a heading.
+ */
+export const isClickHeading = input => input === CONST.H1
+  || input === CONST.H2
+  || input === CONST.H3
+  || input === CONST.PARAGRAPH;
+
+/**
  * A helper to hold the list type of the selection.
  */
 export const currentList = value => isSelectionOLList(value) || isSelectionULList(value);
