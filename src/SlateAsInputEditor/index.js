@@ -27,10 +27,10 @@ import isHotKey from 'is-hotkey';
 
 import baseSchema from '../schema';
 import PluginManager from '../PluginManager';
-import { FromHTML } from '../html/fromHTML';
 import FormatToolbar from '../FormattingToolbar';
 import ListPlugin from '../plugins/list';
 import * as action from '../FormattingToolbar/toolbarMethods';
+import { HtmlTransformer } from '@accordproject/markdown-html';
 
 import '../styles.css';
 
@@ -195,7 +195,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       case 'code_block':
         return <pre {...attributes}>{children}</pre>;
       case 'html_block':
-        return <pre {...attributes}>{children}</pre>;
+        return <pre className="html_block" {...attributes}>{children}</pre>;
       default:
         return next();
     }
@@ -373,10 +373,9 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     if (isEditable(editor, 'paste')) {
       const transfer = getEventTransfer(event);
       if (transfer.type === 'html') {
-        const pluginManager = new PluginManager(plugins);
-        const fromHtml = new FromHTML(pluginManager);
+        const htmlTransformer = new HtmlTransformer();
         // @ts-ignore
-        const { document } = fromHtml.convert(editor, transfer.html);
+        const { document } = htmlTransformer.toCiceroMark(transfer.html, 'json');
         editor.insertFragment(document);
         return;
       }
