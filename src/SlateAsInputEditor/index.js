@@ -29,6 +29,7 @@ import FormatToolbar from '../FormattingToolbar';
 import ListPlugin from '../plugins/list';
 import * as action from '../FormattingToolbar/toolbarMethods';
 import { HtmlTransformer } from '@accordproject/markdown-html';
+import { SlateTransformer } from '@accordproject/markdown-slate';
 
 import '../styles.css';
 
@@ -358,10 +359,15 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     }
     if (isEditable(editor, 'paste')) {
       const transfer = getEventTransfer(event);
-      if (transfer.type === 'html') {
-        const htmlTransformer = new HtmlTransformer();
+      if (transfer.type === 'html') { 
+      // XXX if (transfer.type === 'html' || transfer.type === 'fragment') {
+       const htmlTransformer = new HtmlTransformer();
+        const slateTransformer = new SlateTransformer();
         // @ts-ignore
-        const { document } = htmlTransformer.toCiceroMark(transfer.html, 'json');
+        const ciceroMark = htmlTransformer.toCiceroMark(transfer.html, 'json');
+        // XXX console.log('PASTE CICEROMARK ' + JSON.stringify(ciceroMark));
+        const { document } = slateTransformer.fromCiceroMark(ciceroMark);
+        // XXX console.log('PASTE SLATE ' + JSON.stringify(document));
         editor.insertFragment(document);
         return;
       }
