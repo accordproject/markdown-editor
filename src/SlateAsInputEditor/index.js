@@ -23,6 +23,8 @@ import { Editor, getEventTransfer } from 'slate-react';
 import { Value } from 'slate';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import isHotKey from 'is-hotkey';
+
 import baseSchema from '../schema';
 import PluginManager from '../PluginManager';
 import { FromHTML } from '../html/fromHTML';
@@ -333,7 +335,19 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   * @param {*} editor
   * @param {*} next
   */
-  const onKeyDown = (event, editor, next) => {
+  const onKeyDown = async (event, editor, next) => {
+    if (isHotKey('mod+z', event)) {
+      if (editor.props.editorProps.onUndoOrRedo) {
+        await editor.undo();
+        return editor.props.editorProps.onUndoOrRedo(editor);
+      }
+    }
+    if (isHotKey('mod+shift+z', event)) {
+      if (editor.props.editorProps.onUndoOrRedo) {
+        await editor.redo();
+        return editor.props.editorProps.onUndoOrRedo(editor);
+      }
+    }
     switch (event.key) {
       case 'Enter':
         return handleEnter(event, editor, next);
