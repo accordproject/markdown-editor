@@ -1,5 +1,6 @@
 /** * webpack.config.js ** */
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const htmlWebpackPlugin = new HtmlWebpackPlugin({
@@ -50,7 +51,8 @@ module.exports = {
   node: {
     fs: 'empty'
   },
-  plugins: [htmlWebpackPlugin],
+  plugins: [htmlWebpackPlugin,
+        new webpack.IgnorePlugin(/jsdom$/)],
   resolve: {
     extensions: ['.js', '.jsx'],
   },

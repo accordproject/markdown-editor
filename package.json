@@ -100,8 +100,8 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@accordproject/markdown-slate": "0.9.2-20191210023230",
-    "@accordproject/markdown-html": "0.9.2-20191210023230",
+    "@accordproject/markdown-slate": "^0.9.2",
+    "@accordproject/markdown-html": "^0.9.2",
     "css-loader": "^3.2.0",
     "immutable": "^3.8.2",
     "is-hotkey": "^0.1.6",
