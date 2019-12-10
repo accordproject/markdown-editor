@@ -164,10 +164,11 @@ export default class FormatToolbar extends React.Component {
   /**
    * When a mark button is clicked, toggle undo or redo.
    */
-  onClickHistory(event, action) {
+  async onClickHistory(event, action) {
     const { editor } = this.props;
     event.preventDefault();
-    ((action === 'undo') ? editor.undo() : editor.redo());
+    ((action === 'undo') ? await editor.undo() : await editor.redo());
+    if (editor.props.editorProps.onUndoOrRedo) editor.props.editorProps.onUndoOrRedo(editor);
   }
 
   /**
