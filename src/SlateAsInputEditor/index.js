@@ -368,20 +368,17 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   */
   const onPaste = (event, editor, next) => {
     if (!isEditable(editor, 'paste')) {
-      event.preventDefault();
       return false;
     }
     if (isEditable(editor, 'paste')) {
+      event.preventDefault();
       const transfer = getEventTransfer(event);
       if (transfer.type === 'html') { 
-      // XXX if (transfer.type === 'html' || transfer.type === 'fragment') {
-       const htmlTransformer = new HtmlTransformer();
+        const htmlTransformer = new HtmlTransformer();
         const slateTransformer = new SlateTransformer();
         // @ts-ignore
         const ciceroMark = htmlTransformer.toCiceroMark(transfer.html, 'json');
-        // XXX console.log('PASTE CICEROMARK ' + JSON.stringify(ciceroMark));
         const { document } = slateTransformer.fromCiceroMark(ciceroMark);
-        // XXX console.log('PASTE SLATE ' + JSON.stringify(document));
         editor.insertFragment(document);
         return;
       }
