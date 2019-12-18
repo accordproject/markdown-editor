@@ -19,6 +19,8 @@ import React, {
   useCallback
 }
   from 'react';
+import { HtmlTransformer } from '@accordproject/markdown-html';
+import { SlateTransformer } from '@accordproject/markdown-slate';
 import { Editor, getEventTransfer } from 'slate-react';
 import { Value } from 'slate';
 import PropTypes from 'prop-types';
@@ -30,8 +32,6 @@ import PluginManager from '../PluginManager';
 import FormatToolbar from '../FormattingToolbar';
 import ListPlugin from '../plugins/list';
 import * as action from '../FormattingToolbar/toolbarMethods';
-import { HtmlTransformer } from '@accordproject/markdown-html';
-import { SlateTransformer } from '@accordproject/markdown-slate';
 
 import '../styles.css';
 
@@ -43,7 +43,7 @@ const EditorWrapper = styled.div`
   border-radius: ${props => props.EDITOR_BORDER_RADIUS || ' 10px'};
   border: ${props => props.EDITOR_BORDER || ' 1px solid #979797'};
   box-shadow: ${props => props.EDITOR_SHADOW || ' 1px 2px 4px rgba(0, 0, 0, .5)'};
-  margin: 50px auto;
+  margin: 5px auto 100px auto;
   font-family: serif;
   font-style: normal;
   font-weight: normal;
@@ -373,7 +373,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     if (isEditable(editor, 'paste')) {
       event.preventDefault();
       const transfer = getEventTransfer(event);
-      if (transfer.type === 'html') { 
+      if (transfer.type === 'html') {
         const htmlTransformer = new HtmlTransformer();
         const slateTransformer = new SlateTransformer();
         // @ts-ignore
