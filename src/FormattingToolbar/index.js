@@ -189,7 +189,7 @@ export default class FormatToolbar extends React.Component {
    */
   onClickLinkButton() {
     const { editor, pluginManager, lockText } = this.props;
-    if (!lockText || pluginManager.isEditable(editor)) {
+    if (!lockText || pluginManager.isEditable(editor, 'hyperlink')) {
       const hasLinksBool = action.hasLinks(editor);
       const isOnlyLinkBool = action.isOnlyLink(editor);
       if (hasLinksBool && !isOnlyLinkBool) return;
