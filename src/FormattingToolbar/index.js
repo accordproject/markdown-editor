@@ -512,7 +512,7 @@ export default class FormatToolbar extends React.Component {
   render() {
     const { pluginManager, editor, editorProps } = this.props;
     const root = window.document.querySelector('#slate-toolbar-wrapper-id');
-    if (!root) { return null; }
+    if (!root || this.props.editor.props.readOnly) { return null; }
 
     return createPortal(
       <StyledToolbar background={editorProps.TOOLBAR_BACKGROUND} className="format-toolbar">
