@@ -234,6 +234,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   * @param {string} code the type of edit requested
   */
   const isEditable = useCallback((editor, code) => {
+    if (editor.props.readOnly) { return false; }
     if (editor.props.lockText) {
       const pluginManager = new PluginManager(plugins);
       return pluginManager.isEditable(editor, code);
