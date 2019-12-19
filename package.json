@@ -81,7 +81,7 @@
     "moment-mini": "2.22.1",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
-    "react-scripts": "^3.2.0",
+    "react-scripts": "^3.3.0",
     "semver": "6.1.1",
     "slate": "^0.47.8",
     "slate-react": "^0.22.9",
