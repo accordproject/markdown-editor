@@ -120,13 +120,14 @@ This is an object with the following possible css inputs as strings:
 - `DROPDOWN_COLOR`
 - `TOOLBAR_BACKGROUND`
 - `EDITOR_BORDER_RADIUS`
-- `EDITOR_SHADOW`
 - `EDITOR_BORDER`
-- `HEIGHT`
+- `EDITOR_HEIGHT`
+- `EDITOR_MARGIN`
+- `EDITOR_SHADOW`
+- `EDITOR_WIDTH`
 - `TOOLTIP_BACKGROUND`
 - `TOOLTIP`
 - `TOOLBAR_SHADOW`
-- `WIDTH`
 
 ---
 

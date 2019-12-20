@@ -37,13 +37,13 @@ import '../styles.css';
 
 const EditorWrapper = styled.div`
   background: #fff;
-  min-height: ${props => props.HEIGHT || '750px'};
-  max-width: ${props => props.WIDTH || 'none'};
-  min-width: ${props => props.WIDTH || 'none'};
+  min-height: ${props => props.EDITOR_HEIGHT || '750px'};
+  max-width: ${props => props.EDITOR_WIDTH || 'none'};
+  min-width: ${props => props.EDITOR_WIDTH || 'none'};
   border-radius: ${props => props.EDITOR_BORDER_RADIUS || ' 10px'};
   border: ${props => props.EDITOR_BORDER || ' 1px solid #979797'};
   box-shadow: ${props => props.EDITOR_SHADOW || ' 1px 2px 4px rgba(0, 0, 0, .5)'};
-  margin: 5px auto 100px auto;
+  margin: ${props => props.EDITOR_MARGIN || '5px auto'};
   font-family: serif;
   font-style: normal;
   font-weight: normal;
@@ -488,13 +488,14 @@ SlateAsInputEditor.propTypes = {
     DROPDOWN_COLOR: PropTypes.string,
     EDITOR_BORDER: PropTypes.string,
     EDITOR_BORDER_RADIUS: PropTypes.string,
+    EDITOR_HEIGHT: PropTypes.string,
+    EDITOR_MARGIN: PropTypes.string,
     EDITOR_SHADOW: PropTypes.string,
-    HEIGHT: PropTypes.string,
+    EDITOR_WIDTH: PropTypes.string,
     TOOLBAR_BACKGROUND: PropTypes.string,
     TOOLTIP_BACKGROUND: PropTypes.string,
     TOOLTIP: PropTypes.string,
     TOOLBAR_SHADOW: PropTypes.string,
-    WIDTH: PropTypes.string,
   }),
 
   /**
