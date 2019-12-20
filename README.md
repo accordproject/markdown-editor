@@ -122,6 +122,7 @@ This is an object with the following possible css inputs as strings:
 - `EDITOR_BORDER_RADIUS`
 - `EDITOR_SHADOW`
 - `EDITOR_BORDER`
+- `HEIGHT`
 - `TOOLTIP_BACKGROUND`
 - `TOOLTIP`
 - `TOOLBAR_SHADOW`

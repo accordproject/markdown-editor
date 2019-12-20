@@ -37,7 +37,7 @@ import '../styles.css';
 
 const EditorWrapper = styled.div`
   background: #fff;
-  min-height: 750px;
+  min-height: ${props => props.HEIGHT || '750px'};
   max-width: ${props => props.WIDTH || 'none'};
   min-width: ${props => props.WIDTH || 'none'};
   border-radius: ${props => props.EDITOR_BORDER_RADIUS || ' 10px'};
@@ -489,6 +489,7 @@ SlateAsInputEditor.propTypes = {
     EDITOR_BORDER: PropTypes.string,
     EDITOR_BORDER_RADIUS: PropTypes.string,
     EDITOR_SHADOW: PropTypes.string,
+    HEIGHT: PropTypes.string,
     TOOLBAR_BACKGROUND: PropTypes.string,
     TOOLTIP_BACKGROUND: PropTypes.string,
     TOOLTIP: PropTypes.string,
