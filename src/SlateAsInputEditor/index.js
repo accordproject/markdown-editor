@@ -171,24 +171,25 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
    * Renders a block
    */
   // @ts-ignore
-  const renderBlock = useCallback((props, editor, next) => {
-    const { node, attributes, children } = props;
+  const renderBlock = useCallback((blockProps, editor, next) => {
+    const { node, attributes, children } = blockProps;
+    const anchorName = encodeURIComponent(`${node.text}-${node.key}`);
 
     switch (node.type) {
       case 'paragraph':
         return <p {...attributes}>{children}</p>;
       case 'heading_one':
-        return <Heading as="h1" {...attributes}>{children}</Heading>;
+        return <Heading as="h1" {...attributes} id={anchorName}>{children}</Heading>;
       case 'heading_two':
-        return <Heading as="h2" {...attributes}>{children}</Heading>;
+        return <Heading as="h2" {...attributes} id={anchorName}>{children}</Heading>;
       case 'heading_three':
-        return <Heading as="h3" {...attributes}>{children}</Heading>;
+        return <Heading as="h3" {...attributes} id={anchorName}>{children}</Heading>;
       case 'heading_four':
-        return <Heading as="h4" {...attributes}>{children}</Heading>;
+        return <Heading as="h4" {...attributes} id={anchorName}>{children}</Heading>;
       case 'heading_five':
-        return <Heading as="h5" {...attributes}>{children}</Heading>;
+        return <Heading as="h5" {...attributes} id={anchorName}>{children}</Heading>;
       case 'heading_six':
-        return <Heading as="h6" {...attributes}>{children}</Heading>;
+        return <Heading as="h6" {...attributes} id={anchorName}>{children}</Heading>;
       case 'horizontal_rule':
         return <hr {...attributes} />;
       case 'block_quote':
