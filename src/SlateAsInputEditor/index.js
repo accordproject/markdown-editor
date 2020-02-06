@@ -423,6 +423,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   }, [editorProps, plugins]);
 
   const onChangeHandler = ({ value }) => {
+    if (props.readOnly) return;
     onChange(value);
   };
 
