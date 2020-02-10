@@ -60,6 +60,7 @@
     "@babel/cli": "^7.7.0",
     "@babel/core": "^7.7.2",
     "@babel/plugin-transform-modules-commonjs": "^7.7.0",
+    "@babel/plugin-transform-runtime": "^7.8.3",
     "@babel/preset-env": "^7.7.1",
     "@babel/preset-react": "^7.7.0",
     "@babel/register": "^7.7.0",
@@ -100,8 +101,9 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@accordproject/markdown-slate": "^0.9.8",
     "@accordproject/markdown-html": "^0.9.8",
+    "@accordproject/markdown-slate": "^0.9.8",
+    "@babel/runtime": "^7.8.4",
     "css-loader": "^3.2.0",
     "immutable": "^3.8.2",
     "is-hotkey": "^0.1.6",

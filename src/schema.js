@@ -29,10 +29,10 @@ const schema = {
   },
   inlines: {
     linebreak: {
-      isVoid: false,
+      isVoid: true,
     },
     softbreak: {
-      isVoid: false,
+      isVoid: true,
     },
     html_inline: {
     },
