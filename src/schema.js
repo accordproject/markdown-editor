@@ -70,7 +70,7 @@ const schema = {
       ],
     },
     horizontal_rule: {
-      isVoid: true,
+      isVoid: false,
     },
     ol_list: {
       data: {
