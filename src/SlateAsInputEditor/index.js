@@ -23,13 +23,13 @@ import { Editor, getEventTransfer } from 'slate-react';
 import { Value } from 'slate';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { HtmlTransformer } from '@accordproject/markdown-html';
+import { SlateTransformer } from '@accordproject/markdown-slate';
 import baseSchema from '../schema';
 import PluginManager from '../PluginManager';
 import FormatToolbar from '../FormattingToolbar';
 import ListPlugin from '../plugins/list';
 import * as action from '../FormattingToolbar/toolbarMethods';
-import { HtmlTransformer } from '@accordproject/markdown-html';
-import { SlateTransformer } from '@accordproject/markdown-slate';
 
 import '../styles.css';
 
@@ -157,7 +157,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       case 'html_inline':
         return <span className='html_inline' {...attributes}>{children}</span>;
       case 'softbreak':
-        return ' ';
+        return <span className='softbreak' {...attributes}> {children}</span>;
       case 'linebreak':
         return <br className='linebreak' {...attributes}/>;
       default:
@@ -359,7 +359,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     if (isEditable(editor, 'paste')) {
       event.preventDefault();
       const transfer = getEventTransfer(event);
-      if (transfer.type === 'html') { 
+      if (transfer.type === 'html') {
         const htmlTransformer = new HtmlTransformer();
         const slateTransformer = new SlateTransformer();
         // @ts-ignore
