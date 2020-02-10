@@ -13,12 +13,12 @@ function Blockquote() {
    * @param {Editor} editor
    * @param {Function} next
    */
-  const onEnterOrBackspace = (event, editor, next) => {
+  const onEnter = (event, editor, next) => {
     const { value } = editor;
     const { startBlock } = value;
     event.preventDefault();
 
-    // Hitting enter or backspace on an empty line will break out of block quote
+    // Hitting enter on an empty line will break out of the block quote
     if (isSelectionInput(value, BLOCK_QUOTE) && startBlock.text.length === 0) {
       editor.withoutNormalizing(() => {
         event.preventDefault();
@@ -37,11 +37,40 @@ function Blockquote() {
    * @param {Editor} editor
    * @param {Function} next
    */
+  const onBackspace = (event, editor, next) => {
+    const { value } = editor;
+    const { startBlock } = value;
+    event.preventDefault();
+
+    // Hitting backspace on the last item when empty will break out of the block quote
+    if (isSelectionInput(value, BLOCK_QUOTE) && startBlock.text.length === 0) {
+      const lastItem = !value.document.getAncestors(value.previousBlock.key)
+        .some(a => a.type === BLOCK_QUOTE);
+      if (lastItem) {
+        editor.withoutNormalizing(() => {
+          event.preventDefault();
+          editor
+            .setBlocks(PARAGRAPH)
+            .unwrapBlock(BLOCK_QUOTE);
+        });
+        return;
+      }
+    }
+
+    next();
+  };
+
+  /**
+   * @param {Event} event
+   * @param {Editor} editor
+   * @param {Function} next
+   */
   const onKeyDown = (event, editor, next) => {
     switch (event.key) {
       case 'Enter':
+        return onEnter(event, editor, next);
       case 'Backspace':
-        return onEnterOrBackspace(event, editor, next);
+        return onBackspace(event, editor, next);
       default:
         return next();
     }
