@@ -190,7 +190,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       case 'heading_six':
         return <Heading as="h6" {...attributes}>{children}</Heading>;
       case 'horizontal_rule':
-        return <hr {...attributes} />;
+        return <div className="hr" {...attributes}>{children}</div>;
       case 'block_quote':
         return <blockquote {...attributes}>{children}</blockquote>;
       case 'code_block':
