@@ -13,6 +13,15 @@ body {
     text-indent: 0ex;
 }
 
+.hr {
+    overflow: visible; /* For IE */
+    padding: 0;
+    border: none;
+    border-top: medium double #333;
+    color: #333;
+    text-align: center;
+}
+
 a {
     cursor: pointer;
 }

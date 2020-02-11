@@ -33,6 +33,12 @@ linebreak.
 ## Heading Two
 This is more text.
 
+Before a thematic break.
+
+---
+
+After a thematic break.
+
 Ordered lists:
 
 1. one
