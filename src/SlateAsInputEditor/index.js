@@ -31,6 +31,7 @@ import baseSchema from '../schema';
 import PluginManager from '../PluginManager';
 import FormatToolbar from '../FormattingToolbar';
 import ListPlugin from '../plugins/list';
+import BlockquotePlugin from '../plugins/blockquote';
 import * as action from '../FormattingToolbar/toolbarMethods';
 
 import '../styles.css';
@@ -112,9 +113,9 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
 
   const plugins = React.useMemo(() => (props.plugins
     ? props.plugins.concat(
-      [ListPlugin()]
+      [ListPlugin(), BlockquotePlugin()]
     )
-    : [ListPlugin()]), [props.plugins]);
+    : [ListPlugin(), BlockquotePlugin()]), [props.plugins]);
 
   /**
    * A reference to the Slate Editor.
@@ -191,8 +192,6 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
         return <Heading as="h6" {...attributes}>{children}</Heading>;
       case 'horizontal_rule':
         return <hr {...attributes} />;
-      case 'block_quote':
-        return <blockquote {...attributes}>{children}</blockquote>;
       case 'code_block':
         return <pre {...attributes}>{children}</pre>;
       case 'html_block':
