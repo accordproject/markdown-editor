@@ -4,7 +4,6 @@ const schema = {
       {
         match: [
           { type: 'paragraph' },
-          { type: 'quote' },
           { type: 'list' },
           { type: 'link' },
           { type: 'horizontal_rule' },
@@ -63,11 +62,6 @@ const schema = {
       nodes: [
         { match: { type: 'paragraph' } },
       ]
-    },
-    quote: {
-      nodes: [
-        { match: { object: 'text' } },
-      ],
     },
     horizontal_rule: {
       isVoid: false,
