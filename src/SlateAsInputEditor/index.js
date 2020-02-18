@@ -158,7 +158,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       case 'image':
         return <img {...attributes} alt={node.data.get('title')} src={node.data.get('href')}/>;
       case 'html_inline':
-        return <span className='html_inline' {...attributes}>{children}</span>;
+        return <span className='html_inline' {...attributes}>{node.data.get('content')}</span>;
       case 'softbreak':
         return <span className='softbreak' {...attributes}> {children}</span>;
       case 'linebreak':
