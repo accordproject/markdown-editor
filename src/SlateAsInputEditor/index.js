@@ -378,7 +378,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
         const slateTransformer = new SlateTransformer();
         // @ts-ignore
         const ciceroMark = htmlTransformer.toCiceroMark(transfer.html, 'json');
-        const { document } = slateTransformer.fromCiceroMark(ciceroMark);
+        const { document } = Value.fromJSON(slateTransformer.fromCiceroMark(ciceroMark));
         editor.insertFragment(document);
         return;
       }

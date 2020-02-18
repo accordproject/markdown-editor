@@ -101,8 +101,8 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@accordproject/markdown-html": "^0.9.9",
-    "@accordproject/markdown-slate": "^0.9.9",
+    "@accordproject/markdown-html": "^0.10.0",
+    "@accordproject/markdown-slate": "^0.10.0",
     "@babel/runtime": "^7.8.4",
     "css-loader": "^3.2.0",
     "immutable": "^3.8.2",
