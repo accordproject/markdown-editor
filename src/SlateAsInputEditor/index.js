@@ -440,7 +440,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   };
 
   return (
-    <div>
+    <div className="ap-markdown-editor">
       <ToolbarWrapper {...editorProps} id="slate-toolbar-wrapper-id" />
       <EditorWrapper {...editorProps} >
         <Editor

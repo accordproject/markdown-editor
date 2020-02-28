@@ -1,19 +1,5 @@
 /*** src/styles.css ***/
-body {
-    font-family: serif;
-    font-style: normal;
-    font-weight: normal;
-    font-size: medium;
-    line-height: 100%;
-    word-spacing: normal;
-    letter-spacing: normal;
-    text-decoration: none;
-    text-transform: none;
-    text-align: left;
-    text-indent: 0ex;
-}
-
-.hr {
+.ap-markdown-editor .hr {
     overflow: visible; /* For IE */
     padding: 0;
     border: none;
@@ -22,25 +8,26 @@ body {
     text-align: center;
 }
 
-a {
+.ap-markdown-editor a{
     cursor: pointer;
 }
 
-.textarea {
+.ap-markdown-editor .textarea {
+    font-family: monospace;
     height: 100%;
     width: 100%;
     border: 0;
 }
 
-.error {
+.ap-markdown-editor .error {
     color: red;
 }
 
-.html_inline {
+.ap-markdown-editor .html_inline {
     color: rgb(0, 60, 255);
 }
 
-#slate-toolbar-wrapper-id {
+.ap-markdown-editor #slate-toolbar-wrapper-id {
     display: grid;
     grid-template-columns: 3% auto 3%;
     grid-template-rows: 100%;

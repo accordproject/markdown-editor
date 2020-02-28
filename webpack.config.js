@@ -44,8 +44,10 @@ module.exports = {
   node: {
     fs: 'empty'
   },
-  plugins: [htmlWebpackPlugin,
-        new webpack.IgnorePlugin(/jsdom$/)],
+  plugins: [
+    htmlWebpackPlugin,
+    new webpack.IgnorePlugin(/jsdom$/)
+  ],
   resolve: {
     extensions: ['.js', '.jsx'],
   },
