@@ -331,6 +331,44 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   };
 
   /**
+  * Method to handle lists
+  * @param {*} editor
+  * @param {*} type
+  */  
+ 
+  let handleList = (editor, type) => {
+    if (action.isSelectionList(editor.value)) {
+      if (action.currentList(editor.value).type === type) {
+        return action.transformListToParagraph(editor, type);
+      } else {
+        return action.transformListSwap(editor, type, editor.value);
+      }
+    } else if( action.isSelectionInput(editor.value, "block_quote") ) {
+      editor.unwrapBlock("block_quote");
+      return action.transformParagraphToList(editor, type);
+
+    }else{
+      return action.transformParagraphToList(editor, type);
+    }
+  };
+  
+    /**
+  * Method to handle block quotes
+  * @param {*} editor
+  */  
+ 
+  let handleBlockQuotes = (editor) => {
+    if(action.isSelectionInput(editor.value, "block_quote")){
+    editor.unwrapBlock("block_quote");
+    }else if(action.isSelectionList(editor.value)){
+      action.isSelectionInput(editor.value, "ol_list")?action.transformListToParagraph(editor,'ol_list'):action.transformListToParagraph(editor,'ul_list')
+      editor.wrapBlock("block_quote");
+    }else{
+      editor.wrapBlock("block_quote");
+    }
+  }
+
+  /**
   * Called upon a keypress
   * @param {*} event
   * @param {*} editor
@@ -348,6 +386,24 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
         await editor.redo();
         return editor.props.editorProps.onUndoOrRedo(editor);
       }
+    }
+    if (isHotKey("mod+b", event)) {
+      return editor.toggleMark("bold");
+    }
+    if (isHotKey("mod+i", event)) {
+      return editor.toggleMark("italic");
+    }
+    if (isHotKey("mod+alt+c", event)) {
+      return editor.toggleMark("code");
+    }
+    if (isHotKey("mod+q", event)) {
+      return handleBlockQuotes(editor)
+    }
+    if (isHotKey("mod+shift+7", event)) {
+      return handleList(editor, "ol_list");
+    }
+    if (isHotKey("mod+shift+8", event)) {
+      return handleList(editor, "ul_list");
     }
     switch (event.key) {
       case 'Enter':
