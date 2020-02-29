@@ -1,4 +1,4 @@
-import React, { createRef, useState } from 'react';
+import React, { createRef } from 'react';
 import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
