@@ -17,7 +17,7 @@ export const icon = fillColor => (
     fill="none"
     fillRule="evenodd"
     fontFamily="IBMPlexSans-BoldItalic, IBM Plex Sans"
-    fontSize="18"
+    fontSize="16"
     fontStyle="italic"
     fontWeight="bold"
   >

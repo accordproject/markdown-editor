@@ -30,6 +30,7 @@ const StyledToolbar = styled.div`
   justify-self: center;
   width: 450px;
   background-color: ${props => props.background || '#FFF'} !important;
+  padding: ${props => props.padding || '5px'} !important;
 `;
 
 const ToolbarIcon = styled.svg`
@@ -49,7 +50,7 @@ const ToolbarIcon = styled.svg`
 const VertDivider = styled.div`
   box-sizing: border-box;
   height: 24px;
-  width: 1px;
+  width: 0.5px;
   border: 1px solid ${props => props.color || '#EFEFEF'};
   top: 10px;
   place-self: center;
