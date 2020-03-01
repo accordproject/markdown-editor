@@ -41,7 +41,7 @@ const EditorWrapper = styled.div`
   min-height: ${props => props.EDITOR_HEIGHT || '750px'};
   max-width: ${props => props.EDITOR_WIDTH || 'none'};
   min-width: ${props => props.EDITOR_WIDTH || 'none'};
-  box-shadow: ${props => props.EDITOR_SHADOW || '1px 1px 6px rgba(6,6,73, 0.2)'};
+  box-shadow: ${props => props.EDITOR_SHADOW || '1px 1px 4px rgba(6,6,73, 0.1)'};
   margin: ${props => props.EDITOR_MARGIN || '5px auto'};
   font-family: serif;
   font-style: normal;
@@ -73,7 +73,7 @@ const ToolbarWrapper = styled.div`
   top: 0;
   height: 36px;
   background: ${props => props.TOOLBAR_BACKGROUND || '#FFF'};
-  box-shadow: ${props => props.TOOLBAR_SHADOW || '1px 1px 6px rgba(6,6,73, 0.2)'};
+  box-shadow: ${props => props.TOOLBAR_SHADOW || '1px 1px 4px rgba(6,6,73, 0.1)'};
   border-radius: ${props => props.TOOLBAR_BORDER_RADIUS || '5px'};
   margin: 30px 0px; 
 `;
