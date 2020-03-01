@@ -2,23 +2,23 @@ import React from 'react';
 
 export const type = () => 'undo';
 
-export const height = () => '25px';
+export const height = () => '31px';
 
-export const width = () => '25px';
+export const width = () => '31px';
 
 export const padding = () => '6px 4px';
 
-export const vBox = () => '0 0 16 11';
+export const vBox = () => '0 0 5 35';
 
 export const icon = fillColor => (
   <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
     <g
-      transform="translate(-692.000000, -49.000000)"
+      transform="translate(-798.000000, -49.000000)"
       fill={fillColor}
       fillRule="nonzero"
     >
-      <g transform="translate(692.000000, 49.000000)">
-        <path d="M17.89,0A13.87,13.87,0,0,0,4.3,11.15L1.66,7.86,0,9.19l4.26,5.33a1.08,1.08,0,0,0,.84.4,1.12,1.12,0,0,0,.47-.11l6.4-3.2-1-1.9-4.7,2.34A11.72,11.72,0,1,1,17.89,25.58v2.13A13.86,13.86,0,0,0,17.89,0Z"></path>
+       <g transform="translate(806.000000, 54.500000) scale(-1, 1) translate(-806.000000, -54.500000) translate(798.000000, 49.000000)">
+        <path d="M0,13.86A13.87,13.87,0,0,0,13.86,27.71V25.58A11.73,11.73,0,1,1,25.43,12.05l-4.7-2.34-1,1.9,6.4,3.2a1.13,1.13,0,0,0,.48.11,1.07,1.07,0,0,0,.83-.4l4.26-5.33L30.08,7.86l-2.64,3.29A13.85,13.85,0,0,0,0,13.86Z"></path>
       </g>
     </g>
   </g>

@@ -6,12 +6,12 @@ export const height = () => '25px';
 
 export const width = () => '25px';
 
-export const padding = () => '4px 2px';
+export const padding = () => '6px 2px';
 
 export const vBox = () => '0 0 20 12';
 
 export const icon = fillColor => (
-  <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+  <g stroke="white" strokeWidth="01" fill="none" fillRule="evenodd">
     <g
       transform="translate(-508.000000, -49.000000)"
       fill={fillColor}
