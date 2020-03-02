@@ -375,45 +375,45 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   * @param {*} next
   */
   const onKeyDown = async (event, editor, next) => {
-    if (isHotKey('mod+z', event)) {
-      if (editor.props.editorProps.onUndoOrRedo) {
+    switch (true) {
+      
+      case event.key==='Enter':
+        return handleEnter(event, editor, next);  
+        
+      case event.key==='Backspace':
+        return handleBackspace(event, editor, next);
+        
+      case isHotKey("mod+z", event) && editor.props.editorProps.onUndoOrRedo:
         await editor.undo();
         return editor.props.editorProps.onUndoOrRedo(editor);
-      }
-    }
-    if (isHotKey('mod+shift+z', event)) {
-      if (editor.props.editorProps.onUndoOrRedo) {
+
+      case isHotKey('mod+shift+z', event) && editor.props.editorProps.onUndoOrRedo:
         await editor.redo();
         return editor.props.editorProps.onUndoOrRedo(editor);
-      }
+      
+      case isHotKey("mod+b", event) :
+        return editor.toggleMark("bold");
+
+      case isHotKey("mod+i", event):
+        return editor.toggleMark("italic");
+        
+      case isHotKey("mod+alt+c", event):
+        return editor.toggleMark("code");
+        
+      case isHotKey("mod+q", event):
+        return handleBlockQuotes(editor)
+        
+      case isHotKey("mod+shift+7", event):
+        return handleList(editor, "ol_list");
+        
+      case isHotKey("mod+shift+8", event):
+        return handleList(editor, "ul_list");
+          
+      default :
+        return next();
     }
-    if (isHotKey("mod+b", event)) {
-      return editor.toggleMark("bold");
-    }
-    if (isHotKey("mod+i", event)) {
-      return editor.toggleMark("italic");
-    }
-    if (isHotKey("mod+alt+c", event)) {
-      return editor.toggleMark("code");
-    }
-    if (isHotKey("mod+q", event)) {
-      return handleBlockQuotes(editor)
-    }
-    if (isHotKey("mod+shift+7", event)) {
-      return handleList(editor, "ol_list");
-    }
-    if (isHotKey("mod+shift+8", event)) {
-      return handleList(editor, "ul_list");
-    }
-    switch (event.key) {
-      case 'Enter':
-        return handleEnter(event, editor, next);
-      case 'Backspace':
-        return handleBackspace(event, editor, next);
-      default:
-        return next(); // allow
-    }
-  };
+  }
+
 
   /**
   * Called on a paste
