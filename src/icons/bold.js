@@ -18,6 +18,7 @@ export const icon = fillColor => (
     fillRule="evenodd"
     fontFamily="IBMPlexSans-Bold, IBM Plex Sans"
     fontSize="18"
+    fontWeight="bold"
   >
     <g transform="translate(-440.000000, -48.000000)" fill={fillColor}>
       <text>
