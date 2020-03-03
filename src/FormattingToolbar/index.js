@@ -451,7 +451,7 @@ export default class FormatToolbar extends React.Component {
 
     return (
       <Popup
-        content={'Hyperlink'}
+        content='Insert a link'
         style={style}
         position='bottom center'
         trigger={
@@ -489,7 +489,7 @@ export default class FormatToolbar extends React.Component {
 
     return (
       <Popup
-        content={tips.capitalizeWord(action)}
+        content={tips.capitalizeWord(action)} 
         style={style}
         position='bottom center'
         trigger={
@@ -648,7 +648,7 @@ export default class FormatToolbar extends React.Component {
             undoIcon.width(),
             undoIcon.padding(),
             undoIcon.vBox(),
-            'undo',
+            'Undo(' + tips.MOD + '+Z)',
             'toolbar-2x2'
           )
       }
@@ -660,7 +660,7 @@ export default class FormatToolbar extends React.Component {
             redoIcon.width(),
             redoIcon.padding(),
             redoIcon.vBox(),
-            'redo',
+            'Redo(' + tips.MOD + '+Y)',
             'toolbar-2x3'
           )
       }
