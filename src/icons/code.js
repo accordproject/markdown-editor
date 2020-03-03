@@ -1,6 +1,8 @@
 import React from 'react';
 
-export const type = () => 'code';
+import * as tips from '../FormattingToolbar/toolbarTooltip';
+
+export const type = () => 'Code(' + tips.MOD + "+Alt+C)";
 
 export const height = () => '25px';
 
