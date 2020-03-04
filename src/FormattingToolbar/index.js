@@ -28,8 +28,9 @@ import './toolbar.css';
 const StyledToolbar = styled.div`
   position: relative;
   justify-self: center;
-  width: 450px;
+  width: 500px;
   background-color: ${props => props.background || '#FFF'} !important;
+  padding: ${props => props.padding || '5px'} !important;
 `;
 
 const ToolbarIcon = styled.svg`
@@ -48,10 +49,10 @@ const ToolbarIcon = styled.svg`
 
 const VertDivider = styled.div`
   box-sizing: border-box;
-  height: 24px;
-  width: 1px;
-  border: 1px solid ${props => props.color || '#EFEFEF'};
-  top: 10px;
+  height: 30px;
+  width: 0.5px;
+  border: 0.5px solid ${props => props.color || '#EFEFEF'};
+  top: 0px;
   place-self: center;
 `;
 
@@ -61,7 +62,7 @@ const VertDivider = styled.div`
  * @return {*} a new object
  */
 function DropdownStyle(input) {
-  this.color = styles.buttonSymbolActive(input);
+  // this.color = styles.buttonSymbolActive(input);
   this.alignSelf = 'center';
 }
 

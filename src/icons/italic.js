@@ -17,10 +17,10 @@ export const icon = fillColor => (
     fill="none"
     fillRule="evenodd"
     fontFamily="IBMPlexSans-BoldItalic, IBM Plex Sans"
-    fontSize="18"
+    fontSize="16"
     fontStyle="italic"
     fontWeight="bold"
-  >
+    >
     <g transform="translate(-477.000000, -48.000000)" fill={fillColor}>
       <text>
         <tspan x="478" y="61">
