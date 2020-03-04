@@ -20,7 +20,7 @@ const calculateLinkPopupPosition = (editor, openSetLink, setLinkFormPopup) => {
     return {
       popupPosition,
       // Hide the popup by setting negative zIndex
-      popupStyle: { zIndex: -1 }
+      popupStyle: { zIndex: -1}
     };
   }
 
@@ -59,7 +59,7 @@ const calculateLinkPopupPosition = (editor, openSetLink, setLinkFormPopup) => {
   return {
     // Disable semantic ui popup placement by overriding `transform`
     // and use our computed `top` and `left` values
-    popupStyle: { top, left, transform: 'none' },
+    popupStyle: { top, left, transform: 'none', width:'400px', },
     popupPosition,
   };
 };
