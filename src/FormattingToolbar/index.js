@@ -55,6 +55,13 @@ const VertDivider = styled.div`
   place-self: center;
 `;
 
+const PopupLinkWrapper = styled.p`
+white-space : nowrap;
+overflow : hidden;
+text-overflow : ellipsis;
+max-width : 250px;
+`;
+
 /**
  * Object constructor for dropdown styling
  * @param {*} input
@@ -368,17 +375,7 @@ export default class FormatToolbar extends React.Component {
     const selectedInlineHref = document.getClosestInline(selection.anchor.path);
     const selectedText = this.props.editor.value.document
       .getFragmentAtRange(this.props.editor.value.selection).text;
-    const calculateTruncatedLinkText = (text) =>{
-      let truncatedText;
-      try{
-        truncatedText = text.slice(0,20)+(text.length>20?'...':'');
-      }catch(_){
-        truncatedText = 'link';
-      }
-      return truncatedText;
-    }
-console.log(popupStyle)
-    return (
+      return (
       <Ref
         innerRef={node => {
           this.setLinkFormPopup = node;
@@ -423,11 +420,13 @@ console.log(popupStyle)
                 {isLinkBool &&
                   action.isOnlyLink(this.props.editor) &&
                   selectedInlineHref && (
-                   <p><a href={selectedInlineHref.data.get("href")}
+                    <PopupLinkWrapper>
+                   <a href={selectedInlineHref.data.get("href")}
                    target='_blank'
                    >
-                      {calculateTruncatedLinkText(selectedInlineHref.data.get("href"))}
-                    </a></p>
+                      {selectedInlineHref.data.get("href")}
+                    </a>
+                    </PopupLinkWrapper>
                   )}
                 <Form.Field>
                   <Button
