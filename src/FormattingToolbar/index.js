@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {
-  Button, Dropdown, Form, Input, Popup, Ref, Icon, Grid
+  Button, Dropdown, Form, Input, Popup, Ref
 } from 'semantic-ui-react';
 
 import * as action from './toolbarMethods';
@@ -91,7 +91,7 @@ const DropdownHeader3 = {
 export default class FormatToolbar extends React.Component {
   constructor() {
     super();
-    this.state = { openSetLink: false, showLinkForm: true };
+    this.state = { openSetLink: false };
     this.linkButtonRef = createRef();
     this.hyperlinkInputRef = createRef();
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -107,14 +107,14 @@ export default class FormatToolbar extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     // If the form is just opened, focus the Url input field
-    if (!prevState.openSetLink && this.state.openSetLink && this.state.showLinkForm) {
+    if (!prevState.openSetLink && this.state.openSetLink) {
       this.hyperlinkInputRef.current.focus();
     }
 
     // If the form is just closed, reset the values
     // We are not using controlled form as it will make things
     // more complex, thats why using DOM api
-    if (prevState.openSetLink && !this.state.openSetLink && this.state.showLinkForm) {
+    if (prevState.openSetLink && !this.state.openSetLink) {
       const formNode = this.setLinkForm;
       if (formNode) formNode.reset();
 
@@ -241,9 +241,6 @@ export default class FormatToolbar extends React.Component {
    * Close set link form.
    */
   closeSetLinkForm() {
-    this.setLinkForm.reset();
-    this.props.editor.focus();
-    this.setState({showLinkForm: true})
     this.setState({ openSetLink: false });
   }
 
@@ -253,6 +250,8 @@ export default class FormatToolbar extends React.Component {
   submitLinkForm(event, isLink) {
     action.applyLinkUpdate(event, this.props.editor, isLink);
     this.closeSetLinkForm();
+    this.setLinkForm.reset();
+    this.props.editor.focus();
   }
 
   /**
@@ -369,21 +368,16 @@ export default class FormatToolbar extends React.Component {
     const selectedInlineHref = document.getClosestInline(selection.anchor.path);
     const selectedText = this.props.editor.value.document
       .getFragmentAtRange(this.props.editor.value.selection).text;
-    const style = {
-      borderRadius: '5px',
-      backgroundColor: styles.tooltipBg('#FFFFFF'),
-      color: styles.tooltipColor('#949CA2'),
-    };
-    let copyToClipboard = (element) =>
-    {
-    navigator.clipboard.writeText(element.href).then(() => {
-      /* clipboard successfully set */
-    })
-  }
-  let toggleEdit = () =>{
-    this.setState({showLinkForm: false});
-  }
-  console.log(isLinkBool)
+    const calculateTruncatedLinkText = (text) =>{
+      let truncatedText;
+      try{
+        truncatedText = text.slice(0,20)+(text.length>20?'...':'');
+      }catch(_){
+        truncatedText = 'link';
+      }
+      return truncatedText;
+    }
+console.log(popupStyle)
     return (
       <Ref
         innerRef={node => {
@@ -398,109 +392,57 @@ export default class FormatToolbar extends React.Component {
                 this.setLinkForm = node;
               }}
             >
-              <>
-                {(this.state.showLinkForm&&isLinkBool) ? (
-                  <>
-                    <Grid divided>
-                      <Grid.Row>
-                        <Grid.Column width={5}>
-                          <Button style={style} 
-                          animated
-                          onClick={()=>{copyToClipboard(this.textArea)}}
-                          >
-                            <Button.Content hidden>Copy</Button.Content>
-                            <Button.Content visible>
-                              <Icon name="copy" />
-                            </Button.Content>
-                          </Button>
-                        </Grid.Column>
-                        <Grid.Column width={5}>
-                          <Button style={style} 
-                          animated
-                          onClick = {()=>toggleEdit()}
-                          >
-                            <Button.Content hidden>Edit</Button.Content>
-                            <Button.Content visible>
-                              <Icon name="edit" />
-                            </Button.Content>
-                          </Button>
-                        </Grid.Column>
-                        <Grid.Column width={5}>
-                          <Button style={style} 
-                          animated
-                          onClick={this.removeLinkForm}
-                          >
-                            <Button.Content hidden>Un-link</Button.Content>
-                            <Button.Content visible>
-                              <Icon name="unlink" />
-                            </Button.Content>
-                          </Button>
-                        </Grid.Column>
-                      </Grid.Row>
-                      <Grid.Row>
-                        <Grid.Column width={16}>
-                          {selectedInlineHref ? (
-                            <a
-                              target={"__blank"}
-                              ref={(textarea) => this.textArea = textarea}
-                              href={selectedInlineHref.data.get("href")}
-                            >
-                              {selectedInlineHref.data.get("href")}
-                            </a>
-                          ) : (
-                            <p></p>
-                          )}
-                        </Grid.Column>
-                      </Grid.Row>
-                    </Grid>
-                  </>
-                ) : (
-                  <Form
-                    onSubmit={event => this.submitLinkForm(event, isLinkBool)}
+              <Form onSubmit={event => this.submitLinkForm(event, isLinkBool)}>
+                <Form.Field>
+                  <label>Link Text</label>
+                  <Input
+                    placeholder="Text"
+                    name="text"
+                    defaultValue={
+                      isLinkBool && !selectedText
+                        ? this.props.editor.value.focusText.text
+                        : this.props.editor.value.fragment.text
+                    }
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <label>Link URL</label>
+                  <Input
+                    ref={this.hyperlinkInputRef}
+                    placeholder={"http://example.com"}
+                    defaultValue={
+                      isLinkBool &&
+                      action.isOnlyLink(this.props.editor) &&
+                      selectedInlineHref
+                        ? selectedInlineHref.data.get("href")
+                        : ""
+                    }
+                    name="url"
+                  />
+                </Form.Field>
+                {isLinkBool &&
+                  action.isOnlyLink(this.props.editor) &&
+                  selectedInlineHref && (
+                   <p><a href={selectedInlineHref.data.get("href")}
+                   target='_blank'
+                   >
+                      {calculateTruncatedLinkText(selectedInlineHref.data.get("href"))}
+                    </a></p>
+                  )}
+                <Form.Field>
+                  <Button
+                    secondary
+                    floated="right"
+                    disabled={!isLinkBool}
+                    onMouseDown={this.removeLinkForm}
                   >
-                    <Form.Field>
-                      <label>Link Text</label>
-                      <Input
-                        placeholder="Text"
-                        name="text"
-                        defaultValue={
-                          isLinkBool && !selectedText
-                            ? this.props.editor.value.focusText.text
-                            : this.props.editor.value.fragment.text
-                        }
-                      />
-                    </Form.Field>
-                    <Form.Field>
-                      <label>Link URL</label>
-                      <Input
-                        ref={this.hyperlinkInputRef}
-                        placeholder={"http://example.com"}
-                        defaultValue={
-                          isLinkBool &&
-                          action.isOnlyLink(this.props.editor) &&
-                          selectedInlineHref
-                            ? selectedInlineHref.data.get("href")
-                            : ""
-                        }
-                        name="url"
-                      />
-                    </Form.Field>
-                    <Form.Field>
-                      <Button
-                        secondary
-                        floated="left"
-                        disabled={!isLinkBool}
-                        onMouseDown={this.removeLinkForm}
-                      >
-                        Remove
-                      </Button>
-                      <Button primary floated="right" type="submit">
-                        Apply
-                      </Button>
-                    </Form.Field>
-                  </Form>
-                )}
-              </>
+                    Remove
+                  </Button>
+                  <Button primary floated="right" type="submit">
+                    Apply
+                  </Button>
+                </Form.Field>
+              </Form>
             </Ref>
           }
           onClose={this.closeSetLinkForm}
