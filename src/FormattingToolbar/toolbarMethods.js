@@ -212,6 +212,17 @@ export const transformListToParagraph = (editor, type) => {
 };
 
 /**
+ * A trigger to the Slate editor to make a list_item within a list_item.
+ */
+export const transformListToNestedList = (editor, type) => {
+  editor.withoutNormalizing(() => {
+    editor
+    .wrapBlock({ type, data: { tight: true } })
+    .wrapBlock(CONST.LIST_ITEM);
+  });
+};
+
+/**
  * A trigger to the Slate editor to swap a ul_list to ol_list or vice versa.
  */
 export const transformListSwap = (editor, type, value) => {

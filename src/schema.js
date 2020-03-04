@@ -83,6 +83,8 @@ const schema = {
       nodes: [
         {
           match: [
+            { type: 'ol_list' },
+            { type: 'ul_list' },
             { type: 'paragraph' },
             { type: 'block_quote' },
           ]
@@ -98,6 +100,7 @@ const schema = {
       nodes: [
         {
           match: [
+            { type: 'block_quote' },
             { type: 'paragraph' },
             { type: 'ol_list' },
             { type: 'ul_list' },
