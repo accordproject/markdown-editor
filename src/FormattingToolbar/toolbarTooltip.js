@@ -30,18 +30,8 @@ function OS () {
     MOD: "⌘"
   };
 
-  const windowsPlatforms = {
-    os : {
-      "Win32": true, 
-      "Win64": true, 
-      "Windows": true, 
-      "WinCE": true
-    },
-    MOD: "Ctrl"
-  };
-
   if (macosPlatforms.os[platform]) return macosPlatforms.MOD;
-  return windowsPlatforms.MOD;
+  return 'Ctrl';
 }
 
 export const MOD = OS();
