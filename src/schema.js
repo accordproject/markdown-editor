@@ -51,7 +51,7 @@ const schema = {
             { type: 'linebreak' },
             { type: 'html_inline' },
             { type: 'link' },
-            { type: 'image' }
+            { type: 'image' },
           ]
         },
       ],

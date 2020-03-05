@@ -47,20 +47,15 @@ function List() {
    * @param {Editor} editor
    * @param {Function} next
    */
-  const onTab = (event, editor, next) => {
+  async function onTab (event, editor, next) {
     const { value } = editor;
-    const { startBlock } = value;
-console.log('1')
     if (isSelectionInput(value, CONST.LIST_ITEM)) {
       event.preventDefault();
-      console.log('2')
-      editor.withoutNormalizing(() => {
-        console.log('3')
-        editor
-        .unwrapBlock(CONST.LIST_ITEM)
-        .wrapBlock({ type: currentList(value).type, data: { tight: true } })
-        .wrapBlock(CONST.LIST_ITEM)
-        
+        editor.withoutNormalizing(() => {
+        editor.unwrapBlock(CONST.LIST_ITEM)
+        editor.wrapBlock({ type: currentList(value).type, data: { tight: true } }) 
+        editor.wrapBlock(CONST.LIST_ITEM)   
+          
       });
       return true;
     }
@@ -77,8 +72,8 @@ console.log('1')
     switch (event.key) {
       case 'Enter':
         return onEnter(event, editor, next);
-        // case 'Tab':
-        //   return onTab(event, editor, next);
+        case 'Tab':
+          return onTab(event, editor, next);
       default:
         return next();
     }
