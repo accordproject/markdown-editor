@@ -21,22 +21,27 @@ function OS () {
   const {platform} = window.navigator;
 
   const macosPlatforms = {
-    os: ["Macintosh", "MacIntel", "MacPPC", "Mac68K"],
+    os: {
+      "Macintosh": true, 
+      "MacIntel": true, 
+      "MacPPC": true, 
+      "Mac68K": true
+    },
     MOD: "⌘"
   };
 
   const windowsPlatforms = {
-    os : ["Win32", "Win64", "Windows", "WinCE"],
+    os : {
+      "Win32": true, 
+      "Win64": true, 
+      "Windows": true, 
+      "WinCE": true
+    },
     MOD: "Ctrl"
   };
 
-  if (macosPlatforms.os.indexOf(platform) !== -1) {
-    return macosPlatforms.MOD;
-  }  else if (windowsPlatforms.os.indexOf(platform) !== -1) {
-    return windowsPlatforms.MOD;
-  } else if (!os && /Linux/.test(platform)) {
-    return windowsPlatforms.MOD;
-  }
+  if (macosPlatforms.os[platform]) return macosPlatforms.MOD;
+  return windowsPlatforms.MOD;
 }
 
 export const MOD = OS();
