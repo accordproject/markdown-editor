@@ -52,19 +52,6 @@ function List() {
     const { startBlock } = value;
     event.preventDefault();
 
-    // // Hitting enter on a blank list item will break out of the enclosing list
-    // if (isSelectionInput(value, CONST.LIST_ITEM) && startBlock.text.length === 0) {
-    //   editor.withoutNormalizing(() => {
-    //     event.preventDefault();
-    //     editor
-    //       .setBlocks(CONST.PARAGRAPH)
-    //       .unwrapBlock(CONST.LIST_ITEM)
-    //       .unwrapBlock(currentList(value).type);
-    //   });
-    //   return false;
-    // }
-
-    // Hitting enter on a non-empty list item will add a new list_item
     if (isSelectionInput(value, CONST.LIST_ITEM)) {
       editor.withoutNormalizing(() => {
         event.preventDefault();
