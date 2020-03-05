@@ -55,6 +55,13 @@ const VertDivider = styled.div`
   place-self: center;
 `;
 
+const PopupLinkWrapper = styled.p`
+white-space : nowrap;
+overflow : hidden;
+text-overflow : ellipsis;
+max-width : 250px;
+`;
+
 /**
  * Object constructor for dropdown styling
  * @param {*} input
@@ -368,61 +375,81 @@ export default class FormatToolbar extends React.Component {
     const selectedInlineHref = document.getClosestInline(selection.anchor.path);
     const selectedText = this.props.editor.value.document
       .getFragmentAtRange(this.props.editor.value.selection).text;
-
-    return (
-      <Ref innerRef={(node) => {
-        this.setLinkFormPopup = node;
-      }}>
-      <Popup
-        context={this.linkButtonRef}
-        content={
-          <Ref innerRef={(node) => {
-            this.setLinkForm = node;
-          }}>
-            <Form
-            onSubmit={event => this.submitLinkForm(event, isLinkBool) }>
-              <Form.Field>
-                <label>Link Text</label>
-                <Input
-                  placeholder='Text'
-                  name='text'
-                  defaultValue={
-                    (isLinkBool && !selectedText)
-                      ? this.props.editor.value.focusText.text
-                      : this.props.editor.value.fragment.text
-                  }
-                />
-              </Form.Field>
-              <Form.Field>
-                <label>Link URL</label>
-                <Input
-                  ref={this.hyperlinkInputRef}
-                  placeholder={'http://example.com'}
-                  defaultValue={
-                    isLinkBool && action.isOnlyLink(this.props.editor) && selectedInlineHref
-                      ? selectedInlineHref.data.get('href')
-                      : ''
-                  }
-                  name='url'
-                />
-              </Form.Field>
-              <Form.Field>
-                <Button
-                  secondary
-                  floated='left'
-                  disabled={!isLinkBool}
-                  onMouseDown={this.removeLinkForm}>Remove</Button>
-                <Button primary floated='right' type='submit'>Apply</Button>
-              </Form.Field>
-            </Form>
+      return (
+      <Ref
+        innerRef={node => {
+          this.setLinkFormPopup = node;
+        }}
+      >
+        <Popup
+          context={this.linkButtonRef}
+          content={
+            <Ref
+              innerRef={node => {
+                this.setLinkForm = node;
+              }}
+            >
+              <Form onSubmit={event => this.submitLinkForm(event, isLinkBool)}>
+                <Form.Field>
+                  <label>Link Text</label>
+                  <Input
+                    placeholder="Text"
+                    name="text"
+                    defaultValue={
+                      isLinkBool && !selectedText
+                        ? this.props.editor.value.focusText.text
+                        : this.props.editor.value.fragment.text
+                    }
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <label>Link URL</label>
+                  <Input
+                    ref={this.hyperlinkInputRef}
+                    placeholder={"http://example.com"}
+                    defaultValue={
+                      isLinkBool &&
+                      action.isOnlyLink(this.props.editor) &&
+                      selectedInlineHref
+                        ? selectedInlineHref.data.get("href")
+                        : ""
+                    }
+                    name="url"
+                  />
+                </Form.Field>
+                {isLinkBool &&
+                  action.isOnlyLink(this.props.editor) &&
+                  selectedInlineHref && (
+                    <PopupLinkWrapper>
+                   <a href={selectedInlineHref.data.get("href")}
+                   target='_blank'
+                   >
+                      {selectedInlineHref.data.get("href")}
+                    </a>
+                    </PopupLinkWrapper>
+                  )}
+                <Form.Field>
+                  <Button
+                    secondary
+                    floated="right"
+                    disabled={!isLinkBool}
+                    onMouseDown={this.removeLinkForm}
+                  >
+                    Remove
+                  </Button>
+                  <Button primary floated="right" type="submit">
+                    Apply
+                  </Button>
+                </Form.Field>
+              </Form>
             </Ref>
           }
-        onClose={this.closeSetLinkForm}
-        on='click'
-        open // Keep it open always. We toggle only visibility so we can calculate its rect
-        position={popupPosition}
-        style={popupStyle}
-      />
+          onClose={this.closeSetLinkForm}
+          on="click"
+          open // Keep it open always. We toggle only visibility so we can calculate its rect
+          position={popupPosition}
+          style={popupStyle}
+        />
       </Ref>
     );
   }

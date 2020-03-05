@@ -4,7 +4,7 @@
 
 <p align="center">
 
-   <a href="https://accordproject-markdown-editor.netlify.com/examples/">
+   <a href="https://accordproject-markdown-editor.netlify.com/">
       <img src="https://api.netlify.com/api/v1/badges/952fdc5d-a2bb-4895-a375-25ea1c6f30d8/deploy-status" alt="Netlify Status" />
    </a>
    <a href="https://travis-ci.org/accordproject/markdown-editor">
@@ -46,7 +46,7 @@ The editor includes a formatting toolbar.
 
 This component is Apache-2 licensed Open Source. Contributors welcome!
 
-### [Demo](https://accordproject-markdown-editor.netlify.com/examples/)
+### [Demo](https://accordproject-markdown-editor.netlify.com/)
 
 ### Usage
 
@@ -85,7 +85,7 @@ A `TextArea` containing [CommonMark][CommonMark] synchronized with a `MarkdownEd
 
 ![overview image](overview.png)
 
-In order to run an isolated local development example, run `npm run dev` and then navigate to: http://localhost:3001/examples
+In order to run an isolated local development example, run `npm run dev` and then navigate to: http://localhost:3001/
 
 ## Available Scripts
 
@@ -94,7 +94,7 @@ In the project directory, you can run:
 #### `npm run dev`
 
 Runs the app in the development mode.<br>
-Open [http://localhost:3001/examples](http://localhost:3001/examples) to view it in the browser.
+Open [http://localhost:3001/](http://localhost:3001/) to view it in the browser.
 
 The page will reload if you make edits.<br>
 

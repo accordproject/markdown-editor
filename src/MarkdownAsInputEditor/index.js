@@ -42,19 +42,19 @@ function MarkdownAsInputEditor(props) {
   /**
    * Render the component, based on showSlate
    */
-  const card = <Card fluid>
-  <Card.Content>
-  <TextareaAutosize
-    className={'textarea'}
-    width={'100%'}
-    placeholder={props.markdown}
-    value={props.markdown}
-    // eslint-disable-next-line no-unused-vars
-    onChange={onChangeHandler}
-    readOnly={props.readOnly}
-  />
-  </Card.Content>
-</Card>;
+  const card = <Card className="ap-markdown-editor" fluid>
+    <Card.Content>
+    <TextareaAutosize
+      className={'textarea'}
+      width={'100%'}
+      placeholder={props.markdown}
+      value={props.markdown}
+      // eslint-disable-next-line no-unused-vars
+      onChange={onChangeHandler}
+      readOnly={props.readOnly}
+    />
+    </Card.Content>
+  </Card>;
 
   return (
     <div>

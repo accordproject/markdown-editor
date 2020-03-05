@@ -331,33 +331,89 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   };
 
   /**
+  * Method to handle lists
+  * @param {*} editor
+  * @param {*} type
+  */  
+ 
+  let handleList = (editor, type) => {
+    if (action.isSelectionList(editor.value)) {
+      if (action.currentList(editor.value).type === type) {
+        return action.transformListToParagraph(editor, type);
+      } else {
+        return action.transformListSwap(editor, type, editor.value);
+      }
+    } else if( action.isSelectionInput(editor.value, "block_quote") ) {
+      editor.unwrapBlock("block_quote");
+      return action.transformParagraphToList(editor, type);
+
+    }else{
+      return action.transformParagraphToList(editor, type);
+    }
+  };
+  
+    /**
+  * Method to handle block quotes
+  * @param {*} editor
+  */  
+ 
+  let handleBlockQuotes = (editor) => {
+    if(action.isSelectionInput(editor.value, "block_quote")){
+    editor.unwrapBlock("block_quote");
+    }else if(action.isSelectionList(editor.value)){
+      action.isSelectionInput(editor.value, "ol_list")?action.transformListToParagraph(editor,'ol_list'):action.transformListToParagraph(editor,'ul_list')
+      editor.wrapBlock("block_quote");
+    }else{
+      editor.wrapBlock("block_quote");
+    }
+  }
+
+  /**
   * Called upon a keypress
   * @param {*} event
   * @param {*} editor
   * @param {*} next
   */
   const onKeyDown = async (event, editor, next) => {
-    if (isHotKey('mod+z', event)) {
-      if (editor.props.editorProps.onUndoOrRedo) {
+    switch (true) {
+      
+      case event.key==='Enter':
+        return handleEnter(event, editor, next);  
+        
+      case event.key==='Backspace':
+        return handleBackspace(event, editor, next);
+        
+      case isHotKey("mod+z", event) && editor.props.editorProps.onUndoOrRedo:
         await editor.undo();
         return editor.props.editorProps.onUndoOrRedo(editor);
-      }
-    }
-    if (isHotKey('mod+shift+z', event)) {
-      if (editor.props.editorProps.onUndoOrRedo) {
+
+      case isHotKey('mod+shift+z', event) && editor.props.editorProps.onUndoOrRedo:
         await editor.redo();
         return editor.props.editorProps.onUndoOrRedo(editor);
-      }
+      
+      case isHotKey("mod+b", event) :
+        return editor.toggleMark("bold");
+
+      case isHotKey("mod+i", event):
+        return editor.toggleMark("italic");
+        
+      case isHotKey("mod+alt+c", event):
+        return editor.toggleMark("code");
+        
+      case isHotKey("mod+q", event):
+        return handleBlockQuotes(editor)
+        
+      case isHotKey("mod+shift+7", event):
+        return handleList(editor, "ol_list");
+        
+      case isHotKey("mod+shift+8", event):
+        return handleList(editor, "ul_list");
+          
+      default :
+        return next();
     }
-    switch (event.key) {
-      case 'Enter':
-        return handleEnter(event, editor, next);
-      case 'Backspace':
-        return handleBackspace(event, editor, next);
-      default:
-        return next(); // allow
-    }
-  };
+  }
+
 
   /**
   * Called on a paste
@@ -440,7 +496,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   };
 
   return (
-    <div>
+    <div className="ap-markdown-editor">
       <ToolbarWrapper {...editorProps} id="slate-toolbar-wrapper-id" />
       <EditorWrapper {...editorProps} >
         <Editor
