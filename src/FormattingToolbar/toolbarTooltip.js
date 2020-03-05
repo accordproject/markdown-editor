@@ -18,24 +18,25 @@ const firstTwoLetters = word => word.toString().slice(0, 2);
  */
 
 function OS () {
-  var userAgent = window.navigator.userAgent,
-      platform = window.navigator.platform,
-      macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
-      windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
-      os = null,
-      MOD = null;
+  const {platform} = window.navigator;
 
-  if (macosPlatforms.indexOf(platform) !== -1) {
-    os = 'Mac OS';
-    MOD = '⌘';
-  }  else if (windowsPlatforms.indexOf(platform) !== -1) {
-    os = 'Windows';
-    MOD = 'Ctrl';
+  const macosPlatforms = {
+    os: ["Macintosh", "MacIntel", "MacPPC", "Mac68K"],
+    MOD: "⌘"
+  };
+
+  const windowsPlatforms = {
+    os : ["Win32", "Win64", "Windows", "WinCE"],
+    MOD: "Ctrl"
+  };
+
+  if (macosPlatforms.os.indexOf(platform) !== -1) {
+    return macosPlatforms.MOD;
+  }  else if (windowsPlatforms.os.indexOf(platform) !== -1) {
+    return windowsPlatforms.MOD;
   } else if (!os && /Linux/.test(platform)) {
-    os = 'Linux';
-    MOD = 'Ctrl';
+    return windowsPlatforms.MOD;
   }
-  return MOD; 
 }
 
 export const MOD = OS();
@@ -56,8 +57,8 @@ export const capitalizeWord = word => capitalizeFirst(word) + sliceWord(word);
 
 export const identifyBlock = (block) => {
   const typeBeginning = firstTwoLetters(block);
-    if(typeBeginning === 'bl') return 'Blockquote(' + MOD + '+Q)';
-    if(typeBeginning === 'ul') return 'Unordered List(' + MOD + '+Shift+8)';
-    if(typeBeginning === 'ol') return 'Ordered List(' + MOD + '+Shift+7)';
+    if(typeBeginning === 'bl') return 'Quote (' + MOD + '+Q)';
+    if(typeBeginning === 'ul') return 'Bulleted List (' + MOD + '+Shift+8)';
+    if(typeBeginning === 'ol') return 'Numbered List (' + MOD + '+Shift+7)';
   return null;
 };
