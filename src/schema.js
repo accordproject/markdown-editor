@@ -70,21 +70,33 @@ const schema = {
       data: {
         tight: v => v,
       },
-      nodes: [{ match: { type: 'list_item' } }],
+      nodes: [
+        { 
+          match: [
+            { type: 'list_item' },
+            { type: 'ol_list' }
+          ] 
+        }
+      ],
     },
     ul_list: {
       data: {
         tight: v => v,
       },
-      nodes: [{ match: { type: 'list_item' } }],
+      nodes: [
+        { 
+          match: [
+            { type: 'list_item' },
+            { type: 'ul_list' }
+          ] 
+        }
+      ],
     },
     list_item: {
       parent: [{ type: 'ol_list' }, { type: 'ul_list' }],
       nodes: [
         {
           match: [
-            { type: 'ol_list' },
-            { type: 'ul_list' },
             { type: 'paragraph' },
             { type: 'block_quote' },
           ]

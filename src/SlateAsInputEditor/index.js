@@ -349,6 +349,21 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       return action.transformParagraphToList(editor, type);
     }
   };
+
+    /**
+  * Method to handle shift
+  * @param {*} editor
+  * @param {*} type
+  */  
+ 
+ let handleShift = (event, editor, next) => {
+  if (action.isSelectionList(editor.value)) {
+      let type = action.currentList(editor.value).type;
+      return action.transformListToNestedList(editor, type, editor.value);
+  }else{
+    return next();
+  }
+};
   
     /**
   * Method to handle block quotes
@@ -379,6 +394,9 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
         
       case event.key==='Backspace':
         return handleBackspace(event, editor, next);
+
+      // case event.key==='Shift':
+      //   return handleShift(event, editor, next);
         
       case isHotKey("mod+z", event) && editor.props.editorProps.onUndoOrRedo:
         await editor.undo();
