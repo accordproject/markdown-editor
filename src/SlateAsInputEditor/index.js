@@ -32,6 +32,7 @@ import PluginManager from '../PluginManager';
 import FormatToolbar from '../FormattingToolbar';
 import ListPlugin from '../plugins/list';
 import BlockquotePlugin from '../plugins/blockquote';
+import * as CONST from '../constants';
 import * as action from '../FormattingToolbar/toolbarMethods';
 
 import '../styles.css';
@@ -176,13 +177,13 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     const { node, attributes, children } = props;
 
     switch (node.type) {
-      case 'paragraph':
+      case CONST.PARAGRAPH:
         return <p {...attributes}>{children}</p>;
-      case 'heading_one':
+      case CONST.H1:
         return <Heading as="h1" {...attributes}>{children}</Heading>;
-      case 'heading_two':
+      case CONST.H2:
         return <Heading as="h2" {...attributes}>{children}</Heading>;
-      case 'heading_three':
+      case CONST.H3:
         return <Heading as="h3" {...attributes}>{children}</Heading>;
       case 'heading_four':
         return <Heading as="h4" {...attributes}>{children}</Heading>;
@@ -209,14 +210,14 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     const { children, mark, attributes } = props;
 
     switch (mark.type) {
-      case 'bold':
+      case CONST.FONT_BOLD:
         return <strong {...attributes}>{children}</strong>;
-      case 'italic':
+      case CONST.FONT_ITALIC:
         return <em {...attributes}>{children}</em>;
       // case 'underline':
       //   return <u {...{ attributes }}>{children}</u>;
       case 'html':
-      case 'code':
+      case CONST.FONT_CODE:
         return <code {...attributes}>{children}</code>;
       case 'error':
         return <span className='error' {...attributes}>{children}</span>;
@@ -264,10 +265,10 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     if (selection.start.offset !== 0) return next();
 
     const { startBlock } = value;
-    if (startBlock.type === 'paragraph') return next();
+    if (startBlock.type === CONST.PARAGRAPH) return next();
 
     event.preventDefault();
-    editor.setBlocks('paragraph');
+    editor.setBlocks(CONST.PARAGRAPH);
 
     return undefined;
   };
@@ -279,7 +280,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
    * @return {Boolean}
    */
 
-  const isCodespan = value => value.activeMarks.some(mark => mark.type === 'code');
+  const isCodespan = value => value.activeMarks.some(mark => mark.type === CONST.FONT_CODE);
 
   /**
   * On return, if at the end of a node type that should not be extended,
@@ -313,8 +314,8 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
     // Hitting enter while in a codespan will break out of the span
     if (isCodespan(value)) {
       event.preventDefault();
-      editor.removeMark('code');
-      editor.insertBlock('paragraph');
+      editor.removeMark(CONST.FONT_CODE);
+      editor.insertBlock(CONST.PARAGRAPH);
       return false;
     }
 
@@ -326,7 +327,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
 
     // when you hit enter after a heading we insert a paragraph
     event.preventDefault();
-    editor.insertBlock('paragraph');
+    editor.insertBlock(CONST.PARAGRAPH);
     return next();
   };
 
@@ -334,39 +335,38 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   * Method to handle lists
   * @param {*} editor
   * @param {*} type
-  */  
- 
-  let handleList = (editor, type) => {
+  */
+
+  const handleList = (editor, type) => {
     if (action.isSelectionList(editor.value)) {
       if (action.currentList(editor.value).type === type) {
         return action.transformListToParagraph(editor, type);
-      } else {
-        return action.transformListSwap(editor, type, editor.value);
       }
-    } else if( action.isSelectionInput(editor.value, "block_quote") ) {
-      editor.unwrapBlock("block_quote");
-      return action.transformParagraphToList(editor, type);
-
-    }else{
+      return action.transformListSwap(editor, type, editor.value);
+    } if (action.isSelectionInput(editor.value, CONST.BLOCK_QUOTE)) {
+      editor.unwrapBlock(CONST.BLOCK_QUOTE);
       return action.transformParagraphToList(editor, type);
     }
+    return action.transformParagraphToList(editor, type);
   };
-  
-    /**
+
+  /**
   * Method to handle block quotes
   * @param {*} editor
-  */  
- 
-  let handleBlockQuotes = (editor) => {
-    if(action.isSelectionInput(editor.value, "block_quote")){
-    editor.unwrapBlock("block_quote");
-    }else if(action.isSelectionList(editor.value)){
-      action.isSelectionInput(editor.value, "ol_list")?action.transformListToParagraph(editor,'ol_list'):action.transformListToParagraph(editor,'ul_list')
-      editor.wrapBlock("block_quote");
-    }else{
-      editor.wrapBlock("block_quote");
+  */
+
+  const handleBlockQuotes = (editor) => {
+    if (action.isSelectionInput(editor.value, CONST.BLOCK_QUOTE)) {
+      editor.unwrapBlock(CONST.BLOCK_QUOTE);
+    } else if (action.isSelectionList(editor.value)) {
+      if (action.isSelectionInput(editor.value, CONST.OL_LIST)) {
+        action.transformListToParagraph(editor, CONST.OL_LIST);
+      } else { action.transformListToParagraph(editor, CONST.UL_LIST); }
+      editor.wrapBlock(CONST.BLOCK_QUOTE);
+    } else {
+      editor.wrapBlock(CONST.BLOCK_QUOTE);
     }
-  }
+  };
 
   /**
   * Called upon a keypress
@@ -375,59 +375,44 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   * @param {*} next
   */
   const onKeyDown = async (event, editor, next) => {
-    const isEnter = () => {
-      return handleEnter(event, editor, next);
-    }
-
-    const isBackSpace = () => {
-      return handleBackspace(event, editor, next);
-    }
-
+    const isEnter = () => handleEnter(event, editor, next);
+    const isBackSpace = () => handleBackspace(event, editor, next);
     const isSpecialKey = async () => {
       switch (true) {
-        case isHotKey("mod+z", event) && editor.props.editorProps.onUndoOrRedo:
+        case isHotKey('mod+z', event) && editor.props.editorProps.onUndoOrRedo:
           await editor.undo();
           return editor.props.editorProps.onUndoOrRedo(editor);
-
         case isHotKey('mod+shift+z', event) && editor.props.editorProps.onUndoOrRedo:
           await editor.redo();
           return editor.props.editorProps.onUndoOrRedo(editor);
-        
-        case isHotKey("mod+b", event) :
-          return editor.toggleMark("bold");
-
-        case isHotKey("mod+i", event):
-          return editor.toggleMark("italic");
-          
-        case isHotKey("mod+alt+c", event):
-          return editor.toggleMark("code");
-          
-        case isHotKey("mod+q", event):
-          return handleBlockQuotes(editor)
-          
-        case isHotKey("mod+shift+7", event):
-          return handleList(editor, "ol_list");
-          
-        case isHotKey("mod+shift+8", event):
-          return handleList(editor, "ul_list");
-            
-        default :
+        case isHotKey('mod+b', event) && isEditable(editor, CONST.FONT_BOLD):
+          return editor.toggleMark(CONST.FONT_BOLD);
+        case isHotKey('mod+i', event) && isEditable(editor, CONST.FONT_ITALIC):
+          return editor.toggleMark(CONST.FONT_ITALIC);
+        case isHotKey('mod+alt+c', event) && isEditable(editor, CONST.FONT_CODE):
+          return editor.toggleMark(CONST.FONT_CODE);
+        case isHotKey('mod+q', event) && isEditable(editor, CONST.BLOCK_QUOTE):
+          return handleBlockQuotes(editor);
+        case isHotKey('mod+shift+7', event) && isEditable(editor, CONST.OL_LIST):
+          return handleList(editor, CONST.OL_LIST);
+        case isHotKey('mod+shift+8', event) && isEditable(editor, CONST.UL_LIST):
+          return handleList(editor, CONST.UL_LIST);
+        default:
           return next();
       }
-    }
+    };
 
     const inputHandler = (key) => {
       const cases = {
-        'Enter': isEnter,
-        'Backspace': isBackSpace,
-        'default': isSpecialKey,
-      }
-
-      return (cases[key] || cases['default'])();
-    }
+        Enter: isEnter,
+        Backspace: isBackSpace,
+        default: isSpecialKey,
+      };
+      return (cases[key] || cases.default)();
+    };
 
     inputHandler(event.key);
-  }
+  };
 
 
   /**
@@ -609,7 +594,7 @@ SlateAsInputEditor.defaultProps = {
       data: {},
       nodes: [{
         object: 'block',
-        type: 'paragraph',
+        type: CONST.PARAGRAPH,
         data: {},
         nodes: [{
           object: 'text',

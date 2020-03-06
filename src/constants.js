@@ -6,3 +6,6 @@ export const PARAGRAPH = 'paragraph';
 export const H1 = 'heading_one';
 export const H2 = 'heading_two';
 export const H3 = 'heading_three';
+export const FONT_BOLD = 'bold';
+export const FONT_ITALIC = 'italic';
+export const FONT_CODE = 'code';
