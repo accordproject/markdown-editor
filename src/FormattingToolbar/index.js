@@ -675,7 +675,7 @@ export default class FormatToolbar extends React.Component {
             undoIcon.width(),
             undoIcon.padding(),
             undoIcon.vBox(),
-            'Undo (' + tips.MOD + '+Z)',
+            `Undo (${tips.MOD} +Z)`,
             'toolbar-2x2'
           )
       }
@@ -687,7 +687,7 @@ export default class FormatToolbar extends React.Component {
             redoIcon.width(),
             redoIcon.padding(),
             redoIcon.vBox(),
-            'Redo (' + tips.MOD + '+Y)',
+            `Redo (${tips.MOD} +Y)`,
             'toolbar-2x3'
           )
       }

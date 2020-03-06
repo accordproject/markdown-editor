@@ -52,8 +52,8 @@ export const capitalizeWord = word => capitalizeFirst(word) + sliceWord(word);
 
 export const identifyBlock = (block) => {
   const typeBeginning = firstTwoLetters(block);
-    if(typeBeginning === 'bl') return 'Quote (' + MOD + '+Q)';
-    if(typeBeginning === 'ul') return 'Bulleted List (' + MOD + '+Shift+8)';
-    if(typeBeginning === 'ol') return 'Numbered List (' + MOD + '+Shift+7)';
+    if(typeBeginning === 'bl') return `Quote (${MOD}+Q)`;
+    if(typeBeginning === 'ul') return `Bulleted List (${MOD}+Shift+8)`;
+    if(typeBeginning === 'ol') return `Numbered List (${MOD}+Shift+7)`;
   return null;
 };
