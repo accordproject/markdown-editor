@@ -375,43 +375,58 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   * @param {*} next
   */
   const onKeyDown = async (event, editor, next) => {
-    switch (true) {
-      
-      case event.key==='Enter':
-        return handleEnter(event, editor, next);  
-        
-      case event.key==='Backspace':
-        return handleBackspace(event, editor, next);
-        
-      case isHotKey("mod+z", event) && editor.props.editorProps.onUndoOrRedo:
-        await editor.undo();
-        return editor.props.editorProps.onUndoOrRedo(editor);
-
-      case isHotKey('mod+shift+z', event) && editor.props.editorProps.onUndoOrRedo:
-        await editor.redo();
-        return editor.props.editorProps.onUndoOrRedo(editor);
-      
-      case isHotKey("mod+b", event) :
-        return editor.toggleMark("bold");
-
-      case isHotKey("mod+i", event):
-        return editor.toggleMark("italic");
-        
-      case isHotKey("mod+alt+c", event):
-        return editor.toggleMark("code");
-        
-      case isHotKey("mod+q", event):
-        return handleBlockQuotes(editor)
-        
-      case isHotKey("mod+shift+7", event):
-        return handleList(editor, "ol_list");
-        
-      case isHotKey("mod+shift+8", event):
-        return handleList(editor, "ul_list");
-          
-      default :
-        return next();
+    const isEnter = () => {
+      return handleEnter(event, editor, next);
     }
+
+    const isBackSpace = () => {
+      return handleBackspace(event, editor, next);
+    }
+
+    const isSpecialKey = async () => {
+      switch (true) {
+        case isHotKey("mod+z", event) && editor.props.editorProps.onUndoOrRedo:
+          await editor.undo();
+          return editor.props.editorProps.onUndoOrRedo(editor);
+
+        case isHotKey('mod+shift+z', event) && editor.props.editorProps.onUndoOrRedo:
+          await editor.redo();
+          return editor.props.editorProps.onUndoOrRedo(editor);
+        
+        case isHotKey("mod+b", event) :
+          return editor.toggleMark("bold");
+
+        case isHotKey("mod+i", event):
+          return editor.toggleMark("italic");
+          
+        case isHotKey("mod+alt+c", event):
+          return editor.toggleMark("code");
+          
+        case isHotKey("mod+q", event):
+          return handleBlockQuotes(editor)
+          
+        case isHotKey("mod+shift+7", event):
+          return handleList(editor, "ol_list");
+          
+        case isHotKey("mod+shift+8", event):
+          return handleList(editor, "ul_list");
+            
+        default :
+          return next();
+      }
+    }
+
+    const inputHandler = (key) => {
+      const cases = {
+        'Enter': isEnter,
+        'Backspace': isBackSpace,
+        'default': isSpecialKey,
+      }
+
+      return (cases[key] || cases['default'])();
+    }
+
+    inputHandler(event.key);
   }
 
 
