@@ -2,7 +2,7 @@ import React from 'react';
 
 import * as tips from '../FormattingToolbar/toolbarTooltip';
 
-export const type = () => `Bold (${tips.MOD}+B)`;
+export const type = () => 'Bold (' + tips.MOD + '+B)';
 
 export const height = () => '25px';
 
