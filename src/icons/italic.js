@@ -2,7 +2,7 @@ import React from 'react';
 
 import * as tips from '../FormattingToolbar/toolbarTooltip';
 
-export const type = () => `Italic (${tips.MOD} +I)`;
+export const type = () => 'Italic (' + tips.MOD + '+I)';
 
 export const height = () => '25px';
 
