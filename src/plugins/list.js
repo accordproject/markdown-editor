@@ -51,11 +51,34 @@ function List() {
     switch (event.key) {
       case 'Enter':
         return onEnter(event, editor, next);
+      case 'Tab':
+        return onTab(event, editor, next);
       default:
         return next();
     }
   };
 
+    /**
+   * @param {Event} event
+   * @param {Editor} editor
+   * @param {Function} next
+   */
+  async function onTab (event, editor, next) {
+    const { value } = editor;
+    if (isSelectionInput(value, CONST.LIST_ITEM)) {
+      event.preventDefault();
+        editor.withoutNormalizing(() => {
+        editor.unwrapBlock(CONST.LIST_ITEM)
+        editor.wrapBlock({ type: currentList(value).type, data: { tight: true } }) 
+        editor.wrapBlock(CONST.LIST_ITEM)   
+          
+      });
+      return true;
+    }
+
+    return next();
+  };
+  
   /**
    * @param {Object} props
    * @param {Editor} editor
