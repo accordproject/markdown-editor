@@ -338,13 +338,17 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
  
   let handleList = (editor, type) => {
     if (action.isSelectionList(editor.value)) {
-      if (action.currentList(editor.value).type === type) {
-        return action.transformListToParagraph(editor, type);
-      } else {
-        return action.transformListSwap(editor, type, editor.value);
-      }
+      console.log('list')
+      // if (action.currentList(editor.value).type === type) {
+      //   return action.transformListToParagraph(editor, type);
+      // } else {
+      //   return action.transformListSwap(editor, type, editor.value);
+      // }
+      return action.transformBlockQuoteToList(editor, type);
+
     } else if( action.isSelectionInput(editor.value, "block_quote") ) {
       //editor.unwrapBlock("block_quote");
+      console.log('block')
       return action.transformBlockQuoteToList(editor, type);
 
     }else{
