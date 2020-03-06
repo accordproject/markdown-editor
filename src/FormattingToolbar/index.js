@@ -48,9 +48,9 @@ const ToolbarIcon = styled.svg`
 
 const VertDivider = styled.div`
   box-sizing: border-box;
-  height: 24px;
-  width: 1px;
-  border: 1px solid ${props => props.color || '#EFEFEF'};
+  height: 30px;
+  width: 0.2x;
+  border: 0.5px solid ${props => props.color || '#EFEFEF'};
   top: 10px;
   place-self: center;
 `;
@@ -68,7 +68,6 @@ max-width : 250px;
  * @return {*} a new object
  */
 function DropdownStyle(input) {
-  this.color = styles.buttonSymbolActive(input);
   this.alignSelf = 'center';
 }
 
@@ -463,7 +462,7 @@ export default class FormatToolbar extends React.Component {
     const isActive = action.hasLinks(editor);
 
     const fillActivity = isActive
-      ? '#2587DA'
+      ? '#122330'
       : styles.buttonSymbolInactive(editorProps.BUTTON_SYMBOL_INACTIVE);
 
     const bgActivity = isActive

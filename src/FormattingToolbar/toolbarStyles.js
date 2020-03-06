@@ -3,11 +3,11 @@
  */
 export const buttonBgInactiveInactive = input => input || '#FFFFFF';
 
-export const buttonBgActive = input => input || '#F0F0F0';
+export const buttonBgActive = input => input || '#E8F0FE';
 
 export const buttonSymbolInactive = input => input || '#949CA2';
 
-export const buttonSymbolActive = input => input || '#414F58';
+export const buttonSymbolActive = input => input || '#2587DA';
 
 export const tooltipBg = input => input || '#FFFFFF';
 
