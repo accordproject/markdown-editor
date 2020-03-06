@@ -99,6 +99,7 @@ const schema = {
         {
           match: [
             { type: 'paragraph' },
+            { type: 'block_quote' },
             { type: 'ol_list' },
             { type: 'ul_list' },
             { type: 'list_item' },
