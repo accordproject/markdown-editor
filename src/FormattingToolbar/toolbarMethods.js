@@ -183,8 +183,8 @@ export const currentList = value => isSelectionOLList(value) || isSelectionULLis
 export const transformListToBlockQuote = (editor, type, value) => {
   editor.withoutNormalizing(() => {
     editor
-      .unwrapBlock(CONST.LIST_ITEM)
-      .unwrapBlock(currentList(value).type)
+      //.unwrapBlock(CONST.LIST_ITEM)
+      //.unwrapBlock(currentList(value).type)
       .wrapBlock({ type, data: { tight: true } });
   });
 };
@@ -230,7 +230,7 @@ export const transformListSwap = (editor, type, value) => {
 export const transformBlockQuoteToList = (editor, type) => {
   editor.withoutNormalizing(() => {
     editor
-      .unwrapBlock(CONST.BLOCK_QUOTE)
+      //.unwrapBlock(CONST.BLOCK_QUOTE)
       .wrapBlock({ type, data: { tight: true } })
       .wrapBlock(CONST.LIST_ITEM);
   });

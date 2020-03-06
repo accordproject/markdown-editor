@@ -83,7 +83,25 @@ const schema = {
       nodes: [
         {
           match: [
-            { type: 'paragraph' }
+            { type: 'paragraph' },
+            { type: 'block_quote' },
+          ]
+        }
+      ],
+      marks: [
+        { type: 'bold' },
+        { type: 'italic' },
+        { type: 'code' }
+      ],
+    },
+    block_quote: {
+      nodes: [
+        {
+          match: [
+            { type: 'paragraph' },
+            { type: 'ol_list' },
+            { type: 'ul_list' },
+            { type: 'list_item' },
           ]
         }
       ],
