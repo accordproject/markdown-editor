@@ -240,6 +240,7 @@ export const transformBlockQuoteToList = (editor, type) => {
  * A trigger to the Slate editor to make a paragraph into a list_item.
  */
 export const transformParagraphToList = (editor, type) => {
+  !isOnlyLink(editor)&&
   editor.withoutNormalizing(() => {
     editor.wrapBlock({ type, data: { tight: true } }).wrapBlock(CONST.LIST_ITEM);
   });
