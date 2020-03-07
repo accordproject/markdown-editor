@@ -70,7 +70,11 @@ function List() {
       case CONST.UL_LIST:
         return <ul {...attributes}>{children}</ul>;
       case CONST.LIST_ITEM:
-        return <li {...attributes}>{children}</li>;
+        return children.map( (child) => {
+          if (child) {
+            return <li {...attributes}>{child}</li>
+          }
+        });
       default:
         return next();
     }
