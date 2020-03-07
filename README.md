@@ -46,6 +46,28 @@ The editor includes a formatting toolbar.
 
 This component is Apache-2 licensed Open Source. Contributors welcome!
 
+### Keyboard shortcuts
+
+The keyboard shortcuts are as follows
+
+Common actions
+- `CTRL` + `C` - Copy
+- `CTRL` + `X` - Cut
+- `CTRL` + `V` - Paste
+- `CTRL` + `Z` - Undo
+- `CTRL` + `SHIFT` + `Z` - Redo
+- `CTRL` + `Y` - Repeat last action
+
+Text formatting
+- `CTRL` + `B` - Bold
+- `CTRL` + `I` - Italicize 
+- `CTRL` + `Q` - Block quotes
+- `CTRL` + `SHIFT` + `C` - Code
+
+Paragraph formatting
+- `CTRL` + `SHIFT` + `7` - Numbered list
+- `CTRL` + `SHIFT` + `8` - Bulleted list
+
 ### [Demo](https://accordproject-markdown-editor.netlify.com/)
 
 ### Usage
