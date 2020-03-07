@@ -62,7 +62,7 @@ The keyboard shortcuts are as follows
   - `CTRL` + `B` - Bold
   - `CTRL` + `I` - Italicize 
   - `CTRL` + `Q` - Block quotes
-  - `CTRL` + `SHIFT` + `C` - Code
+  - `CTRL` + `ALT` + `C` - Code
 
 - Paragraph formatting
   - `CTRL` + `SHIFT` + `7` - Numbered list
