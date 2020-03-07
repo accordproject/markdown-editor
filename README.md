@@ -50,11 +50,8 @@ This component is Apache-2 licensed Open Source. Contributors welcome!
 
 The keyboard shortcuts are as follows
 
-<<<<<<< HEAD
 Windows/Linux:
 
-=======
->>>>>>> 32f85dd... docs(Readme) : Fix formatting for keyboard shortcuts - #244
 - Common actions
   - `CTRL` + `C` - Copy
   - `CTRL` + `X` - Cut
