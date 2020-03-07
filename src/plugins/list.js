@@ -57,6 +57,13 @@ function List() {
         editor.wrapBlock(CONST.LIST_ITEM)   
           
       });
+      event.preventDefault();
+      editor.withoutNormalizing(() => {
+      editor.unwrapBlock(CONST.LIST_ITEM)
+      editor.wrapBlock({ type: currentList(value).type, data: { tight: true } }) 
+      editor.wrapBlock(CONST.LIST_ITEM)   
+        
+    });
       return true;
     }
 
