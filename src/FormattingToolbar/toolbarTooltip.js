@@ -16,21 +16,17 @@ const firstTwoLetters = word => word.toString().slice(0, 2);
 /**
  * Function to determine OS and MOD command of user
  */
-
-function OS () {
-  const {platform} = window.navigator;
+function OS() {
+  const { platform } = window.navigator;
 
   const macosPlatforms = {
-    os: {
-      "Macintosh": true, 
-      "MacIntel": true, 
-      "MacPPC": true, 
-      "Mac68K": true
-    },
-    MOD: "⌘"
+    Macintosh: true,
+    MacIntel: true,
+    MacPPC: true,
+    Mac68K: true
   };
 
-  if (macosPlatforms.os[platform]) return macosPlatforms.MOD;
+  if (macosPlatforms[platform]) return '⌘';
   return 'Ctrl';
 }
 
@@ -52,8 +48,8 @@ export const capitalizeWord = word => capitalizeFirst(word) + sliceWord(word);
 
 export const identifyBlock = (block) => {
   const typeBeginning = firstTwoLetters(block);
-    if(typeBeginning === 'bl') return `Quote (${MOD}+Q)`;
-    if(typeBeginning === 'ul') return `Bulleted List (${MOD}+Shift+8)`;
-    if(typeBeginning === 'ol') return `Numbered List (${MOD}+Shift+7)`;
+  if (typeBeginning === 'bl') return `Quote (${MOD}+Q)`;
+  if (typeBeginning === 'ul') return `Bulleted List (${MOD}+Shift+8)`;
+  if (typeBeginning === 'ol') return `Numbered List (${MOD}+Shift+7)`;
   return null;
 };
