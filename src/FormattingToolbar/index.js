@@ -271,7 +271,7 @@ export default class FormatToolbar extends React.Component {
   /**
    * Render a mark-toggling toolbar button.
    */
-  renderMarkButton(type, icon, hi, wi, pa, vBox, classInput) {
+  renderMarkButton(type, label, icon, hi, wi, pa, vBox, classInput) {
     const { editor, editorProps } = this.props;
 
     const isActive = action.hasMark(editor, type);
@@ -292,7 +292,7 @@ export default class FormatToolbar extends React.Component {
 
     return (
       <Popup
-        content={tips.capitalizeWord(type)}
+        content={label}
         style={style}
         position='bottom center'
         trigger={
@@ -375,9 +375,9 @@ export default class FormatToolbar extends React.Component {
     const selectedInlineHref = document.getClosestInline(selection.anchor.path);
     const selectedText = this.props.editor.value.document
       .getFragmentAtRange(this.props.editor.value.selection).text;
-      return (
+    return (
       <Ref
-        innerRef={node => {
+        innerRef={(node) => {
           this.setLinkFormPopup = node;
         }}
       >
@@ -385,7 +385,7 @@ export default class FormatToolbar extends React.Component {
           context={this.linkButtonRef}
           content={
             <Ref
-              innerRef={node => {
+              innerRef={(node) => {
                 this.setLinkForm = node;
               }}
             >
@@ -406,28 +406,28 @@ export default class FormatToolbar extends React.Component {
                   <label>Link URL</label>
                   <Input
                     ref={this.hyperlinkInputRef}
-                    placeholder={"http://example.com"}
+                    placeholder={'http://example.com'}
                     defaultValue={
-                      isLinkBool &&
-                      action.isOnlyLink(this.props.editor) &&
-                      selectedInlineHref
-                        ? selectedInlineHref.data.get("href")
-                        : ""
+                      isLinkBool
+                      && action.isOnlyLink(this.props.editor)
+                      && selectedInlineHref
+                        ? selectedInlineHref.data.get('href')
+                        : ''
                     }
                     name="url"
                   />
                 </Form.Field>
-                {isLinkBool &&
-                  action.isOnlyLink(this.props.editor) &&
-                  selectedInlineHref && (
+                {isLinkBool
+                  && action.isOnlyLink(this.props.editor)
+                  && selectedInlineHref && (
                     <PopupLinkWrapper>
-                   <a href={selectedInlineHref.data.get("href")}
+                   <a href={selectedInlineHref.data.get('href')}
                    target='_blank'
                    >
-                      {selectedInlineHref.data.get("href")}
+                      {selectedInlineHref.data.get('href')}
                     </a>
                     </PopupLinkWrapper>
-                  )}
+                )}
                 <Form.Field>
                   <Button
                     secondary
@@ -516,7 +516,7 @@ export default class FormatToolbar extends React.Component {
 
     return (
       <Popup
-        content={tips.capitalizeWord(action)} 
+        content={tips.capitalizeWord(action)}
         style={style}
         position='bottom center'
         trigger={
@@ -576,6 +576,7 @@ export default class FormatToolbar extends React.Component {
         {
           this.renderMarkButton(
             boldIcon.type(),
+            boldIcon.label(),
             boldIcon.icon,
             boldIcon.height(),
             boldIcon.width(),
@@ -587,6 +588,7 @@ export default class FormatToolbar extends React.Component {
         {
           this.renderMarkButton(
             italicIcon.type(),
+            italicIcon.label(),
             italicIcon.icon,
             italicIcon.height(),
             italicIcon.width(),
@@ -598,6 +600,7 @@ export default class FormatToolbar extends React.Component {
         {/* {
           this.renderMarkButton(
             underlineIcon.type(),
+            boldIcon.label(),
             underlineIcon.icon,
             underlineIcon.height(),
             underlineIcon.width(),
@@ -610,6 +613,7 @@ export default class FormatToolbar extends React.Component {
         {
           this.renderMarkButton(
             codeIcon.type(),
+            codeIcon.label(),
             codeIcon.icon,
             codeIcon.height(),
             codeIcon.width(),
