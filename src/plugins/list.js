@@ -1,6 +1,6 @@
 import React from 'react';
 import * as CONST from '../constants';
-import { isSelectionInput, currentList } from '../FormattingToolbar/toolbarMethods';
+import { isSelectionInput, currentList,isClickBlockQuote } from '../FormattingToolbar/toolbarMethods';
 
 /**
  * This is a plugin into the markdown editor to handle lists
@@ -51,6 +51,9 @@ function List() {
     const { value } = editor;
     if (isSelectionInput(value, CONST.LIST_ITEM)) {
       event.preventDefault();
+        if(isSelectionInput(value, CONST.BLOCK_QUOTE)){
+          return true
+        }
         editor.withoutNormalizing(() => {
         editor.unwrapBlock(CONST.LIST_ITEM)
         editor.wrapBlock({ type: currentList(value).type, data: { tight: true } }) 

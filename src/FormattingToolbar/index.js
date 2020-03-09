@@ -216,22 +216,28 @@ export default class FormatToolbar extends React.Component {
     const { value } = editor;
 
     if (!lockText || pluginManager.isEditable(editor, type)) {
+      console.log(type)
       event.preventDefault();
       if (action.isClickBlockQuote(type)) {
+        console.log('action.isClickBlockQuote(type)')
         action.isSelectionList(value)
           ? action.transformListToBlockQuote(editor, type, value)
           : action.transformPtoBQSwap(editor, type);
       } else if (action.isClickHeading(type)) {
+        console.log('action.isClickHeading(type)')
         action.hasBlock(editor, type)
           ? editor.setBlocks(CONST.PARAGRAPH)
           : editor.setBlocks(type);
       } else if (action.isSelectionList(value)) {
+        console.log('action.isSelectionList(value)')
         action.currentList(value).type === type
           ? action.transformListToParagraph(editor, type)
           : action.transformListSwap(editor, type, value);
       } else if (action.isSelectionInput(value, CONST.BLOCK_QUOTE)) {
+        console.log('action.isSelectionInput(value, CONST.BLOCK_QUOTE)')
         action.transformBlockQuoteToList(editor, type);
       } else {
+        console.log('action.isSelectionInput(value, CONST.BLOCK_QUOTE)')
         action.transformParagraphToList(editor, type);
       }
     }
