@@ -375,16 +375,20 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   * @param {*} next
   */
   const onKeyDown = async (event, editor, next) => {
+    const { onUndoOrRedo } = editor.props.editorProps;
     const isEnter = () => handleEnter(event, editor, next);
     const isBackSpace = () => handleBackspace(event, editor, next);
-    const isSpecialKey = async () => {
+
+    const isSpecialKey = () => {
       switch (true) {
-        case isHotKey('mod+z', event) && editor.props.editorProps.onUndoOrRedo:
-          await editor.undo();
-          return editor.props.editorProps.onUndoOrRedo(editor);
-        case isHotKey('mod+shift+z', event) && editor.props.editorProps.onUndoOrRedo:
-          await editor.redo();
-          return editor.props.editorProps.onUndoOrRedo(editor);
+        case isHotKey('mod+z', event):
+          editor.undo();
+          if (onUndoOrRedo) return onUndoOrRedo(editor);
+          return next();
+        case isHotKey('mod+shift+z', event):
+          editor.redo();
+          if (onUndoOrRedo) return onUndoOrRedo(editor);
+          return next();
         case isHotKey('mod+b', event) && isEditable(editor, CONST.FONT_BOLD):
           return editor.toggleMark(CONST.FONT_BOLD);
         case isHotKey('mod+i', event) && isEditable(editor, CONST.FONT_ITALIC):
