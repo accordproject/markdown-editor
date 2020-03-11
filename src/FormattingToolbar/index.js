@@ -22,6 +22,7 @@ import * as uListIcon from '../icons/UL';
 import * as hyperlinkIcon from '../icons/hyperlink';
 import * as undoIcon from '../icons/navigation-left';
 import * as redoIcon from '../icons/navigation-right';
+import * as imageIcon from '../icons/image';
 
 import './toolbar.css';
 
@@ -663,6 +664,17 @@ export default class FormatToolbar extends React.Component {
             hyperlinkIcon.width(),
             hyperlinkIcon.padding(),
             hyperlinkIcon.vBox(),
+            'toolbar-2x0'
+          )
+        }
+        {
+          this.renderMarkButton(
+            imageIcon.type(),
+            imageIcon.icon,
+            imageIcon.height(),
+            imageIcon.width(),
+            imageIcon.padding(),
+            imageIcon.vBox(),
             'toolbar-2x1'
           )
         }

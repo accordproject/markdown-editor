@@ -7,7 +7,7 @@
         auto auto auto
         auto auto auto
         auto auto auto
-        auto auto
+        auto auto auto
         auto auto;
 }
 .toolbar-0x0 { grid-column-start: 1; }
@@ -22,7 +22,8 @@
 .toolbar-1x3 { grid-column-start: 9; }
 .toolbar-4x2 { grid-column-start: 10; }
 .toolbar-2x1 { grid-column-start: 11; }
-.toolbar-4x3 { grid-column-start: 12; }
-.toolbar-2x2 { grid-column-start: 13; }
-.toolbar-2x3 { grid-column-start: 14; }
-.toolbar-2x4 { grid-column-start: 15; }
+.toolbar-2x1 { grid-column-start: 12; }
+.toolbar-4x3 { grid-column-start: 13; }
+.toolbar-2x2 { grid-column-start: 14; }
+.toolbar-2x3 { grid-column-start: 15; }
+.toolbar-2x4 { grid-column-start: 16; }
