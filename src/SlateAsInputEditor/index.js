@@ -319,15 +319,14 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
       return false;
     }
 
-    // if you hit enter inside anything that is not a heading
-    // we use the default behavior
-    if (!startBlock.type.startsWith('heading')) {
-      return next();
+    // when you hit enter after a heading we insert a paragraph
+    if (startBlock.type.startsWith('heading')) {
+      event.preventDefault();
+      return editor.insertBlock(CONST.PARAGRAPH);
     }
 
-    // when you hit enter after a heading we insert a paragraph
-    event.preventDefault();
-    editor.insertBlock(CONST.PARAGRAPH);
+    // if you hit enter inside anything that is not a heading
+    // we use the default behavior
     return next();
   };
 
