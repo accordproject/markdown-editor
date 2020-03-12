@@ -505,7 +505,7 @@ export default class FormatToolbar extends React.Component {
   /**
    * Render a history-toggling toolbar button.
    */
-  renderHistoryButton(type, icon, hi, wi, pa, vBox, action, classInput) {
+  renderHistoryButton(type, label, icon, hi, wi, pa, vBox, classInput) {
     const { editor, editorProps } = this.props;
 
     const style = {
@@ -516,7 +516,7 @@ export default class FormatToolbar extends React.Component {
 
     return (
       <Popup
-        content={tips.capitalizeWord(action)}
+        content={label}
         style={style}
         position='bottom center'
         trigger={
@@ -528,7 +528,7 @@ export default class FormatToolbar extends React.Component {
             padding={pa}
             viewBox={vBox}
             className={classInput}
-            onClick={event => this.onClickHistory(event, action, editor)}>
+            onClick={event => this.onClickHistory(event, type, editor)}>
               {icon(styles.buttonSymbolInactive(editorProps.BUTTON_SYMBOL_INACTIVE))}
           </ ToolbarIcon>
         }
@@ -674,24 +674,24 @@ export default class FormatToolbar extends React.Component {
         {
           this.renderHistoryButton(
             undoIcon.type(),
+            undoIcon.label(),
             undoIcon.icon,
             undoIcon.height(),
             undoIcon.width(),
             undoIcon.padding(),
             undoIcon.vBox(),
-            `Undo (${tips.MOD}+Z)`,
             'toolbar-2x2'
           )
       }
         {
           this.renderHistoryButton(
             redoIcon.type(),
+            undoIcon.label(),
             redoIcon.icon,
             redoIcon.height(),
             redoIcon.width(),
             redoIcon.padding(),
             redoIcon.vBox(),
-            `Redo (${tips.MOD}+Y)`,
             'toolbar-2x3'
           )
       }
