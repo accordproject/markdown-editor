@@ -686,7 +686,7 @@ export default class FormatToolbar extends React.Component {
         {
           this.renderHistoryButton(
             redoIcon.type(),
-            undoIcon.label(),
+            redoIcon.label(),
             redoIcon.icon,
             redoIcon.height(),
             redoIcon.width(),
