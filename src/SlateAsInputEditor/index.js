@@ -327,7 +327,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
 
     // when you hit enter after a heading we insert a paragraph
     event.preventDefault();
-    editor.insertBlock(CONST.PARAGRAPH);
+    editor.insertText('');
     return next();
   };
 
