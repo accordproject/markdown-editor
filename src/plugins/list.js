@@ -1,6 +1,7 @@
 import React from 'react';
 import * as CONST from '../constants';
 import { isSelectionInput, currentList,isClickBlockQuote } from '../FormattingToolbar/toolbarMethods';
+import isHotKey from 'is-hotkey';
 
 /**
  * This is a plugin into the markdown editor to handle lists
@@ -67,18 +68,46 @@ function List() {
     return next();
   };
 
+    /**
+   * @param {Event} event
+   * @param {Editor} editor
+   * @param {Function} next
+   */
+  async function onShiftTab (event, editor, next) {
+    const { value } = editor;
+    if (isSelectionInput(value, CONST.LIST_ITEM)) {
+      event.preventDefault();
+        if(isSelectionInput(value, CONST.BLOCK_QUOTE)){
+          return true
+        }
+        editor.withoutNormalizing(() => {
+        editor.unwrapBlock(CONST.LIST_ITEM)
+        editor.unwrapBlock({ type: currentList(value).type, data: { tight: true } }) 
+        editor.wrapBlock(CONST.LIST_ITEM)   
+        editor.unwrapBlock(CONST.LIST_ITEM)
+        editor.unwrapBlock({ type: currentList(value).type, data: { tight: true } }) 
+        editor.wrapBlock(CONST.LIST_ITEM)   
+      });
+      return true;
+    }
+
+    return next();
+  };
+
   /**
    * @param {Event} event
    * @param {Editor} editor
    * @param {Function} next
    */
   const onKeyDown = (event, editor, next) => {
-    switch (event.key) {
-      case 'Enter':
-        return onEnter(event, editor, next);
-        case 'Tab':
+    switch (true) {
+      case isHotKey('shift+Tab', event):
+        return onShiftTab(event, editor, next);
+      case event.key==='Enter':
+        return onEnter(event, editor, next);  
+      case event.key==='Tab':
           return onTab(event, editor, next);
-      default:
+        default:
         return next();
     }
   };
