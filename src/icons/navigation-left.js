@@ -1,6 +1,10 @@
 import React from 'react';
 
+import * as tips from '../FormattingToolbar/toolbarTooltip';
+
 export const type = () => 'undo';
+
+export const label = () => `Undo (${tips.MOD}+Z)`;
 
 export const height = () => '25px';
 
