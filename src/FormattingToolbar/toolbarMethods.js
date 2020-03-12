@@ -194,7 +194,6 @@ export const transformListToBlockQuote = (editor, type, value) => {
  */
 /* eslint no-unused-expressions: 0 */
 export const transformPtoBQSwap = (editor, type) => {
-  console.log('hi')
   !isOnlyLink(editor)&&
   (isSelectionInput(editor.value, CONST.BLOCK_QUOTE)
     ? editor.unwrapBlock(CONST.BLOCK_QUOTE)
