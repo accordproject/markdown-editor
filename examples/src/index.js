@@ -21,11 +21,13 @@ This is text. This is *italic* text. This is **bold** text. This is a [link](htt
 
 This is ***bold and italic*** text.
 
+\`\`\`
 This is a
 softbreak.
 
 This is a  
 linebreak.
+\`\`\`
 
 ![ap_logo](https://docs.accordproject.org/docs/assets/020/template.png "AP triangle")
 
@@ -33,11 +35,13 @@ linebreak.
 ## Heading Two
 This is more text.
 
+\`\`\`
 Before a thematic break.
 
 ---
 
 After a thematic break.
+\`\`\`
 
 Ordered lists:
 
@@ -91,7 +95,7 @@ function Demo() {
     const markdown = slateTransformer.toMarkdown(slateJSON);
     setSlateValue(slateValue);
     setMarkdown(markdown);
-  }, []);
+  }, [slateValue]);
 
   return (
     <div>
