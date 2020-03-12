@@ -50,6 +50,8 @@ This component is Apache-2 licensed Open Source. Contributors welcome!
 
 The keyboard shortcuts are as follows
 
+Windows/Linux:
+
 - Common actions
   - `CTRL` + `C` - Copy
   - `CTRL` + `X` - Cut
@@ -67,6 +69,26 @@ The keyboard shortcuts are as follows
 - Paragraph formatting
   - `CTRL` + `SHIFT` + `7` - Numbered list
   - `CTRL` + `SHIFT` + `8` - Bulleted list
+
+Mac:
+
+- Common actions
+  - `⌘` + `C` - Copy
+  - `⌘` + `X` - Cut
+  - `⌘` + `V` - Paste
+  - `⌘` + `Z` - Undo
+  - `⌘` + `SHIFT` + `Z` - Redo
+  - `⌘` + `Y` - Repeat last action
+
+- Text formatting
+  - `⌘` + `B` - Bold
+  - `⌘` + `I` - Italicize 
+  - `⌘` + `Q` - Block quotes
+  - `⌘` + `ALT` + `C` - Code
+
+- Paragraph formatting
+  - `⌘` + `SHIFT` + `7` - Numbered list
+  - `⌘` + `SHIFT` + `8` - Bulleted list
 
 ### [Demo](https://accordproject-markdown-editor.netlify.com/)
 
