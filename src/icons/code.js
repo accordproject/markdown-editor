@@ -4,7 +4,7 @@ import * as tips from '../FormattingToolbar/toolbarTooltip';
 
 export const type = () => 'code';
 
-export const label = () => `Code (${tips.MOD}+Alt+C)`;
+export const label = () => `Code (${tips.MOD}+Shift+9)`;
 
 export const height = () => '25px';
 

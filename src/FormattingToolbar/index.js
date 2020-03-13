@@ -611,18 +611,6 @@ export default class FormatToolbar extends React.Component {
         } */}
         <VertDivider color={editorProps.DIVIDER} className='toolbar-4x1'/>
         {
-          this.renderMarkButton(
-            codeIcon.type(),
-            codeIcon.label(),
-            codeIcon.icon,
-            codeIcon.height(),
-            codeIcon.width(),
-            codeIcon.padding(),
-            codeIcon.vBox(),
-            'toolbar-1x0'
-          )
-        }
-        {
           this.renderBlockButton(
             quoteIcon.type(),
             quoteIcon.icon,
@@ -630,6 +618,17 @@ export default class FormatToolbar extends React.Component {
             quoteIcon.width(),
             quoteIcon.padding(),
             quoteIcon.vBox(),
+            'toolbar-1x0'
+          )
+        }
+        {
+          this.renderBlockButton(
+            oListIcon.type(),
+            oListIcon.icon,
+            oListIcon.height(),
+            oListIcon.width(),
+            oListIcon.padding(),
+            oListIcon.vBox(),
             'toolbar-1x1'
           )
         }
@@ -645,13 +644,14 @@ export default class FormatToolbar extends React.Component {
           )
         }
         {
-          this.renderBlockButton(
-            oListIcon.type(),
-            oListIcon.icon,
-            oListIcon.height(),
-            oListIcon.width(),
-            oListIcon.padding(),
-            oListIcon.vBox(),
+          this.renderMarkButton(
+            codeIcon.type(),
+            codeIcon.label(),
+            codeIcon.icon,
+            codeIcon.height(),
+            codeIcon.width(),
+            codeIcon.padding(),
+            codeIcon.vBox(),
             'toolbar-1x3'
           )
         }

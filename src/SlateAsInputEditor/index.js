@@ -392,7 +392,7 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
           return editor.toggleMark(CONST.FONT_BOLD);
         case isHotKey('mod+i', event) && isEditable(editor, CONST.FONT_ITALIC):
           return editor.toggleMark(CONST.FONT_ITALIC);
-        case isHotKey('mod+alt+c', event) && isEditable(editor, CONST.FONT_CODE):
+        case isHotKey('mod+shift+9', event) && isEditable(editor, CONST.FONT_CODE):
           return editor.toggleMark(CONST.FONT_CODE);
         case isHotKey('mod+shift+.', event) && isEditable(editor, CONST.BLOCK_QUOTE):
           return handleBlockQuotes(editor);
