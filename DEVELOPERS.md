@@ -7,12 +7,12 @@
 
 ## <a name="setup"> Development Setup
 
-This document describes how to set up your development environment to build and test Markdown-Editor, and
+This document describes how to set up your development environment to build and test Markdown Editor, and
 explains the basic mechanics of using `git`, `node`, `npm`.
 
 ### Installing Dependencies
 
-Before you can build Markdown-Editor, you must install and configure the following dependencies on your
+Before you can build Markdown Editor, you must install and configure the following dependencies on your
 machine:
 
 * [Git][git]: The [Github Guide to Installing Git][git-setup] is a good source of information.
@@ -24,27 +24,27 @@ machine:
   We recommend using [nvm][nvm] (or [nvm-windows][nvm-windows])
   to manage and install Node.js, which makes it easy to change the version of Node.js per project.
 
-### Forking Markdown-Editor on Github
+### Forking Markdown Editor on Github
 
-To contribute code to Markdown-Editor, you must have a GitHub account so you can push code to your own
-fork of Markdown-Editor and open Pull Requests in the [GitHub Repository][github].
+To contribute code to Markdown Editor, you must have a GitHub account so you can push code to your own
+fork of Markdown Editor and open Pull Requests in the [GitHub Repository][github].
 
 To create a Github account, follow the instructions [here][github-signup].
 Afterwards, go ahead and [fork][github-forking] the
-[main Markdown-Editor repository][github].
+[main Markdown Editor repository][github].
 
-### Building Markdown-Editor
+### Building Markdown Editor
 
-To build Markdown-Editor, you clone the source code repository and use lerna to build:
+To build Markdown Editor, you clone the source code repository and use lerna to build:
 
 ```shell
 # Clone your Github repository:
 git clone https://github.com/<github username>/markdown-editor.git
 
-# Go to the Markdown-Editor directory:
+# Go to the Markdown Editor directory:
 cd markdown-editor
 
-# Add the main Markdown-Editor repository as an upstream remote to your repository:
+# Add the main Markdown Editor repository as an upstream remote to your repository:
 git remote add upstream "https://github.com/accordproject/markdown-editor.git"
 
 # Install node.js dependencies:
@@ -56,9 +56,9 @@ npm install
 It is good practice to always keep your `origin/master` in sync with `upstream/master`. You don’t have to, but it makes your life easier. Do your work in branches of your fork, and periodically sync up your `master` with the `master` of `upstream` as follows. You should definitely do this before creating a pull request.
 
 ```shell
-    git fetch --all --prune
     git checkout master
-    git merge --ff-only upstream/master
+    git fetch --all --prune
+    git rebase upstream/development
     git push origin master
 ```
 
@@ -85,7 +85,7 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 
 We have very precise rules over how our git commit messages can be formatted.  This leads to **more
 readable messages** that are easy to follow when looking through the **project history** and **git logs**.  
-But also, we use the git commit messages to **generate the Markdown-Editor change log**.
+But also, we use the git commit messages to **generate the Markdown Editor change log and release notes**.
 
 The commit message formatting can be added using a version of typical git workflow.
 
@@ -160,18 +160,18 @@ Formatting for the body is displayed in this example:
 - Link any issues or pull requests relating to this
 ```
 
-When approved and ready to merge, a Pull Request should be squashed down to a single buildable commit and merged into master.
+When approved and ready to merge, a Pull Request should be squashed down to a single buildable commit and merged into 'development.
 
 ## <a name="documentation"></a> Writing Documentation
 
-The Markdown-Editor project uses [jsdoc][jsdoc] for all of its code
+The Markdown Editor project uses [jsdoc][jsdoc] for all of its code
 documentation.
 
 This means that all the docs are stored inline in the source code and so are kept in sync as it
 changes.
 
 This means that since we generate the documentation from the source code, we can easily provide
-version-specific documentation by simply checking out a version of Markdown-Editor and running the build.
+version-specific documentation by simply checking out a version of Markdown Editor and running the build.
 
 ## License <a name="license"></a>
 
