@@ -1,8 +1,8 @@
-# Contributing to Markdown-Editor
+# Contributing to Markdown Editor
 
 > Thanks to the AngularJS team for the bulk of this text!
 
-We'd love for you to contribute to our source code and to make Markdown-Editor even better than it is today! Here are the guidelines we'd like you to follow:
+We'd love for you to contribute to our source code and to make Markdown Editor even better than it is today! Here are the guidelines we'd like you to follow:
 
 * [Code of Conduct][contribute.coc]
 * [Questions and Problems][contribute.question]
@@ -15,7 +15,7 @@ We'd love for you to contribute to our source code and to make Markdown-Editor e
 
 ## <a name="coc"></a> Code of Conduct
 
-Help us keep Markdown-Editor open and inclusive. Please read and follow our [Code of Conduct][coc].
+Help us keep Markdown Editor open and inclusive. Please read and follow our [Code of Conduct][coc].
 
 ## <a name="requests"></a> Questions, Bugs, Features
 
@@ -25,25 +25,19 @@ Do not open issues for general support questions as we want to keep GitHub issue
 
 ### <a name="issue"></a> Found an Issue or Bug?
 
-If you find a bug in the source code, you can help us by [submitting an issue][github-issues] to our GitHub Repository. Even better, you can submit a Pull Request with a fix.
+If you find a bug in the source code, you can help us by [submitting an issue][github-issues] to our GitHub Repository. Even better, you can submit a Pull Request to our `development` branch with a fix.
 
 **Please see the **[**Submission Guidelines**][contribute.submit]** below.**
 
 ### <a name="feature"></a> Missing a Feature?
 
-You can request a new feature by submitting an issue to our [GitHub Repository][github].
+You can request a new feature by submitting an issue to our [GitHub Repository][github]'s `development` branch.
 
 If you would like to implement a new feature then consider what kind of change it is:
 
-* **Major Changes** that you wish to contribute to the project should be discussed first in an
+* **Major Changes** that you wish to contribute to the project should be discussed first in a [GitHub issue][github-issues] that clearly outlines the changes and benefits of the feature.
 
-  [GitHub issue][github-issues] that clearly outlines the changes and benefits of the feature.
-
-* **Small Changes** can directly be crafted and submitted to the [GitHub Repository][github]
-
-  as a Pull Request. See the section about [Pull Request Submission Guidelines][contribute.submitpr], and
-
-  for detailed information read the [core development documentation][developers].
+* **Small Changes** can directly be crafted and submitted to the [GitHub Repository][github] as a Pull Request. See the section about [Pull Request Submission Guidelines][contribute.submitpr], and for detailed information read the [core development documentation][developers].
 
 ### <a name="docs"></a> Want a Doc Fix?
 
@@ -51,7 +45,7 @@ Should you have a suggestion for the documentation, you can open an issue and ou
 
 If you want to help improve the docs, it's a good idea to let others know what you're working on to minimize duplication of effort. Create a new issue \(or comment on a related existing one\) to let others know what you're working on.
 
-If you're making a small change \(typo, phrasing\) don't worry about filing an issue first. Use the friendly blue "Improve this doc" button at the top right of the doc page to fork the repository in-place and make a quick change on the fly. The commit message is preformatted to the right type and scope, so you only have to add the description.
+If you're making a small change \(typo, phrasing\) don't worry about filing an issue first.
 
 For large fixes, please build and test the documentation before submitting the PR to be sure you haven't accidentally introduced any layout or formatting issues. You should also make sure that your commit message follows the [**Commit Message Guidelines**][developers.commits].
 
@@ -74,61 +68,60 @@ Before you submit your pull request consider the following guidelines:
 * Create the [development environment][developers.setup]
 * Make your changes in a new git branch:
 
-  ```text
-    git checkout -b name-issue-tracker-short-description master
+  ```bash
+    git checkout -b userName-issueTracker-shortDescription
   ```
 
-  Name can be initials or GitHub username. An example of this could be:
+  User name can be initials or GitHub username. An example of this could be:
 
-  ```text
-    git checkout -b irmerk-issue75-readme-typos master
+  ```bash
+    git checkout -b irmerk-issue75-readme-typos
   ```
 
 * Create your patch commit, **including appropriate test cases**.
 * Follow our [Coding Rules][developers.rules].
-* Ensure you provide a DCO sign-off for your commits using the -s option of git commit. For more information see [how this works][dcohow].
+* Ensure you provide a DCO sign-off for your commits using the `-s` option of git commit. For more information see [how this works][dcohow].
 * If the changes affect public APIs, change or add relevant [documentation][developers.documentation].
 * Run the [unit test suite][developers.unit-tests], and ensure that all tests pass.
-
 * Commit your changes using a descriptive commit message that follows our [commit message conventions][developers.commits]. Adherence to the [commit message conventions][developers.commits] is required, because release notes are automatically generated from these messages.
 
-  ```text
-    git commit -a
+  ```bash
+    git commit -a --signoff
   ```
 
   Note: the optional commit `-a` command line option will automatically "add" and "rm" edited files.
 
 * Before creating the Pull Request, ensure your branch sits on top of master (as opposed to branch off a branch). This ensures the reviewer will need only minimal effort to integrate your work by fast-forwarding master:
 
-  ```text
+  ```bash
     git rebase upstream/master
   ```
 
 * Last step before creating the Pull Request, package and run all tests a last time:
 
-  ```text
+  ```bash
     npm run test
   ```
 
 * Push your branch to GitHub:
 
-  ```text
-    git push origin name-issue-tracker-short-description
+  ```bash
+    git push origin userName-issueTracker-shortDescription
   ```
 
-* In GitHub, send a pull request to `markdown-editor:master` by following our [pull request conventions][developers.pullrequest]. This will trigger the check of the [Contributor License Agreement][contribute.cla] and the Travis integration.
+* In GitHub, send a pull request to `accordproject/markdown-editor:development` by following our [pull request conventions][developers.pullrequest]. This will trigger the check of the [Contributor License Agreement][contribute.cla] and the Travis integration.
 * If you find that the Travis integration has failed, look into the logs on Travis to find out if your changes caused test failures, the commit message was malformed etc. If you find that the tests failed or times out for unrelated reasons, you can ping a team member so that the build can be restarted.
 * If we suggest changes, then:
   * Make the required updates.
   * Re-run the test suite to ensure tests are still passing.
-  * Commit your changes to your branch \(e.g. `name-issue-tracker-short-description`\).
+  * Commit your changes to your branch \(e.g. `userName-issueTracker-shortDescription`\).
   * Push the changes to your GitHub repository \(this will update your Pull Request\).
 
     You can also amend the initial commits and force push them to the branch.
 
-    ```text
+    ```bash
     git rebase master -i
-    git push origin name-issue-tracker-short-description -f
+    git push origin userName-issueTracker-shortDescription -f
     ```
 
     This is generally easier to follow, but separate commits are useful if the Pull Request contains iterations that might be interesting to see side-by-side.
@@ -141,28 +134,28 @@ After your pull request is merged, you can safely delete your branch and pull th
 
 * Delete the remote branch on GitHub either through the GitHub web UI or your local shell as follows:
 
-  ```text
-    git push origin --delete name-issue-tracker-short-description
+  ```bash
+    git push origin --delete userName-issueTracker-shortDescription
   ```
 
 * Check out the master branch:
 
-  ```text
+  ```bash
     git checkout master -f
   ```
 
 * Delete the local branch:
 
-  ```text
-    git branch -D name-issue-tracker-short-description
+  ```bash
+    git branch -D userName-issueTracker-shortDescription
   ```
 
 * Update your master with the latest upstream version:
 
-  ```text
+  ```bash
     git checkout master
     git fetch --all --prune
-    git merge --ff-only upstream/master
+    git rebase upstream/development
     git push origin master
   ```
 
