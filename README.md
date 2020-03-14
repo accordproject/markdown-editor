@@ -64,7 +64,7 @@ Windows/Linux:
   - `CTRL` + `B` - Bold
   - `CTRL` + `I` - Italicize 
   - `CTRL` + `Q` - Block quotes
-  - `CTRL` + `ALT` + `C` - Code
+  - `CTRL` + `SHIFT` + `9` - Code
 
 - Paragraph formatting
   - `CTRL` + `SHIFT` + `7` - Numbered list
@@ -84,7 +84,7 @@ Mac:
   - `⌘` + `B` - Bold
   - `⌘` + `I` - Italicize 
   - `⌘` + `Q` - Block quotes
-  - `⌘` + `ALT` + `C` - Code
+  - `⌘` + `SHIFT` + `9` - Code
 
 - Paragraph formatting
   - `⌘` + `SHIFT` + `7` - Numbered list
