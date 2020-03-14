@@ -215,7 +215,7 @@ export default class FormatToolbar extends React.Component {
     const { editor, pluginManager, lockText } = this.props;
     const { value } = editor;
 
-    if (!lockText || pluginManager.isEditable(editor, type)) {
+    if (!lockText || pluginManager.isEditable(editor, type) && !action.isOnlyLink(editor)) {
       event.preventDefault();
       if (action.isClickBlockQuote(type)) {
         action.isSelectionList(value)
