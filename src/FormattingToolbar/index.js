@@ -55,6 +55,13 @@ const VertDivider = styled.div`
   place-self: center;
 `;
 
+const PopupLinkWrapper = styled.p`
+white-space : nowrap;
+overflow : hidden;
+text-overflow : ellipsis;
+max-width : 250px;
+`;
+
 /**
  * Object constructor for dropdown styling
  * @param {*} input
@@ -264,7 +271,7 @@ export default class FormatToolbar extends React.Component {
   /**
    * Render a mark-toggling toolbar button.
    */
-  renderMarkButton(type, icon, hi, wi, pa, vBox, classInput) {
+  renderMarkButton(type, label, icon, hi, wi, pa, vBox, classInput) {
     const { editor, editorProps } = this.props;
 
     const isActive = action.hasMark(editor, type);
@@ -285,7 +292,7 @@ export default class FormatToolbar extends React.Component {
 
     return (
       <Popup
-        content={tips.capitalizeWord(type)}
+        content={label}
         style={style}
         position='bottom center'
         trigger={
@@ -368,61 +375,81 @@ export default class FormatToolbar extends React.Component {
     const selectedInlineHref = document.getClosestInline(selection.anchor.path);
     const selectedText = this.props.editor.value.document
       .getFragmentAtRange(this.props.editor.value.selection).text;
-
     return (
-      <Ref innerRef={(node) => {
-        this.setLinkFormPopup = node;
-      }}>
-      <Popup
-        context={this.linkButtonRef}
-        content={
-          <Ref innerRef={(node) => {
-            this.setLinkForm = node;
-          }}>
-            <Form
-            onSubmit={event => this.submitLinkForm(event, isLinkBool) }>
-              <Form.Field>
-                <label>Link Text</label>
-                <Input
-                  placeholder='Text'
-                  name='text'
-                  defaultValue={
-                    (isLinkBool && !selectedText)
-                      ? this.props.editor.value.focusText.text
-                      : this.props.editor.value.fragment.text
-                  }
-                />
-              </Form.Field>
-              <Form.Field>
-                <label>Link URL</label>
-                <Input
-                  ref={this.hyperlinkInputRef}
-                  placeholder={'http://example.com'}
-                  defaultValue={
-                    isLinkBool && action.isOnlyLink(this.props.editor) && selectedInlineHref
-                      ? selectedInlineHref.data.get('href')
-                      : ''
-                  }
-                  name='url'
-                />
-              </Form.Field>
-              <Form.Field>
-                <Button
-                  secondary
-                  floated='left'
-                  disabled={!isLinkBool}
-                  onMouseDown={this.removeLinkForm}>Remove</Button>
-                <Button primary floated='right' type='submit'>Apply</Button>
-              </Form.Field>
-            </Form>
+      <Ref
+        innerRef={(node) => {
+          this.setLinkFormPopup = node;
+        }}
+      >
+        <Popup
+          context={this.linkButtonRef}
+          content={
+            <Ref
+              innerRef={(node) => {
+                this.setLinkForm = node;
+              }}
+            >
+              <Form onSubmit={event => this.submitLinkForm(event, isLinkBool)}>
+                <Form.Field>
+                  <label>Link Text</label>
+                  <Input
+                    placeholder="Text"
+                    name="text"
+                    defaultValue={
+                      isLinkBool && !selectedText
+                        ? this.props.editor.value.focusText.text
+                        : this.props.editor.value.fragment.text
+                    }
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <label>Link URL</label>
+                  <Input
+                    ref={this.hyperlinkInputRef}
+                    placeholder={'http://example.com'}
+                    defaultValue={
+                      isLinkBool
+                      && action.isOnlyLink(this.props.editor)
+                      && selectedInlineHref
+                        ? selectedInlineHref.data.get('href')
+                        : ''
+                    }
+                    name="url"
+                  />
+                </Form.Field>
+                {isLinkBool
+                  && action.isOnlyLink(this.props.editor)
+                  && selectedInlineHref && (
+                    <PopupLinkWrapper>
+                   <a href={selectedInlineHref.data.get('href')}
+                   target='_blank'
+                   >
+                      {selectedInlineHref.data.get('href')}
+                    </a>
+                    </PopupLinkWrapper>
+                )}
+                <Form.Field>
+                  <Button
+                    secondary
+                    floated="right"
+                    disabled={!isLinkBool}
+                    onMouseDown={this.removeLinkForm}
+                  >
+                    Remove
+                  </Button>
+                  <Button primary floated="right" type="submit">
+                    Apply
+                  </Button>
+                </Form.Field>
+              </Form>
             </Ref>
           }
-        onClose={this.closeSetLinkForm}
-        on='click'
-        open // Keep it open always. We toggle only visibility so we can calculate its rect
-        position={popupPosition}
-        style={popupStyle}
-      />
+          onClose={this.closeSetLinkForm}
+          on="click"
+          open // Keep it open always. We toggle only visibility so we can calculate its rect
+          position={popupPosition}
+          style={popupStyle}
+        />
       </Ref>
     );
   }
@@ -451,7 +478,7 @@ export default class FormatToolbar extends React.Component {
 
     return (
       <Popup
-        content={'Hyperlink'}
+        content='Insert a link'
         style={style}
         position='bottom center'
         trigger={
@@ -478,7 +505,7 @@ export default class FormatToolbar extends React.Component {
   /**
    * Render a history-toggling toolbar button.
    */
-  renderHistoryButton(type, icon, hi, wi, pa, vBox, action, classInput) {
+  renderHistoryButton(type, label, icon, hi, wi, pa, vBox, classInput) {
     const { editor, editorProps } = this.props;
 
     const style = {
@@ -489,7 +516,7 @@ export default class FormatToolbar extends React.Component {
 
     return (
       <Popup
-        content={tips.capitalizeWord(action)}
+        content={label}
         style={style}
         position='bottom center'
         trigger={
@@ -501,7 +528,7 @@ export default class FormatToolbar extends React.Component {
             padding={pa}
             viewBox={vBox}
             className={classInput}
-            onClick={event => this.onClickHistory(event, action, editor)}>
+            onClick={event => this.onClickHistory(event, type, editor)}>
               {icon(styles.buttonSymbolInactive(editorProps.BUTTON_SYMBOL_INACTIVE))}
           </ ToolbarIcon>
         }
@@ -549,6 +576,7 @@ export default class FormatToolbar extends React.Component {
         {
           this.renderMarkButton(
             boldIcon.type(),
+            boldIcon.label(),
             boldIcon.icon,
             boldIcon.height(),
             boldIcon.width(),
@@ -560,6 +588,7 @@ export default class FormatToolbar extends React.Component {
         {
           this.renderMarkButton(
             italicIcon.type(),
+            italicIcon.label(),
             italicIcon.icon,
             italicIcon.height(),
             italicIcon.width(),
@@ -571,6 +600,7 @@ export default class FormatToolbar extends React.Component {
         {/* {
           this.renderMarkButton(
             underlineIcon.type(),
+            boldIcon.label(),
             underlineIcon.icon,
             underlineIcon.height(),
             underlineIcon.width(),
@@ -583,6 +613,7 @@ export default class FormatToolbar extends React.Component {
         {
           this.renderMarkButton(
             codeIcon.type(),
+            codeIcon.label(),
             codeIcon.icon,
             codeIcon.height(),
             codeIcon.width(),
@@ -643,24 +674,24 @@ export default class FormatToolbar extends React.Component {
         {
           this.renderHistoryButton(
             undoIcon.type(),
+            undoIcon.label(),
             undoIcon.icon,
             undoIcon.height(),
             undoIcon.width(),
             undoIcon.padding(),
             undoIcon.vBox(),
-            'undo',
             'toolbar-2x2'
           )
       }
         {
           this.renderHistoryButton(
             redoIcon.type(),
+            redoIcon.label(),
             redoIcon.icon,
             redoIcon.height(),
             redoIcon.width(),
             redoIcon.padding(),
             redoIcon.vBox(),
-            'redo',
             'toolbar-2x3'
           )
       }

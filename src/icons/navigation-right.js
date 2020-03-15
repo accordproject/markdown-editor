@@ -1,6 +1,10 @@
 import React from 'react';
 
+import * as tips from '../FormattingToolbar/toolbarTooltip';
+
 export const type = () => 'redo';
+
+export const label = () => `Redo (${tips.MOD}+⇧+Z)`;
 
 export const height = () => '25px';
 

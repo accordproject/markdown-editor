@@ -15,17 +15,18 @@ const calculateLinkPopupPosition = (editor, openSetLink, setLinkFormPopup) => {
   // No need to calculate position of the popup is it is not even opened!
   // Same for if the current selection is not a link
 
+  const earlyExit = {
+    popupPosition,
+    // Hide the popup by setting negative zIndex
+    popupStyle: { zIndex: -1 }
+  };
+
   const isLinkPopupOpened = openSetLink;
-  if (!isLinkPopupOpened && !isOnlyLink(editor)) {
-    return {
-      popupPosition,
-      // Hide the popup by setting negative zIndex
-      popupStyle: { zIndex: -1 }
-    };
-  }
+  if (!isLinkPopupOpened && !isOnlyLink(editor)) return earlyExit;
 
   // Get selection node from slate
   const selection = editor.findDOMRange(editor.value.selection);
+  if (!selection) return earlyExit;
 
   popupPosition = 'bottom left';
 
@@ -59,7 +60,9 @@ const calculateLinkPopupPosition = (editor, openSetLink, setLinkFormPopup) => {
   return {
     // Disable semantic ui popup placement by overriding `transform`
     // and use our computed `top` and `left` values
-    popupStyle: { top, left, transform: 'none' },
+    popupStyle: {
+      top, left, transform: 'none', width: '400px',
+    },
     popupPosition,
   };
 };

@@ -1,6 +1,10 @@
 import React from 'react';
 
+import * as tips from '../FormattingToolbar/toolbarTooltip';
+
 export const type = () => 'bold';
+
+export const label = () => `Bold (${tips.MOD}+B)`;
 
 export const height = () => '25px';
 
