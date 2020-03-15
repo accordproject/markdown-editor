@@ -184,7 +184,7 @@ Accord Project is an open source, non-profit, initiative working to transform co
     <td headers></td>
     <td headers> <a href="https://github.com/accordproject/cicero/tree/master/packages/cicero-engine">cicero-engine</a></td>
     <td headers> <a href="https://badge.fury.io/js/%40accordproject%2Fcicero-engine"><img src="https://badge.fury.io/js/%40accordproject%2Fcicero-engine.svg" alt="npm version"></a></td>
-    <td headers>Node.js VM based implementation of Accord Protcol Template Specification execution</td>
+    <td headers>Node.js VM based implementation of Accord Project Template Specification execution</td>
     </tr>
     <tr>
     <td headers></td>
@@ -305,7 +305,7 @@ Accord Project is an open source, non-profit, initiative working to transform co
      <td headers="co1 c1">Cicero UI</td>
       <td headers="co2 c1"><a href="https://github.com/accordproject/cicero-ui">cicero-ui</a></td>
       <td headers="co3 c1"> <a href="https://badge.fury.io/js/%40accordproject%2Fcicero-ui"><img src="https://badge.fury.io/js/%40accordproject%2Fcicero-ui.svg" alt="npm version"></a></td>
-       <td headers="co4 c1">WYSIWYG contract editor, template libary browser, error panel component</td>
+       <td headers="co4 c1">WYSIWYG contract editor, template library browser, error panel component</td>
      </tr>
      <tr>
      <td headers="co1 c1">Concerto UI</td>
