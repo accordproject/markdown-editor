@@ -1,6 +1,7 @@
 import React from 'react';
 import Heading from './components/heading';
 import ImageElement from './components/image';
+import HorizontalRule from './components/hr';
 
 import * as SCHEMA from './schema';
 
@@ -23,7 +24,7 @@ const Element = (props) => {
     case SCHEMA.H6:
       return <Heading as="h6" {...attributes}>{children}</Heading>;
     case SCHEMA.HR:
-      return <div className="hr" {...attributes}>{children}</div>;
+      return <HorizontalRule {...attributes}>{children}</HorizontalRule>;
     case SCHEMA.CODE_BLOCK:
       return <pre {...attributes}>{children}</pre>;
     case SCHEMA.HTML_BLOCK:
@@ -45,7 +46,7 @@ const Element = (props) => {
     case SCHEMA.SOFTBREAK:
       return <span className='softbreak' {...attributes}> {children}</span>;
     case SCHEMA.LINEBREAK:
-      return <br className='linebreak' {...attributes}>{children}</br>;
+      return <br className='linebreak' {...attributes}/>;
     default:
       console.log(`Didn't know how to render ${JSON.stringify(element, null, 2)}`);
       return <p {...attributes}>{children}</p>;
