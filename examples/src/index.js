@@ -7,8 +7,8 @@ import ReactDOM from 'react-dom';
 import { SlateTransformer } from '@accordproject/markdown-slate';
 
 import './index.css';
-import MarkdownAsInputEditor from '../../src/MarkdownAsInputEditor';
-import SlateAsInputEditor from '../../src/SlateAsInputEditor';
+import MarkdownTextEditor from '../../src/MarkdownTextEditor';
+import RichTextEditor from '../../src/RichTextEditor';
 
 import * as serviceWorker from './serviceWorker';
 import 'semantic-ui-css/semantic.min.css';
@@ -21,27 +21,12 @@ This is text. This is *italic* text. This is **bold** text. This is a [link](htt
 
 This is ***bold and italic*** text.
 
-\`\`\`
-This is a
-softbreak.
-
-This is a  
-linebreak.
-\`\`\`
 
 ![ap_logo](https://docs.accordproject.org/docs/assets/020/template.png "AP triangle")
 
 > This is a quote.
 ## Heading Two
 This is more text.
-
-\`\`\`
-Before a thematic break.
-
----
-
-After a thematic break.
-\`\`\`
 
 Ordered lists:
 
@@ -75,9 +60,11 @@ function Demo() {
   /**
    * Current Slate Value
    */
-  const [slateValue, setSlateValue] = useState(
-    slateTransformer.fromMarkdown(defaultMarkdown)
-  );
+  const [slateValue, setSlateValue] = useState(() => {
+    const slate = slateTransformer.fromMarkdown(defaultMarkdown);
+    console.log(slate);
+    return slate.document.children;
+  });
   const [markdown, setMarkdown] = useState(defaultMarkdown);
 
   /**
@@ -90,19 +77,24 @@ function Demo() {
   /**
    * Called when the Slate Value changes
    */
-  const onSlateValueChange = useCallback((slateJSON) => {
-    localStorage.setItem('slate-editor-value', JSON.stringify(slateJSON));
-    const markdown = slateTransformer.toMarkdown(slateJSON);
-    setSlateValue(slateValue);
+  const onSlateValueChange = useCallback((slateChildren) => {
+    localStorage.setItem('slate-editor-value', JSON.stringify(slateChildren));
+    const slateValue = {
+      document: {
+        children: slateChildren
+      }
+    };
+    const markdown = slateTransformer.toMarkdown(slateValue);
+    setSlateValue(slateValue.document.children);
     setMarkdown(markdown);
-  }, [slateValue]);
+  }, []);
 
   return (
     <div>
       <Segment>
         <Grid columns={2}>
           <Grid.Column>
-            <MarkdownAsInputEditor
+            <MarkdownTextEditor
               readOnly={true}
               markdown={markdown}
               onChange={onMarkdownChange}
@@ -110,7 +102,7 @@ function Demo() {
           </Grid.Column>
 
           <Grid.Column>
-            <SlateAsInputEditor
+            <RichTextEditor
               readOnly={false}
               lockText={true}
               value={slateValue}
