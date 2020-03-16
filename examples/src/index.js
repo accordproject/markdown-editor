@@ -22,6 +22,16 @@ This is text. This is *italic* text. This is **bold** text. This is a [link](htt
 
 This is ***bold and italic*** text.
 
+## Breaks
+This is a  
+hard break.
+
+This is a
+softbreak.
+
+---
+
+This ^^^^ is a thematic break
 
 ![ap_logo](https://docs.accordproject.org/docs/assets/020/template.png "AP triangle")
 
