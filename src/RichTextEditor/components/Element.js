@@ -1,9 +1,10 @@
 import React from 'react';
-import Heading from './components/heading';
-import ImageElement from './components/image';
-import HorizontalRule from './components/hr';
+import PropTypes from 'prop-types';
+import Heading from '../styledComponents/Heading';
+import ImageElement from './Image';
+import HorizontalRule from '../styledComponents/HorizontalRule';
 
-import * as SCHEMA from './schema';
+import * as SCHEMA from '../utilities/schema';
 
 const Element = (props) => {
   const { attributes, children, element } = props;
@@ -51,6 +52,15 @@ const Element = (props) => {
       console.log(`Didn't know how to render ${JSON.stringify(element, null, 2)}`);
       return <p {...attributes}>{children}</p>;
   }
+};
+
+Element.propTypes = {
+  children: PropTypes.node,
+  element: PropTypes.shape({
+    data: PropTypes.object,
+    type: PropTypes.string
+  }),
+  attributes: PropTypes.any
 };
 
 export default Element;
