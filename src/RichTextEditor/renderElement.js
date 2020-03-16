@@ -16,41 +16,35 @@ const Element = (props) => {
       return <Heading as="h2" {...attributes}>{children}</Heading>;
     case SCHEMA.H3:
       return <Heading as="h3" {...attributes}>{children}</Heading>;
-    case 'heading_four':
+    case SCHEMA.H4:
       return <Heading as="h4" {...attributes}>{children}</Heading>;
-    case 'heading_five':
+    case SCHEMA.H5:
       return <Heading as="h5" {...attributes}>{children}</Heading>;
-    case 'heading_six':
+    case SCHEMA.H6:
       return <Heading as="h6" {...attributes}>{children}</Heading>;
-    case 'horizontal_rule':
+    case SCHEMA.HR:
       return <div className="hr" {...attributes}>{children}</div>;
-    case 'code_block':
+    case SCHEMA.CODE_BLOCK:
       return <pre {...attributes}>{children}</pre>;
-    case 'html_block':
+    case SCHEMA.HTML_BLOCK:
       return <pre className="html_block" {...attributes}>{children}</pre>;
-    case 'block_quote':
+    case SCHEMA.BLOCK_QUOTE:
       return <blockquote {...attributes}>{children}</blockquote>;
-    case 'ul_list':
+    case SCHEMA.UL_LIST:
       return <ul {...attributes}>{children}</ul>;
-    case 'heading_one':
-      return <h1 {...attributes}>{children}</h1>;
-    case 'heading_two':
-      return <h2 {...attributes}>{children}</h2>;
-    case 'list_item':
+    case SCHEMA.LIST_ITEM:
       return <li {...attributes}>{children}</li>;
-    case 'ol_list':
+    case SCHEMA.OL_LIST:
       return <ol {...attributes}>{children}</ol>;
-    case 'link':
+    case SCHEMA.LINK:
       return <a {...attributes} href={element.data.href}>{children}</a>;
-    case 'image':
+    case SCHEMA.IMAGE:
       return <ImageElement {...props} />;
-    // case 'image':
-    //   return <img {...attributes} alt={element.data.title} src={element.data.href}>{children}</img>;
-    case 'html_inline':
+    case SCHEMA.HTML_INLINE:
       return <span className='html_inline' {...attributes}>{element.data.content}{children}</span>;
-    case 'softbreak':
+    case SCHEMA.SOFTBREAK:
       return <span className='softbreak' {...attributes}> {children}</span>;
-    case 'linebreak':
+    case SCHEMA.LINEBREAK:
       return <br className='linebreak' {...attributes}>{children}</br>;
     default:
       console.log(`Didn't know how to render ${JSON.stringify(element, null, 2)}`);

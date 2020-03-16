@@ -12,6 +12,7 @@ import RichTextEditor from '../../src/RichTextEditor';
 
 import * as serviceWorker from './serviceWorker';
 import 'semantic-ui-css/semantic.min.css';
+import { isCodeHotkey } from 'is-hotkey';
 
 const slateTransformer = new SlateTransformer();
 
@@ -27,6 +28,13 @@ This is ***bold and italic*** text.
 > This is a quote.
 ## Heading Two
 This is more text.
+
+Below is a code block:
+
+\`\`\` javascript
+this is my great
+code
+\`\`\`
 
 Ordered lists:
 
