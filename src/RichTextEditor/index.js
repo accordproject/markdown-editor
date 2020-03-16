@@ -6,22 +6,22 @@ import {
 import { createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 import PropTypes from 'prop-types';
-import HOTKEYS from './hotkeys';
-import withSchema from './schema';
-import Element from './renderElement';
-import Leaf from './renderLeaf';
-import * as ACTIONS from './actions';
-import * as IMAGE from './components/image';
+import HOTKEYS from './utilities/hotkeys';
+import withSchema from './utilities/schema';
+import Element from './components/Element';
+import Leaf from './components/Leaf';
+import { toggleMark } from './utilities/toolbarHelpers';
+import { withImages } from './components/Image';
 
-import { FormatBar } from './components/toolbar';
+import FormatBar from './Toolbar';
 
 const RichTextEditor = (props) => {
   const renderElement = useCallback(props => <Element {...props} />, []);
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
-  const editor = useMemo(() => IMAGE.withImages(withSchema(withHistory(withReact(createEditor())))), []);
+  const editor = useMemo(() => withImages(withSchema(withHistory(withReact(createEditor())))), []);
 
   return (
-    <Slate editor={editor} value={props.value} onChange={ value => props.onChange(value)}>
+    <Slate editor={editor} value={props.value} onChange={value => props.onChange(value)}>
       <FormatBar/>
       <Editable
         renderElement={renderElement}
@@ -36,7 +36,7 @@ const RichTextEditor = (props) => {
             if (isHotkey(hotkey, event)) {
               event.preventDefault();
               const mark = HOTKEYS[hotkey];
-              ACTIONS.toggleMark(editor, mark);
+              toggleMark(editor, mark);
             }
           }
         }}

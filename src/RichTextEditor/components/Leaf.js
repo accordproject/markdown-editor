@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 
 const Leaf = ({ attributes, children, leaf }) => {
   if (leaf.bold) {
@@ -14,6 +16,12 @@ const Leaf = ({ attributes, children, leaf }) => {
   }
 
   return <span {...attributes}>{children}</span>;
+};
+
+Leaf.propTypes = {
+  children: PropTypes.node,
+  leaf: PropTypes.object,
+  attributes: PropTypes.any
 };
 
 export default Leaf;
