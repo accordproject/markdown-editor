@@ -27,7 +27,7 @@ import '../styles.css';
  * @param {*} props the props for the component. See the declared PropTypes
  * for details.
  */
-function MarkdownAsInputEditor(props) {
+function MarkdownTextEditor(props) {
   /**
    * Destructure props for efficiency
    */
@@ -68,7 +68,7 @@ function MarkdownAsInputEditor(props) {
 /**
  * The property types for this component
  */
-MarkdownAsInputEditor.propTypes = {
+MarkdownTextEditor.propTypes = {
   /**
    * Initial contents for the editor (markdown text)
    */
@@ -88,9 +88,9 @@ MarkdownAsInputEditor.propTypes = {
 /**
  * The default property values for this component
  */
-MarkdownAsInputEditor.defaultProps = {
+MarkdownTextEditor.defaultProps = {
   value: 'Welcome! Edit this text to begin.',
   readOnly: false,
 };
 
-export default MarkdownAsInputEditor;
+export default MarkdownTextEditor;
