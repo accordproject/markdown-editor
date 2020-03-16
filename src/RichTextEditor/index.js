@@ -13,7 +13,7 @@ import Leaf from './components/Leaf';
 import { toggleMark } from './utilities/toolbarHelpers';
 import { withImages } from './components/Image';
 
-import FormatBar from './Toolbar';
+import FormatBar from './FormattingToolbar';
 
 const RichTextEditor = (props) => {
   const renderElement = useCallback(props => <Element {...props} />, []);
