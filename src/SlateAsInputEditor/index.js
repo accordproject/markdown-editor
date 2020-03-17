@@ -129,6 +129,11 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
   const [slateSchema, setSlateSchema] = useState(null);
 
   /**
+   * Visibility of set link form
+   */
+  const [openSetLink, setLinkFormVisibility] = useState(false);
+
+  /**
    * Updates the Slate Schema when the plugins change
    */
   useEffect(() => {
@@ -400,6 +405,8 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
           return handleList(editor, CONST.OL_LIST);
         case isHotKey('mod+shift+8', event) && isEditable(editor, CONST.UL_LIST):
           return handleList(editor, CONST.UL_LIST);
+        case isHotKey('mod+shift+k', event):
+          return setLinkFormVisibility(true);
         default:
           return next();
       }
@@ -474,11 +481,12 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
           pluginManager={pluginManager}
           editorProps={editorProps}
           lockText={props.lockText}
+          openSetLink={openSetLink}
         />
         {children}
       </div>
     );
-  }, [editorProps, plugins]);
+  }, [editorProps, plugins, openSetLink]);
 
   const onChangeHandler = ({ value }) => {
     if (props.readOnly) return;

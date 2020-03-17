@@ -96,9 +96,9 @@ const DropdownHeader3 = {
 /* eslint-disable react/no-find-dom-node */
 
 export default class FormatToolbar extends React.Component {
-  constructor() {
-    super();
-    this.state = { openSetLink: false };
+  constructor(props) {
+    super(props);
+    this.state = { openSetLink: this.props.openSetLink};
     this.linkButtonRef = createRef();
     this.hyperlinkInputRef = createRef();
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -457,7 +457,7 @@ export default class FormatToolbar extends React.Component {
   /**
    * Render a link-toggling toolbar button.
    */
-  renderLinkButtonNew(type, icon, hi, wi, pa, vBox, classInput) {
+  renderLinkButtonNew(type, label, icon, hi, wi, pa, vBox, classInput) {
     const { editor, editorProps } = this.props;
 
     const isActive = action.hasLinks(editor);
@@ -478,7 +478,7 @@ export default class FormatToolbar extends React.Component {
 
     return (
       <Popup
-        content='Insert a link'
+        content={label}
         style={style}
         position='bottom center'
         trigger={
@@ -662,6 +662,7 @@ export default class FormatToolbar extends React.Component {
         {
           this.renderLinkButtonNew(
             hyperlinkIcon.type(),
+            hyperlinkIcon.label(),
             hyperlinkIcon.icon,
             hyperlinkIcon.height(),
             hyperlinkIcon.width(),
@@ -718,4 +719,5 @@ FormatToolbar.propTypes = {
     TOOLTIP: PropTypes.string,
     DIVIDER: PropTypes.string,
   }),
+  openSetLink: PropTypes.bool.isRequired,
 };

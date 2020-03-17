@@ -1,6 +1,10 @@
 import React from 'react';
 
+import * as tips from '../FormattingToolbar/toolbarTooltip';
+
 export const type = () => 'link';
+
+export const label = () => `Insert a link (${tips.MOD}+Shift+K)`;
 
 export const height = () => '25px';
 
