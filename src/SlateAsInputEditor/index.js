@@ -380,6 +380,8 @@ const SlateAsInputEditor = React.forwardRef((props, ref) => {
 
     const isSpecialKey = () => {
       switch (true) {
+        case action.isOnlyLink(editor) :
+          return next();
         case isHotKey('mod+z', event):
           editor.undo();
           if (onUndoOrRedo) return onUndoOrRedo(editor);
