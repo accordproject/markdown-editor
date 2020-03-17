@@ -11,14 +11,16 @@ import withSchema from './utilities/schema';
 import Element from './components/Element';
 import Leaf from './components/Leaf';
 import { toggleMark } from './utilities/toolbarHelpers';
-import { withImages } from './components/Image';
+import { withImages } from './components/withImages';
+import { withHtml } from './components/withHtml';
+
 
 import FormatBar from './FormattingToolbar';
 
 const RichTextEditor = (props) => {
   const renderElement = useCallback(props => <Element {...props} />, []);
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
-  const editor = useMemo(() => withImages(withSchema(withHistory(withReact(createEditor())))), []);
+  const editor = useMemo(() => withHtml(withImages(withSchema(withHistory(withReact(createEditor()))))), []);
 
   return (
     <Slate editor={editor} value={props.value} onChange={value => props.onChange(value)}>
