@@ -26,6 +26,7 @@ const RichTextEditor = (props) => {
     <Slate editor={editor} value={props.value} onChange={value => props.onChange(value)}>
       <FormatBar/>
       <Editable
+        readOnly={props.readOnly}
         renderElement={renderElement}
         renderLeaf={renderLeaf}
         placeholder="Enter some rich text…"
