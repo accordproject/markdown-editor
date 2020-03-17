@@ -50,10 +50,10 @@
   },
   "homepage": "https://github.com/accordproject/markdown-editor",
   "peerDependencies": {
-    "react": ">= 16.6.0",
-    "react-dom": ">= 16.6.0",
-    "slate": "0.47.x",
-    "slate-react": "0.22.x",
+    "react": ">= 16.13.0",
+    "react-dom": ">= 16.13.0",
+    "slate": "0.57.x",
+    "slate-react": "0.57.x",
     "styled-components": ">= 4"
   },
   "devDependencies": {
