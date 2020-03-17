@@ -1,5 +1,5 @@
 import React from 'react';
-import { InsertImageButton } from '../components/Image';
+import { InsertImageButton } from '../components/withImages';
 import ToolbarMenu from './ToolbarMenu';
 import BlockButton from './BlockButton';
 import MarkButton from './MarkButton';

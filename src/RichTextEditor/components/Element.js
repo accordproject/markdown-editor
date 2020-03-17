@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Heading from '../styledComponents/Heading';
-import ImageElement from './Image';
+import ImageElement from './withImages';
 import HorizontalRule from '../styledComponents/HorizontalRule';
 
 import * as SCHEMA from '../utilities/schema';

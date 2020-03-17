@@ -32,6 +32,31 @@ export const HTML_INLINE = 'html_inline';
 export const INLINES = [LINEBREAK, SOFTBREAK, HTML_INLINE, LINK, IMAGE];
 export const VOIDS = [LINEBREAK, SOFTBREAK, IMAGE, HR];
 
+export const HTML_TAGS = {
+  A: el => ({ type: LINK, data: { href: el.getAttribute('href') } }),
+  BLOCKQUOTE: () => ({ type: BLOCK_QUOTE }),
+  H1: () => ({ type: H1 }),
+  H2: () => ({ type: H2 }),
+  H3: () => ({ type: H3 }),
+  H4: () => ({ type: H4 }),
+  H5: () => ({ type: H5 }),
+  H6: () => ({ type: H6 }),
+  IMG: el => ({ type: IMAGE, data: { href: el.getAttribute('src') } }),
+  LI: () => ({ type: LIST_ITEM }),
+  OL: () => ({ type: OL_LIST, data: { tight: true } }),
+  P: () => ({ type: PARAGRAPH }),
+  PRE: () => ({ type: CODE_BLOCK }),
+  UL: () => ({ type: UL_LIST, data: { tight: true } }),
+};
+
+// COMPAT: `B` is omitted here because Google Docs uses `<b>` in weird ways.
+export const HTML_TEXT_TAGS = {
+  CODE: () => ({ code: true }),
+  EM: () => ({ italic: true }),
+  I: () => ({ italic: true }),
+  STRONG: () => ({ bold: true })
+};
+
 const withSchema = (editor) => {
   const { isVoid, isInline } = editor;
   editor.isVoid = element => (VOIDS.includes(element.type) ? true : isVoid(editor));
