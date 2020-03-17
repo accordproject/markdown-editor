@@ -61,6 +61,19 @@ Or:
 
 This is more text.
 
+<custom>
+This is an html block.
+</custom>
+
+And this is <variable>an HTML inline</variable>.
+
+# H1
+## H2
+### H3
+#### H4
+#### H5
+##### H6
+
 Fin.
 `;
 
