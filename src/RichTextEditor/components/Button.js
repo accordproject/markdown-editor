@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { cx, css } from 'emotion';
 
+/* eslint no-nested-ternary: 0 */
 // eslint-disable-next-line react/display-name
 const Button = React.forwardRef(
   ({

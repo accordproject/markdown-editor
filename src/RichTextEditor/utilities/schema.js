@@ -32,6 +32,7 @@ export const HTML_INLINE = 'html_inline';
 export const INLINES = [LINEBREAK, SOFTBREAK, HTML_INLINE, LINK, IMAGE];
 export const VOIDS = [LINEBREAK, SOFTBREAK, IMAGE, HR];
 
+/* eslint no-param-reassign: 0 */
 const withSchema = (editor) => {
   const { isVoid, isInline } = editor;
   editor.isVoid = element => (VOIDS.includes(element.type) ? true : isVoid(editor));

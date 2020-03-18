@@ -26,6 +26,8 @@ const isImageUrl = (url) => {
   return imageExtensions.includes(ext);
 };
 
+/* eslint no-param-reassign: 0 */
+/* eslint no-restricted-syntax: 0 */
 export const withImages = (editor) => {
   const { insertData, isVoid } = editor;
 
@@ -59,6 +61,7 @@ export const withImages = (editor) => {
   return editor;
 };
 
+/* eslint no-alert: 0 */
 export const InsertImageButton = () => {
   const editor = useEditor();
   return (

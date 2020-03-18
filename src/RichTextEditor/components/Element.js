@@ -29,7 +29,7 @@ const Element = (props) => {
     case SCHEMA.CODE_BLOCK:
       return <pre {...attributes}>{children}</pre>;
     case SCHEMA.HTML_BLOCK:
-      return <pre className="html_block" {...attributes}>{children}</pre>;
+      return <pre className={SCHEMA.HTML_BLOCK} {...attributes}>{children}</pre>;
     case SCHEMA.BLOCK_QUOTE:
       return <blockquote {...attributes}>{children}</blockquote>;
     case SCHEMA.UL_LIST:
@@ -43,11 +43,15 @@ const Element = (props) => {
     case SCHEMA.IMAGE:
       return <ImageElement {...props} />;
     case SCHEMA.HTML_INLINE:
-      return <span className='html_inline' {...attributes}>{element.data.content}{children}</span>;
+      return (
+        <span className={SCHEMA.HTML_INLINE} {...attributes}>
+          {element.data.content}{children}
+        </span>
+      );
     case SCHEMA.SOFTBREAK:
-      return <span className='softbreak' {...attributes}> {children}</span>;
+      return <span className={SCHEMA.SOFTBREAK} {...attributes}> {children}</span>;
     case SCHEMA.LINEBREAK:
-      return <br className='linebreak' {...attributes}/>;
+      return <br className={SCHEMA.LINEBREAK} {...attributes}/>;
     default:
       console.log(`Didn't know how to render ${JSON.stringify(element, null, 2)}`);
       return <p {...attributes}>{children}</p>;

@@ -23,8 +23,13 @@ export const toggleBlock = (editor, format) => {
     split: true,
   });
 
+  /* eslint no-nested-ternary: 0 */
   Transforms.setNodes(editor, {
-    type: isActive ? SCHEMA.PARAGRAPH : isList ? SCHEMA.LIST_ITEM : format,
+    type: isActive
+      ? SCHEMA.PARAGRAPH
+      : isList
+        ? SCHEMA.LIST_ITEM
+        : format,
   });
 
   if (!isActive && isList) {
