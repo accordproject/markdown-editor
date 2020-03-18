@@ -63,7 +63,7 @@ Windows/Linux:
 - Text formatting
   - `CTRL` + `B` - Bold
   - `CTRL` + `I` - Italicize 
-  - `CTRL` + `Q` - Block quotes
+  - `CTRL` + `SHIFT` + `.` - Block quotes
   - `CTRL` + `SHIFT` + `9` - Code
 
 - Paragraph formatting
@@ -83,7 +83,7 @@ Mac:
 - Text formatting
   - `⌘` + `B` - Bold
   - `⌘` + `I` - Italicize 
-  - `⌘` + `Q` - Block quotes
+  - `⌘` + `SHIFT` + `.` - Block quotes
   - `⌘` + `SHIFT` + `9` - Code
 
 - Paragraph formatting
