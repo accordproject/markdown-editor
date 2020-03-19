@@ -1,6 +1,7 @@
 const MISC_CONSTANTS = {
   DROPDOWN_COLOR: '#122330',
   DROPDOWN_WEIGHT: 'bold',
+  DROPDOWN_NORMAL: 'Normal'
 };
 
 export const BUTTON_COLORS = {
@@ -13,10 +14,12 @@ export const BUTTON_COLORS = {
 };
 
 export const BLOCK_STYLE = {
-  paragraph: 'Normal',
+  paragraph: MISC_CONSTANTS.DROPDOWN_NORMAL,
   heading_one: 'Heading 1',
   heading_two: 'Heading 2',
   heading_three: 'Heading 3',
+  block_quote: MISC_CONSTANTS.DROPDOWN_NORMAL,
+  list_item: MISC_CONSTANTS.DROPDOWN_NORMAL
 };
 
 export const DROPDOWN_STYLE = {
