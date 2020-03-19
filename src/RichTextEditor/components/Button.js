@@ -1,37 +1,18 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { cx, css } from 'emotion';
+import styled from 'styled-components';
+import { BUTTON_COLORS } from '../FormattingToolbar/StyleConstants';
 
-/* eslint no-nested-ternary: 0 */
-// eslint-disable-next-line react/display-name
-const Button = React.forwardRef(
-  ({
-    className, active, reversed, ...props
-  }, ref) => (
-    <span
-      {...props}
-      ref={ref}
-      className={cx(
-        className,
-        css`
-          cursor: pointer;
-          color: ${reversed
-          ? active
-            ? 'white'
-            : '#aaa'
-          : active
-            ? 'black'
-            : '#ccc'};
-        `
-      )}
-    />
-  )
-);
-
-Button.propTypes = {
-  className: PropTypes.string,
-  active: PropTypes.bool,
-  reversed: PropTypes.bool,
-};
+const Button = styled.svg`
+  place-self: center;
+  user-select: none !important;
+  width: ${props => props.width};
+  height: ${props => props.height};
+  padding: ${props => props.padding};
+  background-color: ${props => props.background};
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+    background-color: ${BUTTON_COLORS.BACKGROUND_ACTIVE};
+  }
+`;
 
 export default Button;

@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import { useSlate } from 'slate-react';
 import { Popup } from 'semantic-ui-react';
 import { BUTTON_COLORS, POPUP_STYLE } from './StyleConstants';
-import Button2 from '../components/Button2';
-import {
-  toggleMark, isMarkActive
-} from '../utilities/toolbarHelpers';
+import Button from '../components/Button';
 
-const MarkButton = ({
+const FormatButton = ({
+  toggleFunc,
+  activeFunc,
   type,
   label,
   icon,
@@ -17,9 +16,9 @@ const MarkButton = ({
   const editor = useSlate();
   const handleMouseDown = (e) => {
     e.preventDefault();
-    toggleMark(editor, type);
+    toggleFunc(editor, type);
   };
-  const isActive = isMarkActive(editor, type);
+  const isActive = activeFunc(editor, type);
   const iconColor = isActive
     ? BUTTON_COLORS.SYMBOL_ACTIVE
     : BUTTON_COLORS.SYMBOL_INACTIVE;
@@ -33,7 +32,7 @@ const MarkButton = ({
       style={POPUP_STYLE}
       position='bottom center'
       trigger={
-          <Button2
+          <Button
               aria-label={type}
               onMouseDown={handleMouseDown}
               isActive={isActive}
@@ -41,16 +40,18 @@ const MarkButton = ({
               {...props}
           >
               {icon(iconColor)}
-          </ Button2>
+          </ Button>
       }
     />
   );
 };
 
-MarkButton.propTypes = {
+FormatButton.propTypes = {
+  toggleFunc: PropTypes.func,
+  activeFunc: PropTypes.func,
   icon: PropTypes.func,
   type: PropTypes.string,
   label: PropTypes.string,
 };
 
-export default MarkButton;
+export default FormatButton;
