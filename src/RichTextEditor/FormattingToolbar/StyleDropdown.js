@@ -20,6 +20,10 @@ const StyleDropdown = () => {
   const currentBlock = (editor && editor.selection)
     ? BLOCK_STYLE[Node.parent(editor, editor.selection.focus.path).type]
     : 'Style';
+
+  if (editor && editor.selection) {
+    console.log('currentBlock', Node.parent(editor, editor.selection.focus.path));
+  }
   return (
     <Dropdown
         simple
