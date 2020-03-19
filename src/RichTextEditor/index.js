@@ -10,7 +10,7 @@ import HOTKEYS from './utilities/hotkeys';
 import withSchema from './utilities/schema';
 import Element from './components/Element';
 import Leaf from './components/Leaf';
-import { toggleMark } from './utilities/toolbarHelpers';
+import { toggleMark, toggleBlock } from './utilities/toolbarHelpers';
 import { withImages } from './components/withImages';
 import { withHtml } from './components/withHtml';
 
@@ -24,6 +24,26 @@ const RichTextEditor = (props) => {
     () => withHtml(withImages(withSchema(withHistory(withReact(createEditor()))))), []
   );
 
+  const hotkeyActions = {
+    mark: code => toggleMark(editor, code),
+    block: code => toggleBlock(editor, code),
+    special: (code) => {
+      if (code === 'undo') return editor.undo();
+      return editor.redo();
+    }
+  };
+
+  const onKeyDown = (event) => {
+    const hotkeys = Object.keys(HOTKEYS);
+    hotkeys.forEach((hotkey) => {
+      if (isHotkey(hotkey, event)) {
+        event.preventDefault();
+        const { code, type } = HOTKEYS[hotkey];
+        hotkeyActions[type](code);
+      }
+    });
+  };
+
   return (
     <Slate editor={editor} value={props.value} onChange={value => props.onChange(value)}>
       <FormatBar/>
@@ -34,17 +54,7 @@ const RichTextEditor = (props) => {
         placeholder="Enter some rich text…"
         spellCheck
         autoFocus
-        onKeyDown={(event) => {
-          const hotkeys = Object.keys(HOTKEYS);
-          for (let n = 0; n < hotkeys.length; n += 1) {
-            const hotkey = hotkeys[n];
-            if (isHotkey(hotkey, event)) {
-              event.preventDefault();
-              const mark = HOTKEYS[hotkey];
-              toggleMark(editor, mark);
-            }
-          }
-        }}
+        onKeyDown={onKeyDown}
       />
     </Slate>
   );
