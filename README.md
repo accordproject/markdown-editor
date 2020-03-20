@@ -58,7 +58,6 @@ Windows/Linux:
   - `CTRL` + `V` - Paste
   - `CTRL` + `Z` - Undo
   - `CTRL` + `SHIFT` + `Z` - Redo
-  - `CTRL` + `Y` - Repeat last action
 
 - Text formatting
   - `CTRL` + `B` - Bold
@@ -78,7 +77,6 @@ Mac:
   - `⌘` + `V` - Paste
   - `⌘` + `Z` - Undo
   - `⌘` + `SHIFT` + `Z` - Redo
-  - `⌘` + `Y` - Repeat last action
 
 - Text formatting
   - `⌘` + `B` - Bold
