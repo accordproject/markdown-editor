@@ -23,7 +23,7 @@ const ulist = {
   label: identifyBlock(UL_LIST),
   height: '25px',
   width: '25px',
-  padding: '5px 4px',
+  padding: '6px 3px 4px',
   viewBox: '0 0 16 14',
   icon,
 };

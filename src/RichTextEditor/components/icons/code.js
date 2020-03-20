@@ -22,7 +22,7 @@ const code = {
     label: `Code (${MOD()}+Shift+9)`,
     height: '25px',
     width: '25px',
-    padding: '4px 2px',
+    padding: '6px 2px 4px',
     viewBox: '0 0 20 12',
     icon,
   };
