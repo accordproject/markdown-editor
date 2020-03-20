@@ -4,58 +4,59 @@ import Heading from '../styledComponents/Heading';
 import ImageElement from './withImages';
 import HorizontalRule from '../styledComponents/HorizontalRule';
 
-import * as SCHEMA from '../utilities/schema';
+import {
+  PARAGRAPH,
+  H1, H2, H3, H4, H5, H6, HR,
+  CODE_BLOCK,
+  HTML_BLOCK,
+  BLOCK_QUOTE,
+  UL_LIST,
+  OL_LIST,
+  LIST_ITEM,
+  LINK,
+  IMAGE,
+  HTML_INLINE,
+  SOFTBREAK,
+  LINEBREAK,
+} from '../utilities/schema';
 
 const Element = (props) => {
   const { attributes, children, element } = props;
-
-  switch (element.type) {
-    case SCHEMA.PARAGRAPH:
-      return <p {...attributes}>{children}</p>;
-    case SCHEMA.H1:
-      return <Heading as="h1" {...attributes}>{children}</Heading>;
-    case SCHEMA.H2:
-      return <Heading as="h2" {...attributes}>{children}</Heading>;
-    case SCHEMA.H3:
-      return <Heading as="h3" {...attributes}>{children}</Heading>;
-    case SCHEMA.H4:
-      return <Heading as="h4" {...attributes}>{children}</Heading>;
-    case SCHEMA.H5:
-      return <Heading as="h5" {...attributes}>{children}</Heading>;
-    case SCHEMA.H6:
-      return <Heading as="h6" {...attributes}>{children}</Heading>;
-    case SCHEMA.HR:
-      return <HorizontalRule {...attributes}>{children}</HorizontalRule>;
-    case SCHEMA.CODE_BLOCK:
-      return <pre {...attributes}>{children}</pre>;
-    case SCHEMA.HTML_BLOCK:
-      return <pre className={SCHEMA.HTML_BLOCK} {...attributes}>{children}</pre>;
-    case SCHEMA.BLOCK_QUOTE:
-      return <blockquote {...attributes}>{children}</blockquote>;
-    case SCHEMA.UL_LIST:
-      return <ul {...attributes}>{children}</ul>;
-    case SCHEMA.LIST_ITEM:
-      return <li {...attributes}>{children}</li>;
-    case SCHEMA.OL_LIST:
-      return <ol {...attributes}>{children}</ol>;
-    case SCHEMA.LINK:
-      return <a {...attributes} href={element.data.href}>{children}</a>;
-    case SCHEMA.IMAGE:
-      return <ImageElement {...props} />;
-    case SCHEMA.HTML_INLINE:
-      return (
-        <span className={SCHEMA.HTML_INLINE} {...attributes}>
-          {element.data.content}{children}
-        </span>
-      );
-    case SCHEMA.SOFTBREAK:
-      return <span className={SCHEMA.SOFTBREAK} {...attributes}> {children}</span>;
-    case SCHEMA.LINEBREAK:
-      return <br className={SCHEMA.LINEBREAK} {...attributes}/>;
-    default:
+  const { type, data } = element;
+  /* eslint react/display-name: 0 */
+  const elementRenderer = {
+    [PARAGRAPH]: () => (<p {...attributes}>{children}</p>),
+    [H1]: () => (<Heading as="h1" {...attributes}>{children}</Heading>),
+    [H2]: () => (<Heading as="h2" {...attributes}>{children}</Heading>),
+    [H3]: () => (<Heading as="h3" {...attributes}>{children}</Heading>),
+    [H4]: () => (<Heading as="h4" {...attributes}>{children}</Heading>),
+    [H5]: () => (<Heading as="h5" {...attributes}>{children}</Heading>),
+    [H6]: () => (<Heading as="h6" {...attributes}>{children}</Heading>),
+    
+    [SOFTBREAK]: () => (<span className={SOFTBREAK} {...attributes}> {children}</span>),
+    [LINEBREAK]: () => (<br className={LINEBREAK} {...attributes}/>),
+    
+    [LINK]: () => (<a {...attributes} href={data.href}>{children}</a>),
+    
+    [HTML_BLOCK]: () => (<pre className={HTML_BLOCK} {...attributes}>{children}</pre>),
+    [CODE_BLOCK]: () => (<pre {...attributes}>{children}</pre>),
+    [BLOCK_QUOTE]: () => (<blockquote {...attributes}>{children}</blockquote>),
+    
+    [OL_LIST]: () => (<ol {...attributes}>{children}</ol>),
+    [UL_LIST]: () => (<ul {...attributes}>{children}</ul>),
+    [LIST_ITEM]: () => (<li {...attributes}>{children}</li>),
+    
+    [IMAGE]: () => (<ImageElement {...props} />),
+    [HR]: () => (<HorizontalRule {...attributes}>{children}</HorizontalRule>),
+    [HTML_INLINE]: () => (<span className={HTML_INLINE} {...attributes}>
+      {data.content}{children}
+    </span>),
+    default: () => {
       console.log(`Didn't know how to render ${JSON.stringify(element, null, 2)}`);
       return <p {...attributes}>{children}</p>;
-  }
+    }
+  };
+  return (elementRenderer[type] || elementRenderer.default)();
 };
 
 Element.propTypes = {
