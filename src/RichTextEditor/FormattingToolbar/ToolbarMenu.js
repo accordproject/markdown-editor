@@ -1,28 +1,23 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { cx, css } from 'emotion';
-import Menu from '../components/Menu';
+import styled from 'styled-components';
+
+const Menu = styled.div`
+  position: relative;
+  display: flex;
+  align-content: space-evenly;
+  justify-content: center;
+  margin-bottom: 20px;
+  & > * {
+    display: inline-block;
+  }
+  & > * + * {
+    margin-left: 15px;
+  }
+`;
 
 // eslint-disable-next-line react/display-name
-const ToolbarMenu = React.forwardRef(({ className, ...props }, ref) => (
-  <Menu
-    {...props}
-    ref={ref}
-    className={cx(
-      className,
-      css`
-        position: relative;
-        padding: 1px 18px 17px;
-        margin: 0 -20px;
-        border-bottom: 2px solid #eee;
-        margin-bottom: 20px;
-      `
-    )}
-  />
-));
-
-ToolbarMenu.propTypes = {
-  className: PropTypes.string,
-};
+const ToolbarMenu = React.forwardRef(
+  ({ ...props }, ref) => (<Menu {...props} ref={ref} />)
+);
 
 export default ToolbarMenu;

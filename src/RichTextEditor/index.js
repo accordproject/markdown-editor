@@ -12,6 +12,7 @@ import Element from './components/Element';
 import Leaf from './components/Leaf';
 import { toggleMark, toggleBlock } from './utilities/toolbarHelpers';
 import { withImages } from './components/withImages';
+import { withLinks } from './components/withLinks';
 import { withHtml } from './components/withHtml';
 
 
@@ -21,7 +22,7 @@ const RichTextEditor = (props) => {
   const renderElement = useCallback(props => <Element {...props} />, []);
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
   const editor = useMemo(
-    () => withHtml(withImages(withSchema(withHistory(withReact(createEditor()))))), []
+    () => withLinks(withHtml(withImages(withSchema(withHistory(withReact(createEditor())))))), []
   );
 
   const hotkeyActions = {
