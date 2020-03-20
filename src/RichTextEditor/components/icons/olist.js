@@ -23,7 +23,7 @@ const olist = {
   label: identifyBlock(OL_LIST),
   height: '25px',
   width: '25px',
-  padding: '5px 3px',
+  padding: '6px 3px 4px',
   viewBox: '0 0 17 14',
   icon,
 };

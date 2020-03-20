@@ -22,7 +22,7 @@ const quote = {
   label: identifyBlock(BLOCK_QUOTE),
   height: '25px',
   width: '25px',
-  padding: '5px 3px',
+  padding: '7px 3px 5px',
   viewBox: '0 0 18 13',
   icon,
 };
