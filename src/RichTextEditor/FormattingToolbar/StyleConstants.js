@@ -9,6 +9,7 @@ export const BUTTON_COLORS = {
   BACKGROUND_ACTIVE: '#F0F0F0',
   SYMBOL_INACTIVE: '#949CA2',
   SYMBOL_ACTIVE: '#414F58',
+  HYPERLINK_ACTIVE: '#2587DA',
   TOOLTIP_BACKGROUND: '#FFFFFF',
   TOOLTIP: '#000000',
 };
@@ -19,12 +20,14 @@ export const BLOCK_STYLE = {
   heading_two: 'Heading 2',
   heading_three: 'Heading 3',
   block_quote: MISC_CONSTANTS.DROPDOWN_NORMAL,
-  list_item: MISC_CONSTANTS.DROPDOWN_NORMAL
+  list_item: MISC_CONSTANTS.DROPDOWN_NORMAL,
+  link: MISC_CONSTANTS.DROPDOWN_NORMAL,
 };
 
 export const DROPDOWN_STYLE = {
   color: BUTTON_COLORS.SYMBOL_ACTIVE,
   alignSelf: 'center',
+  width: '100px',
 };
 
 export const DROPDOWN_STYLE_H1 = {
