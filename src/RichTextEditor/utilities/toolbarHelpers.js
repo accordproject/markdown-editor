@@ -47,3 +47,9 @@ export const toggleMark = (editor, format) => {
     Editor.addMark(editor, format, true);
   }
 };
+
+export const toggleHistory = (editor, format) => {
+  if (format === 'undo') {
+    editor.undo();
+  } else { editor.redo(); }
+};
