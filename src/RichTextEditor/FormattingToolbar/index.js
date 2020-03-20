@@ -2,18 +2,22 @@ import React from 'react';
 import { InsertImageButton } from '../components/withImages';
 import ToolbarMenu from './ToolbarMenu';
 import FormatButton from './FormatButton';
+import HistoryButton from './HistoryButton';
 import StyleDropdown from './StyleDropdown';
 import {
   toggleBlock, isBlockActive,
-  toggleMark, isMarkActive
+  toggleMark, isMarkActive,
+  toggleHistory
 } from '../utilities/toolbarHelpers';
-
 import {
-  bold, italic, code, quote, olist, ulist
+  bold, italic, code,
+  quote, olist, ulist,
+  image, undo, redo
 } from '../components/icons';
 
 const mark = { toggleFunc: toggleMark, activeFunc: isMarkActive };
 const block = { toggleFunc: toggleBlock, activeFunc: isBlockActive };
+const history = { toggleFunc: toggleHistory };
 
 const FormattingToolbar = () => (
   <ToolbarMenu>
@@ -24,7 +28,9 @@ const FormattingToolbar = () => (
     <FormatButton {...block} {...quote} />
     <FormatButton {...block} {...olist} />
     <FormatButton {...block} {...ulist} />
-    <InsertImageButton />
+    <HistoryButton {...history} {...undo} />
+    <HistoryButton {...history} {...redo} />
+    <InsertImageButton {...image}/>
   </ToolbarMenu>
 );
 
