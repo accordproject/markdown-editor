@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import imageExtensions from 'image-extensions';
+import { Popup } from 'semantic-ui-react';
 import isUrl from 'is-url';
 import { Transforms } from 'slate';
 import {
@@ -9,9 +10,9 @@ import {
   useFocused
 } from 'slate-react';
 import { css } from 'emotion';
+import { POPUP_STYLE } from '../FormattingToolbar/StyleConstants';
 
 import Button from './Button';
-import Icon from './Icon';
 
 export const insertImage = (editor, url) => {
   const text = { text: '' };
@@ -62,20 +63,43 @@ export const withImages = (editor) => {
 };
 
 /* eslint no-alert: 0 */
-export const InsertImageButton = () => {
+export const InsertImageButton = ({
+  // toggleFunc,
+  // activeFunc,
+  type,
+  label,
+  icon,
+  ...props
+}) => {
   const editor = useEditor();
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    const url = window.prompt('Enter the URL of the image:');
+    if (!url) return;
+    insertImage(editor, url);
+  };
   return (
-    <Button
-      onMouseDown={(event) => {
-        event.preventDefault();
-        const url = window.prompt('Enter the URL of the image:');
-        if (!url) return;
-        insertImage(editor, url);
-      }}
-    >
-      <Icon>image</Icon>
-    </Button>
+    <Popup
+      content={label}
+      style={POPUP_STYLE}
+      position='bottom center'
+      trigger={
+          <Button
+            aria-label={type}
+            onMouseDown={handleMouseDown}
+            {...props}
+          >
+            {icon()}
+          </Button>
+      }
+    />
   );
+};
+
+InsertImageButton.propTypes = {
+  icon: PropTypes.func,
+  type: PropTypes.string,
+  label: PropTypes.string,
 };
 
 const ImageElement = ({ attributes, children, element }) => {
