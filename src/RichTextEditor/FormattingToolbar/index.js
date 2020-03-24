@@ -1,10 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { InsertImageButton } from '../components/withImages';
 import ToolbarMenu from './ToolbarMenu';
 import FormatButton from './FormatButton';
 import HistoryButton from './HistoryButton';
 import HyperlinkButton from './HyperlinkButton';
 import StyleDropdown from './StyleDropdown';
+import { LinkForm } from './HyperlinkModal';
 import { insertLink, isLinkActive } from '../components/withLinks';
 import {
   toggleBlock, isBlockActive,
@@ -21,10 +22,27 @@ import {
 const mark = { toggleFunc: toggleMark, activeFunc: isMarkActive };
 const block = { toggleFunc: toggleBlock, activeFunc: isBlockActive };
 const history = { toggleFunc: toggleHistory };
-const hyperlink = { toggleFunc: insertLink, activeFunc: isLinkActive };
+const hyperlinkModal = { toggleFunc: insertLink, activeFunc: isLinkActive };
 
-const FormattingToolbar = () => {
+const FormattingToolbar = ({ lockText }) => {
   const linkButtonRef = useRef();
+  const [linkOpen, setLinkOpen] = useState(false);
+  const linkForm = {
+    toggleFunc: setLinkOpen,
+    activeFunc: isLinkActive,
+    isLinkOpen: linkOpen,
+    insertLink,
+    linkButtonRef
+  };
+
+  const hyperlink = {
+    toggleFunc: insertLink,
+    activeFunc: isLinkActive,
+    isLinkOpen: linkOpen,
+    toggleLink: setLinkOpen
+  };
+
+
   return (
     <ToolbarMenu>
       <StyleDropdown />
@@ -40,8 +58,9 @@ const FormattingToolbar = () => {
       <HistoryButton {...history} {...undo} />
       <HistoryButton {...history} {...redo} />
       <Separator />
-      <HyperlinkButton ref={linkButtonRef} {...hyperlink} {...link}/>
+      {/* <HyperlinkButton ref={linkButtonRef} {...hyperlink} {...link}/> */}
       <InsertImageButton {...image}/>
+      {/* <LinkForm {...linkForm} /> */}
     </ToolbarMenu>
   );
 };

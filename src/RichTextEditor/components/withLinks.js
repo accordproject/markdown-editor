@@ -17,9 +17,12 @@ const wrapLink = (editor, url) => {
 
   const { selection } = editor;
   const isCollapsed = selection && Range.isCollapsed(selection);
+  // const nodeINeed = Node.fragment(editor, editor.selection);
   const link = {
     type: 'link',
-    url,
+    data: {
+      href: url
+    },
     children: isCollapsed ? [{ text: url }] : [],
   };
 
