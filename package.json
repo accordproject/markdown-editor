@@ -108,7 +108,6 @@
     "@babel/runtime": "^7.8.7",
     "@material-ui/core": "^4.9.5",
     "@material-ui/icons": "^4.9.1",
-    "emotion": "^10.0.27",
     "image-extensions": "^1.1.0",
     "is-hotkey": "^0.1.6",
     "is-url": "^1.2.4",
