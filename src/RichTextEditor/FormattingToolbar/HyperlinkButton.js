@@ -1,35 +1,49 @@
 import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useSlate } from 'slate-react';
+import { ReactEditor, useSlate } from 'slate-react';
 import { Popup } from 'semantic-ui-react';
 import { BUTTON_COLORS, POPUP_STYLE } from './StyleConstants';
 import Button from '../components/Button';
 
-const HyperlinkButton = ({
-  ref,
-  toggleFunc,
-  activeFunc,
-  type,
-  label,
-  icon,
-  ...props
-}) => {
-  const editor = useSlate();
-  const handleMouseDown = (e) => {
-    e.preventDefault();
-    const url = window.prompt('Enter the URL of the link:');
-    if (!url) return;
-    toggleFunc(editor, url);
-  };
-  const isActive = activeFunc(editor, type);
-  const iconColor = isActive
-    ? BUTTON_COLORS.HYPERLINK_ACTIVE
-    : BUTTON_COLORS.SYMBOL_INACTIVE;
-  const backgroundColor = isActive
-    ? BUTTON_COLORS.BACKGROUND_ACTIVE
-    : BUTTON_COLORS.BACKGROUND_INACTIVE;
+// eslint-disable-next-line react/display-name
+// const HyperlinkMenu = React.forwardRef(
+//     ({ ...props }, ref) => <HyperlinkWrapper ref={ref} {...props} />
+//   );
 
-  return (
+
+// eslint-disable-next-line react/display-name
+const HyperlinkButton = React.forwardRef(
+  ({
+    isLinkOpen,
+    toggleLink,
+    toggleFunc,
+    activeFunc,
+    type,
+    label,
+    icon,
+    ...props
+  }, ref) => {
+  // this needs to open the modal always
+    const editor = useSlate();
+    const { selection } = editor;
+    const handleMouseDown = (e) => {
+      e.preventDefault();
+      // if (!selection) return;
+      toggleLink(!isLinkOpen);
+      ReactEditor.focus(editor);
+    // const url = window.prompt('Enter the URL of the link:');
+    // if (!url) return;
+    // toggleFunc(editor, url);
+    };
+    const isActive = activeFunc(editor, type);
+    const iconColor = isActive
+      ? BUTTON_COLORS.HYPERLINK_ACTIVE
+      : BUTTON_COLORS.SYMBOL_INACTIVE;
+    const backgroundColor = isActive
+      ? BUTTON_COLORS.BACKGROUND_ACTIVE
+      : BUTTON_COLORS.BACKGROUND_INACTIVE;
+
+    return (
     <Popup
       content={label}
       style={POPUP_STYLE}
@@ -47,10 +61,13 @@ const HyperlinkButton = ({
           </ Button>
       }
     />
-  );
-};
+    );
+  }
+);
 
 HyperlinkButton.propTypes = {
+  isLinkOpen: PropTypes.bool,
+  toggleLink: PropTypes.func,
   toggleFunc: PropTypes.func,
   activeFunc: PropTypes.func,
   icon: PropTypes.func,
