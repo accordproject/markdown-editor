@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<RichTextEditor /> on initialization renders page correctly 1`] = `
+<Slate
+  editor={
+    Object {
+      "addMark": [Function],
+      "apply": [Function],
+      "children": Array [],
+      "deleteBackward": [Function],
+      "deleteForward": [Function],
+      "deleteFragment": [Function],
+      "history": Object {
+        "redos": Array [],
+        "undos": Array [],
+      },
+      "insertBreak": [Function],
+      "insertData": [Function],
+      "insertFragment": [Function],
+      "insertNode": [Function],
+      "insertText": [Function],
+      "isInline": [Function],
+      "isVoid": [Function],
+      "marks": null,
+      "normalizeNode": [Function],
+      "onChange": [Function],
+      "operations": Array [],
+      "redo": [Function],
+      "removeMark": [Function],
+      "selection": null,
+      "undo": [Function],
+    }
+  }
+  onChange={[Function]}
+>
+  <FormattingToolbar
+    lockText={true}
+  />
+  <Editable
+    autoFocus={true}
+    onKeyDown={[Function]}
+    placeholder="Enter some rich text…"
+    readOnly={false}
+    renderElement={[Function]}
+    renderLeaf={[Function]}
+    spellCheck={true}
+  />
+</Slate>
+`;
