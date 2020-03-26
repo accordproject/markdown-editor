@@ -23,7 +23,6 @@ import {
 const Element = (props) => {
   const { attributes, children, element } = props;
   const { type, data } = element;
-  /* eslint react/display-name: 0 */
   const elementRenderer = {
     [PARAGRAPH]: () => (<p {...attributes}>{children}</p>),
     [H1]: () => (<Heading as="h1" {...attributes}>{children}</Heading>),
