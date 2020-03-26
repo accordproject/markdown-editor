@@ -17,6 +17,7 @@ import { withHtml } from './components/withHtml';
 import FormatBar from './FormattingToolbar';
 
 const RichTextEditor = (props) => {
+  console.log('RichTextEditor: ', props);
   const renderElement = useCallback(props => <Element {...props} />, []);
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
   const plugins = [
@@ -54,7 +55,9 @@ const RichTextEditor = (props) => {
       <FormatBar lockText={props.lockText} />
       <Editable
         readOnly={props.readOnly}
-        renderElement={renderElement}
+        renderElement={slateProps => renderElement(
+          { ...slateProps, customElements: props.customElements }
+        )}
         renderLeaf={renderLeaf}
         placeholder="Enter some rich text…"
         spellCheck
@@ -81,6 +84,8 @@ RichTextEditor.propTypes = {
   lockText: PropTypes.bool,
   /* Array of plugins passed in for the editor */
   plugins: PropTypes.func,
+  /* Array of plugins passed in for the editor */
+  customElements: PropTypes.object,
 };
 
 

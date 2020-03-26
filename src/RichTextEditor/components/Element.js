@@ -21,9 +21,10 @@ import {
 } from '../utilities/schema';
 
 const Element = (props) => {
-  const { attributes, children, element } = props;
+  const { attributes, children, element, customElements } = props;
   const { type, data } = element;
-  const elementRenderer = {
+  console.log('IN ELEMENT ----', type);
+  const baseElementRenderer = {
     [PARAGRAPH]: () => (<p {...attributes}>{children}</p>),
     [H1]: () => (<Heading as="h1" {...attributes}>{children}</Heading>),
     [H2]: () => (<Heading as="h2" {...attributes}>{children}</Heading>),
@@ -55,6 +56,9 @@ const Element = (props) => {
       return <p {...attributes}>{children}</p>;
     }
   };
+  const elementRenderer = customElements
+    ? {...baseElementRenderer, ...customElements(attributes, children) }
+    : baseElementRenderer ;
   return (elementRenderer[type] || elementRenderer.default)();
 };
 
