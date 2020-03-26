@@ -14,16 +14,20 @@ import { toggleMark, toggleBlock } from './utilities/toolbarHelpers';
 import { withImages } from './components/withImages';
 import { withLinks } from './components/withLinks';
 import { withHtml } from './components/withHtml';
-
-
 import FormatBar from './FormattingToolbar';
 
 const RichTextEditor = (props) => {
   const renderElement = useCallback(props => <Element {...props} />, []);
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
-  const editor = useMemo(
-    () => withLinks(withHtml(withImages(withSchema(withHistory(withReact(createEditor())))))), []
-  );
+  const plugins = [
+    withHtml, withLinks, withImages,
+    withSchema, withHistory, withReact
+  ];
+  const pluginList = props.plugins
+    ? [...plugins, ...props.plugins]
+    : [...plugins];
+  const pipePlugins = (table, input) => table.reduce((current, f) => f(current), input);
+  const editor = useMemo(() => pipePlugins(pluginList, createEditor()), [pluginList]);
 
   const hotkeyActions = {
     mark: code => toggleMark(editor, code),
@@ -65,30 +69,18 @@ const RichTextEditor = (props) => {
  * The property types for this component
  */
 RichTextEditor.propTypes = {
-  /**
-   * Initial contents for the editor (markdown text)
-   */
+  /* Initial contents for the editor (markdown text) */
   value: PropTypes.array.isRequired,
-
-  /**
-   * Props for the editor
-   */
+  /* Props for the editor */
   editorProps: PropTypes.object.isRequired,
-
-  /**
-   * A callback that receives the markdown text
-   */
+  /* A callback that receives the markdown text */
   onChange: PropTypes.func.isRequired,
-
-  /**
-   * Boolean to make editor read-only (uneditable) or not (editable)
-   */
+  /* Boolean to make editor read-only (uneditable) or not (editable) */
   readOnly: PropTypes.bool,
-
-  /**
-   * Boolean to lock non variable text
-   */
+  /* Boolean to lock non variable text */
   lockText: PropTypes.bool,
+  /* Array of plugins passed in for the editor */
+  plugins: PropTypes.func,
 };
 
 
