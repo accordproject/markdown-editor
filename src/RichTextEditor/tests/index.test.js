@@ -74,6 +74,7 @@ describe('<RichTextEditor />', () => {
   describe('on initialization', () => {
     it('renders page correctly', () => {
       const slate = slateTransformer.fromMarkdown(defaultMarkdown);
+
       const component = shallow(
         <RichTextEditor
             readOnly={false}
