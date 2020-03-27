@@ -58,6 +58,7 @@ const RichTextEditor = (props) => {
         renderElement={slateProps => renderElement(
           { ...slateProps, customElements: props.customElements }
         )}
+        // renderElement={renderElement}
         renderLeaf={renderLeaf}
         placeholder="Enter some rich text…"
         spellCheck
