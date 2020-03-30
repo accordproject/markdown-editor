@@ -17,7 +17,6 @@ import { withHtml } from './components/withHtml';
 import FormatBar from './FormattingToolbar';
 
 const RichTextEditor = (props) => {
-  console.log('RichTextEditor: ', props);
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
   const plugins = [
     withHtml, withLinks, withImages,
@@ -58,7 +57,7 @@ const RichTextEditor = (props) => {
 
   const onChange = (value) => {
     if (props.readOnly) return;
-    props.onChange(value);
+    props.onChange(value, editor);
   };
 
   return (
