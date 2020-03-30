@@ -57,7 +57,7 @@ const Element = (props) => {
     }
   };
   const elementRenderer = customElements
-    ? {...baseElementRenderer, ...customElements(attributes, children) }
+    ? {...baseElementRenderer, ...customElements(attributes, children, element) }
     : baseElementRenderer ;
   return (elementRenderer[type] || elementRenderer.default)();
 };
