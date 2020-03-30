@@ -23,7 +23,6 @@ import {
 const Element = (props) => {
   const { attributes, children, element, customElements } = props;
   const { type, data } = element;
-  console.log('IN ELEMENT ----', type);
   const baseElementRenderer = {
     [PARAGRAPH]: () => (<p {...attributes}>{children}</p>),
     [H1]: () => (<Heading as="h1" {...attributes}>{children}</Heading>),
