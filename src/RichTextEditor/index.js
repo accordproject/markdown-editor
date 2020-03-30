@@ -18,7 +18,6 @@ import FormatBar from './FormattingToolbar';
 
 const RichTextEditor = (props) => {
   console.log('RichTextEditor: ', props);
-  const renderElement = useCallback(props => <Element {...props} />, []);
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
   const plugins = [
     withHtml, withLinks, withImages,
@@ -39,7 +38,7 @@ const RichTextEditor = (props) => {
     }
   };
 
-  const onKeyDown = (event) => {
+  const onKeyDown = useCallback((event) => {
     const hotkeys = Object.keys(HOTKEYS);
     hotkeys.forEach((hotkey) => {
       if (isHotkey(hotkey, event)) {
@@ -48,17 +47,26 @@ const RichTextEditor = (props) => {
         hotkeyActions[type](code);
       }
     });
+  }, [hotkeyActions]);
+
+
+  const renderElement = useCallback((slateProps) => {
+    const elementProps = { ...slateProps, customElements: props.customElements };
+    return (<Element {...elementProps} />);
+  }, [props.customElements]);
+
+
+  const onChange = (value) => {
+    if (props.readOnly) return;
+    props.onChange(value);
   };
 
   return (
-    <Slate editor={editor} value={props.value} onChange={value => props.onChange(value)}>
-      <FormatBar lockText={props.lockText} />
+    <Slate editor={editor} value={props.value} onChange={onChange}>
+      { !props.readOnly && <FormatBar lockText={props.lockText} /> }
       <Editable
         readOnly={props.readOnly}
-        renderElement={slateProps => renderElement(
-          { ...slateProps, customElements: props.customElements }
-        )}
-        // renderElement={renderElement}
+        renderElement={renderElement}
         renderLeaf={renderLeaf}
         placeholder="Enter some rich text…"
         spellCheck
