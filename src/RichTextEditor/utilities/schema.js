@@ -29,14 +29,25 @@ export const LINK = 'link';
 export const IMAGE = 'image';
 export const HTML_INLINE = 'html_inline';
 
-export const INLINES = [LINEBREAK, SOFTBREAK, HTML_INLINE, LINK, IMAGE];
-export const VOIDS = [LINEBREAK, SOFTBREAK, IMAGE, HR];
+const INLINES = {
+  [LINEBREAK]: true,
+  [SOFTBREAK]: true,
+  [HTML_INLINE]: true,
+  [LINK]: true,
+  [IMAGE]: true,
+};
+const VOIDS = {
+  [LINEBREAK]: true,
+  [SOFTBREAK]: true,
+  [IMAGE]: true,
+  [HR]: true,
+};
 
 /* eslint no-param-reassign: 0 */
 const withSchema = (editor) => {
   const { isVoid, isInline } = editor;
-  editor.isVoid = element => (VOIDS.includes(element.type) ? true : isVoid(editor));
-  editor.isInline = element => (INLINES.includes(element.type) ? true : isInline(editor));
+  editor.isInline = element => (INLINES[element.type] || isInline(editor));
+  editor.isVoid = element => (VOIDS[element.type] || isVoid(editor));
 
   return editor;
 };
