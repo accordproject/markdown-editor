@@ -17,15 +17,17 @@ import { withHtml } from './components/withHtml';
 import FormatBar from './FormattingToolbar';
 
 const RichTextEditor = (props) => {
+  const { augmentEditor } = props;
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
   const editor = useMemo(() => {
-    if (props.augmentEditor) {
-      return props.augmentEditor(
+    if (augmentEditor) {
+      return augmentEditor(
         withLinks(withHtml(withImages(withSchema(withHistory(withReact(createEditor()))))))
       );
     }
     return withLinks(withHtml(withImages(withSchema(withHistory(withReact(createEditor()))))));
-  }, [props]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const hotkeyActions = {
     mark: code => toggleMark(editor, code),
