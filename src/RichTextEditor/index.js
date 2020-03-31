@@ -18,15 +18,14 @@ import FormatBar from './FormattingToolbar';
 
 const RichTextEditor = (props) => {
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
-  const plugins = [
-    withHtml, withLinks, withImages,
-    withSchema, withHistory, withReact
-  ];
-  const pluginList = props.plugins
-    ? [...plugins, ...props.plugins]
-    : [...plugins];
-  const pipePlugins = (table, input) => table.reduce((current, f) => f(current), input);
-  const editor = useMemo(() => pipePlugins(pluginList, createEditor()), [pluginList]);
+  const editor = useMemo(() => {
+    if (props.augmentEditor) {
+      return props.augmentEditor(
+        withLinks(withHtml(withImages(withSchema(withHistory(withReact(createEditor()))))))
+      );
+    }
+    return withLinks(withHtml(withImages(withSchema(withHistory(withReact(createEditor()))))));
+  }, [props]);
 
   const hotkeyActions = {
     mark: code => toggleMark(editor, code),
@@ -90,10 +89,10 @@ RichTextEditor.propTypes = {
   readOnly: PropTypes.bool,
   /* Boolean to lock non variable text */
   lockText: PropTypes.bool,
+  /* Higher order function to augment the editor methods */
+  augmentEditor: PropTypes.func,
   /* Array of plugins passed in for the editor */
-  plugins: PropTypes.func,
-  /* Array of plugins passed in for the editor */
-  customElements: PropTypes.object,
+  customElements: PropTypes.object
 };
 
 
