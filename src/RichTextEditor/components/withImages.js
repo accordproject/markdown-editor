@@ -41,7 +41,7 @@ export const withImages = (editor) => {
 
   editor.isVoid = element => (element.type === 'image' ? true : isVoid(element));
 
-  editor.insertData = (data) => {
+  editor.insertData = (data, externalHTML) => {
     const text = data.getData('text/plain');
     const { files } = data;
 
@@ -62,7 +62,7 @@ export const withImages = (editor) => {
     } else if (isImageUrl(text)) {
       insertImage(editor, text);
     } else {
-      insertData(data);
+      insertData(data, externalHTML);
     }
   };
 
