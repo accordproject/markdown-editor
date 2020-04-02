@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
+import PropTypes from 'prop-types';
+
 import { InsertImageButton } from '../components/withImages';
 import ToolbarMenu from './ToolbarMenu';
 import FormatButton from './FormatButton';
@@ -24,7 +26,7 @@ const block = { toggleFunc: toggleBlock, activeFunc: isBlockActive };
 const history = { toggleFunc: toggleHistory };
 const hyperlinkModal = { toggleFunc: insertLink, activeFunc: isLinkActive };
 
-const FormattingToolbar = ({ lockText }) => {
+const FormattingToolbar = ({ isEditable }) => {
   const linkButtonRef = useRef();
   const [linkOpen, setLinkOpen] = useState(false);
   const linkForm = {
@@ -45,24 +47,29 @@ const FormattingToolbar = ({ lockText }) => {
 
   return (
     <ToolbarMenu>
-      <StyleDropdown />
+      <StyleDropdown isEditable={isEditable}/>
       <Separator />
-      <FormatButton {...mark} {...bold} />
-      <FormatButton {...mark} {...italic} />
-      <FormatButton {...mark} {...code} />
+      <FormatButton {...mark} {...bold} isEditable={isEditable} />
+      <FormatButton {...mark} {...italic} isEditable={isEditable} />
+      <FormatButton {...mark} {...code} isEditable={isEditable} />
       <Separator />
-      <FormatButton {...block} {...quote} />
-      <FormatButton {...block} {...olist} />
-      <FormatButton {...block} {...ulist} />
+      <FormatButton {...block} {...quote} isEditable={isEditable} />
+      <FormatButton {...block} {...olist} isEditable={isEditable} />
+      <FormatButton {...block} {...ulist} isEditable={isEditable} />
       <Separator />
       <HistoryButton {...history} {...undo} />
       <HistoryButton {...history} {...redo} />
       <Separator />
       {/* <HyperlinkButton ref={linkButtonRef} {...hyperlink} {...link}/> */}
-      <InsertImageButton {...image}/>
+      <InsertImageButton {...image} isEditable={isEditable} />
       {/* <LinkForm {...linkForm} /> */}
     </ToolbarMenu>
   );
 };
+
+FormattingToolbar.propTypes = {
+  isEditable: PropTypes.func,
+};
+
 
 export default FormattingToolbar;

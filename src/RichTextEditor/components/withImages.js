@@ -76,11 +76,13 @@ export const InsertImageButton = ({
   type,
   label,
   icon,
+  isEditable,
   ...props
 }) => {
   const editor = useEditor();
   const handleMouseDown = (e) => {
     e.preventDefault();
+    if (isEditable && !isEditable(editor)) return;
     const url = window.prompt('Enter the URL of the image:');
     if (!url) return;
     insertImage(editor, url);
@@ -107,6 +109,7 @@ InsertImageButton.propTypes = {
   icon: PropTypes.func,
   type: PropTypes.string,
   label: PropTypes.string,
+  isEditable: PropTypes.func
 };
 
 const ImageElement = ({ attributes, children, element }) => {
