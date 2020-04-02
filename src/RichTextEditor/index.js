@@ -1,9 +1,12 @@
 import React, { useCallback, useMemo } from 'react';
+import { CiceroMarkTransformer } from '@accordproject/markdown-cicero';
+import { HtmlTransformer } from '@accordproject/markdown-html';
+import { SlateTransformer } from '@accordproject/markdown-slate';
 import isHotkey from 'is-hotkey';
 import {
   Editable, withReact, Slate
 } from 'slate-react';
-import { createEditor } from 'slate';
+import { Node, createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 import PropTypes from 'prop-types';
 import HOTKEYS from './utilities/hotkeys';
@@ -28,6 +31,12 @@ const RichTextEditor = (props) => {
     return withLinks(withHtml(withImages(withSchema(withHistory(withReact(createEditor()))))));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+
+  const renderElement = useCallback((slateProps) => {
+    const elementProps = { ...slateProps, customElements: props.customElements };
+    return (<Element {...elementProps} />);
+  }, [props.customElements]);
 
   const hotkeyActions = {
     mark: code => toggleMark(editor, code),
@@ -56,12 +65,29 @@ const RichTextEditor = (props) => {
     });
   }, [editor, hotkeyActions, isEditable]);
 
+  const handleCopyOrCut = useCallback((event) => {
+    event.preventDefault();
+    const slateTransformer = new SlateTransformer();
+    const htmlTransformer = new HtmlTransformer();
+    const ciceroMarkTransformer = new CiceroMarkTransformer();
 
-  const renderElement = useCallback((slateProps) => {
-    const elementProps = { ...slateProps, customElements: props.customElements };
-    return (<Element {...elementProps} />);
-  }, [props.customElements]);
+    const SLATE_CHILDREN = JSON.parse(JSON.stringify(Node.fragment(editor, editor.selection)));
+    const SLATE_DOM = {
+      object: 'value',
+      document: {
+        object: 'document',
+        data: {},
+        children: SLATE_CHILDREN
+      }
+    };
 
+    const CICERO_MARK_DOM = slateTransformer.toCiceroMark(SLATE_DOM);
+    const HTML_DOM = htmlTransformer.toHtml(CICERO_MARK_DOM);
+    const MARKDOWN_TEXT = ciceroMarkTransformer.toMarkdown(CICERO_MARK_DOM);
+
+    event.clipboardData.setData('text/html', HTML_DOM);
+    event.clipboardData.setData('text/plain', MARKDOWN_TEXT);
+  }, [editor]);
 
   const onChange = (value) => {
     if (props.readOnly) return;
@@ -79,6 +105,8 @@ const RichTextEditor = (props) => {
         spellCheck
         autoFocus
         onKeyDown={onKeyDown}
+        onCopy={event => handleCopyOrCut(event)}
+        onCut={event => handleCopyOrCut(event)}
       />
     </Slate>
   );

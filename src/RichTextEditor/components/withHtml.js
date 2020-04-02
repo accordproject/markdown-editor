@@ -1,7 +1,6 @@
 import { Transforms } from 'slate';
-
-const { SlateTransformer } = require('@accordproject/markdown-slate');
-const { HtmlTransformer } = require('@accordproject/markdown-html');
+import { SlateTransformer } from '@accordproject/markdown-slate';
+import { HtmlTransformer } from '@accordproject/markdown-html';
 
 /* eslint no-param-reassign: 0 */
 export const withHtml = (editor) => {
