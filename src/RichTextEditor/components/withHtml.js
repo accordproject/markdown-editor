@@ -6,8 +6,8 @@ import { HtmlTransformer } from '@accordproject/markdown-html';
 export const withHtml = (editor) => {
   const { insertData } = editor;
 
-  editor.insertData = (data) => {
-    const html = data.getData('text/html');
+  editor.insertData = (data, externalHTML) => {
+    const html = externalHTML || data.getData('text/html');
 
     if (html) {
       try {
@@ -17,7 +17,7 @@ export const withHtml = (editor) => {
         const slate = slateTransformer.fromCiceroMark(dom);
         Transforms.insertFragment(editor, slate.document.children);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
       return;
     }
