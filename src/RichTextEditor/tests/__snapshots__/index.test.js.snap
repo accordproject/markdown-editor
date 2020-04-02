@@ -621,6 +621,8 @@ This is an html block.
   />
   <Editable
     autoFocus={true}
+    onCopy={[Function]}
+    onCut={[Function]}
     onKeyDown={[Function]}
     placeholder="Enter some rich text…"
     readOnly={false}
