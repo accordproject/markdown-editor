@@ -11,11 +11,13 @@ const FormatButton = ({
   type,
   label,
   icon,
+  isEditable,
   ...props
 }) => {
   const editor = useSlate();
   const handleMouseDown = (e) => {
     e.preventDefault();
+    if (isEditable && !isEditable(editor)) return;
     toggleFunc(editor, type);
   };
   const isActive = activeFunc(editor, type);
@@ -49,6 +51,7 @@ const FormatButton = ({
 FormatButton.propTypes = {
   toggleFunc: PropTypes.func,
   activeFunc: PropTypes.func,
+  isEditable: PropTypes.func,
   icon: PropTypes.func,
   type: PropTypes.string,
   label: PropTypes.string,

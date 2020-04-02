@@ -96,7 +96,7 @@ const RichTextEditor = (props) => {
 
   return (
     <Slate editor={editor} value={props.value} onChange={onChange}>
-      { !props.readOnly && <FormatBar lockText={props.lockText} /> }
+      { !props.readOnly && <FormatBar lockText={props.lockText} isEditable={isEditable} /> }
       <Editable
         readOnly={props.readOnly}
         renderElement={renderElement}
