@@ -38,7 +38,14 @@ const RichTextEditor = (props) => {
     }
   };
 
+  const { isEditable } = props;
+
   const onKeyDown = useCallback((event) => {
+    const canEdit = isEditable ? isEditable(editor, event) : true;
+    if (!canEdit) {
+      event.preventDefault();
+      return;
+    }
     const hotkeys = Object.keys(HOTKEYS);
     hotkeys.forEach((hotkey) => {
       if (isHotkey(hotkey, event)) {
@@ -47,7 +54,7 @@ const RichTextEditor = (props) => {
         hotkeyActions[type](code);
       }
     });
-  }, [hotkeyActions]);
+  }, [editor, hotkeyActions, isEditable]);
 
 
   const renderElement = useCallback((slateProps) => {
@@ -94,7 +101,9 @@ RichTextEditor.propTypes = {
   /* Higher order function to augment the editor methods */
   augmentEditor: PropTypes.func,
   /* Array of plugins passed in for the editor */
-  customElements: PropTypes.object
+  customElements: PropTypes.object,
+  /* A method that determines if current edit should be allowed */
+  isEditable: PropTypes.func,
 };
 
 
