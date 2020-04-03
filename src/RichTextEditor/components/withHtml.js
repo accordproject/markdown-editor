@@ -32,7 +32,7 @@ export const withHtml = (editor) => {
         // const htmlTransformer = new HtmlTransformer();
         const slateTransformer = new SlateTransformer();
         const ciceroMarkTransformer = new CiceroMarkTransformer();
-        const CICERO_MARK_DOM = ciceroMarkTransformer.fromMarkdown(PLAIN_DOM);
+        const CICERO_MARK_DOM = ciceroMarkTransformer.fromMarkdown(PLAIN_DOM, 'json');
         console.log('CICERO_MARK_DOM FIRED', CICERO_MARK_DOM);
         const SLATE_DOM = slateTransformer.fromCiceroMark(CICERO_MARK_DOM);
         console.log('SLATE_DOM FIRED', SLATE_DOM);
