@@ -53,13 +53,13 @@ export const withLinks = (editor) => {
     }
   };
 
-  editor.insertData = (data, externalHTML) => {
+  editor.insertData = (data) => {
     const text = data.getData('text/plain');
 
     if (text && isUrl(text)) {
       wrapLink(editor, text);
     } else {
-      insertData(data, externalHTML);
+      insertData(data);
     }
   };
 
