@@ -22,6 +22,9 @@ import * as uListIcon from '../icons/UL';
 import * as hyperlinkIcon from '../icons/hyperlink';
 import * as undoIcon from '../icons/navigation-left';
 import * as redoIcon from '../icons/navigation-right';
+import CopyIcon from '../icons/copy';
+import RemoveIcon from '../icons/delete';
+import OpenLinkIcon from '../icons/open';
 
 import './toolbar.css';
 
@@ -46,6 +49,47 @@ const ToolbarIcon = styled.svg`
   }
 `;
 
+const LinkIconHolder = styled.div`
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  border-radius: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: -2px 3px;
+  margin: 0 3px;
+  &:hover {
+    background-color: #eee;
+  }
+`;
+
+const InputFieldWrapper = styled.div`
+  width: 270px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const InputFieldLabel = styled.label`
+  font-weight: bold;
+  font-size: 12px;
+`;
+
+const InlineFormField = styled(Form.Field)`
+  display: flex;
+  flex-direction: row;
+`;
+
+const InlineFormButton = styled(Button)`
+  margin-left: 20px;
+  align-self: flex-end;
+  height: 38px;
+  background-color: #0043BA;
+  &:hover {
+    background-color: #265FC4;
+  }
+`;
+
 const VertDivider = styled.div`
   box-sizing: border-box;
   height: 24px;
@@ -53,13 +97,6 @@ const VertDivider = styled.div`
   border: 1px solid ${props => props.color || '#EFEFEF'};
   top: 10px;
   place-self: center;
-`;
-
-const PopupLinkWrapper = styled.p`
-white-space : nowrap;
-overflow : hidden;
-text-overflow : ellipsis;
-max-width : 250px;
 `;
 
 /**
@@ -106,6 +143,7 @@ export default class FormatToolbar extends React.Component {
     this.removeLinkForm = this.removeLinkForm.bind(this);
     this.closeSetLinkForm = this.closeSetLinkForm.bind(this);
     this.renderLinkSetForm = this.renderLinkSetForm.bind(this);
+    this.handleCopyLink = this.handleCopyLink.bind(this);
   }
 
   componentDidMount() {
@@ -360,9 +398,22 @@ export default class FormatToolbar extends React.Component {
     );
   }
 
+  // Function to copy link text to clipboard
+  handleCopyLink (text) {
+    function listener(e) {
+      e.clipboardData.setData('text/plain', text);
+      e.preventDefault();
+    }
+
+    document.addEventListener('copy', listener);
+    document.execCommand('copy');
+    document.removeEventListener('copy', listener);
+  }
+
   /**
    * Render form in popup to set the link.
    */
+
   renderLinkSetForm() {
     const { popupPosition, popupStyle } = calculateLinkPopupPosition(
       this.props.editor,
@@ -391,56 +442,69 @@ export default class FormatToolbar extends React.Component {
             >
               <Form onSubmit={event => this.submitLinkForm(event, isLinkBool)}>
                 <Form.Field>
-                  <label>Link Text</label>
-                  <Input
-                    placeholder="Text"
-                    name="text"
-                    defaultValue={
-                      isLinkBool && !selectedText
-                        ? this.props.editor.value.focusText.text
-                        : this.props.editor.value.fragment.text
-                    }
-                  />
+                  <InputFieldWrapper>
+                    <InputFieldLabel>Link Text</InputFieldLabel>
+                    <Input
+                      placeholder="Text"
+                      name="text"
+                      defaultValue={
+                        isLinkBool && !selectedText
+                          ? this.props.editor.value.focusText.text
+                          : this.props.editor.value.fragment.text
+                      }
+                    />
+                  </InputFieldWrapper>
                 </Form.Field>
-                <Form.Field>
-                  <label>Link URL</label>
-                  <Input
-                    ref={this.hyperlinkInputRef}
-                    placeholder={'http://example.com'}
-                    defaultValue={
-                      isLinkBool
-                      && action.isOnlyLink(this.props.editor)
-                      && selectedInlineHref
-                        ? selectedInlineHref.data.get('href')
-                        : ''
-                    }
-                    name="url"
-                  />
-                </Form.Field>
-                {isLinkBool
-                  && action.isOnlyLink(this.props.editor)
-                  && selectedInlineHref && (
-                    <PopupLinkWrapper>
-                   <a href={selectedInlineHref.data.get('href')}
-                   target='_blank'
-                   >
-                      {selectedInlineHref.data.get('href')}
-                    </a>
-                    </PopupLinkWrapper>
-                )}
-                <Form.Field>
-                  <Button
-                    secondary
+                <InlineFormField>
+                  <InputFieldWrapper>
+                    <InputFieldLabel>Link URL</InputFieldLabel>
+                    <Input
+                      ref={this.hyperlinkInputRef}
+                      placeholder={'http://example.com'}
+                      defaultValue={
+                        isLinkBool
+                        && action.isOnlyLink(this.props.editor)
+                        && selectedInlineHref
+                          ? selectedInlineHref.data.get('href')
+                          : ''
+                      }
+                      name="url"
+                    />
+                  </InputFieldWrapper>
+                  <InlineFormButton
+                    primary
+                    type="submit"
                     floated="right"
-                    disabled={!isLinkBool}
-                    onMouseDown={this.removeLinkForm}
+                    style={{'margin-left' : '10px'}}
                   >
-                    Remove
-                  </Button>
-                  <Button primary floated="right" type="submit">
                     Apply
-                  </Button>
-                </Form.Field>
+                  </InlineFormButton>
+                </InlineFormField>
+                {
+                    isLinkBool
+                    && action.isOnlyLink(this.props.editor)
+                    && (
+                      <InlineFormField>
+                        <LinkIconHolder
+                          onClick={() => this.handleCopyLink(selectedInlineHref.data.get('href'))}
+                        >
+                          <CopyIcon/>
+                        </LinkIconHolder>
+                        <LinkIconHolder
+                          onClick={this.removeLinkForm}
+                        >
+                          <RemoveIcon />
+                        </LinkIconHolder>
+                        <a href={selectedInlineHref.data.get('href')}
+                        target='_blank'
+                        >
+                            <LinkIconHolder>
+                              <OpenLinkIcon />
+                            </LinkIconHolder>
+                        </a>
+                      </InlineFormField>
+                    )
+                  }
               </Form>
             </Ref>
           }
@@ -505,7 +569,7 @@ export default class FormatToolbar extends React.Component {
   /**
    * Render a history-toggling toolbar button.
    */
-  renderHistoryButton(type, label, icon, hi, wi, pa, vBox, classInput) {
+  renderHistoryButton(type, icon, hi, wi, pa, vBox, action, classInput) {
     const { editor, editorProps } = this.props;
 
     const style = {
@@ -516,7 +580,7 @@ export default class FormatToolbar extends React.Component {
 
     return (
       <Popup
-        content={label}
+        content={tips.capitalizeWord(action)}
         style={style}
         position='bottom center'
         trigger={
@@ -528,7 +592,7 @@ export default class FormatToolbar extends React.Component {
             padding={pa}
             viewBox={vBox}
             className={classInput}
-            onClick={event => this.onClickHistory(event, type, editor)}>
+            onClick={event => this.onClickHistory(event, action, editor)}>
               {icon(styles.buttonSymbolInactive(editorProps.BUTTON_SYMBOL_INACTIVE))}
           </ ToolbarIcon>
         }
@@ -674,24 +738,24 @@ export default class FormatToolbar extends React.Component {
         {
           this.renderHistoryButton(
             undoIcon.type(),
-            undoIcon.label(),
             undoIcon.icon,
             undoIcon.height(),
             undoIcon.width(),
             undoIcon.padding(),
             undoIcon.vBox(),
+            `Undo (${tips.MOD}+Z)`,
             'toolbar-2x2'
           )
       }
         {
           this.renderHistoryButton(
             redoIcon.type(),
-            redoIcon.label(),
             redoIcon.icon,
             redoIcon.height(),
             redoIcon.width(),
             redoIcon.padding(),
             redoIcon.vBox(),
+            `Redo (${tips.MOD}+Y)`,
             'toolbar-2x3'
           )
       }
