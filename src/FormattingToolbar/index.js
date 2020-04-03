@@ -80,10 +80,14 @@ const InlineFormField = styled(Form.Field)`
   flex-direction: row;
 `;
 
-const InlineFormButton = styled(Button)`
+const InlineFormButton = styled.button`
   margin-left: 20px;
   align-self: flex-end;
   height: 38px;
+  width: 90px;
+  border: none;
+  color: #fff;
+  border-radius: 3px;
   background-color: #0043BA;
   &:hover {
     background-color: #265FC4;
@@ -472,9 +476,7 @@ export default class FormatToolbar extends React.Component {
                     />
                   </InputFieldWrapper>
                   <InlineFormButton
-                    primary
                     type="submit"
-                    floated="right"
                     style={{'margin-left' : '10px'}}
                   >
                     Apply
