@@ -9,7 +9,7 @@ import {
 import { Node, createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 import PropTypes from 'prop-types';
-import HOTKEYS from './utilities/hotkeys';
+import HOTKEYS, { formattingHotKeys } from './utilities/hotkeys';
 import withSchema from './utilities/schema';
 import Element from './components/Element';
 import Leaf from './components/Leaf';
@@ -47,11 +47,13 @@ const RichTextEditor = (props) => {
     }
   };
 
-  const { isEditable } = props;
+  const { isEditable, canBeFormatted } = props;
 
   const onKeyDown = useCallback((event) => {
-    const canEdit = isEditable ? isEditable(editor, event) : true;
-    if (!canEdit) {
+    const canEdit = isEditable(editor, event);
+    const canFormat = canBeFormatted(editor);
+    const isFormatEvent = () => formattingHotKeys.some(hotkey => isHotkey(hotkey, event));
+    if (!canEdit || (!canFormat && isFormatEvent())) {
       event.preventDefault();
       return;
     }
@@ -63,7 +65,7 @@ const RichTextEditor = (props) => {
         hotkeyActions[type](code);
       }
     });
-  }, [editor, hotkeyActions, isEditable]);
+  }, [canBeFormatted, editor, hotkeyActions, isEditable]);
 
   const handleCopyOrCut = useCallback((event) => {
     event.preventDefault();
@@ -100,7 +102,7 @@ const RichTextEditor = (props) => {
 
   return (
     <Slate editor={editor} value={props.value} onChange={onChange}>
-      { !props.readOnly && <FormatBar lockText={props.lockText} isEditable={isEditable} /> }
+      { !props.readOnly && <FormatBar lockText={props.lockText} canBeFormatted={props.canBeFormatted} /> }
       <Editable
         readOnly={props.readOnly}
         renderElement={renderElement}
@@ -136,6 +138,13 @@ RichTextEditor.propTypes = {
   customElements: PropTypes.object,
   /* A method that determines if current edit should be allowed */
   isEditable: PropTypes.func,
+  /* A method that determines if current formatting change should be allowed */
+  canBeFormatted: PropTypes.func,
+};
+
+RichTextEditor.defaultProps = {
+  isEditable: () => true,
+  canBeFormatted: () => true,
 };
 
 

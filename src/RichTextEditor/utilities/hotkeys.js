@@ -35,4 +35,6 @@ const HOTKEYS = {
   }
 };
 
+export const formattingHotKeys = ['mod+b', 'mod+i', 'mod+shift+7', 'mod+shift+8', 'mod+shift+9', 'mod+shift+.'];
+
 export default HOTKEYS;
