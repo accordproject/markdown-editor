@@ -26,7 +26,7 @@ const block = { toggleFunc: toggleBlock, activeFunc: isBlockActive };
 const history = { toggleFunc: toggleHistory };
 const hyperlinkModal = { toggleFunc: insertLink, activeFunc: isLinkActive };
 
-const FormattingToolbar = ({ isEditable }) => {
+const FormattingToolbar = ({ canBeFormatted }) => {
   const linkButtonRef = useRef();
   const [linkOpen, setLinkOpen] = useState(false);
   const linkForm = {
@@ -47,21 +47,21 @@ const FormattingToolbar = ({ isEditable }) => {
 
   return (
     <ToolbarMenu>
-      <StyleDropdown isEditable={isEditable}/>
+      <StyleDropdown canBeFormatted={canBeFormatted}/>
       <Separator />
-      <FormatButton {...mark} {...bold} isEditable={isEditable} />
-      <FormatButton {...mark} {...italic} isEditable={isEditable} />
-      <FormatButton {...mark} {...code} isEditable={isEditable} />
+      <FormatButton {...mark} {...bold} canBeFormatted={canBeFormatted} />
+      <FormatButton {...mark} {...italic} canBeFormatted={canBeFormatted} />
+      <FormatButton {...mark} {...code} canBeFormatted={canBeFormatted} />
       <Separator />
-      <FormatButton {...block} {...quote} isEditable={isEditable} />
-      <FormatButton {...block} {...olist} isEditable={isEditable} />
-      <FormatButton {...block} {...ulist} isEditable={isEditable} />
+      <FormatButton {...block} {...quote} canBeFormatted={canBeFormatted} />
+      <FormatButton {...block} {...olist} canBeFormatted={canBeFormatted} />
+      <FormatButton {...block} {...ulist} canBeFormatted={canBeFormatted} />
       <Separator />
       <HistoryButton {...history} {...undo} />
       <HistoryButton {...history} {...redo} />
       <Separator />
       {/* <HyperlinkButton ref={linkButtonRef} {...hyperlink} {...link}/> */}
-      <InsertImageButton {...image} isEditable={isEditable} />
+      <InsertImageButton {...image} canBeFormatted={canBeFormatted} />
       {/* <LinkForm {...linkForm} /> */}
     </ToolbarMenu>
   );

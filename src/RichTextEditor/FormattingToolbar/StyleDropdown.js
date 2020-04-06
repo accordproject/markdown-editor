@@ -16,7 +16,7 @@ import {
   PARAGRAPH, H1, H2, H3
 } from '../utilities/schema';
 
-const StyleDropdown = ({ isEditable }) => {
+const StyleDropdown = ({ canBeFormatted }) => {
   const editor = useSlate();
   const currentBlock = (editor && editor.selection)
     ? BLOCK_STYLE[Node.parent(editor, editor.selection.focus.path).type]
@@ -33,32 +33,32 @@ const StyleDropdown = ({ isEditable }) => {
             editor={editor}
             type={PARAGRAPH}
             style={null}
-            isEditable={isEditable}
+            canBeFormatted={canBeFormatted}
           />
           <StyleDropdownItem
             editor={editor}
             type={H1}
             style={DROPDOWN_STYLE_H1}
-            isEditable={isEditable}
+            canBeFormatted={canBeFormatted}
           />
           <StyleDropdownItem
             editor={editor}
             type={H2}
             style={DROPDOWN_STYLE_H2}
-            isEditable={isEditable}
+            canBeFormatted={canBeFormatted}
           />
           <StyleDropdownItem
             editor={editor}
             type={H3}
             style={DROPDOWN_STYLE_H3}
-            isEditable={isEditable}
+            canBeFormatted={canBeFormatted}
           />
         </Dropdown.Menu>
       </Dropdown>);
 };
 
 StyleDropdown.propTypes = {
-  isEditable: PropTypes.func
+  canBeFormatted: PropTypes.func
 };
 
 
