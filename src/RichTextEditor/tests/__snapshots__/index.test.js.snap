@@ -617,6 +617,7 @@ This is an html block.
   }
 >
   <FormattingToolbar
+    canBeFormatted={[Function]}
     lockText={true}
   />
   <Editable
