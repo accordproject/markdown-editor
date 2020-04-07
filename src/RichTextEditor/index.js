@@ -50,10 +50,9 @@ const RichTextEditor = (props) => {
   const { isEditable, canBeFormatted } = props;
 
   const onKeyDown = useCallback((event) => {
-    const canEdit = isEditable(editor, event);
     const canFormat = canBeFormatted(editor);
     const isFormatEvent = () => formattingHotKeys.some(hotkey => isHotkey(hotkey, event));
-    if (!canEdit || (!canFormat && isFormatEvent())) {
+    if (!canFormat && isFormatEvent()) {
       event.preventDefault();
       return;
     }
@@ -65,7 +64,14 @@ const RichTextEditor = (props) => {
         hotkeyActions[type](code);
       }
     });
-  }, [canBeFormatted, editor, hotkeyActions, isEditable]);
+  }, [canBeFormatted, editor, hotkeyActions]);
+
+  const onBeforeInput = useCallback((event) => {
+    const canEdit = isEditable(editor, event);
+    if (!canEdit) {
+      event.preventDefault();
+    }
+  }, [editor, isEditable]);
 
   const handleCopyOrCut = useCallback((event) => {
     event.preventDefault();
@@ -111,6 +117,7 @@ const RichTextEditor = (props) => {
         spellCheck
         autoFocus
         onKeyDown={onKeyDown}
+        onDOMBeforeInput={onBeforeInput}
         onCopy={event => handleCopyOrCut(event)}
         onCut={event => handleCopyOrCut(event)}
       />
