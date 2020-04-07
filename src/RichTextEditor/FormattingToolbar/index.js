@@ -68,7 +68,7 @@ const FormattingToolbar = ({ canBeFormatted }) => {
 };
 
 FormattingToolbar.propTypes = {
-  isEditable: PropTypes.func,
+  canBeFormatted: PropTypes.func,
 };
 
 
