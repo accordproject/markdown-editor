@@ -624,6 +624,7 @@ This is an html block.
     autoFocus={true}
     onCopy={[Function]}
     onCut={[Function]}
+    onDOMBeforeInput={[Function]}
     onKeyDown={[Function]}
     placeholder="Enter some rich text…"
     readOnly={false}
