@@ -60,7 +60,7 @@ const FormattingToolbar = ({ canBeFormatted }) => {
       <HistoryButton {...history} {...undo} />
       <HistoryButton {...history} {...redo} />
       <Separator />
-      {/* <HyperlinkButton ref={linkButtonRef} {...hyperlink} {...link}/> */}
+      <HyperlinkButton ref={linkButtonRef} {...hyperlink} {...link}/>
       <InsertImageButton {...image} canBeFormatted={canBeFormatted} />
       {/* <LinkForm {...linkForm} /> */}
     </ToolbarMenu>

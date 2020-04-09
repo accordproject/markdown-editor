@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import isUrl from 'is-url';
 import { Transforms, Editor, Range } from 'slate';
 
