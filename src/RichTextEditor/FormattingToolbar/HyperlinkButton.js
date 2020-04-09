@@ -16,7 +16,7 @@ const HyperlinkButton = React.forwardRef(
   ({
     isLinkOpen,
     toggleLink,
-    toggleFunc,
+    toggleFunc: insertLink,
     activeFunc,
     type,
     label,
@@ -52,7 +52,12 @@ const HyperlinkButton = React.forwardRef(
           <Button
               ref={ref}
               aria-label={type}
-              onMouseDown={handleMouseDown}
+              onMouseDown={(event) => {
+                event.preventDefault();
+                const url = window.prompt('Enter the URL of the link:');
+                if (!url) return;
+                insertLink(editor, url);
+              }}
               isActive={isActive}
               background={backgroundColor}
               {...props}
