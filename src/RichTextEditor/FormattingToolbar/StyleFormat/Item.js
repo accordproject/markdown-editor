@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Dropdown } from 'semantic-ui-react';
-import { BLOCK_STYLE } from './StyleConstants';
-import { toggleBlock } from '../utilities/toolbarHelpers';
+import { BLOCK_STYLE } from '../../utilities/constants';
+import { toggleBlock } from '../../utilities/toolbarHelpers';
 
 const StyleDropdownItem = ({
   editor, type, style, canBeFormatted

@@ -10,9 +10,9 @@ import {
   useSelected,
   useFocused
 } from 'slate-react';
-import { POPUP_STYLE } from '../FormattingToolbar/StyleConstants';
+import { POPUP_STYLE } from '../utilities/constants';
 
-import Button from './Button';
+import Button from '../components/Button';
 
 const StyledImage = styled.img`
   display: block;

@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { ReactEditor, useSlate } from 'slate-react';
 import { Popup } from 'semantic-ui-react';
-import { BUTTON_COLORS, POPUP_STYLE } from './StyleConstants';
+import { BUTTON_COLORS, POPUP_STYLE } from '../utilities/constants';
 import Button from '../components/Button';
 
 // eslint-disable-next-line react/display-name

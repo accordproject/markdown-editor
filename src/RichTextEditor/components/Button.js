@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { BUTTON_COLORS } from '../FormattingToolbar/StyleConstants';
+import { BUTTON_COLORS } from '../utilities/constants';
 
 const Button = styled.svg`
   place-self: center;

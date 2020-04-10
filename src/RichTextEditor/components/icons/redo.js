@@ -1,6 +1,6 @@
 import React from 'react';
 import { MOD } from '../../utilities/tooltipHelpers';
-import { BUTTON_COLORS } from '../../FormattingToolbar/StyleConstants';
+import { BUTTON_COLORS } from '../../utilities/constants';
 
 const icon = () => (
   <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
