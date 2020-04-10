@@ -11,12 +11,12 @@ import { withHistory } from 'slate-history';
 import PropTypes from 'prop-types';
 import HOTKEYS, { formattingHotKeys } from './utilities/hotkeys';
 import withSchema from './utilities/schema';
-import Element from './components/Element';
+import Element from './components';
 import Leaf from './components/Leaf';
 import { toggleMark, toggleBlock } from './utilities/toolbarHelpers';
-import { withImages } from './components/withImages';
+import { withImages } from './plugins/withImages';
 import { withLinks } from './components/withLinks';
-import { withHtml } from './components/withHtml';
+import { withHtml } from './plugins/withHtml';
 import FormatBar from './FormattingToolbar';
 
 const RichTextEditor = (props) => {
@@ -108,7 +108,8 @@ const RichTextEditor = (props) => {
 
   return (
     <Slate editor={editor} value={props.value} onChange={onChange}>
-      { !props.readOnly && <FormatBar lockText={props.lockText} canBeFormatted={props.canBeFormatted} /> }
+      { !props.readOnly
+        && <FormatBar lockText={props.lockText} canBeFormatted={props.canBeFormatted} /> }
       <Editable
         readOnly={props.readOnly}
         renderElement={renderElement}

@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Heading from '../styledComponents/Heading';
-import ImageElement from './withImages';
-import HorizontalRule from '../styledComponents/HorizontalRule';
+import ImageElement from '../plugins/withImages';
+import { Code, Html, ListItem, OLList, Quote, ULList } from './Block';
+import { Heading, Inline, Link, Paragraph } from './Node';
+import { HorizontalRule, Linebreak, Softbreak } from './Span';
 
 import {
   PARAGRAPH,
@@ -24,32 +25,25 @@ const Element = (props) => {
   const { attributes, children, element, customElements } = props;
   const { type, data } = element;
   const baseElementRenderer = {
-    [PARAGRAPH]: () => (<p {...attributes}>{children}</p>),
+    [PARAGRAPH]: () => (<Paragraph {...attributes} children={children} />),
     [H1]: () => (<Heading as="h1" {...attributes}>{children}</Heading>),
     [H2]: () => (<Heading as="h2" {...attributes}>{children}</Heading>),
     [H3]: () => (<Heading as="h3" {...attributes}>{children}</Heading>),
     [H4]: () => (<Heading as="h4" {...attributes}>{children}</Heading>),
     [H5]: () => (<Heading as="h5" {...attributes}>{children}</Heading>),
     [H6]: () => (<Heading as="h6" {...attributes}>{children}</Heading>),
-    
-    [SOFTBREAK]: () => (<span className={SOFTBREAK} {...attributes}> {children}</span>),
-    [LINEBREAK]: () => (<br className={LINEBREAK} {...attributes}/>),
-    
-    [LINK]: () => (<a {...attributes} href={data.href}>{children}</a>),
-    
-    [HTML_BLOCK]: () => (<pre className={HTML_BLOCK} {...attributes}>{children}</pre>),
-    [CODE_BLOCK]: () => (<pre {...attributes}>{children}</pre>),
-    [BLOCK_QUOTE]: () => (<blockquote {...attributes}>{children}</blockquote>),
-    
-    [OL_LIST]: () => (<ol {...attributes}>{children}</ol>),
-    [UL_LIST]: () => (<ul {...attributes}>{children}</ul>),
-    [LIST_ITEM]: () => (<li {...attributes}>{children}</li>),
-    
+    [SOFTBREAK]: () => (<Softbreak {...attributes} children={children} />),
+    [LINEBREAK]: () => (<Linebreak {...attributes} />),
+    [LINK]: () => (<Link {...attributes} href={data.href} children={children} />),
+    [HTML_BLOCK]: () => (<Html {...attributes} children={children} />),
+    [CODE_BLOCK]: () => (<Code {...attributes} children={children} />),
+    [BLOCK_QUOTE]: () => (<Quote {...attributes} children={children} />),
+    [OL_LIST]: () => (<OLList {...attributes} children={children} />),
+    [UL_LIST]: () => (<ULList {...attributes} children={children} />),
+    [LIST_ITEM]: () => (<ListItem {...attributes} children={children} />),
     [IMAGE]: () => (<ImageElement {...props} />),
     [HR]: () => (<HorizontalRule {...attributes}>{children}</HorizontalRule>),
-    [HTML_INLINE]: () => (<span className={HTML_INLINE} {...attributes}>
-      {data.content}{children}
-    </span>),
+    [HTML_INLINE]: () => (<Inline {...attributes} content={data.content} children={children} />),
     default: () => {
       console.log(`Didn't know how to render ${JSON.stringify(element, null, 2)}`);
       return <p {...attributes}>{children}</p>;

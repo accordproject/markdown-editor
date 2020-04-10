@@ -4,17 +4,17 @@ import PropTypes from 'prop-types';
 import { Node } from 'slate';
 import { useSlate } from 'slate-react';
 import { Dropdown } from 'semantic-ui-react';
-import StyleDropdownItem from './StyleDropdownItem';
+import StyleDropdownItem from './Item';
 import {
   BLOCK_STYLE,
   DROPDOWN_STYLE,
   DROPDOWN_STYLE_H1,
   DROPDOWN_STYLE_H2,
   DROPDOWN_STYLE_H3
-} from './StyleConstants';
+} from '../../utilities/constants';
 import {
   PARAGRAPH, H1, H2, H3
-} from '../utilities/schema';
+} from '../../utilities/schema';
 
 const StyleDropdown = ({ canBeFormatted }) => {
   const editor = useSlate();

@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
-import { InsertImageButton } from '../components/withImages';
+import { InsertImageButton } from '../plugins/withImages';
 import ToolbarMenu from './ToolbarMenu';
 import FormatButton from './FormatButton';
 import HistoryButton from './HistoryButton';
 import HyperlinkButton from './HyperlinkButton';
-import StyleDropdown from './StyleDropdown';
+import StyleDropdown from './StyleFormat';
 import { LinkForm } from './HyperlinkModal';
 import { insertLink, isLinkActive } from '../components/withLinks';
 import {
