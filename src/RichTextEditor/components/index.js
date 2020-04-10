@@ -4,21 +4,10 @@ import ImageElement from '../plugins/withImages';
 import { Code, Html, ListItem, OLList, Quote, ULList } from './Block';
 import { Heading, Inline, Link, Paragraph } from './Node';
 import { HorizontalRule, Linebreak, Softbreak } from './Span';
-
 import {
-  PARAGRAPH,
-  H1, H2, H3, H4, H5, H6, HR,
-  CODE_BLOCK,
-  HTML_BLOCK,
-  BLOCK_QUOTE,
-  UL_LIST,
-  OL_LIST,
-  LIST_ITEM,
-  LINK,
-  IMAGE,
-  HTML_INLINE,
-  SOFTBREAK,
-  LINEBREAK,
+  PARAGRAPH, LINK, IMAGE, H1, H2, H3, H4, H5, H6, HR,
+  CODE_BLOCK, HTML_BLOCK, BLOCK_QUOTE, UL_LIST, OL_LIST, LIST_ITEM,
+  HTML_INLINE, SOFTBREAK, LINEBREAK,
 } from '../utilities/schema';
 
 const Element = (props) => {
