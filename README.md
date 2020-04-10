@@ -30,7 +30,7 @@
 </p>
 
 This repo contains two React-based editors:
-1. A WYSIWYG  [Slate][slate]-based editor that edits rich text and calls an `onChange`
+1. A WYSIWYG [Slate][slate]-based editor that edits rich text and calls an `onChange`
    callback with the modified Slate DOM.
 2. A TextArea-based markdown editor that edits markdown text and calls an `onChange`
    callback with the modified markdown text.
