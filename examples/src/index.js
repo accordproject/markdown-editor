@@ -131,7 +131,7 @@ function Demo() {
             />
           </Grid.Column>
 
-          <Grid.Column>
+          <Grid.Column className="demo-rich-text-editor">
             <RichTextEditor
               readOnly={false}
               value={slateValue}

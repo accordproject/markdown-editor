@@ -52,7 +52,7 @@ const FormattingToolbar = ({ canBeFormatted, showLinkModal, setShowLinkModal }) 
 
 
   return (
-    <ToolbarMenu>
+    <ToolbarMenu className="toolbar-menu">
       <StyleDropdown canBeFormatted={canBeFormatted}/>
       <Separator />
       <FormatButton {...mark} {...bold} canBeFormatted={canBeFormatted} />
