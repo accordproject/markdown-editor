@@ -40,6 +40,10 @@ const HOTKEYS = {
   'mod+shift+z': {
     type: 'special',
     code: 'redo',
+  },
+  'mod+k' : {
+    type: 'link',
+    code: LINK
   }
 };
 
@@ -49,7 +53,7 @@ export const ENTER_BREAKS = {
   [UL_LIST]: true,
 };
 
-export const formattingHotKeys = ['mod+b', 'mod+i', 'mod+shift+7', 'mod+shift+8', 'mod+shift+9', 'mod+shift+.', 'mod+shift+g'];
+export const formattingHotKeys = ['mod+b', 'mod+i', 'mod+shift+7', 'mod+shift+8', 'mod+shift+9', 'mod+shift+.', 'mod+shift+g', 'mod+k'];
 
 export const ENTER = 'enter';
 export const ENTER_SHIFT = 'shift+enter';
