@@ -1,4 +1,5 @@
 import React from 'react';
+import { MOD } from '../../utilities/tooltipHelpers';
 
 const icon = fillColor => (
   <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
@@ -17,7 +18,7 @@ const icon = fillColor => (
 
 const link = {
   type: 'link',
-  label: 'Hyperlink',
+  label: `Hyperlink (${MOD()}+K)`,
   height: '25px',
   width: '25px',
   padding: '5px',
