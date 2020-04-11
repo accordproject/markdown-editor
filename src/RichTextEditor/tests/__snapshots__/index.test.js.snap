@@ -624,6 +624,7 @@ This is an html block.
   />
   <Editable
     autoFocus={true}
+    className="ap-rich-text-editor"
     onCopy={[Function]}
     onCut={[Function]}
     onDOMBeforeInput={[Function]}

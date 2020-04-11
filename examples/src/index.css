@@ -80,3 +80,8 @@ blockquote span {
 	height: 100%;
 	outline: none;
 }
+
+/*override semantic-ui grid padding */
+.demo-rich-text-editor {
+	padding: 0px !important; 
+}

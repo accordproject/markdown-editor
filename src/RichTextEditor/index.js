@@ -145,6 +145,7 @@ const RichTextEditor = (props) => {
         setShowLinkModal={setShowLinkModal}
         /> }
       <Editable
+        className="ap-rich-text-editor"
         readOnly={props.readOnly}
         renderElement={renderElement}
         renderLeaf={renderLeaf}

@@ -77,6 +77,7 @@ describe('<RichTextEditor />', () => {
 
       const component = shallow(
         <RichTextEditor
+            className="ap-rich-text-editor"
             readOnly={false}
             lockText={true}
             value={slate.document.children}
