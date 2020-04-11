@@ -37,3 +37,7 @@
 a {
     cursor: pointer;
 }
+
+.ap-rich-text-editor {
+    padding: 20px;
+}
