@@ -16,7 +16,7 @@ import withSchema from './utilities/schema';
 import Element from './components';
 import Leaf from './components/Leaf';
 import { toggleMark, toggleBlock } from './utilities/toolbarHelpers';
-import { withImages } from './plugins/withImages';
+import { withImages, insertImage } from './plugins/withImages';
 import { withLinks, isSelectionLink } from './plugins/withLinks';
 import { withHtml } from './plugins/withHtml';
 import FormatBar from './FormattingToolbar';
@@ -44,6 +44,12 @@ const RichTextEditor = (props) => {
   const hotkeyActions = {
     mark: code => toggleMark(editor, code),
     block: code => toggleBlock(editor, code),
+    image: () => {
+      const url = window.prompt('Enter the URL of the image:');
+      if (url) {
+        insertImage(editor, url);
+      }
+    },	    
     special: (code) => {
       if (code === 'undo') return editor.undo();
       return editor.redo();

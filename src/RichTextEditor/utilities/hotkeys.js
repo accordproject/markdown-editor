@@ -25,6 +25,10 @@ const HOTKEYS = {
     type: 'block',
     code: SCHEMA.BLOCK_QUOTE,
   },
+  'mod+shift+g': {
+    type: 'image',
+    code: SCHEMA.IMAGE,
+  },
   'mod+z': {
     type: 'special',
     code: 'undo',
@@ -35,6 +39,6 @@ const HOTKEYS = {
   }
 };
 
-export const formattingHotKeys = ['mod+b', 'mod+i', 'mod+shift+7', 'mod+shift+8', 'mod+shift+9', 'mod+shift+.'];
+export const formattingHotKeys = ['mod+b', 'mod+i', 'mod+shift+7', 'mod+shift+8', 'mod+shift+9', 'mod+shift+.', 'mod+shift+g'];
 
 export default HOTKEYS;
