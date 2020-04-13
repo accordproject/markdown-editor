@@ -3,6 +3,14 @@ import { Transforms, Node } from 'slate';
 
 export const isSelectionLink = editor => Node.parent(editor, editor.selection.focus.path).type === 'link';
 
+const atEnd = (editor) => {
+  const textLength = Node.get(editor, editor.selection.focus.path).text.length;
+  return textLength === editor.selection.focus.offset;
+};
+
+// checks if selection is in the body of the link and not at the end
+export const isSelectionLinkBody = editor => isSelectionLink(editor) && !atEnd(editor);
+
 export const unwrapLink = (editor) => {
   Transforms.unwrapNodes(editor, { match: n => n.type === 'link' });
 };

@@ -79,7 +79,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
     try {
       if (isSelectionLink(editor)) {
         const linkNode = Node.parent(editor, editor.selection.focus.path);
-        Transforms.select(editor, ReactEditor.findPath(editor, linkNode));
+        return linkNode.children[0].text;
       }
       return Editor.string(editor, editor.selection);
     } catch (err) {
@@ -109,7 +109,8 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
   const applyLink = (event) => {
     Transforms.select(editor, originalSelection);
     insertLink(editor, event.target.url.value, event.target.text.value);
-    Transforms.deselect(editor);
+    Transforms.collapse(editor, { edge: 'end' });
+    ReactEditor.focus(editor);
     props.setShowLinkModal(false);
   };
 
