@@ -619,6 +619,8 @@ This is an html block.
   <FormattingToolbar
     canBeFormatted={[Function]}
     lockText={true}
+    setShowLinkModal={[Function]}
+    showLinkModal={false}
   />
   <Editable
     autoFocus={true}

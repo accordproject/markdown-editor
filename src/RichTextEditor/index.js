@@ -1,4 +1,6 @@
-import React, { useCallback, useMemo } from 'react';
+import React, {
+  useCallback, useMemo, useState
+} from 'react';
 import { CiceroMarkTransformer } from '@accordproject/markdown-cicero';
 import { HtmlTransformer } from '@accordproject/markdown-html';
 import { SlateTransformer } from '@accordproject/markdown-slate';
@@ -15,11 +17,12 @@ import Element from './components';
 import Leaf from './components/Leaf';
 import { toggleMark, toggleBlock } from './utilities/toolbarHelpers';
 import { withImages } from './plugins/withImages';
-import { withLinks } from './components/withLinks';
+import { withLinks, isSelectionLink } from './plugins/withLinks';
 import { withHtml } from './plugins/withHtml';
 import FormatBar from './FormattingToolbar';
 
 const RichTextEditor = (props) => {
+  const [showLinkModal, setShowLinkModal] = useState(false);
   const { augmentEditor } = props;
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
   const editor = useMemo(() => {
@@ -104,12 +107,22 @@ const RichTextEditor = (props) => {
   const onChange = (value) => {
     if (props.readOnly) return;
     props.onChange(value, editor);
+    const { selection } = editor;
+
+    if (selection && isSelectionLink(editor)) {
+      setShowLinkModal(true);
+    }
   };
 
   return (
     <Slate editor={editor} value={props.value} onChange={onChange}>
       { !props.readOnly
-        && <FormatBar lockText={props.lockText} canBeFormatted={props.canBeFormatted} /> }
+        && <FormatBar
+        lockText={props.lockText}
+        canBeFormatted={props.canBeFormatted}
+        showLinkModal={showLinkModal}
+        setShowLinkModal={setShowLinkModal}
+        /> }
       <Editable
         readOnly={props.readOnly}
         renderElement={renderElement}
