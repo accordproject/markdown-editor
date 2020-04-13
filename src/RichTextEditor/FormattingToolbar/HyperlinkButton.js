@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Popup } from 'semantic-ui-react';
+import { useEditor } from 'slate-react';
 import { BUTTON_COLORS, POPUP_STYLE } from '../utilities/constants';
 import Button from '../components/Button';
+
 
 // eslint-disable-next-line react/display-name
 const HyperlinkButton = React.forwardRef(
@@ -22,6 +24,11 @@ const HyperlinkButton = React.forwardRef(
       ? BUTTON_COLORS.BACKGROUND_ACTIVE
       : BUTTON_COLORS.BACKGROUND_INACTIVE;
 
+    const editor = useEditor();
+    const onMouseDown = () => {
+      if (editor.selection) setShowLinkModal(true);
+    };
+
     return (
     <Popup
       content={label}
@@ -31,7 +38,7 @@ const HyperlinkButton = React.forwardRef(
           <Button
               ref={ref}
               aria-label={type}
-              onMouseDown={() => setShowLinkModal(true)}
+              onMouseDown={onMouseDown}
               isActive={isActive}
               background={backgroundColor}
               {...props}
