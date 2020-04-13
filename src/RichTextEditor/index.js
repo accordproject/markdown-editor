@@ -17,7 +17,7 @@ import Element from './components';
 import Leaf from './components/Leaf';
 import { toggleMark, toggleBlock } from './utilities/toolbarHelpers';
 import { withImages, insertImage } from './plugins/withImages';
-import { withLinks, isSelectionLink } from './plugins/withLinks';
+import { withLinks, isSelectionLinkBody } from './plugins/withLinks';
 import { withHtml } from './plugins/withHtml';
 import FormatBar from './FormattingToolbar';
 
@@ -49,7 +49,7 @@ const RichTextEditor = (props) => {
       if (url) {
         insertImage(editor, url);
       }
-    },	    
+    },
     special: (code) => {
       if (code === 'undo') return editor.undo();
       return editor.redo();
@@ -65,6 +65,7 @@ const RichTextEditor = (props) => {
       event.preventDefault();
       return;
     }
+
     const hotkeys = Object.keys(HOTKEYS);
     hotkeys.forEach((hotkey) => {
       if (isHotkey(hotkey, event)) {
@@ -114,8 +115,7 @@ const RichTextEditor = (props) => {
     if (props.readOnly) return;
     props.onChange(value, editor);
     const { selection } = editor;
-
-    if (selection && isSelectionLink(editor)) {
+    if (selection && isSelectionLinkBody(editor)) {
       setShowLinkModal(true);
     }
   };
