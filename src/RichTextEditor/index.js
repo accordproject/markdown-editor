@@ -5,13 +5,13 @@ import { CiceroMarkTransformer } from '@accordproject/markdown-cicero';
 import { HtmlTransformer } from '@accordproject/markdown-html';
 import { SlateTransformer } from '@accordproject/markdown-slate';
 import isHotkey from 'is-hotkey';
-import {
-  Editable, withReact, Slate
-} from 'slate-react';
-import { Node, createEditor } from 'slate';
+import { Editable, withReact, Slate } from 'slate-react';
+import { Node, createEditor, Transforms } from 'slate';
 import { withHistory } from 'slate-history';
 import PropTypes from 'prop-types';
-import HOTKEYS, { formattingHotKeys } from './utilities/hotkeys';
+import HOTKEYS, {
+  ENTER, ENTER_BREAKS, formattingHotKeys
+} from './utilities/hotkeys';
 import withSchema from './utilities/schema';
 import Element from './components';
 import Leaf from './components/Leaf';
@@ -58,6 +58,19 @@ const RichTextEditor = (props) => {
   const { isEditable, canBeFormatted } = props;
 
   const onKeyDown = useCallback((event) => {
+    if (isHotkey(ENTER, event)) {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const [n] of Node.ancestors(editor, editor.selection.focus.path, { reverse: true })) {
+        if (ENTER_BREAKS[n.type]) {
+          const currNode = Node.get(editor, editor.selection.focus.path);
+          if (currNode.object === 'text' && currNode.text === '') {
+            Transforms.unwrapNodes(editor, { match: n => ENTER_BREAKS[n.type], split: true });
+            return;
+          }
+        }
+      }
+    }
+
     const canFormat = canBeFormatted(editor);
     const isFormatEvent = () => formattingHotKeys.some(hotkey => isHotkey(hotkey, event));
     if (!canFormat && isFormatEvent()) {
