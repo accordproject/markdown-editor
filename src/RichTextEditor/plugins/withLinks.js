@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { Transforms, Node } from 'slate';
+import { Transforms, Node, Editor } from 'slate';
 
 export const isSelectionLink = editor => Node.parent(editor, editor.selection.focus.path).type === 'link';
 
@@ -10,6 +10,9 @@ const atEnd = (editor) => {
 
 // checks if selection is in the body of the link and not at the end
 export const isSelectionLinkBody = editor => isSelectionLink(editor) && !atEnd(editor);
+
+// checks if selection is at the end of a link
+export const isSelectionLinkEnd = editor => isSelectionLink(editor) && atEnd(editor);
 
 export const unwrapLink = (editor) => {
   Transforms.unwrapNodes(editor, { match: n => n.type === 'link' });
@@ -35,9 +38,22 @@ export const insertLink = (editor, url, text) => {
 };
 
 export const withLinks = (editor) => {
-  const { isInline } = editor;
+  const { isInline, insertBreak } = editor;
 
   editor.isInline = element => (element.type === 'link' ? true : isInline(element));
+
+  editor.insertBreak = () => {
+    if (isSelectionLinkEnd(editor)) {
+      const point = Editor.after(editor, editor.selection.focus.path);
+      Transforms.setSelection(editor, {
+        anchor: point,
+        focus: point,
+      });
+      insertBreak();
+    } else {
+      insertBreak();
+    }
+  };
 
   return editor;
 };

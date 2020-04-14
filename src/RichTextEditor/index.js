@@ -35,7 +35,6 @@ const RichTextEditor = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
   const renderElement = useCallback((slateProps) => {
     const elementProps = { ...slateProps, customElements: props.customElements };
     return (<Element {...elementProps} />);
