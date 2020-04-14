@@ -8,7 +8,7 @@ import {
 } from 'slate';
 import styled from 'styled-components';
 import {
-  Button, Form, Input, Label,
+  Button, Form, Input,
 } from 'semantic-ui-react';
 
 import { insertLink, isSelectionLink, unwrapLink } from '../plugins/withLinks';
@@ -61,7 +61,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
   const refHyperlinkTextInput = useRef();
   const editor = useEditor();
   const [originalSelection, setOriginalSelection] = useState(null);
-  const [blankUrlError, throwBlankUrlError] = useState(false);
+  const [canApply, setApplyStatus] = useState(false);
 
   const handleClick = useCallback((e) => {
     if (ref.current && !ref.current.contains(e.target)) {
@@ -96,6 +96,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
     // If the form is just opened, focus the Url input field
     if (props.showLinkModal) {
       setOriginalSelection(editor.selection);
+      setApplyStatus(refHyperlinkTextInput.current.props.defaultValue);
       refHyperlinkTextInput.current.focus();
     }
   }, [editor, props.showLinkModal]);
@@ -109,16 +110,16 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
 
   const applyLink = (event) => {
     Transforms.select(editor, originalSelection);
-    if(event.target.url.value) {
-      insertLink(editor, event.target.url.value, event.target.text.value);
-      Transforms.collapse(editor, { edge: 'end' });
-      ReactEditor.focus(editor);
-      props.setShowLinkModal(false);
-    }
-    else {
-      throwBlankUrlError(true);
-    }
+    insertLink(editor, event.target.url.value, event.target.text.value);
+    Transforms.collapse(editor, { edge: 'end' });
+    ReactEditor.focus(editor);
+    props.setShowLinkModal(false);
   };
+
+  const handleUrlInput = (event) => {
+    Transforms.select(editor, originalSelection);
+    event.target.value ? setApplyStatus(true) : setApplyStatus(false);
+  }
 
   return (
     <Portal>
@@ -138,12 +139,8 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
                 placeholder={'http://example.com'}
                 defaultValue={defaultLinkValue}
                 name="url"
+                onChange={handleUrlInput}
               />
-              {blankUrlError && (
-                <Label basic color="red" size="mini" pointing>
-                  Please enter the URL
-                </Label>
-              )}
           </Form.Field>
           <Form.Field>
               <Button secondary floated="right"
@@ -152,7 +149,9 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
               >
               Remove
               </Button>
-              <Button primary floated="right" type="submit">
+              <Button primary floated="right" type="submit"
+                disabled={!canApply}
+              >
               Apply
               </Button>
           </Form.Field>
