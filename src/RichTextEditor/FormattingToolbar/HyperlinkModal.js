@@ -96,7 +96,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
     // If the form is just opened, focus the Url input field
     if (props.showLinkModal) {
       setOriginalSelection(editor.selection);
-      setApplyStatus(refHyperlinkTextInput.current.props.defaultValue);
+      setApplyStatus(!!refHyperlinkTextInput.current.props.defaultValue);
       refHyperlinkTextInput.current.focus();
     }
   }, [editor, props.showLinkModal]);
@@ -118,7 +118,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
 
   const handleUrlInput = (event) => {
     Transforms.select(editor, originalSelection);
-    event.target.value ? setApplyStatus(true) : setApplyStatus(false);
+    setApplyStatus(!!event.target.value);
   }
 
   return (
