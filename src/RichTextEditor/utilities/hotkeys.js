@@ -43,7 +43,7 @@ const HOTKEYS = {
   },
   'mod+k' : {
     type: 'link',
-    code: LINK
+    code: LINK,
   }
 };
 

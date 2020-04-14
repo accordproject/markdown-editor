@@ -53,12 +53,9 @@ const RichTextEditor = (props) => {
       if (code === 'undo') return editor.undo();
       return editor.redo();
     },
-    link: (_) => {
-      const url = window.prompt('Enter the URL of the link:');
-      if (url) {
-        insertLink(editor, url);
-      }
-    }
+    link: () => {
+      setShowLinkModal(true);
+    },
   };
 
   const { isEditable, canBeFormatted } = props;
