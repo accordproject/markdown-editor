@@ -8,7 +8,7 @@ import {
 } from 'slate';
 import styled from 'styled-components';
 import {
-  Button, Form, Input,
+  Button, Form, Input, Label,
 } from 'semantic-ui-react';
 
 import { insertLink, isSelectionLink, unwrapLink } from '../plugins/withLinks';
@@ -61,6 +61,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
   const refHyperlinkTextInput = useRef();
   const editor = useEditor();
   const [originalSelection, setOriginalSelection] = useState(null);
+  const [blankUrlError, throwBlankUrlError] = useState(false);
 
   const handleClick = useCallback((e) => {
     if (ref.current && !ref.current.contains(e.target)) {
@@ -108,10 +109,15 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
 
   const applyLink = (event) => {
     Transforms.select(editor, originalSelection);
-    insertLink(editor, event.target.url.value, event.target.text.value);
-    Transforms.collapse(editor, { edge: 'end' });
-    ReactEditor.focus(editor);
-    props.setShowLinkModal(false);
+    if(event.target.url.value) {
+      insertLink(editor, event.target.url.value, event.target.text.value);
+      Transforms.collapse(editor, { edge: 'end' });
+      ReactEditor.focus(editor);
+      props.setShowLinkModal(false);
+    }
+    else {
+      throwBlankUrlError(true);
+    }
   };
 
   return (
@@ -133,6 +139,11 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
                 defaultValue={defaultLinkValue}
                 name="url"
               />
+              {blankUrlError && (
+                <Label basic color="red" size="mini" pointing>
+                  Please enter the URL
+                </Label>
+              )}
           </Form.Field>
           <Form.Field>
               <Button secondary floated="right"
