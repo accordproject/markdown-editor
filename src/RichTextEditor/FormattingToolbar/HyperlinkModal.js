@@ -14,6 +14,10 @@ import {
 import { insertLink, isSelectionLink, unwrapLink } from '../plugins/withLinks';
 import Portal from '../components/Portal';
 
+import CopyIcon from '../components/icons/copy'
+import OpenIcon from '../components/icons/open'
+import DeleteIcon from '../components/icons/delete'
+
 const HyperlinkWrapper = styled.div`
     position: absolute;
     z-index: 3000;
@@ -49,6 +53,51 @@ const HyperlinkCaret = styled.div`
     border-right: 5px solid transparent;
     border-bottom: 10px solid #d4d4d5;
     transition: opacity 0.75s;
+`;
+
+const LinkIconHolder = styled.div`
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  border-radius: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: -2px 3px;
+  margin: 0 3px;
+  &:hover {
+    background-color: #eee;
+  }
+`;
+
+const InlineFormField = styled(Form.Field)`
+  display: flex;
+  flex-direction: row;
+`;
+
+const InputFieldWrapper = styled.div`
+  width: 270px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const InputFieldLabel = styled.label`
+  font-weight: bold;
+  font-size: 12px;
+`;
+
+const InlineFormButton = styled.button`
+  margin-left: 10px;
+  align-self: flex-end;
+  height: 38px;
+  width: 90px;
+  border: none;
+  color: #fff;
+  border-radius: 3px;
+  background-color: #0043BA;
+  &:hover {
+    background-color: #265FC4;
+  }
 `;
 
 // eslint-disable-next-line react/display-name
@@ -120,6 +169,25 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
     Transforms.select(editor, originalSelection);
     setApplyStatus(!!event.target.value);
   }
+  
+  const copyLink = () => {
+    const inputLink = refHyperlinkTextInput.current.inputRef.current.value;
+    function listener(e) {
+      e.clipboardData.setData('text/plain', inputLink);
+      e.preventDefault();
+    }
+
+    document.addEventListener('copy', listener);
+    document.execCommand('copy');
+    document.removeEventListener('copy', listener);
+  }
+
+  const openLink = () => {
+    const inputLink = refHyperlinkTextInput.current.inputRef.current.value;
+    if (inputLink) {
+      window.open(inputLink, '_blank')
+    }
+  }
 
   return (
     <Portal>
@@ -142,19 +210,43 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
                 onChange={handleUrlInput}
               />
           </Form.Field>
-          <Form.Field>
-              <Button secondary floated="right"
+          <InlineFormField>
+              <InputFieldWrapper>
+                <InputFieldLabel>Link URL</InputFieldLabel>
+                <Input
+                  ref={refHyperlinkTextInput}
+                  placeholder={'http://example.com'}
+                  defaultValue={defaultLinkValue}
+                  name="url"
+                />
+              </InputFieldWrapper>
+              <InlineFormButton
+                type="submit"
+              >
+                Apply
+              </InlineFormButton>
+          </InlineFormField>
+          <InlineFormField>
+              <LinkIconHolder
+                onClick={copyLink}
+                aria-label="Copy hyperlink text"
+              >
+                <CopyIcon />
+              </LinkIconHolder>
+              <LinkIconHolder
                 disabled={!isSelectionLink(editor)}
-                onMouseDown={removeLink}
+                onClick={removeLink}
+                aria-label="Remove hyperlink"
               >
-              Remove
-              </Button>
-              <Button primary floated="right" type="submit"
-                disabled={!canApply}
+                <DeleteIcon />
+              </LinkIconHolder>
+              <LinkIconHolder
+                onClick={openLink}
+                aria-label="Open hyperlink"
               >
-              Apply
-              </Button>
-          </Form.Field>
+                <OpenIcon />
+              </LinkIconHolder>
+          </InlineFormField>
         </Form>
       </HyperlinkMenu>
     </Portal>
