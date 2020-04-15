@@ -10,9 +10,9 @@ import { Node, createEditor, Transforms } from 'slate';
 import { withHistory } from 'slate-history';
 import PropTypes from 'prop-types';
 import HOTKEYS, {
-  ENTER, ENTER_BREAKS, formattingHotKeys
+  ENTER, ENTER_BREAKS, ENTER_DOUBLE_BREAKS, formattingHotKeys
 } from './utilities/hotkeys';
-import withSchema from './utilities/schema';
+import withSchema, { LIST_ITEM } from './utilities/schema';
 import Element from './components';
 import Leaf from './components/Leaf';
 import { toggleMark, toggleBlock } from './utilities/toolbarHelpers';
@@ -62,12 +62,15 @@ const RichTextEditor = (props) => {
 
   const onKeyDown = useCallback((event) => {
     if (isHotkey(ENTER, event)) {
-      // eslint-disable-next-line no-restricted-syntax
-      for (const [n] of Node.ancestors(editor, editor.selection.focus.path, { reverse: true })) {
-        if (ENTER_BREAKS[n.type]) {
-          const currNode = Node.get(editor, editor.selection.focus.path);
-          if (currNode.object === 'text' && currNode.text === '') {
+      const currNode = Node.get(editor, editor.selection.focus.path);
+      if (currNode.object === 'text' && currNode.text === '') {
+        // eslint-disable-next-line no-restricted-syntax
+        for (const [n] of Node.ancestors(editor, editor.selection.focus.path, { reverse: true })) {
+          if (ENTER_BREAKS[n.type]) {
             Transforms.unwrapNodes(editor, { match: n => ENTER_BREAKS[n.type], split: true });
+            if (ENTER_DOUBLE_BREAKS[n.type]) {
+              Transforms.unwrapNodes(editor, { match: n => n.type === LIST_ITEM, split: true });
+            }
             return;
           }
         }
