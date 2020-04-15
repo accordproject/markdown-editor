@@ -41,14 +41,13 @@ const HOTKEYS = {
     type: 'special',
     code: 'redo',
   },
-  'mod+k' : {
+  'mod+k': {
     type: 'link',
     code: LINK,
   }
 };
 
-export const ENTER_BREAKS = {
-  [BLOCK_QUOTE]: true,
+export const ENTER_DOUBLE_BREAKS = {
   [OL_LIST]: true,
   [UL_LIST]: true,
 };
