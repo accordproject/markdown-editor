@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { ReactEditor, useEditor } from 'slate-react';
+import isHotkey from 'is-hotkey'
 import {
   Editor, Transforms, Node
 } from 'slate';
@@ -11,6 +12,7 @@ import {
   Button, Form, Input,
 } from 'semantic-ui-react';
 
+import { ENTER } from '../utilities/hotkeys'
 import { insertLink, isSelectionLink, unwrapLink } from '../plugins/withLinks';
 import Portal from '../components/Portal';
 
@@ -118,6 +120,18 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
     }
   }, [props, ref]);
 
+  const handleKeyPress = useCallback((e) => {
+    const form = document.getElementById('form'); 
+    if(isHotkey(ENTER, e) && canApply) {
+      Transforms.select(editor, originalSelection);
+      insertLink(editor, form.url.value, form.text.value);
+      Transforms.collapse(editor, { edge: 'end' });
+      ReactEditor.focus(editor);
+      props.setShowLinkModal(false);
+      e.preventDefault(); // prevent the default behaviour of escaping a line
+    }
+  })
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClick);
     return () => {
@@ -193,7 +207,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
     <Portal>
       <HyperlinkMenu ref={ref}>
         <HyperlinkCaret />
-        <Form onSubmit={applyLink}>
+        <Form id="form" onSubmit={applyLink} onKeyPress={handleKeyPress}>
           <InputFieldWrapper>
               <InputFieldLabel>Link Text</InputFieldLabel>
               <Input placeholder="Text" name="text"
