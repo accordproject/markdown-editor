@@ -4,7 +4,6 @@ export default () => {
   return (
     <div>
       <svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg">
-        <title>Open link in a new tab</title>
         <g id="Old-pages" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
             <g id="Hyperlink-UI" transform="translate(-75.000000, -163.000000)" fill="#959CA3" fill-rule="nonzero">
                 <g id="Group-6" transform="translate(0.000000, 2.000000)">
