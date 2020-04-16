@@ -194,22 +194,12 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
       <HyperlinkMenu ref={ref}>
         <HyperlinkCaret />
         <Form onSubmit={applyLink}>
-          <Form.Field>
-              <label>Link Text</label>
+          <InputFieldWrapper>
+              <InputFieldLabel>Link Text</InputFieldLabel>
               <Input placeholder="Text" name="text"
                 defaultValue={defaultTextValue}
               />
-          </Form.Field>
-          <Form.Field>
-              <label>Link URL</label>
-              <Input
-                ref={refHyperlinkTextInput}
-                placeholder={'http://example.com'}
-                defaultValue={defaultLinkValue}
-                name="url"
-                onChange={handleUrlInput}
-              />
-          </Form.Field>
+          </InputFieldWrapper>
           <InlineFormField>
               <InputFieldWrapper>
                 <InputFieldLabel>Link URL</InputFieldLabel>
@@ -217,11 +207,13 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
                   ref={refHyperlinkTextInput}
                   placeholder={'http://example.com'}
                   defaultValue={defaultLinkValue}
+                  onChange={handleUrlInput}
                   name="url"
                 />
               </InputFieldWrapper>
               <InlineFormButton
                 type="submit"
+                disabled={!canApply}
               >
                 Apply
               </InlineFormButton>
