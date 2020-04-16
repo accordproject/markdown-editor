@@ -8,7 +8,7 @@ import {
 } from 'slate';
 import styled from 'styled-components';
 import {
-  Button, Form, Input,
+  Button, Form, Input, Popup
 } from 'semantic-ui-react';
 
 import { insertLink, isSelectionLink, unwrapLink } from '../plugins/withLinks';
@@ -99,6 +99,11 @@ const InlineFormButton = styled.button`
     background-color: #265FC4;
   }
 `;
+
+const popupStyles = {
+  padding: '0.2em 0.5em 0.2em 0.5em',
+  zIndex: '9999'
+}
 
 // eslint-disable-next-line react/display-name
 const HyperlinkMenu = React.forwardRef(
@@ -219,25 +224,49 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
               </InlineFormButton>
           </InlineFormField>
           <InlineFormField>
-              <LinkIconHolder
-                onClick={copyLink}
-                aria-label="Copy hyperlink text"
-              >
-                <CopyIcon />
-              </LinkIconHolder>
-              <LinkIconHolder
-                disabled={!isSelectionLink(editor)}
-                onClick={removeLink}
-                aria-label="Remove hyperlink"
-              >
-                <DeleteIcon />
-              </LinkIconHolder>
-              <LinkIconHolder
-                onClick={openLink}
-                aria-label="Open hyperlink"
-              >
-                <OpenIcon />
-              </LinkIconHolder>
+              <Popup
+                trigger={
+                  <LinkIconHolder
+                    onClick={copyLink}
+                    aria-label="Copy hyperlink text"
+                  >
+                    <CopyIcon />
+                  </LinkIconHolder>
+                }
+                content="Copy hyperlink text"
+                inverted
+                position='bottom left'
+                style={popupStyles}
+              />
+              <Popup
+                trigger={
+                  <LinkIconHolder
+                    disabled={!isSelectionLink(editor)}
+                    onClick={removeLink}
+                    aria-label="Remove hyperlink"
+                  >
+                    <DeleteIcon />
+                  </LinkIconHolder>
+                }
+                content="Remove hyperlink"
+                inverted
+                position='bottom left'
+                style={popupStyles}
+              />
+              <Popup
+                trigger={
+                  <LinkIconHolder
+                    onClick={openLink}
+                    aria-label="Open hyperlink"
+                  >
+                    <OpenIcon />
+                  </LinkIconHolder>
+                }
+                content="Open link in a new tab"
+                inverted
+                position='bottom left'
+                style={popupStyles}
+              />
           </InlineFormField>
         </Form>
       </HyperlinkMenu>

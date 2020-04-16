@@ -4,7 +4,6 @@ export default () => {
   return (
     <div>
       <svg width="18px" height="18px" viewBox="0 0 17 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
-        <title>Copy link url</title>
         <g id="Old-pages" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
             <g id="Hyperlink-UI" transform="translate(-15.000000, -162.000000)">
                 <g id="Group-6" transform="translate(0.000000, 2.000000)">
