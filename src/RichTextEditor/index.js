@@ -139,7 +139,6 @@ const RichTextEditor = (props) => {
     <Slate editor={editor} value={props.value} onChange={onChange}>
       { !props.readOnly
         && <FormatBar
-        lockText={props.lockText}
         canBeFormatted={props.canBeFormatted}
         showLinkModal={showLinkModal}
         setShowLinkModal={setShowLinkModal}
@@ -172,8 +171,6 @@ RichTextEditor.propTypes = {
   onChange: PropTypes.func.isRequired,
   /* Boolean to make editor read-only (uneditable) or not (editable) */
   readOnly: PropTypes.bool,
-  /* Boolean to lock non variable text */
-  lockText: PropTypes.bool,
   /* Higher order function to augment the editor methods */
   augmentEditor: PropTypes.func,
   /* Array of plugins passed in for the editor */
