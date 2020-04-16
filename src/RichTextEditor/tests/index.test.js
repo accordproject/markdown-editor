@@ -78,7 +78,6 @@ describe('<RichTextEditor />', () => {
       const component = shallow(
         <RichTextEditor
             readOnly={false}
-            lockText={true}
             value={slate.document.children}
             onChange={mockOnChange}
         />

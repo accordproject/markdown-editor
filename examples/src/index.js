@@ -83,8 +83,8 @@ const propsObj = {
 
 
 /**
- * Simple demo component that tracks whether to lockText
- * and whether to use markdown mode.
+ * Simple demo component that shows markdown and rich text
+ * side by side
  */
 function Demo() {
   /**
@@ -134,7 +134,6 @@ function Demo() {
           <Grid.Column>
             <RichTextEditor
               readOnly={false}
-              lockText={true}
               value={slateValue}
               onChange={onSlateValueChange}
               editorProps={propsObj}

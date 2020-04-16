@@ -73,7 +73,7 @@ function storeLocal(slateValue) {
   localStorage.setItem('markdown-editor', markdown);
 }
 
-ReactDOM.render(<SlateAsInputEditor plugins={plugins} lockText={false} onChange={storeLocal}/>
+ReactDOM.render(<SlateAsInputEditor plugins={plugins} onChange={storeLocal}/>
 , document.getElementById('root'));
 ```
 
