@@ -14,9 +14,9 @@ import {
 import { insertLink, isSelectionLink, unwrapLink } from '../plugins/withLinks';
 import Portal from '../components/Portal';
 
-import CopyIcon from '../components/icons/copy'
-import OpenIcon from '../components/icons/open'
-import DeleteIcon from '../components/icons/delete'
+import CopyIcon from '../components/icons/copy';
+import OpenIcon from '../components/icons/open';
+import DeleteIcon from '../components/icons/delete';
 
 const HyperlinkWrapper = styled.div`
     position: absolute;
@@ -103,7 +103,7 @@ const InlineFormButton = styled.button`
 const popupStyles = {
   padding: '0.2em 0.5em 0.2em 0.5em',
   zIndex: '9999'
-}
+};
 
 // eslint-disable-next-line react/display-name
 const HyperlinkMenu = React.forwardRef(
@@ -134,7 +134,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
     try {
       if (isSelectionLink(editor)) {
         const linkNode = Node.parent(editor, editor.selection.focus.path);
-        return linkNode.children[0].text;
+        return Editor.string(editor, ReactEditor.findPath(editor, linkNode));
       }
       return Editor.string(editor, editor.selection);
     } catch (err) {
@@ -173,26 +173,26 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
   const handleUrlInput = (event) => {
     Transforms.select(editor, originalSelection);
     setApplyStatus(!!event.target.value);
-  }
-  
+  };
+
   const copyLink = () => {
     const inputLink = refHyperlinkTextInput.current.inputRef.current.value;
-    function listener(e) {
+    const listener = (e) => {
       e.clipboardData.setData('text/plain', inputLink);
       e.preventDefault();
-    }
+    };
 
     document.addEventListener('copy', listener);
     document.execCommand('copy');
     document.removeEventListener('copy', listener);
-  }
+  };
 
   const openLink = () => {
     const inputLink = refHyperlinkTextInput.current.inputRef.current.value;
     if (inputLink) {
-      window.open(inputLink, '_blank')
+      window.open(inputLink, '_blank');
     }
-  }
+  };
 
   return (
     <Portal>
