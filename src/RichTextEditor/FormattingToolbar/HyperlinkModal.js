@@ -241,8 +241,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
               <Popup
                 trigger={
                   <LinkIconHolder
-                    disabled={!isSelectionLink(editor)}
-                    onClick={removeLink}
+                    onClick={isSelectionLink(editor) ? removeLink : null}
                     aria-label="Remove hyperlink"
                   >
                     <DeleteIcon />
