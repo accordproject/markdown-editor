@@ -1,5 +1,9 @@
 /* eslint-disable no-param-reassign */
-import { Transforms, Node, Editor } from 'slate';
+import {
+  Transforms, Node, Editor, Range
+} from 'slate';
+
+import { ReactEditor } from 'slate-react';
 
 export const isSelectionLink = editor => Node.parent(editor, editor.selection.focus.path).type === 'link';
 
@@ -19,6 +23,8 @@ export const unwrapLink = (editor) => {
 };
 
 const wrapLink = (editor, url, text) => {
+  const isCollapsed = editor.selection && Range.isCollapsed(editor.selection);
+
   const link = {
     type: 'link',
     data: {
@@ -27,8 +33,26 @@ const wrapLink = (editor, url, text) => {
     children: text ? [{ text }] : [{ text: url }],
   };
 
-  Transforms.removeNodes(editor, { match: n => n.type === 'link' });
-  Transforms.insertNodes(editor, link);
+  if (isCollapsed) {
+    if (isSelectionLink(editor)) {
+      const linkNodePath = ReactEditor.findPath(
+        editor, Node.parent(editor, editor.selection.focus.path)
+      );
+      if (text !== Editor.string(editor, linkNodePath)) {
+        Transforms.removeNodes(editor, { match: n => n.type === 'link' });
+        Transforms.insertNodes(editor, link);
+        return;
+      }
+      Transforms.select(editor, linkNodePath);
+      unwrapLink(editor);
+      Transforms.wrapNodes(editor, link, { split: true });
+    } else {
+      Transforms.insertNodes(editor, link);
+    }
+  } else {
+    unwrapLink(editor);
+    Transforms.wrapNodes(editor, link, { split: true });
+  }
 };
 
 export const insertLink = (editor, url, text) => {
