@@ -23,8 +23,6 @@ export const unwrapLink = (editor) => {
 };
 
 const wrapLink = (editor, url, text) => {
-  const isCollapsed = editor.selection && Range.isCollapsed(editor.selection);
-
   const link = {
     type: 'link',
     data: {
@@ -32,27 +30,25 @@ const wrapLink = (editor, url, text) => {
     },
     children: text ? [{ text }] : [{ text: url }],
   };
-
-  if (isCollapsed) {
-    if (isSelectionLink(editor)) {
-      const linkNodePath = ReactEditor.findPath(
-        editor, Node.parent(editor, editor.selection.focus.path)
-      );
-      if (text !== Editor.string(editor, linkNodePath)) {
-        Transforms.removeNodes(editor, { match: n => n.type === 'link' });
-        Transforms.insertNodes(editor, link);
-        return;
-      }
-      Transforms.select(editor, linkNodePath);
-      unwrapLink(editor);
-      Transforms.wrapNodes(editor, link, { split: true });
-    } else {
-      Transforms.insertNodes(editor, link);
+  const isCollapsed = editor.selection && Range.isCollapsed(editor.selection);
+  if (isCollapsed && isSelectionLink(editor)) {
+    const linkNodePath = ReactEditor.findPath(
+      editor, Node.parent(editor, editor.selection.focus.path)
+    );
+    if (text !== Editor.string(editor, linkNodePath)) {
+      Transforms.insertText(editor, text, { at: linkNodePath });
     }
-  } else {
+    Transforms.select(editor, linkNodePath);
     unwrapLink(editor);
     Transforms.wrapNodes(editor, link, { split: true });
+    return;
   }
+  if (isCollapsed) {
+    Transforms.insertNodes(editor, link);
+    return;
+  }
+  unwrapLink(editor);
+  Transforms.wrapNodes(editor, link, { split: true });
 };
 
 export const insertLink = (editor, url, text) => {

@@ -14,6 +14,7 @@ const HyperlinkButton = React.forwardRef(
     type,
     label,
     icon,
+    canBeFormatted,
     ...props
   }, ref) => {
     const isActive = showLinkModal;
@@ -26,6 +27,7 @@ const HyperlinkButton = React.forwardRef(
 
     const editor = useEditor();
     const onMouseDown = () => {
+      if (!canBeFormatted(editor)) return;
       if (editor.selection) setShowLinkModal(true);
     };
 
@@ -58,6 +60,7 @@ HyperlinkButton.propTypes = {
   type: PropTypes.string,
   label: PropTypes.string,
   ref: PropTypes.any,
+  canBeFormatted: PropTypes.func,
 };
 
 export default HyperlinkButton;
