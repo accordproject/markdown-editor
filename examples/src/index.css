@@ -87,3 +87,7 @@ blockquote span {
 	position: relative;
 	text-transform: uppercase;
 }
+
+.ap-rich-text-editor-toolbar {
+    box-shadow: 0 4px 2px -2px rgba(0,0,0,.2);
+}
