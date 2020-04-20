@@ -124,6 +124,7 @@ function Demo() {
       <Segment>
         <Grid columns={2}>
           <Grid.Column>
+          <h1 className="heading">Markdown</h1>
             <MarkdownTextEditor
               readOnly={true}
               markdown={markdown}
@@ -132,6 +133,7 @@ function Demo() {
           </Grid.Column>
 
           <Grid.Column>
+          <h1 className="heading">Preview</h1>
             <RichTextEditor
               readOnly={false}
               value={slateValue}
@@ -140,7 +142,7 @@ function Demo() {
             />
           </Grid.Column>
         </Grid>
-        <Divider vertical>Preview</Divider>
+        <Divider vertical></Divider>
       </Segment>
     </div>
   );
