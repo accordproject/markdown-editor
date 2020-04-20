@@ -82,8 +82,8 @@ blockquote span {
 }
 
 .heading {
-	font-size: 40px;
+	font-size: 30px;
 	text-align: center;
 	position: relative;
-	color: #210a78;
+	text-transform: uppercase;
 }
