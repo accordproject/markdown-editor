@@ -52,7 +52,7 @@ const FormattingToolbar = ({ canBeFormatted, showLinkModal, setShowLinkModal }) 
 
 
   return (
-    <ToolbarMenu>
+    <ToolbarMenu className="ap-rich-text-editor-toolbar">
       <StyleDropdown canBeFormatted={canBeFormatted}/>
       <Separator />
       <FormatButton {...mark} {...bold} canBeFormatted={canBeFormatted} />
@@ -66,7 +66,12 @@ const FormattingToolbar = ({ canBeFormatted, showLinkModal, setShowLinkModal }) 
       <HistoryButton {...history} {...undo} />
       <HistoryButton {...history} {...redo} />
       <Separator />
-      <HyperlinkButton ref={linkButtonRef} {...linkProps} {...link}/>
+      <HyperlinkButton
+        ref={linkButtonRef}
+        {...linkProps}
+        {...link}
+        canBeFormatted={canBeFormatted}
+      />
       <InsertImageButton {...image} canBeFormatted={canBeFormatted} />
       { showLinkModal && <HyperlinkModal ref={linkModalRef} {...linkProps} /> }
     </ToolbarMenu>
