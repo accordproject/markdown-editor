@@ -142,7 +142,7 @@ function Demo() {
             />
           </Grid.Column>
         </Grid>
-        <Divider vertical></Divider>
+        <Divider vertical/>
       </Segment>
     </div>
   );
