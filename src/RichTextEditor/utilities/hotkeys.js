@@ -47,7 +47,7 @@ const HOTKEYS = {
   }
 };
 
-export const ENTER_DOUBLE_BREAKS = {
+export const ENTER_LIST = {
   [OL_LIST]: true,
   [UL_LIST]: true,
 };
