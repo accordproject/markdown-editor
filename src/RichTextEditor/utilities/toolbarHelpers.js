@@ -1,5 +1,7 @@
-import { Editor, Transforms } from 'slate';
-import * as SCHEMA from './schema';
+import { Node, Editor, Transforms } from 'slate';
+import {
+  LIST_ITEM, BLOCK_QUOTE, LIST_TYPES, PARAGRAPH
+} from './schema';
 
 export const isBlockActive = (editor, format) => {
   const [match] = Editor.nodes(editor, {
@@ -16,25 +18,31 @@ export const isMarkActive = (editor, format) => {
 
 export const toggleBlock = (editor, format) => {
   const isActive = isBlockActive(editor, format);
-  const isList = SCHEMA.LIST_TYPES.includes(format);
+  const isList = input => LIST_TYPES.includes(input);
+  const isQuote = input => input === BLOCK_QUOTE;
+  const isListItem = input => input === LIST_ITEM;
 
-  Transforms.unwrapNodes(editor, {
-    match: n => SCHEMA.LIST_TYPES.includes(n.type),
-    split: true,
-  });
+  /* Clear selection of block types */
+  Transforms.unwrapNodes(editor, { match: n => isQuote(n.type), split: true });
+  Transforms.unwrapNodes(editor, { match: n => isListItem(n.type), split: true });
+  Transforms.unwrapNodes(editor, { match: n => LIST_TYPES.includes(n.type), split: true });
 
-  /* eslint no-nested-ternary: 0 */
-  Transforms.setNodes(editor, {
-    type: isActive
-      ? SCHEMA.PARAGRAPH
-      : isList
-        ? SCHEMA.LIST_ITEM
-        : format,
-  });
+  if (!isActive) {
+    const formattedBlock = { type: format, children: [], data: { tight: true } };
+    Transforms.wrapNodes(editor, formattedBlock);
 
-  if (!isActive && isList) {
-    const block = { type: format, children: [], data: { tight: true } };
-    Transforms.wrapNodes(editor, block);
+    if (isList(format)) {
+      const listItemBlock = { type: LIST_ITEM, children: [], data: { tight: true } };
+      // eslint-disable-next-line no-restricted-syntax
+      for (const [node, path] of Node.descendants(
+        editor,
+        { from: editor.selection.anchor.path, to: editor.selection.focus.path }
+      )) {
+        if (node.type === PARAGRAPH) {
+          Transforms.wrapNodes(editor, listItemBlock, { at: path });
+        }
+      }
+    }
   }
 };
 
