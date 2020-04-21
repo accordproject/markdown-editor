@@ -6,12 +6,10 @@ import { HtmlTransformer } from '@accordproject/markdown-html';
 import { SlateTransformer } from '@accordproject/markdown-slate';
 import isHotkey from 'is-hotkey';
 import { Editable, withReact, Slate } from 'slate-react';
-import { Node, createEditor, Transforms } from 'slate';
+import { Node, createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 import PropTypes from 'prop-types';
-import HOTKEYS, {
-  ENTER, ENTER_BREAKS, formattingHotKeys
-} from './utilities/hotkeys';
+import HOTKEYS, { formattingHotKeys } from './utilities/hotkeys';
 import withSchema from './utilities/schema';
 import Element from './components';
 import Leaf from './components/Leaf';
@@ -19,6 +17,7 @@ import { toggleMark, toggleBlock } from './utilities/toolbarHelpers';
 import { withImages, insertImage } from './plugins/withImages';
 import { withLinks, isSelectionLinkBody } from './plugins/withLinks';
 import { withHtml } from './plugins/withHtml';
+import { withLists } from './plugins/withLists';
 import FormatBar from './FormattingToolbar';
 
 const RichTextEditor = (props) => {
@@ -28,10 +27,14 @@ const RichTextEditor = (props) => {
   const editor = useMemo(() => {
     if (augmentEditor) {
       return augmentEditor(
-        withLinks(withHtml(withImages(withSchema(withHistory(withReact(createEditor()))))))
+        withLists(withLinks(withHtml(withImages(
+          withSchema(withHistory(withReact(createEditor())))
+        ))))
       );
     }
-    return withLinks(withHtml(withImages(withSchema(withHistory(withReact(createEditor()))))));
+    return withLists(withLinks(withHtml(withImages(
+      withSchema(withHistory(withReact(createEditor())))
+    ))));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -61,19 +64,6 @@ const RichTextEditor = (props) => {
   const { isEditable, canBeFormatted } = props;
 
   const onKeyDown = useCallback((event) => {
-    if (isHotkey(ENTER, event)) {
-      // eslint-disable-next-line no-restricted-syntax
-      for (const [n] of Node.ancestors(editor, editor.selection.focus.path, { reverse: true })) {
-        if (ENTER_BREAKS[n.type]) {
-          const currNode = Node.get(editor, editor.selection.focus.path);
-          if (currNode.object === 'text' && currNode.text === '') {
-            Transforms.unwrapNodes(editor, { match: n => ENTER_BREAKS[n.type], split: true });
-            return;
-          }
-        }
-      }
-    }
-
     const canFormat = canBeFormatted(editor);
     const isFormatEvent = () => formattingHotKeys.some(hotkey => isHotkey(hotkey, event));
     if (!canFormat && isFormatEvent()) {

@@ -1,7 +1,6 @@
 import {
-  PARAGRAPH, LINK, IMAGE, H1, H2, H3, H4, H5, H6, HR,
-  CODE_BLOCK, HTML_BLOCK, BLOCK_QUOTE, UL_LIST, OL_LIST, LIST_ITEM,
-  HTML_INLINE, SOFTBREAK, LINEBREAK, MARK_BOLD, MARK_ITALIC, MARK_CODE
+  LINK, IMAGE, BLOCK_QUOTE, UL_LIST, OL_LIST,
+  MARK_BOLD, MARK_ITALIC, MARK_CODE
 } from './schema';
 
 const HOTKEYS = {
@@ -41,16 +40,20 @@ const HOTKEYS = {
     type: 'special',
     code: 'redo',
   },
-  'mod+k' : {
+  'mod+k': {
     type: 'link',
     code: LINK,
   }
 };
 
-export const ENTER_BREAKS = {
-  [BLOCK_QUOTE]: true,
+export const ENTER_LIST = {
   [OL_LIST]: true,
   [UL_LIST]: true,
+};
+
+export const ENTER_BLOCK = {
+  [BLOCK_QUOTE]: true,
+  ...ENTER_LIST
 };
 
 export const formattingHotKeys = ['mod+b', 'mod+i', 'mod+shift+7', 'mod+shift+8', 'mod+shift+9', 'mod+shift+.', 'mod+shift+g', 'mod+k'];
