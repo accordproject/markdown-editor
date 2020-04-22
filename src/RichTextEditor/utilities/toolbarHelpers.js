@@ -28,7 +28,9 @@ export const toggleBlock = (editor, format) => {
   Transforms.unwrapNodes(editor, { match: n => LIST_TYPES.includes(n.type), split: true });
 
   if (!isActive) {
-    const formattedBlock = { type: format, children: [], data: { tight: true } };
+    const formattedBlock = {
+      type: format, children: [], data: (isQuote(format) ? {} : { tight: true })
+    };
     Transforms.wrapNodes(editor, formattedBlock);
 
     if (isList(format)) {
