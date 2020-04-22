@@ -6,7 +6,9 @@ import { HtmlTransformer } from '@accordproject/markdown-html';
 import { SlateTransformer } from '@accordproject/markdown-slate';
 import isHotkey from 'is-hotkey';
 import { Editable, withReact, Slate } from 'slate-react';
-import { Node, createEditor } from 'slate';
+import {
+  Editor, Range, Node, createEditor
+} from 'slate';
 import { withHistory } from 'slate-history';
 import PropTypes from 'prop-types';
 import HOTKEYS, { formattingHotKeys } from './utilities/hotkeys';
@@ -88,7 +90,7 @@ const RichTextEditor = (props) => {
     }
   }, [editor, isEditable]);
 
-  const handleCopyOrCut = useCallback((event) => {
+  const handleCopyOrCut = useCallback((event, cut) => {
     event.preventDefault();
     const slateTransformer = new SlateTransformer();
     const htmlTransformer = new HtmlTransformer();
@@ -114,6 +116,10 @@ const RichTextEditor = (props) => {
 
     event.clipboardData.setData('text/html', HTML_DOM);
     event.clipboardData.setData('text/plain', MARKDOWN_TEXT);
+
+    if (cut && editor.selection && Range.isExpanded(editor.selection)) {
+      Editor.deleteFragment(editor);
+    }
   }, [editor]);
 
   const onChange = (value) => {
@@ -144,7 +150,7 @@ const RichTextEditor = (props) => {
         onKeyDown={onKeyDown}
         onDOMBeforeInput={onBeforeInput}
         onCopy={event => handleCopyOrCut(event)}
-        onCut={event => handleCopyOrCut(event)}
+        onCut={event => handleCopyOrCut(event, true)}
       />
     </Slate>
   );
