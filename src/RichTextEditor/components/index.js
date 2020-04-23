@@ -20,14 +20,27 @@ const Element = (props) => {
     attributes, children, element, customElements
   } = props;
   const { type, data } = element;
+  const headings = [H1, H2, H3, H4, H5, H6];
+  let headingId;
+  if (headings.includes(type)) {
+    // https://github.com/thlorenz/anchor-markdown-header/blob/87e4cca4618271e363f4af9697df0f73f23b3d3f/anchor-markdown-header.js#L20
+    headingId = element.children[0].text.replace(/ /g,'-')
+    // escape codes
+    .replace(/%([abcdef]|\d){2,2}/ig, '')
+    // single chars that are removed
+    .replace(/[\/?!:\[\]`.,()*"';{}+=<>~\$|#@&–—]/g,'')
+    // CJK punctuations that are removed
+    .replace(/[。？！，、；：“”【】（）〔〕［］﹃﹄“ ”‘’﹁﹂—…－～《》〈〉「」]/g, '')
+    ;
+  }
   const baseElementRenderer = {
     [PARAGRAPH]: () => (<Paragraph {...attributes}>{children}</Paragraph>),
-    [H1]: () => (<Heading as="h1" {...attributes}>{children}</Heading>),
-    [H2]: () => (<Heading as="h2" {...attributes}>{children}</Heading>),
-    [H3]: () => (<Heading as="h3" {...attributes}>{children}</Heading>),
-    [H4]: () => (<Heading as="h4" {...attributes}>{children}</Heading>),
-    [H5]: () => (<Heading as="h5" {...attributes}>{children}</Heading>),
-    [H6]: () => (<Heading as="h6" {...attributes}>{children}</Heading>),
+    [H1]: () => (<Heading id={headingId} as="h1" {...attributes}>{children}</Heading>),
+    [H2]: () => (<Heading id={headingId} as="h2" {...attributes}>{children}</Heading>),
+    [H3]: () => (<Heading id={headingId} as="h3" {...attributes}>{children}</Heading>),
+    [H4]: () => (<Heading id={headingId} as="h4" {...attributes}>{children}</Heading>),
+    [H5]: () => (<Heading id={headingId} as="h5" {...attributes}>{children}</Heading>),
+    [H6]: () => (<Heading id={headingId} as="h6" {...attributes}>{children}</Heading>),
     [SOFTBREAK]: () => (<Softbreak {...attributes}>{children}</Softbreak>),
     [LINEBREAK]: () => (<Linebreak {...attributes} />),
     [LINK]: () => (<Link {...attributes} href={data.href}>{children}</Link>),
