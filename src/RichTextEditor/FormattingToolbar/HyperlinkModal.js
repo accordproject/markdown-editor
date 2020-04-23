@@ -159,6 +159,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
     Transforms.select(editor, originalSelection);
     unwrapLink(editor);
     Transforms.deselect(editor);
+    ReactEditor.focus(editor);
     props.setShowLinkModal(false);
   };
 
