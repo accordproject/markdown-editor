@@ -29,26 +29,15 @@
  
 </p>
 
-This repo contains two React-based editors:
-1. A WYSIWYG [Slate][slate]-based editor that edits rich text and calls an `onChange`
-   callback with the modified Slate DOM.
-2. A TextArea-based markdown editor that edits markdown text and calls an `onChange`
-   callback with the modified markdown text.
+A React-and-[Slate][slate]-based WYSIWYG editor that edits rich text based on [CommonMark](https://commonmark.org/).
 
-The demo editor uses the `markdown-transform` package to transform Slate DOM 
-to/from markdown text.
-
-Using these editors you could allow people to either edit rich formatted text using
-markdown (and provide a WYSIWYG preview), or allow them to edit using a WYSIWYG
-editor and use markdown for persistence.
+The demo editor uses the [`markdown-transform`](https://github.com/accordproject/markdown-transform/) package to transform Slate DOM to markdown text.
 
 The editor includes a formatting toolbar.
 
-This component is Apache-2 licensed Open Source. Contributors welcome!
-
 ### [Demo](https://accordproject-markdown-editor.netlify.com/)
 
-### Usage
+## Usage
 
 ```
 npm install @accordproject/markdown-editor
@@ -105,29 +94,6 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 The build is minified and the filenames include the hashes.<br>
 Your app is ready to be deployed!
-
-## Styling
-
-You can style the toolbar of this component, as well as the width of the editor:
-
-#### `editorProps`
-
-This is an object with the following possible css inputs as strings:
-- `BUTTON_BACKGROUND_INACTIVE`
-- `BUTTON_BACKGROUND_ACTIVE`
-- `BUTTON_SYMBOL_INACTIVE`
-- `BUTTON_SYMBOL_ACTIVE`
-- `DROPDOWN_COLOR`
-- `TOOLBAR_BACKGROUND`
-- `EDITOR_BORDER_RADIUS`
-- `EDITOR_BORDER`
-- `EDITOR_HEIGHT`
-- `EDITOR_MARGIN`
-- `EDITOR_SHADOW`
-- `EDITOR_WIDTH`
-- `TOOLTIP_BACKGROUND`
-- `TOOLTIP`
-- `TOOLBAR_SHADOW`
 
 ---
 
