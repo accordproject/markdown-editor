@@ -11,28 +11,16 @@ import { HorizontalRule, Linebreak, Softbreak } from './Span';
 import {
   PARAGRAPH, LINK, IMAGE, H1, H2, H3, H4, H5, H6, HR,
   CODE_BLOCK, HTML_BLOCK, BLOCK_QUOTE, UL_LIST, OL_LIST, LIST_ITEM,
-  HTML_INLINE, SOFTBREAK, LINEBREAK,
+  HTML_INLINE, SOFTBREAK, LINEBREAK, HEADINGS
 } from '../utilities/schema';
+import generateId from '../utilities/generateId';
 
-/* eslint react/display-name: 0 */
 const Element = (props) => {
   const {
     attributes, children, element, customElements
   } = props;
   const { type, data } = element;
-  const headings = [H1, H2, H3, H4, H5, H6];
-  let headingId;
-  if (headings.includes(type)) {
-    // https://github.com/thlorenz/anchor-markdown-header/blob/87e4cca4618271e363f4af9697df0f73f23b3d3f/anchor-markdown-header.js#L20
-    headingId = element.children[0].text.replace(/ /g,'-')
-    // escape codes
-    .replace(/%([abcdef]|\d){2,2}/ig, '')
-    // single chars that are removed
-    .replace(/[\/?!:\[\]`.,()*"';{}+=<>~\$|#@&–—]/g,'')
-    // CJK punctuations that are removed
-    .replace(/[。？！，、；：“”【】（）〔〕［］﹃﹄“ ”‘’﹁﹂—…－～《》〈〉「」]/g, '')
-    ;
-  }
+  const headingId = HEADINGS.includes(type) ? generateId(element): null;
   const baseElementRenderer = {
     [PARAGRAPH]: () => (<Paragraph {...attributes}>{children}</Paragraph>),
     [H1]: () => (<Heading id={headingId} as="h1" {...attributes}>{children}</Heading>),
