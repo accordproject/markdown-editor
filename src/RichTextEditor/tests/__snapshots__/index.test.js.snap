@@ -142,6 +142,7 @@ exports[`<RichTextEditor /> on initialization renders page correctly 1`] = `
           Object {
             "children": Array [
               Object {
+                "object": "text",
                 "text": "",
               },
             ],
@@ -167,6 +168,7 @@ exports[`<RichTextEditor /> on initialization renders page correctly 1`] = `
           Object {
             "children": Array [
               Object {
+                "object": "text",
                 "text": "",
               },
             ],
@@ -186,6 +188,7 @@ exports[`<RichTextEditor /> on initialization renders page correctly 1`] = `
       Object {
         "children": Array [
           Object {
+            "object": "text",
             "text": "",
           },
         ],
@@ -207,6 +210,10 @@ exports[`<RichTextEditor /> on initialization renders page correctly 1`] = `
       },
       Object {
         "children": Array [
+          Object {
+            "object": "text",
+            "text": "",
+          },
           Object {
             "children": Array [
               Object {
@@ -502,6 +509,7 @@ This is an html block.
           Object {
             "children": Array [
               Object {
+                "object": "text",
                 "text": "",
               },
             ],
@@ -518,6 +526,7 @@ This is an html block.
           Object {
             "children": Array [
               Object {
+                "object": "text",
                 "text": "",
               },
             ],
