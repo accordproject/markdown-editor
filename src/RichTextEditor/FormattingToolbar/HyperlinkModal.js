@@ -100,6 +100,11 @@ const InlineFormButton = styled.button`
   }
 `;
 
+const InvalidUrlErrorMessage = styled.div`
+  color: red;
+  margin: 0 0 1em;
+`;
+
 const popupStyles = {
   padding: '0.2em 0.5em 0.2em 0.5em',
   zIndex: '9999'
@@ -116,6 +121,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
   const editor = useEditor();
   const [originalSelection, setOriginalSelection] = useState(null);
   const [canApply, setApplyStatus] = useState(false);
+  const [isUrlValid, setIsUrlValid] = useState(null);
 
   const handleClick = useCallback((e) => {
     if (ref.current && !ref.current.contains(e.target)) {
@@ -163,12 +169,26 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
     props.setShowLinkModal(false);
   };
 
+  const validateUrl = (url) => {
+    const isValid = !(url.startsWith('http://') || url.startsWith('https://'));
+    setIsUrlValid(isValid);
+    return isValid;
+  };
+
   const applyLink = (event) => {
-    Transforms.select(editor, originalSelection);
-    insertLink(editor, event.target.url.value, event.target.text.value);
-    Transforms.collapse(editor, { edge: 'end' });
-    ReactEditor.focus(editor);
-    props.setShowLinkModal(false);
+    const isValidUrl = validateUrl(event.target.url.value);
+    console.log('isValidUrl', isValidUrl);
+    if (isValidUrl) {
+      Transforms.select(editor, originalSelection);
+      insertLink(editor, event.target.url.value, event.target.text.value);
+      Transforms.collapse(editor, { edge: 'end' });
+      ReactEditor.focus(editor);
+      props.setShowLinkModal(false);
+    } else {
+      Transforms.select(editor, originalSelection);
+      Transforms.collapse(editor, { edge: 'end' });
+      ReactEditor.focus(editor);
+    }
   };
 
   const handleUrlInput = (event) => {
@@ -211,7 +231,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
                 <InputFieldLabel>Link URL</InputFieldLabel>
                 <Input
                   ref={refHyperlinkTextInput}
-                  placeholder={'http://example.com'}
+                  placeholder={'example.com'}
                   defaultValue={defaultLinkValue}
                   onChange={handleUrlInput}
                   name="url"
@@ -224,6 +244,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
                 Apply
               </InlineFormButton>
           </InlineFormField>
+          {!isUrlValid && isUrlValid !== null && canApply && <InvalidUrlErrorMessage>The URL should not contain http:// or https://</InvalidUrlErrorMessage>}
           <InlineFormField>
               <Popup
                 trigger={
