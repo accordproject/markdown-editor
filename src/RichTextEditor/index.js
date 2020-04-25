@@ -100,7 +100,7 @@ const RichTextEditor = (props) => {
     // https://github.com/ianstormtaylor/slate/issues/3577
     // We need to take a functional approach
     // https://github.com/accordproject/markdown-transform/issues/203
-    const SLATE_CHILDREN = JSON.parse(JSON.stringify(Node.fragment(editor, editor.selection)));
+    const SLATE_CHILDREN = Node.fragment(editor, editor.selection);
     const SLATE_DOM = {
       object: 'value',
       document: {
