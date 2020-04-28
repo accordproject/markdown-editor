@@ -19,40 +19,38 @@ import OpenIcon from '../components/icons/open';
 import DeleteIcon from '../components/icons/delete';
 
 const HyperlinkWrapper = styled.div`
-    position: absolute;
-    z-index: 3000;
-    top: -10000px;
-    left: -10000px;
-    margin-top: -6px;
-    opacity: 0;
-    background-color: #FFFFFF;
-    border: 1px solid #d4d4d5;
-    border-radius: .3rem;
-    transition: opacity 0.75s;
+  position: absolute;
+  z-index: 3000;
+  margin-top: -6px;
+  opacity: 0;
+  background-color: #FFFFFF;
+  border: 1px solid #d4d4d5;
+  border-radius: .3rem;
+  transition: opacity 0.75s;
 
-    min-width: min-content;
-    line-height: 1.4285em;
-    max-width: 250px;
-    padding: .833em 1em;
-    font-weight: 400;
-    font-style: normal;
-    color: rgba(0,0,0,.87);
-    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.15);
-    & > * {
-        display: inline-block;
-    }
+  min-width: min-content;
+  line-height: 1.4285em;
+  max-width: 250px;
+  padding: .833em 1em;
+  font-weight: 400;
+  font-style: normal;
+  color: rgba(0,0,0,.87);
+  box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.15);
+  & > * {
+      display: inline-block;
+  }
 `;
 const HyperlinkCaret = styled.div`
-    position: absolute;
-    z-index: 4000;
-    left: calc(50% - 5px);
-    top: -10px;
-    height: 0;
-    width: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-bottom: 10px solid #d4d4d5;
-    transition: opacity 0.75s;
+  position: absolute;
+  z-index: 4000;
+  left: calc(50% - 5px);
+  top: -10px;
+  height: 0;
+  width: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 10px solid #d4d4d5;
+  transition: opacity 0.75s;
 `;
 
 const LinkIconHolder = styled.div`
