@@ -49,7 +49,7 @@ const FormattingToolbar = ({ canBeFormatted, showLinkModal, setShowLinkModal }) 
           + rect.width / 2}px`;
 
       // adjust window scroll to bring focus to the modal
-      let scrollY = rect.top + rect.height + window.pageYOffset + CARET_TOP_OFFSET;
+      let scrollY = rect.top + rect.height + window.pageYOffset - 100;
       window.scrollTo(0, scrollY);
     }
   }, [editor, showLinkModal]);

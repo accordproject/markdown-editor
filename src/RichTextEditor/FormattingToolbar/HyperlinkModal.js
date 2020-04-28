@@ -21,6 +21,8 @@ import DeleteIcon from '../components/icons/delete';
 const HyperlinkWrapper = styled.div`
   position: absolute;
   z-index: 3000;
+  top: -10000px;
+  left: -10000px;
   margin-top: -6px;
   opacity: 0;
   background-color: #FFFFFF;
