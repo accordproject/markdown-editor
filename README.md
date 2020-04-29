@@ -72,7 +72,7 @@ For an example React App see the `./examples/` folder.
 
 A `TextArea` containing [CommonMark][CommonMark] synchronized with a `MarkdownEditor` component, rendered using [Slate][slate].
 
-![overview image](overview.png)
+![preview image](public/preview.png)
 
 In order to run an isolated local development example, run `npm run dev` and then navigate to: http://localhost:3001/
 
