@@ -77,19 +77,11 @@ And this is <variable>an HTML inline</variable>.
 Fin.
 `;
 
-const propsObj = {
-  WIDTH: '600px',
-};
-
 
 /**
- * Simple demo component that shows markdown and rich text
- * side by side
+ * Simple demo component that shows markdown and rich text side by side
  */
 function Demo() {
-  /**
-   * Current Slate Value
-   */
   const [slateValue, setSlateValue] = useState(() => {
     const slate = slateTransformer.fromMarkdown(defaultMarkdown);
     console.log(slate);
@@ -97,16 +89,10 @@ function Demo() {
   });
   const [markdown, setMarkdown] = useState(defaultMarkdown);
 
-  /**
-   * Called when the markdown changes
-   */
   const onMarkdownChange = useCallback((markdown) => {
     localStorage.setItem('markdown-editor', markdown);
   }, []);
 
-  /**
-   * Called when the Slate Value changes
-   */
   const onSlateValueChange = useCallback((slateChildren) => {
     localStorage.setItem('slate-editor-value', JSON.stringify(slateChildren));
     const slateValue = {
@@ -138,7 +124,6 @@ function Demo() {
               readOnly={false}
               value={slateValue}
               onChange={onSlateValueChange}
-              editorProps={propsObj}
             />
           </Grid.Column>
         </Grid>
