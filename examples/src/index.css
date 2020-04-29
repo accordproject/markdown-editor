@@ -81,7 +81,9 @@ blockquote span {
 	outline: none;
 }
 
-/*override semantic-ui grid padding */
-.demo-rich-text-editor {
-	padding: 0px !important; 
+.heading {
+	font-size: 18px;
+	text-align: center;
+	position: relative;
+	text-transform: uppercase;
 }
