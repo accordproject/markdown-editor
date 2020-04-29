@@ -104,8 +104,8 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@accordproject/markdown-html": "^0.11.1",
-    "@accordproject/markdown-slate": "^0.11.1",
+    "@accordproject/markdown-html": "^0.11.2",
+    "@accordproject/markdown-slate": "^0.11.2",
     "@babel/runtime": "^7.8.7",
     "@material-ui/core": "^4.9.5",
     "@material-ui/icons": "^4.9.1",
