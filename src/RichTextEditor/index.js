@@ -23,9 +23,8 @@ import { withLists } from './plugins/withLists';
 import FormatBar from './FormattingToolbar';
 
 const RichTextEditor = (props) => {
+  const { augmentEditor, isEditable, canBeFormatted } = props;
   const [showLinkModal, setShowLinkModal] = useState(false);
-  const { augmentEditor } = props;
-  const renderLeaf = useCallback(props => <Leaf {...props} />, []);
   const editor = useMemo(() => {
     if (augmentEditor) {
       return augmentEditor(
@@ -44,6 +43,7 @@ const RichTextEditor = (props) => {
     const elementProps = { ...slateProps, customElements: props.customElements };
     return (<Element {...elementProps} />);
   }, [props.customElements]);
+  const renderLeaf = useCallback(props => <Leaf {...props} />, []);
 
   const hotkeyActions = {
     mark: code => toggleMark(editor, code),
@@ -62,8 +62,6 @@ const RichTextEditor = (props) => {
       setShowLinkModal(true);
     },
   };
-
-  const { isEditable, canBeFormatted } = props;
 
   const onKeyDown = useCallback((event) => {
     const canFormat = canBeFormatted(editor);
@@ -95,11 +93,6 @@ const RichTextEditor = (props) => {
     const slateTransformer = new SlateTransformer();
     const htmlTransformer = new HtmlTransformer();
     const ciceroMarkTransformer = new CiceroMarkTransformer();
-
-    // The "JSON" from Slate is immutable
-    // https://github.com/ianstormtaylor/slate/issues/3577
-    // We need to take a functional approach
-    // https://github.com/accordproject/markdown-transform/issues/203
     const SLATE_CHILDREN = Node.fragment(editor, editor.selection);
     const SLATE_DOM = {
       object: 'value',
@@ -109,7 +102,6 @@ const RichTextEditor = (props) => {
         children: SLATE_CHILDREN
       }
     };
-
     const CICERO_MARK_DOM = slateTransformer.toCiceroMark(SLATE_DOM);
     const HTML_DOM = htmlTransformer.toHtml(CICERO_MARK_DOM);
     const MARKDOWN_TEXT = ciceroMarkTransformer.toMarkdown(CICERO_MARK_DOM);
@@ -162,8 +154,6 @@ const RichTextEditor = (props) => {
 RichTextEditor.propTypes = {
   /* Initial contents for the editor (markdown text) */
   value: PropTypes.array.isRequired,
-  /* Props for the editor */
-  editorProps: PropTypes.object.isRequired,
   /* A callback that receives the markdown text */
   onChange: PropTypes.func.isRequired,
   /* Boolean to make editor read-only (uneditable) or not (editable) */

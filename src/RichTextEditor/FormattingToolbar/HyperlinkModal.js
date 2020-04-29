@@ -7,9 +7,7 @@ import {
   Editor, Transforms, Node
 } from 'slate';
 import styled from 'styled-components';
-import {
-  Button, Form, Input, Popup
-} from 'semantic-ui-react';
+import { Form, Input, Popup } from 'semantic-ui-react';
 
 import { insertLink, isSelectionLink, unwrapLink } from '../plugins/withLinks';
 import Portal from '../components/Portal';
