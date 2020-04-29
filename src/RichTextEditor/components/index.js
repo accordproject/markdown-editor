@@ -20,7 +20,7 @@ const Element = (props) => {
     attributes, children, element, customElements
   } = props;
   const { type, data } = element;
-  const headingId = HEADINGS.includes(type) ? generateId(element): null;
+  const headingId = HEADINGS.includes(type) ? generateId(element) : null;
   const baseElementRenderer = {
     [PARAGRAPH]: () => (<Paragraph {...attributes}>{children}</Paragraph>),
     [H1]: () => (<Heading id={headingId} as="h1" {...attributes}>{children}</Heading>),

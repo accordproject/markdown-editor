@@ -27,6 +27,11 @@ export const toggleBlock = (editor, format) => {
   Transforms.unwrapNodes(editor, { match: n => isListItem(n.type), split: true });
   Transforms.unwrapNodes(editor, { match: n => LIST_TYPES.includes(n.type), split: true });
 
+  if (format === 'paragraph' || format.startsWith('heading')) {
+    Transforms.setNodes(editor, { type: format });
+    return;
+  }
+
   if (!isActive) {
     const formattedBlock = {
       type: format, children: [], data: (isQuote(format) ? {} : { tight: true })
