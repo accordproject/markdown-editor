@@ -164,7 +164,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
   const validateUrl = (url) => {
     const isUrlInvalid = !(url.startsWith('http://') || url.startsWith('https://'));
     if (isUrlInvalid) {
-      url = `https://${url}`;
+      return `https://${url}`;
     }
     return url;
   };
