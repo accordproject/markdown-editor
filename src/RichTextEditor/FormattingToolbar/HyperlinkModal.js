@@ -161,9 +161,18 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
     props.setShowLinkModal(false);
   };
 
+  const validateUrl = (url) => {
+    const isUrlInvalid = !(url.startsWith('http://') || url.startsWith('https://'));
+    if (isUrlInvalid) {
+      url = `https://${url}`;
+    }
+    return url;
+  };
+
   const applyLink = (event) => {
+    const newUrl = validateUrl(event.target.url.value);
     Transforms.select(editor, originalSelection);
-    insertLink(editor, event.target.url.value, event.target.text.value);
+    insertLink(editor, newUrl, event.target.text.value);
     Transforms.collapse(editor, { edge: 'end' });
     ReactEditor.focus(editor);
     props.setShowLinkModal(false);
