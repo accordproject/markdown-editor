@@ -1,5 +1,5 @@
 /*** src/styles.css ***/
-.ap-markdown-editor .hr {
+#ap-markdown-editor .hr {
     overflow: visible; /* For IE */
     padding: 0;
     border: none;
@@ -8,11 +8,11 @@
     text-align: center;
 }
 
-.ap-markdown-editor a{
+#ap-markdown-editor a{
     cursor: pointer;
 }
 
-.ap-markdown-editor .textarea {
+#ap-markdown-editor .textarea {
     font-family: monospace;
     height: 100%;
     width: 100%;
@@ -20,15 +20,15 @@
     resize: none;
 }
 
-.ap-markdown-editor .error {
+#ap-markdown-editor .error {
     color: red;
 }
 
-.ap-markdown-editor .html_inline {
+#ap-markdown-editor .html_inline {
     color: rgb(0, 60, 255);
 }
 
-.ap-markdown-editor #slate-toolbar-wrapper-id {
+#ap-markdown-editor #slate-toolbar-wrapper-id {
     display: grid;
     grid-template-columns: 3% auto 3%;
     grid-template-rows: 100%;
@@ -38,6 +38,6 @@ a {
     cursor: pointer;
 }
 
-.ap-rich-text-editor {
+#ap-rich-text-editor {
     padding: 20px;
 }

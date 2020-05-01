@@ -52,7 +52,7 @@ const FormattingToolbar = ({ canBeFormatted, showLinkModal, setShowLinkModal }) 
 
 
   return (
-    <ToolbarMenu className="ap-rich-text-editor-toolbar">
+    <ToolbarMenu id="ap-rich-text-editor-toolbar">
       <StyleDropdown canBeFormatted={canBeFormatted}/>
       <Separator />
       <FormatButton {...mark} {...bold} canBeFormatted={canBeFormatted} />
