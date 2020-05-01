@@ -80,7 +80,7 @@ const FormattingToolbar = ({ canBeFormatted, showLinkModal, setShowLinkModal }) 
 
 FormattingToolbar.propTypes = {
   canBeFormatted: PropTypes.func,
-  showLinkModal: PropTypes.string,
+  showLinkModal: PropTypes.boolean,
   setShowLinkModal: PropTypes.func,
 };
 
