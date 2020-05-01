@@ -42,7 +42,7 @@ function MarkdownTextEditor(props) {
   /**
    * Render the component, based on showSlate
    */
-  const card = <Card className="ap-markdown-editor" fluid>
+  const card = <Card id="ap-markdown-editor" fluid>
     <Card.Content>
     <TextareaAutosize
       className={'textarea'}

@@ -77,7 +77,7 @@ describe('<RichTextEditor />', () => {
 
       const component = shallow(
         <RichTextEditor
-            className="ap-rich-text-editor"
+            id="ap-rich-text-editor"
             readOnly={false}
             value={slate.document.children}
             onChange={mockOnChange}
