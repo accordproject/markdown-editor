@@ -149,7 +149,10 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
     if (props.showLinkModal) {
       setOriginalSelection(editor.selection);
       setApplyStatus(!!refHyperlinkTextInput.current.props.defaultValue);
+      const x = window.scrollX;
+      const y = window.scrollY;
       refHyperlinkTextInput.current.focus();
+      window.scrollTo(x, y);
     }
   }, [editor, props.showLinkModal]);
 
