@@ -136,12 +136,12 @@ const RichTextEditor = (props) => {
         readOnly={props.readOnly}
         renderElement={renderElement}
         renderLeaf={renderLeaf}
-        placeholder="Enter some rich text…"
+        placeholder={props.placeholder || 'Enter some rich text...'}
         spellCheck
         autoFocus
         onKeyDown={onKeyDown}
         onDOMBeforeInput={onBeforeInput}
-        onCopy={event => handleCopyOrCut(event)}
+        onCopy={handleCopyOrCut}
         onCut={event => handleCopyOrCut(event, true)}
       />
     </Slate>
@@ -166,6 +166,8 @@ RichTextEditor.propTypes = {
   isEditable: PropTypes.func,
   /* A method that determines if current formatting change should be allowed */
   canBeFormatted: PropTypes.func,
+  /* Placeholder text when the editor is blank */
+  placeholder: PropTypes.string,
 };
 
 RichTextEditor.defaultProps = {

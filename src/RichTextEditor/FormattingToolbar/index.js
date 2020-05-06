@@ -28,7 +28,6 @@ const history = { toggleFunc: toggleHistory };
 const FormattingToolbar = ({ canBeFormatted, showLinkModal, setShowLinkModal }) => {
   const editor = useEditor();
   const linkModalRef = useRef();
-  const linkButtonRef = useRef();
 
   const linkProps = {
     showLinkModal,
@@ -67,7 +66,6 @@ const FormattingToolbar = ({ canBeFormatted, showLinkModal, setShowLinkModal }) 
       <HistoryButton {...history} {...redo} />
       <Separator />
       <HyperlinkButton
-        ref={linkButtonRef}
         {...linkProps}
         {...link}
         canBeFormatted={canBeFormatted}
@@ -80,7 +78,7 @@ const FormattingToolbar = ({ canBeFormatted, showLinkModal, setShowLinkModal }) 
 
 FormattingToolbar.propTypes = {
   canBeFormatted: PropTypes.func,
-  showLinkModal: PropTypes.boolean,
+  showLinkModal: PropTypes.bool,
   setShowLinkModal: PropTypes.func,
 };
 
