@@ -103,12 +103,12 @@ const popupStyles = {
   zIndex: '9999'
 };
 
-// eslint-disable-next-line react/display-name
 const HyperlinkMenu = React.forwardRef(
   ({ ...props }, ref) => <HyperlinkWrapper ref={ref} {...props} />
 );
 
-// eslint-disable-next-line react/display-name
+HyperlinkMenu.displayName = 'HyperlinkMenu';
+
 const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
   const refHyperlinkTextInput = useRef();
   const editor = useEditor();
@@ -283,6 +283,8 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
     </Portal>
   );
 });
+
+HyperlinkModal.displayName = 'HyperlinkModal';
 
 HyperlinkModal.propTypes = {
   setShowLinkModal: PropTypes.func,

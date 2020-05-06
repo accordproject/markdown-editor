@@ -637,7 +637,7 @@ This is an html block.
     onCut={[Function]}
     onDOMBeforeInput={[Function]}
     onKeyDown={[Function]}
-    placeholder="Enter some rich text…"
+    placeholder="Enter some rich text..."
     readOnly={false}
     renderElement={[Function]}
     renderLeaf={[Function]}

@@ -1,11 +1,11 @@
 import React from 'react';
 
-export default () => {
-  return (
+// eslint-disable-next-line react/display-name
+export default () => (
     <div>
       <svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg">
-        <g id="Old-pages" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-            <g id="Hyperlink-UI" transform="translate(-75.000000, -163.000000)" fill="#959CA3" fill-rule="nonzero">
+        <g id="Old-pages" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+            <g id="Hyperlink-UI" transform="translate(-75.000000, -163.000000)" fill="#959CA3" fillRule="nonzero">
                 <g id="Group-6" transform="translate(0.000000, 2.000000)">
                     <g id="expand-6-alternate" transform="translate(75.000000, 161.071068)">
                         <path d="M8.25,4.242 C8.25,3.68971525 7.80228475,3.242 7.25,3.242 L3.75,3.242 C2.09314575,3.242 0.75,4.58514575 0.75,6.242 L0.75,14.242 C0.75,15.8988542 2.09314575,17.242 3.75,17.242 L11.75,17.242 C13.4068542,17.242 14.75,15.8988542 14.75,14.242 L14.75,11.742 C14.75,11.1897153 14.3022847,10.742 13.75,10.742 C13.1977153,10.742 12.75,11.1897153 12.75,11.742 L12.75,14.242 C12.75,14.7942847 12.3022847,15.242 11.75,15.242 L3.75,15.242 C3.19771525,15.242 2.75,14.7942847 2.75,14.242 L2.75,6.242 C2.75,5.68971525 3.19771525,5.242 3.75,5.242 L7.25,5.242 C7.51521649,5.242 7.7695704,5.13664316 7.95710678,4.94910678 C8.14464316,4.7615704 8.25,4.50721649 8.25,4.242 Z" id="Path"></path>
@@ -16,5 +16,4 @@ export default () => {
         </g>
       </svg>
     </div>
-  )
-}
+);
