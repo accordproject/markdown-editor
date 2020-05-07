@@ -160,8 +160,8 @@ RichTextEditor.propTypes = {
   readOnly: PropTypes.bool,
   /* Higher order function to augment the editor methods */
   augmentEditor: PropTypes.func,
-  /* Array of plugins passed in for the editor */
-  customElements: PropTypes.object,
+  /* Function for extending elements rendered by editor */
+  customElements: PropTypes.func,
   /* A method that determines if current edit should be allowed */
   isEditable: PropTypes.func,
   /* A method that determines if current formatting change should be allowed */
