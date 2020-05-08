@@ -23,7 +23,13 @@ import { withLists } from './plugins/withLists';
 import FormatBar from './FormattingToolbar';
 
 const RichTextEditor = (props) => {
-  const { augmentEditor, isEditable, canBeFormatted } = props;
+  const {
+    canCopy,
+    canKeyDown,
+    augmentEditor,
+    isEditable,
+    canBeFormatted
+  } = props;
   const [showLinkModal, setShowLinkModal] = useState(false);
   const editor = useMemo(() => {
     if (augmentEditor) {
@@ -64,9 +70,12 @@ const RichTextEditor = (props) => {
   };
 
   const onKeyDown = useCallback((event) => {
-    const canFormat = canBeFormatted(editor);
+    if (canKeyDown && !canKeyDown(editor, event)) {
+      event.preventDefault();
+      return;
+    }
     const isFormatEvent = () => formattingHotKeys.some(hotkey => isHotkey(hotkey, event));
-    if (!canFormat && isFormatEvent()) {
+    if (!canBeFormatted(editor) && isFormatEvent()) {
       event.preventDefault();
       return;
     }
@@ -79,7 +88,7 @@ const RichTextEditor = (props) => {
         hotkeyActions[type](code);
       }
     });
-  }, [canBeFormatted, editor, hotkeyActions]);
+  }, [canBeFormatted, canKeyDown, editor, hotkeyActions]);
 
   const onBeforeInput = useCallback((event) => {
     const canEdit = isEditable(editor, event);
@@ -90,6 +99,7 @@ const RichTextEditor = (props) => {
 
   const handleCopyOrCut = useCallback((event, cut) => {
     event.preventDefault();
+    if (canCopy && !canCopy(editor)) return;
     const slateTransformer = new SlateTransformer();
     const htmlTransformer = new HtmlTransformer();
     const ciceroMarkTransformer = new CiceroMarkTransformer();
@@ -112,7 +122,7 @@ const RichTextEditor = (props) => {
     if (cut && editor.selection && Range.isExpanded(editor.selection)) {
       Editor.deleteFragment(editor);
     }
-  }, [editor]);
+  }, [canCopy, editor]);
 
   const onChange = (value) => {
     if (props.readOnly) return;
@@ -166,6 +176,10 @@ RichTextEditor.propTypes = {
   isEditable: PropTypes.func,
   /* A method that determines if current formatting change should be allowed */
   canBeFormatted: PropTypes.func,
+  /* A method that determines if current selection copy should be allowed */
+  canCopy: PropTypes.func,
+  /* A method that determines if current key event should be allowed */
+  canKeyDown: PropTypes.func,
   /* Placeholder text when the editor is blank */
   placeholder: PropTypes.string,
 };
