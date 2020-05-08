@@ -140,7 +140,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
     }
   }, [editor]);
 
-  const defaultLinkValue = isSelectionLink(editor)
+  const defaultLinkValue = (editor.selection && isSelectionLink(editor))
     ? Node.parent(editor, editor.selection.focus.path).data.href
     : '';
 
@@ -252,7 +252,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
               <Popup
                 trigger={
                   <LinkIconHolder
-                    onClick={isSelectionLink(editor) ? removeLink : null}
+                    onClick={removeLink}
                     aria-label="Remove hyperlink"
                   >
                     <DeleteIcon />
