@@ -70,7 +70,7 @@ const RichTextEditor = (props) => {
   };
 
   const onKeyDown = useCallback((event) => {
-    if (canKeyDown && !canKeyDown(editor, event)) {
+    if (!canKeyDown(editor, event)) {
       event.preventDefault();
       return;
     }
@@ -99,7 +99,7 @@ const RichTextEditor = (props) => {
 
   const handleCopyOrCut = useCallback((event, cut) => {
     event.preventDefault();
-    if (canCopy && !canCopy(editor)) return;
+    if (!canCopy(editor)) return;
     const slateTransformer = new SlateTransformer();
     const htmlTransformer = new HtmlTransformer();
     const ciceroMarkTransformer = new CiceroMarkTransformer();
@@ -187,6 +187,8 @@ RichTextEditor.propTypes = {
 RichTextEditor.defaultProps = {
   isEditable: () => true,
   canBeFormatted: () => true,
+  canCopy: () => true,
+  canKeyDown: () => true,
 };
 
 
