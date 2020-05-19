@@ -1,3 +1,7 @@
+# ❗---❗---❗---❗DEPRECATED❗---❗---❗---❗
+
+This repository has been moved to https://github.com/accordproject/web-components
+
 <h1 align="center">
   Markdown Editor
 </h1>
