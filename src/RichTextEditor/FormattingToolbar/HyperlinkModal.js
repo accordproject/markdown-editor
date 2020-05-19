@@ -98,6 +98,11 @@ const InlineFormButton = styled.button`
   }
 `;
 
+const LinkCopiedMessage = styled.div`
+  color: green;
+  margin-bottom: 2%;
+`;
+
 const popupStyles = {
   padding: '0.2em 0.5em 0.2em 0.5em',
   zIndex: '9999'
@@ -114,6 +119,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
   const editor = useEditor();
   const [originalSelection, setOriginalSelection] = useState(null);
   const [canApply, setApplyStatus] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const handleClick = useCallback((e) => {
     if (ref.current && !ref.current.contains(e.target)) {
@@ -189,8 +195,10 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
   const copyLink = () => {
     const inputLink = refHyperlinkTextInput.current.inputRef.current.value;
     const listener = (e) => {
-      e.clipboardData.setData('text/plain', inputLink);
+      e.clipboardData.setData('text/plain', validateUrl(inputLink));
       e.preventDefault();
+      setLinkCopied(true);
+      Transforms.select(editor, originalSelection);
     };
 
     document.addEventListener('copy', listener);
@@ -234,6 +242,7 @@ const HyperlinkModal = React.forwardRef(({ ...props }, ref) => {
                 Apply
               </InlineFormButton>
           </InlineFormField>
+          {linkCopied && <LinkCopiedMessage>Link copied</LinkCopiedMessage>}
           <InlineFormField>
               <Popup
                 trigger={
